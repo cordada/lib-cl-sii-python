@@ -51,6 +51,9 @@ _package_data = {
     'cl_sii': [
         # Indicates that the "typing information" of the package should be distributed.
         'py.typed',
+        # Data files that are not in a sub-package.
+        'data/ref/factura_electronica/schema_dte/*.xsd',
+        'data/ref/factura_electronica/schema_iecv/*.xsd',
     ],
 }
 
