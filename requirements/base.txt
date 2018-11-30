@@ -2,6 +2,7 @@
 # note: it is mandatory to register all dependencies of the required packages.
 
 # Required packages:
+lxml==4.2.5
 marshmallow==2.16.3
 pytz==2018.9
 
