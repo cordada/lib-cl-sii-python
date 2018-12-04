@@ -21,7 +21,9 @@ version = get_version('cl_sii', '__init__.py')
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
+# TODO: add reasonable upper-bound for some of these packages?
 requirements = [
+    'marshmallow>=2.16.3',
 ]
 
 extras_requirements = {

@@ -2,7 +2,7 @@
 # note: it is mandatory to register all dependencies of the required packages.
 
 # Required packages:
-#none
+marshmallow==2.16.3
 
 # Packages dependencies:
 #none
