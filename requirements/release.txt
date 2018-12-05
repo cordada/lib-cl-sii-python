@@ -3,7 +3,21 @@
 -r base.txt
 
 # Required packages:
-#none
+bumpversion==0.5.3
+setuptools==40.8.0
+twine==1.13.0
+wheel==0.33.1
 
 # Packages dependencies:
-#none
+#   - twine:
+#       - pkginfo
+#       - readme-renderer
+#       - requests
+#       - requests-toolbelt
+#       - setuptools
+#       - tqdm
+pkginfo==1.5.0.1
+readme-renderer==24.0
+requests==2.21.0
+requests-toolbelt==0.9.1
+tqdm==4.31.1
