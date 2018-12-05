@@ -3,6 +3,7 @@
 
 # Required packages:
 marshmallow==2.16.3
+pytz==2018.9
 
 # Packages dependencies:
 #none
