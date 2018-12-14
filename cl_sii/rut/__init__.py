@@ -61,19 +61,13 @@ class Rut:
         invalid_rut_msg = "Syntactically invalid RUT."
 
         clean_value = Rut.clean_str(value)
-        try:
-            match_obj = constants.RUT_CANONICAL_STRICT_REGEX.match(clean_value)
-        except Exception as exc:
-            raise ValueError(invalid_rut_msg, value) from exc
+        match_obj = constants.RUT_CANONICAL_STRICT_REGEX.match(clean_value)
         if match_obj is None:
             raise ValueError(invalid_rut_msg, value)
 
-        try:
-            match_groups = match_obj.groupdict()
-            self._digits = match_groups['digits']
-            self._dv = match_groups['dv']
-        except Exception as exc:
-            raise ValueError(invalid_rut_msg, value) from exc
+        match_groups = match_obj.groupdict()
+        self._digits = match_groups['digits']
+        self._dv = match_groups['dv']
 
         if validate_dv:
             if Rut.calc_dv(self._digits) != self._dv:
@@ -154,12 +148,8 @@ class Rut:
         'K'
 
         """
-        if rut_digits != rut_digits.strip().lower():
-            raise ValueError
-        try:
-            int(rut_digits)
-        except TypeError as exc:
-            raise ValueError from exc
+        if rut_digits.strip().isdigit() is False:
+            raise ValueError("Must be a sequence of digits.")
 
         # Based on:
         #   https://gist.github.com/rbonvall/464824/4b07668b83ee45121345e4634ebce10dc6412ba3
