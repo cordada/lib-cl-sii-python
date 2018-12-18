@@ -1,0 +1,5 @@
+<!-- Source: https://pypi.org/project/defusedxml/#external-entity-expansion-remote -->
+<!DOCTYPE external [
+<!ENTITY ee SYSTEM "http://www.python.org/some.xml">
+]>
+<root>&ee;</root>
