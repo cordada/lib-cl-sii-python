@@ -57,8 +57,16 @@ class Rut:
         :param validate_dv: whether to validate that the RUT's
             "digito verificador" is correct
 
+        :raises ValueError:
+        :raises TypeError:
+
         """
         invalid_rut_msg = "Syntactically invalid RUT."
+
+        if isinstance(value, Rut):
+            value = value.canonical
+        if not isinstance(value, str):
+            raise TypeError("Invalid type.")
 
         clean_value = Rut.clean_str(value)
         match_obj = constants.RUT_CANONICAL_STRICT_REGEX.match(clean_value)

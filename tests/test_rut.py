@@ -36,6 +36,19 @@ class RutTest(unittest.TestCase):
     # instance
     ############################################################################
 
+    def test_fail_type_error(self) -> None:
+        with self.assertRaises(TypeError):
+            rut.Rut(object())
+        with self.assertRaises(TypeError):
+            rut.Rut(1)
+        with self.assertRaises(TypeError):
+            rut.Rut(None)
+
+    def test_ok_same_type(self) -> None:
+        self.assertEqual(
+            rut.Rut(rut.Rut('1-1')),
+            rut.Rut('1-1'))
+
     def test_instance_empty_string(self) -> None:
         rut_value = ''
         with self.assertRaises(ValueError) as context_manager:
