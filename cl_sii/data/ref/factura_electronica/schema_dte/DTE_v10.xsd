@@ -193,6 +193,18 @@ Descuento Recargo Global : se incorporar restricción en Tipo de Movimiento
 															</xs:restriction>
 														</xs:simpleType>
 													</xs:element>
+													<xs:element name="TpoTranCompra" type="SiiDte:TipoTransCOMPRA" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Tipo de Transacción para el comprador</xs:documentation>
+															<xs:documentation>Indica el Uso de Montos Brutos en Detalle</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="TpoTranVenta" type="SiiDte:TipoTransVENTA" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Tipo de Transacción para el vendedor</xs:documentation>
+															<xs:documentation>Indica el Uso de Montos Brutos en Detalle</xs:documentation>
+														</xs:annotation>
+													</xs:element>
 													<xs:element name="FmaPago" minOccurs="0">
 														<xs:annotation>
 															<xs:documentation>Forma de Pago del DTE</xs:documentation>
@@ -1868,6 +1880,7 @@ según tabla Países aduana</xs:documentation>
 											<xs:simpleType>
 												<xs:restriction base="xs:string">
 													<xs:maxLength value="60"/>
+													<xs:minLength value="1"/>
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
@@ -2199,6 +2212,18 @@ según tabla Países aduana</xs:documentation>
 																</xs:enumeration>
 															</xs:restriction>
 														</xs:simpleType>
+													</xs:element>
+													<xs:element name="TpoTranCompra" type="SiiDte:TipoTransCOMPRA" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Tipo de Transacción para el comprador</xs:documentation>
+															<xs:documentation>Indica el Uso de Montos Brutos en Detalle</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="TpoTranVenta" type="SiiDte:TipoTransVENTA" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Tipo de Transacción para el vendedor</xs:documentation>
+															<xs:documentation>Indica el Uso de Montos Brutos en Detalle</xs:documentation>
+														</xs:annotation>
 													</xs:element>
 													<xs:element name="FmaPago" minOccurs="0">
 														<xs:annotation>
@@ -2609,7 +2634,7 @@ según tabla Países aduana</xs:documentation>
 																		<xs:documentation>Tasa de Impuesto o Retencion</xs:documentation>
 																	</xs:annotation>
 																</xs:element>
-																<xs:element name="MontoImp" type="SiiDte:MntImpType">
+																<xs:element name="MontoImp" type="SiiDte:ValorType">
 																	<xs:annotation>
 																		<xs:documentation>Monto del Impuesto o Retencion</xs:documentation>
 																	</xs:annotation>
@@ -3142,7 +3167,7 @@ según tabla Países aduana</xs:documentation>
 															</xs:restriction>
 														</xs:simpleType>
 													</xs:element>
-													<xs:element name="MNT" type="xs:unsignedLong">
+													<xs:element name="MNT" type="SiiDte:ValorType">
 														<xs:annotation>
 															<xs:documentation>Monto Total DTE</xs:documentation>
 														</xs:annotation>
@@ -4272,12 +4297,12 @@ según tabla Países aduana</xs:documentation>
 															<xs:documentation>Tipo de Cambio fijado por el Banco Central de Chile</xs:documentation>
 														</xs:annotation>
 													</xs:element>
-													<xs:element name="MntExeOtrMnda" type="SiiDte:Dec14_4Type" minOccurs="0">
+													<xs:element name="MntExeOtrMnda" type="xs:decimal" minOccurs="0">
 														<xs:annotation>
 															<xs:documentation>Monto Exento del DTE en Otra Moneda  </xs:documentation>
 														</xs:annotation>
 													</xs:element>
-													<xs:element name="MntTotOtrMnda" type="SiiDte:Dec14_4Type">
+													<xs:element name="MntTotOtrMnda" type="xs:decimal">
 														<xs:annotation>
 															<xs:documentation>Monto Total Otra Moneda</xs:documentation>
 														</xs:annotation>

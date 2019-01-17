@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <xs:schema targetNamespace="http://www.sii.cl/SiiDte" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:SiiDte="http://www.sii.cl/SiiDte" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:SiiLce="http://www.sii.cl/SiiLce" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<!--  Modificacion 31/10/2007 11:18 	 Restricciones a FchDoc (rango de validez 2000 al 2050)
-	       Modificación 08/01/2008   9:17     CdgSIISucur de 8 a 9 digitos
-	       Modificación 21/08/2008  15:08    FolioNotificacion de 18 a 10 digitos
-              Modificación 19/03/2010 12:10     Se agrega al impuesto (53) retenido a los suplementeros
-              Modificación 11/06/2010 10:05	 Se incrementa caracteres de NumId de 15 a 20 (receptor extranjero)
-              Modificación 30/07/10     15:00 	  Se limita a 30.000 documentos el máximo por envio o sobre (de 											   acuerdo a publicación)
-		Modificación 14/02/2011 10:50	 Se incorpora la Factura de Inicio (TpoDoc = 29)
-		Modificación 02/03/2011 12:40	 Se elimina limitacion a 30.000 documentos (detalles).
- -->
 	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsignature_v10.xsd"/>
 	<xs:import namespace="http://www.sii.cl/SiiLce" schemaLocation="LceCoCertif_v10.xsd"/>
 	<xs:element name="LibroCompraVenta">
@@ -1227,7 +1218,7 @@
 															<xs:documentation>Codigo del Impuesto o Recargo</xs:documentation>
 														</xs:annotation>
 													</xs:element>
-													<xs:element name="TasaImp" type="SiiDte:PctType">
+													<xs:element name="TasaImp" type="SiiDte:PctType" minOccurs="0">
 														<xs:annotation>
 															<xs:documentation>Tasa del Impuesto o Recargo</xs:documentation>
 														</xs:annotation>
@@ -1555,6 +1546,11 @@
 				</xs:annotation>
 			</xs:enumeration>
 			<xs:enumeration value="60"/>
+			<xs:enumeration value="271">
+				<xs:annotation>
+					<xs:documentation>Bebidas analcohólicas y Minerales con elevado contenido de azúcares.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
 			<xs:enumeration value="301"/>
 			<xs:enumeration value="321"/>
 			<xs:enumeration value="331"/>
@@ -1582,6 +1578,7 @@
 			<xs:enumeration value="43"/>
 			<xs:enumeration value="45"/>
 			<xs:enumeration value="46"/>
+			<xs:enumeration value="48"/>
 			<xs:enumeration value="53"/>
 			<xs:enumeration value="55"/>
 			<xs:enumeration value="56"/>

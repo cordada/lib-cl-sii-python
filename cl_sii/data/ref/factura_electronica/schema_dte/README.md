@@ -13,6 +13,9 @@ Note: DTE means "Documento Tributario Electrónico".
 
 ## Source
 
+
+### Original & Official
+
 [schema_dte.zip](http://www.sii.cl/factura_electronica/schema_dte.zip) (2018-11-28),
 referenced from official webpage
 [SII](http://www.sii.cl)
@@ -20,6 +23,14 @@ referenced from official webpage
 / [FORMATO XML DE DOCUMENTOS ELECTRÓNICOS](http://www.sii.cl/factura_electronica/formato_xml.htm)
 as
 "[Bajar schema XML de Documentos Tributarios Electrónicos](http://www.sii.cl/factura_electronica/schema_dte.zip) (Incluye Documentos de exportación)"
+
+
+### Updates
+
+Unfortunately the files available on SII's website are outdated with respect to the regulations
+(and even with respect to the documentation PDFs published alongside).
+
+Schema files will be updated as necessary, indicating the source in the corresponding commit.
 
 
 ## Contents
