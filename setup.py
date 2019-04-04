@@ -26,6 +26,7 @@ requirements = [
 
 extras_requirements = {
     'django': ['Django>=2.1'],
+    'djangorestframework': ['djangorestframework>=3.8.2'],
 }
 
 setup_requirements = [

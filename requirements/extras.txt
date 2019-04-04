@@ -2,3 +2,4 @@
 
 # Required packages:
 Django<2.2
+djangorestframework<3.9
