@@ -25,6 +25,7 @@ requirements = [
 ]
 
 extras_requirements = {
+    'django': ['Django>=2.1'],
 }
 
 setup_requirements = [
