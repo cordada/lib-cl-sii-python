@@ -1,0 +1,37 @@
+# note: it is mandatory to register all dependencies of the required packages.
+-r base.txt
+
+# Required packages:
+codecov==2.0.15
+coverage==4.5.2
+flake8==3.7.6
+mypy==0.670
+tox==3.7.0
+
+# Packages dependencies:
+#   - codecov:
+#       - coverage
+#       - requests
+#   - flake8:
+#       - mccabe
+#       - pycodestyle
+#       - pyflakes
+#   - mypy:
+#       - mypy-extensions
+#       - typed-ast
+#   - tox:
+#       - filelock
+#       - pluggy
+#       - py
+#       - toml
+#       - virtualenv
+filelock==3.0.10
+mccabe==0.6.1
+mypy-extensions==0.4.1
+pluggy==0.9.0
+py==1.8.0
+pycodestyle==2.5.0
+pyflakes==2.1.0
+toml==0.10.0
+typed-ast==1.3.1
+virtualenv==16.4.3
