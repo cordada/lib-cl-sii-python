@@ -1,4 +1,5 @@
 # note: it is NOT mandatory to register all dependencies of the required packages.
 
 # Required packages:
-#none
+Django<2.2
+djangorestframework<3.9
