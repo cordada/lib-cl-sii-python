@@ -1,0 +1,8 @@
+# requirements common to all "run modes"
+# note: it is mandatory to register all dependencies of the required packages.
+
+# Required packages:
+#none
+
+# Packages dependencies:
+#none

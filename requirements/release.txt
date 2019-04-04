@@ -1,0 +1,23 @@
+# note: it is mandatory to register all dependencies of the required packages.
+# (pro tip: keep to the minimum the number of packages declared here)
+-r base.txt
+
+# Required packages:
+bumpversion==0.5.3
+setuptools==40.8.0
+twine==1.13.0
+wheel==0.33.1
+
+# Packages dependencies:
+#   - twine:
+#       - pkginfo
+#       - readme-renderer
+#       - requests
+#       - requests-toolbelt
+#       - setuptools
+#       - tqdm
+pkginfo==1.5.0.1
+readme-renderer==24.0
+requests==2.21.0
+requests-toolbelt==0.9.1
+tqdm==4.31.1
