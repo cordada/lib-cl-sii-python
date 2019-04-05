@@ -21,10 +21,14 @@ version = get_version('cl_sii', '__init__.py')
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
+# TODO: add reasonable upper-bound for some of these packages?
 requirements = [
+    'marshmallow>=2.16.3',
 ]
 
 extras_requirements = {
+    'django': ['Django>=2.1'],
+    'djangorestframework': ['djangorestframework>=3.8.2'],
 }
 
 setup_requirements = [
@@ -47,6 +51,9 @@ _package_data = {
     'cl_sii': [
         # Indicates that the "typing information" of the package should be distributed.
         'py.typed',
+        # Data files that are not in a sub-package.
+        'data/ref/factura_electronica/schema_dte/*.xsd',
+        'data/ref/factura_electronica/schema_iecv/*.xsd',
     ],
 }
 
