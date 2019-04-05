@@ -24,6 +24,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 # TODO: add reasonable upper-bound for some of these packages?
 requirements = [
     'marshmallow>=2.16.3',
+    'pytz>=2018.7',
 ]
 
 extras_requirements = {
