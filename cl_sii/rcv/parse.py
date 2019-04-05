@@ -7,9 +7,8 @@ import marshmallow.fields
 import marshmallow.validate
 
 from cl_sii.extras import mm_fields
-
-from ..libs.mm_utils import CustomMarshmallowDateField
-from ..libs.tz_utils import convert_naive_dt_to_tz_aware, TIMEZONE_CL_SANTIAGO
+from cl_sii.libs import mm_utils
+from cl_sii.libs import tz_utils
 
 
 _CSV_ROW_DICT_EXTRA_FIELDS_KEY = None
@@ -77,7 +76,7 @@ csv.register_dialect(_RCV_CSV_DIALECT_KEY, _RcvCsvDialect)
 class RcvCsvRowSchema(marshmallow.Schema):
 
     EXPECTED_INPUT_FIELDS = tuple(_RCV_CSV_EXPECTED_FIELD_NAMES) + (_CSV_ROW_DICT_EXTRA_FIELDS_KEY, )  # type: ignore  # noqa: E501
-    FIELD_FECHA_RECEPCION_DATETIME_TZ = TIMEZONE_CL_SANTIAGO
+    FIELD_FECHA_RECEPCION_DATETIME_TZ = tz_utils.TIMEZONE_CL_SANTIAGO
 
     class Meta:
         strict = True
@@ -94,7 +93,7 @@ class RcvCsvRowSchema(marshmallow.Schema):
         required=True,
         load_from='Folio',
     )
-    fecha_emision_date = CustomMarshmallowDateField(
+    fecha_emision_date = mm_utils.CustomMarshmallowDateField(
         format='%d/%m/%Y',  # e.g. '22/10/2018'
         required=True,
         load_from='Fecha Docto',
@@ -127,7 +126,7 @@ class RcvCsvRowSchema(marshmallow.Schema):
     def postprocess(self, data: dict) -> dict:
         # >>> data['fecha_recepcion_datetime'].isoformat()
         # '2018-10-23T01:54:13'
-        data['fecha_recepcion_datetime'] = convert_naive_dt_to_tz_aware(
+        data['fecha_recepcion_datetime'] = tz_utils.convert_naive_dt_to_tz_aware(
             dt=data['fecha_recepcion_datetime'], tz=self.FIELD_FECHA_RECEPCION_DATETIME_TZ)
         # >>> data['fecha_recepcion_datetime'].isoformat()
         # '2018-10-23T01:54:13-03:00'
