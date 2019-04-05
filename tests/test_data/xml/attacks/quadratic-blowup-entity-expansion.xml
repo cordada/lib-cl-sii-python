@@ -1,0 +1,5 @@
+<!-- Source: https://pypi.org/project/defusedxml/#quadratic-blowup-entity-expansion -->
+<!DOCTYPE bomb [
+<!ENTITY a "xxxxxxx... a couple of ten thousand chars">
+]>
+<bomb>&a;&a;&a;... repeat</bomb>
