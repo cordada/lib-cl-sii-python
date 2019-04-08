@@ -33,8 +33,8 @@ clean-test: ## remove test, lint and coverage artifacts
 	rm -rf .mypy_cache/
 
 lint: ## run tools for code style analysis, static type check, etc
-	flake8 --config=setup.cfg  cl_sii  tests
-	mypy --config-file setup.cfg  cl_sii
+	flake8 --config=setup.cfg  cl_sii  scripts  tests
+	mypy --config-file setup.cfg  cl_sii  scripts
 
 test: ## run tests quickly with the default Python
 	python setup.py test
