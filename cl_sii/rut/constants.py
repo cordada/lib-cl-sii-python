@@ -2,7 +2,7 @@
 RUT-related constants.
 
 Source: XML type 'RUTType' in official schema 'SiiTypes_v10.xsd'.
-https://github.com/fyndata/lib-cl-sii-python/blob/8b51350/cl_sii/data/ref/factura_electronica/schema_dte/SiiTypes_v10.xsd#L127-L136
+https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L127-L136
 
 """
 import re
