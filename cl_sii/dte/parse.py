@@ -44,7 +44,7 @@ Mapping from XML namespace prefix to full name, for DTE processing.
 _DTE_XML_SCHEMA_PATH = os.path.abspath(
     os.path.join(
         os.path.dirname(os.path.dirname(__file__)),
-        'data/ref/factura_electronica/schema_dte/EnvioDTE_v10.xsd',
+        'data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd',
     )
 )
 DTE_XML_SCHEMA_OBJ = xml_utils.read_xml_schema(_DTE_XML_SCHEMA_PATH)

@@ -2,7 +2,7 @@
 DTE-related constants.
 
 Sources: official XML schemas 'SiiTypes_v10.xsd' and 'DTE_v10.xsd'.
-https://github.com/fyndata/lib-cl-sii-python/blob/8b51350/cl_sii/data/ref/factura_electronica/schema_dte/
+https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/
 
 """
 import enum
@@ -16,10 +16,10 @@ import enum
 # - description: "Folio del Documento Electronico"
 # - XML type: 'FolioType'
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/8b51350/cl_sii/data/ref/factura_electronica/schema_dte/DTE_v10.xsd#L52-L56
+#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L52-L56
 # XML type 'FolioType' in official schema 'SiiTypes_v10.xsd'.
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/8b51350/cl_sii/data/ref/factura_electronica/schema_dte/SiiTypes_v10.xsd#L153-L160
+#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L153-L160
 
 DTE_FOLIO_FIELD_TYPE = int
 """DTE field 'Folio' type."""
@@ -37,10 +37,10 @@ DTE_FOLIO_FIELD_MAX_VALUE = 10 ** 10
 # - description: "Monto Total del DTE"
 # - XML type: 'MontoType'
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/8b51350/cl_sii/data/ref/factura_electronica/schema_dte/DTE_v10.xsd#L1160-L1164
+#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L1160-L1164
 # XML type 'MontoType' in official schema 'SiiTypes_v10.xsd'
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/8b51350/cl_sii/data/ref/factura_electronica/schema_dte/SiiTypes_v10.xsd#L563-L570
+#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L563-L570
 
 DTE_MONTO_TOTAL_FIELD_TYPE = int
 """DTE field 'Monto Total' type."""
@@ -58,7 +58,7 @@ DTE_MONTO_TOTAL_FIELD_MAX_VALUE = 10 ** 18
 # - description: "Tipo de DTE"
 # - XML type: 'DTEType'
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/8b51350/cl_sii/data/ref/factura_electronica/schema_dte/DTE_v10.xsd#L47-L51
+#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L47-L51
 
 DTE_TIPO_DTE_FIELD_TYPE = int
 """DTE field 'Tipo de DTE' type."""
@@ -75,7 +75,7 @@ class TipoDteEnum(enum.IntEnum):
     Enum of Tipo de DTE.
 
     Source: XML type ``DTEType`` (enum) in official schema ``SiiTypes_v10.xsd``.
-    https://github.com/fyndata/lib-cl-sii-python/blob/8b51350/cl_sii/data/ref/factura_electronica/schema_dte/SiiTypes_v10.xsd#L63-L99
+    https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L63-L99
 
     """
 
