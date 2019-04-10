@@ -46,6 +46,37 @@ Supported Python versions
 Only Python 3.7. Python 3.6 and below will not work because we use some features introduced in
 Python 3.7.
 
+Examples
+--------
+
+RUT
++++
+
+For examples of RUT use that of "Universidad de Chile" or "Fynpal SpA":
+
+.. code-block:: python
+
+    from cl_sii.rut import Rut
+    rut_uchile = Rut('60910000-1')
+    rut_fynpal = Rut('76555835-2')
+
+
+DTE
++++
+
+For examples use the RUT of "Universidad de Chile" or "Fynpal SpA":
+
+.. code-block:: python
+
+    from cl_sii.rut import Rut
+    rut_uchile = Rut('60910000-1')
+    rut_fynpal = Rut('76555835-2')
+
+
+Available for public verification (no auth required) at
+`this SII endpoint <https://palena.sii.cl/cgi_dte/UPL/QEstadoDTE?rutQuery=1&dvQuery=1&rutCompany=60910000&dvCompany=1&rutReceiver=76555835&dvReceiver=2&tipoDTE=33&folioDTE=2093465&fechaDTE=07052018&montoDTE=10403>`_.
+
+
 Quickstart
 ----------
 

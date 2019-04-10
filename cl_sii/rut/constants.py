@@ -14,6 +14,10 @@ RUT_CANONICAL_MAX_LENGTH = 10
 """RUT max length for canonical format."""
 RUT_CANONICAL_MIN_LENGTH = 3
 """RUT min length for canonical format."""
+RUT_VERBOSE_MAX_LENGTH = RUT_CANONICAL_MAX_LENGTH + 3
+"""RUT max length for verbose format."""
+RUT_VERBOSE_MIN_LENGTH = RUT_CANONICAL_MIN_LENGTH
+"""RUT min length for verbose format."""
 RUT_DIGITS_MAX_VALUE = 99999999
 """RUT digits max value."""
 RUT_DIGITS_MIN_VALUE = 50000000
