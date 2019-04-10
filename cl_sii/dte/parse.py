@@ -133,6 +133,12 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     #   performed by XML-agnostic code (perhaps using Marshmallow or data clacases?).
     #   See :class:`cl_sii.rcv.parse_csv.RcvVentaCsvRowSchema`.
 
+    # TODO: handle more cases. See:
+    #   - 'ExtractFromXml'
+    #      https://github.com/fynpal/fynpal-v0/blob/faf5684/FE.Common/Services/SiiXml/SiiXmlService.cs#L229-L262
+    #   - 'ExtractDtoFromFileStream'
+    #      https://github.com/fynpal/fynpal-v0/blob/faf5684/FE.Common/Services/SiiXml/SiiXmlService.cs#L264-L283
+
     if not isinstance(xml_doc, (XmlElement, XmlElementTree)):
         raise TypeError("'xml_doc' must be an 'XmlElement'.")
 
