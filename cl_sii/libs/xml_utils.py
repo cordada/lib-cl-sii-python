@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import IO
 
 import defusedxml
 import defusedxml.lxml
@@ -237,3 +238,45 @@ def validate_xml_doc(xml_schema: lxml.etree.XMLSchema, xml_doc: lxml.etree.Eleme
         validation_error_msg = str(exc)
 
         raise XmlSchemaDocValidationError(validation_error_msg) from exc
+
+
+def write_xml_doc(xml_doc: lxml.etree.ElementBase, output: IO[bytes]) -> None:
+    """
+    Write ``xml_doc`` to bytes stream ``output``.
+
+    In this context, "write" means "serialize", so there are a number of
+    observations on that regard:
+
+    * Encoding will be preserved.
+    * XML declaration (``<?xml ... ?>``) will be included.
+    * Quoting of each XML declaration attribute's value may change
+      i.e. from ``"`` to ``'`` or viceversa.
+    * In self-closing tags, the whitespace between the last attribute
+      and the closing (``/>``) may be removed e.g.
+      ``<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />`` to
+      ``<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>``
+    * No pretty-print.
+
+    For a temporary bytes stream in memory you may create a
+    :class:`io.BytesIO` object.
+
+    """
+    # note: use `IO[X]` for arguments and `TextIO`/`BinaryIO` for return types (says GVR).
+    #   https://github.com/python/typing/issues/518#issuecomment-350903120
+
+    xml_etree: lxml.etree.ElementTree = xml_doc.getroottree()
+
+    # See:
+    #   https://lxml.de/api/lxml.etree._ElementTree-class.html#write
+    xml_etree.write(
+        file=output,
+        encoding=xml_etree.docinfo.encoding,
+        # alternatives: 'xml', 'html', 'text' or 'c14n'
+        method='xml',
+        # note: include XML declaration (`<?xml ... ?>`).
+        xml_declaration=True,
+        pretty_print=False,
+        # note: we are not sure what this does.
+        # default: True.
+        with_tail=True,
+    )

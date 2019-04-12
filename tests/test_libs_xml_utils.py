@@ -4,7 +4,7 @@ import lxml.etree
 
 from cl_sii.libs.xml_utils import (  # noqa: F401
     XmlSyntaxError, XmlFeatureForbidden,
-    parse_untrusted_xml, read_xml_schema, validate_xml_doc,
+    parse_untrusted_xml, read_xml_schema, validate_xml_doc, write_xml_doc,
 )
 
 from .utils import read_test_file_bytes
@@ -98,4 +98,10 @@ class FunctionValidateXmlDocTest(unittest.TestCase):
 
     # TODO: implement
 
+    pass
+
+
+class FunctionWriteXmlDocTest(unittest.TestCase):
+
+    # TODO: implement for function 'write_xml_doc'. Consider each of the "observations".
     pass
