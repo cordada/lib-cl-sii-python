@@ -1,7 +1,7 @@
 import dataclasses
 from dataclasses import field as dc_field
 from datetime import date
-from typing import Dict, Optional
+from typing import Mapping, Optional
 
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
@@ -113,7 +113,7 @@ class DteNaturalKey:
 
         validate_dte_folio(self.folio)
 
-    def as_dict(self) -> Dict[str, object]:
+    def as_dict(self) -> Mapping[str, object]:
         return dataclasses.asdict(self)
 
     @property
