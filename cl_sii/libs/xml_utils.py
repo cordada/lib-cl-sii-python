@@ -1,3 +1,24 @@
+"""
+XML utils
+=========
+
+
+XML (Digital) Signature
+-----------------------
+
+a.k.a. 'XMLDSig', 'XML-DSig', XML-Sig'
+
+XML Signature [..] defines an XML syntax for digital signatures and is
+defined in the W3C recommendation "XML Signature Syntax and Processing"
+(``xmldsig-core``). Functionally, it has much in common with ``PKCS#7 ``
+but is more extensible and geared towards signing XML documents.
+It is used by various Web technologies such as SOAP, SAML, and others.
+
+.. seealso::
+    https://en.wikipedia.org/wiki/XML_Signature
+
+
+"""
 import logging
 import os
 from typing import IO
@@ -13,6 +34,24 @@ from lxml.etree import XMLSchema as XmlSchema  # noqa: F401
 
 
 logger = logging.getLogger(__name__)
+
+
+XML_DSIG_NS_MAP = dict(
+    ds='http://www.w3.org/2000/09/xmldsig#',
+    dsig11='http://www.w3.org/2009/xmldsig11#',
+    dsig2='http://www.w3.org/2010/xmldsig2#',
+    ec='http://www.w3.org/2001/10/xml-exc-c14n#',
+    dsig_more='http://www.w3.org/2001/04/xmldsig-more#',
+    xenc='http://www.w3.org/2001/04/xmlenc#',
+    xenc11='http://www.w3.org/2009/xmlenc11#',
+)
+"""
+Mapping from XML namespace prefix to full name, for XML Signature.
+
+Source:
+``signxml.namespaces`` @ 16503242 (~ v2.6.0)
+https://github.com/XML-Security/signxml/blob/16503242/signxml/__init__.py#L23-L31
+"""
 
 
 ###############################################################################
