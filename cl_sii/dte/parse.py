@@ -7,7 +7,8 @@ Usage:
 >>> from cl_sii.dte import parse
 >>> from cl_sii.libs import xml_utils
 
->>> with open('/dir/my_file.xml', mode='rb') as f:
+>>> xml_file_path = '/dir/my_file.xml'
+>>> with open(xml_file_path, mode='rb') as f:
 ...     xml_doc = xml_utils.parse_untrusted_xml(f.read())
 
 >>> parse.clean_dte_xml(xml_doc)
@@ -16,11 +17,12 @@ True
 >>> dte_struct = parse.parse_dte_xml(xml_doc)
 
 """
+import io
 import logging
 import os
 from dataclasses import MISSING, _MISSING_TYPE
 from datetime import date
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 
 import lxml.etree
 
@@ -33,8 +35,18 @@ from . import data_models
 logger = logging.getLogger(__name__)
 
 
+DTE_XMLNS = 'http://www.sii.cl/SiiDte'
+"""
+XML namespace for DTE element in DTE XML schema.
+
+Ref: target namespace in 'DTE_v10.xsd' and 'EnvioDTE_v10.xsd'.
+
+* cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L19 (f57a326)
+* cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L14 (f57a326)
+"""
+
 DTE_XMLNS_MAP = {
-    'sii-dte': 'http://www.sii.cl/SiiDte',
+    'sii-dte': DTE_XMLNS,
 }
 """
 Mapping from XML namespace prefix to full name, for DTE processing.
@@ -59,29 +71,36 @@ It is read from a file at import time to avoid unnecessary reads afterwards.
 # main functions
 ###############################################################################
 
-def clean_dte_xml(xml_doc: lxml.etree.ElementBase) -> bool:
+def clean_dte_xml(
+    xml_doc: lxml.etree.ElementBase,
+    set_missing_xmlns: bool = False,
+    remove_doc_personalizado: bool = True,
+) -> Tuple[lxml.etree.ElementBase, bool]:
     """
-    Remove some non-compliant (DTE XML schema) data from ``xml_doc``.
+    Apply changes to ``xml_doc`` towards compliance to DTE XML schema.
 
-    Not all non-compliant data is removed; only some corresponding to popular
-    modifications but non-compliant nonetheless.
+    .. seealso:: :data:`DTE_XML_SCHEMA_OBJ`
 
-    The object is modified in-place.
+    There is a kwarg to enable/disable each kind of change.
 
-    :returns: whether ``xml_doc`` was modified or not
+    .. warning::
+        Do not assume the ``xml_doc``object is modified in-place because in
+        some cases it will be replaced (i.e. a entirely different object).
+
+    :returns: new ``xml_doc`` and whether it was modified or not
 
     """
     modified = False
 
-    xml_etree = xml_doc.getroottree()
+    if set_missing_xmlns:
+        xml_doc, _modified = _set_dte_xml_missing_xmlns(xml_doc)
+        modified = modified or _modified
 
-    # Remove non-standard but popular element 'DocPersonalizado'.
-    xml_em = xml_etree.find('sii-dte:DocPersonalizado', namespaces=DTE_XMLNS_MAP)
-    if xml_em is not None:
-        modified = True
-        xml_doc.remove(xml_em)
+    if remove_doc_personalizado:
+        xml_doc, _modified = _remove_dte_xml_doc_personalizado(xml_doc)
+        modified = modified or _modified
 
-    return modified
+    return xml_doc, modified
 
 
 def validate_dte_xml(xml_doc: lxml.etree.ElementBase) -> None:
@@ -124,6 +143,58 @@ def parse_dte_xml(xml_doc: lxml.etree.ElementBase) -> data_models.DteDataL2:
 ###############################################################################
 # helpers
 ###############################################################################
+
+def _set_dte_xml_missing_xmlns(
+    xml_doc: lxml.etree.ElementBase,
+) -> Tuple[lxml.etree.ElementBase, bool]:
+
+    # source: name of the XML element without namespace.
+    #   cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L22 (f57a326)
+    #   cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L92 (f57a326)
+    em_tag_simple = 'DTE'
+
+    em_namespace = DTE_XMLNS
+    em_tag_namespaced = '{%s}%s' % (em_namespace, em_tag_simple)
+
+    # Tag of 'DTE' should be ...
+    assert em_tag_namespaced == '{http://www.sii.cl/SiiDte}DTE'
+
+    modified = False
+
+    root_em = xml_doc.getroottree().getroot()
+    root_em_tag = root_em.tag
+
+    if root_em_tag == em_tag_namespaced:
+        pass
+    elif root_em_tag == em_tag_simple:
+        modified = True
+        root_em.set('xmlns', em_namespace)
+        f = io.BytesIO()
+        xml_utils.write_xml_doc(xml_doc, f)
+        new_xml_doc_bytes = f.getvalue()
+        xml_doc = xml_utils.parse_untrusted_xml(new_xml_doc_bytes)
+    else:
+        exc_msg = "XML root element tag does not match the expected simple or namespaced name."
+        raise Exception(exc_msg, em_tag_simple, em_tag_namespaced, root_em_tag)
+
+    return xml_doc, modified
+
+
+def _remove_dte_xml_doc_personalizado(
+    xml_doc: lxml.etree.ElementBase,
+) -> Tuple[lxml.etree.ElementBase, bool]:
+    # Remove non-standard but popular element 'DocPersonalizado', it if exists.
+
+    modified = False
+    em_path = 'sii-dte:DocPersonalizado'
+
+    xml_em = xml_doc.getroottree().find(em_path, namespaces=DTE_XMLNS_MAP)
+    if xml_em is not None:
+        modified = True
+        xml_doc.remove(xml_em)
+
+    return xml_doc, modified
+
 
 def _get_tipo_dte(xml_etree: lxml.etree.ElementTree) -> constants.TipoDteEnum:
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:IdDoc/sii-dte:TipoDTE'
