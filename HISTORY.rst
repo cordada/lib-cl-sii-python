@@ -3,6 +3,13 @@
 History
 -------
 
+0.4.0 (2019-04-16)
++++++++++++++++++++++++
+
+* (PR #16, 2019-04-16) dte.parse: change and improve ``clean_dte_xml``
+* (PR #14, 2019-04-09) data.ref: merge XML schemas dirs
+* (PR #13, 2019-04-09) extras: add Marshmallow field for a DTE's "tipo DTE"
+
 0.3.0 (2019-04-05)
 +++++++++++++++++++++++
 
