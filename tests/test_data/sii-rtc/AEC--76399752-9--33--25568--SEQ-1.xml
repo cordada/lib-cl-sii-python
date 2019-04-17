@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<AEC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xmlns="http://www.sii.cl/SiiDte" xsi:schemaLocation="http://www.sii.cl/SiiDte AEC_v10.xsd">
+    <DocumentoAEC ID="AEC1589423e81824cdcbfd2f0f4496f2dfb">
+        <Caratula version="1.0">
+            <RutCedente>76399752-9</RutCedente>
+            <RutCesionario>76389992-6</RutCesionario>
+            <MailContacto>fynpal-app-notif-st-capital@fynpal.com</MailContacto>
+            <TmstFirmaEnvio>2019-04-04T09:09:52</TmstFirmaEnvio>
+        </Caratula>
+        <Cesiones>
+
+<DTECedido version="1.0">
+                <DocumentoDTECedido ID="DTE6e0d95997db9489aa4cdd768a45852f6">
+<DTE version="1.0">
+  <!-- O Win32 Chrome 73 central VERSION: v20190227 -->
+<Documento ID="MiPE76399752-6048">
+    <Encabezado>
+      <IdDoc>
+        <TipoDTE>33</TipoDTE>
+        <Folio>25568</Folio>
+        <FchEmis>2019-03-29</FchEmis>
+        <TpoTranCompra>1</TpoTranCompra>
+        <TpoTranVenta>1</TpoTranVenta>
+        <FmaPago>2</FmaPago>
+      </IdDoc>
+      <Emisor>
+        <RUTEmisor>76399752-9</RUTEmisor>
+        <RznSoc>COMERCIALIZADORA INNOVA MOBEL SPA</RznSoc>
+        <GiroEmis>COMERCIALIZACION DE PRODUCTOS PARA EL HOGAR</GiroEmis>
+        <Telefono>87 472133</Telefono>
+        <CorreoEmisor>ANGEL.PEZO@APCASESORIAS.CL</CorreoEmisor>
+        <Acteco>310001</Acteco>
+        <CdgSIISucur>078904860</CdgSIISucur>
+        <DirOrigen>LOS CIPRESES 2834</DirOrigen>
+        <CmnaOrigen>LA PINTANA</CmnaOrigen>
+        <CiudadOrigen>SANTIAGO</CiudadOrigen>
+      </Emisor>
+      <Receptor>
+        <RUTRecep>96874030-K</RUTRecep>
+        <RznSocRecep>EMPRESAS LA POLAR S.A.</RznSocRecep>
+        <GiroRecep>VENTA AL POR MENOR EN COMERCIOS DE VESTU</GiroRecep>
+        <Contacto>N° Lote Despacho: 20921554 / N° Sello: 660620</Contacto>
+        <DirRecep>AVDA. SANTA CLARA 207  62 CIUDAD EMPRESARIAL</DirRecep>
+        <CmnaRecep>HUECHURABA</CmnaRecep>
+        <CiudadRecep>SANTIAGO</CiudadRecep>
+      </Receptor>
+      <Totales>
+        <MntNeto>194111</MntNeto>
+        <TasaIVA>19.00</TasaIVA>
+        <IVA>36881</IVA>
+        <MntTotal>230992</MntTotal>
+      </Totales>
+    </Encabezado>
+    <Detalle>
+      <NroLinDet>1</NroLinDet>
+      <CdgItem>
+        <TpoCodigo>SKU</TpoCodigo>
+        <VlrCodigo>19586316</VlrCodigo>
+      </CdgItem>
+      <NmbItem>JUEGO_LIVI - CHOCOLATE</NmbItem>
+      <DscItem>ROMA 3.1.1</DscItem>
+      <QtyItem>1.00</QtyItem>
+      <UnmdItem>UN</UnmdItem>
+      <PrcItem>194111.00</PrcItem>
+      <MontoItem>194111</MontoItem>
+    </Detalle>
+    <Referencia>
+      <NroLinRef>1</NroLinRef>
+      <TpoDocRef>801</TpoDocRef>
+      <FolioRef>638370</FolioRef>
+      <FchRef>2019-03-28</FchRef>
+    </Referencia>
+<TED version="1.0"><DD><RE>76399752-9</RE><TD>33</TD><F>25568</F><FE>2019-03-29</FE><RR>96874030-K</RR><RSR>EMPRESAS LA POLAR S.A.</RSR><MNT>230992</MNT><IT1>JUEGO_LIVI - CHOCOLATE</IT1><CAF version="1.0"><DA><RE>76399752-9</RE><RS>COMERCIALIZADORA INNOVA MOBEL SPA</RS><TD>33</TD><RNG><D>25568</D><H>25568</H></RNG><FA>2019-03-28</FA><RSAPK><M>7EKJUPVmefPeVcgm9Q81Dp6q1MP+UvccH0mfsugbuK6UPYLn3tO7DxpZQIgoQC9LgdwYTtC9EHajZlgsk0iZjw==</M><E>Aw==</E></RSAPK><IDK>300</IDK></DA><FRMA algoritmo="SHA1withRSA">byDdqUAqlKoALIOrNLlGmuFCOk866v4BQvnZqdiqGvrHk6jneiTMjYBSMB2GaY4t/dTFgVSOsqa/BnkRskel7Q==</FRMA></CAF><TSTED>2019-03-28T13:59:52</TSTED></DD><FRMT algoritmo="SHA1withRSA">viuqScpeQueqAnye1MLhttAAOAnO4raWlPdJ5kbSpUEeUT+pZgE/rr79kgVqirnIRM+HUpB3Yt4fbyMaARGqtA==</FRMT></TED>
+    <TmstFirma>2019-03-28T13:59:52</TmstFirma>
+
+  </Documento>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<SignedInfo>
+<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+<Reference URI="#MiPE76399752-6048">
+<Transforms>
+<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+</Transforms>
+<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+<DigestValue>tk/D3mfO/KtdWyFXYZHe7dtYijg=</DigestValue>
+</Reference>
+</SignedInfo>
+<SignatureValue>
+wwOMQuFqa6c5gzYSJ5PWfo0OiAf+yNcJK6wx4xJ3VNehlAcMrUB2q+rK/DDhCvjxAoX4NxBACiFD
+MrTMIfvxrwXjLd1oX37lSFOtsWX6JxL0SV+tLF7qvWCu1Yzw8ypUf7GDkbymJkoTYDF9JFF8kYU4
+FdU2wttiwne9XH8QFHgXsocKP/aygwiOeGqiNX9o/O5XS2GWpt+KM20jrvtYn7UFMED/3aPacCb1
+GABizr8mlVEZggZgJunMDChpFQyEigSXMK5I737Ac8D2bw7WB47Wj1WBL3sCFRDlXUXtnMvChBVp
+0HRUXYuKHyfpCzqIBXygYrIZexxXgOSnKu/yGg==
+</SignatureValue>
+<KeyInfo>
+<KeyValue>
+<RSAKeyValue>
+<Modulus>
+0tBhZ9dE624+LIifJE5Bz4NnYt2m9pKHFTqJTbEH4JCzvgdn6hLUEg3OYvWD2hjuEe9P78f6G5w6
+U3vGiYf9S4OKSOjJKOFsffEEzOHqpYe8Opx9OzBi4cRLaE72R5PPDK3JQg8dNy0w0nfaYhD98ZTw
+f5B/tp21X4DuTeNeC8K7cNDlx55HXFTINtNchYkO2DbXmxrdhKS2jeI81KGqIp4Z+yH+pQRofegr
+9N/SU4b8Ib9ue8t25tpxz2jsHlBLokXkgsx98IS7MGvHIxkuEFBibVqHp1IRsKwM2RzqxAwctiD/
+SobU35wgtdXK6wYYIIQNN+Zdv8AjisQpom3Rcw==
+</Modulus>
+<Exponent>AQAB</Exponent>
+</RSAKeyValue>
+</KeyValue>
+<X509Data>
+<X509Certificate>
+MIIF/zCCBOegAwIBAgICMhQwDQYJKoZIhvcNAQELBQAwgaYxCzAJBgNVBAYTAkNMMRgwFgYDVQQK
+Ew9BY2VwdGEuY29tIFMuQS4xSDBGBgNVBAMTP0FjZXB0YS5jb20gQXV0b3JpZGFkIENlcnRpZmlj
+YWRvcmEgQ2xhc2UgMiBQZXJzb25hIE5hdHVyYWwgLSBHNDEeMBwGCSqGSIb3DQEJARYPaW5mb0Bh
+Y2VwdGEuY29tMRMwEQYDVQQFEwo5NjkxOTA1MC04MB4XDTE3MDEwNjE0MDI1NFoXDTIwMDEwNjE0
+MDI1NFowgY8xCzAJBgNVBAYTAkNMMRgwFgYDVQQMEw9QRVJTT05BIE5BVFVSQUwxIzAhBgNVBAMT
+GkdJQU5JTkEgQkVMRU4gRElBWiBVUlJVVElBMSwwKgYJKoZIhvcNAQkBFh1kYW5pZWwuYXJhdmVu
+YUBpbm5vdmFtb2JlbC5jbDETMBEGA1UEBRMKMTY0Nzc3NTItOTCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBANLQYWfXROtuPiyInyROQc+DZ2LdpvaShxU6iU2xB+CQs74HZ+oS1BINzmL1
+g9oY7hHvT+/H+hucOlN7xomH/UuDikjoySjhbH3xBMzh6qWHvDqcfTswYuHES2hO9keTzwytyUIP
+HTctMNJ32mIQ/fGU8H+Qf7adtV+A7k3jXgvCu3DQ5ceeR1xUyDbTXIWJDtg215sa3YSkto3iPNSh
+qiKeGfsh/qUEaH3oK/Tf0lOG/CG/bnvLdubacc9o7B5QS6JF5ILMffCEuzBrxyMZLhBQYm1ah6dS
+EbCsDNkc6sQMHLYg/0qG1N+cILXVyusGGCCEDTfmXb/AI4rEKaJt0XMCAwEAAaOCAkowggJGMB8G
+A1UdIwQYMBaAFGWlqz4/yLZRbRF+X8MKB+ZDoAi2MB0GA1UdDgQWBBSHoSD4nd2UJuwzmJnJud0L
+WSO+MzALBgNVHQ8EBAMCBPAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBEGCWCGSAGG
++EIBAQQEAwIFoDB1BgNVHSAEbjBsMGoGCCsGAQQBtWsCMF4wMQYIKwYBBQUHAgEWJWh0dHBzOi8v
+YWNnNC5hY2VwdGEuY29tL0NQUy1BY2VwdGFjb20wKQYIKwYBBQUHAgIwHTAWFg9BY2VwdGEuY29t
+IFMuQS4wAwIBCRoDVEJEMFoGA1UdEgRTMFGgGAYIKwYBBAHBAQKgDBYKOTY5MTkwNTAtOKAkBggr
+BgEFBQcIA6AYMBYMCjk2OTE5MDUwLTgGCCsGAQQBwQECgQ9pbmZvQGFjZXB0YS5jb20waAYDVR0R
+BGEwX6AYBggrBgEEAcEBAaAMFgoxNjQ3Nzc1Mi05oCQGCCsGAQUFBwgDoBgwFgwKMTY0Nzc3NTIt
+OQYIKwYBBAHBAQKBHWRhbmllbC5hcmF2ZW5hQGlubm92YW1vYmVsLmNsMEcGCCsGAQUFBwEBBDsw
+OTA3BggrBgEFBQcwAYYraHR0cHM6Ly9hY2c0LmFjZXB0YS5jb20vYWNnNC9vY3NwL0NsYXNlMi1H
+NDA/BgNVHR8EODA2MDSgMqAwhi5odHRwczovL2FjZzQuYWNlcHRhLmNvbS9hY2c0L2NybC9DbGFz
+ZTItRzQuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCx+mdIdIu1QQf6mnFDCYfcyhU5t5iKV+8Pr8LV
+WZdlwGmKRbzhqYKZ8oo5Bfmto105z7JYJIFyZiny/8sb9IcoPLNG/6LtWZZFmHkZabC9sUEjSxU/
+w8w2VMhrCILonVjnhLX8VHNMkc3Xy17JgvUAIcor2MHfNxn0lyEM3EZdROkgDxwuWfS388mqg8KB
+B/QNi7AB5U9kB7M5wfGr2lYAvkzlTmHlcBFI2fI6odZlfzLnyKN/ow9mow4Z4ngKuhlTpTUVrACg
+jhl1gijANMhS1SwNpPgOLlf54KbXTQxWrrwt9mEMZBH7w6imtxJGzNWPjPcykRB7YQxhrHkfzmrw
+</X509Certificate>
+</X509Data>
+</KeyInfo>
+</Signature></DTE><TmstFirma>2019-04-04T09:09:52</TmstFirma></DocumentoDTECedido><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI="#DTE6e0d95997db9489aa4cdd768a45852f6"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>f4zqbr0mGWngOkRb16XxngcE96o=</DigestValue></Reference></SignedInfo><SignatureValue>
+vzMWkBYcBj9ziyTa0Aqkw9a1fePGC4AfOmt/v36OEajaKszI5Fz/E53deCZU+EQS
+h4puWlbiMxq6OiTi3ebrb/Kwlc1ZxmXkKzjIveDmeZhiVI9bR7o4zg3BGXdov+0L
+n+d4nvtLrxA1M78WhSp2IK9KOyxOhazXsTu4iYqoJH+zh3VTwKUncpJTnA6Aytqx
+YC+zIxAty2bfs7DsqP9y7DTjAsS//nNjRJGZ80yjVr8t5l/ystveobLCvPVYZe+f
+ezH8wN+M4lQ9EQvPJG5gAhVkudttJCysXTJkFGgV1sywgH9DxUHOcvwUpfDN6o0x
+OxXwwfwLQRgyPZFBpCjleg==
+</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>
+0tBhZ9dE624+LIifJE5Bz4NnYt2m9pKHFTqJTbEH4JCzvgdn6hLUEg3OYvWD2hju
+Ee9P78f6G5w6U3vGiYf9S4OKSOjJKOFsffEEzOHqpYe8Opx9OzBi4cRLaE72R5PP
+DK3JQg8dNy0w0nfaYhD98ZTwf5B/tp21X4DuTeNeC8K7cNDlx55HXFTINtNchYkO
+2DbXmxrdhKS2jeI81KGqIp4Z+yH+pQRofegr9N/SU4b8Ib9ue8t25tpxz2jsHlBL
+okXkgsx98IS7MGvHIxkuEFBibVqHp1IRsKwM2RzqxAwctiD/SobU35wgtdXK6wYY
+IIQNN+Zdv8AjisQpom3Rcw==
+</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIF/zCCBOegAwIBAgICMhQwDQYJKoZIhvcNAQELBQAwgaYxCzAJBgNVBAYTAkNM
+MRgwFgYDVQQKEw9BY2VwdGEuY29tIFMuQS4xSDBGBgNVBAMTP0FjZXB0YS5jb20g
+QXV0b3JpZGFkIENlcnRpZmljYWRvcmEgQ2xhc2UgMiBQZXJzb25hIE5hdHVyYWwg
+LSBHNDEeMBwGCSqGSIb3DQEJARYPaW5mb0BhY2VwdGEuY29tMRMwEQYDVQQFEwo5
+NjkxOTA1MC04MB4XDTE3MDEwNjE0MDI1NFoXDTIwMDEwNjE0MDI1NFowgY8xCzAJ
+BgNVBAYTAkNMMRgwFgYDVQQMEw9QRVJTT05BIE5BVFVSQUwxIzAhBgNVBAMTGkdJ
+QU5JTkEgQkVMRU4gRElBWiBVUlJVVElBMSwwKgYJKoZIhvcNAQkBFh1kYW5pZWwu
+YXJhdmVuYUBpbm5vdmFtb2JlbC5jbDETMBEGA1UEBRMKMTY0Nzc3NTItOTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANLQYWfXROtuPiyInyROQc+DZ2Ld
+pvaShxU6iU2xB+CQs74HZ+oS1BINzmL1g9oY7hHvT+/H+hucOlN7xomH/UuDikjo
+ySjhbH3xBMzh6qWHvDqcfTswYuHES2hO9keTzwytyUIPHTctMNJ32mIQ/fGU8H+Q
+f7adtV+A7k3jXgvCu3DQ5ceeR1xUyDbTXIWJDtg215sa3YSkto3iPNShqiKeGfsh
+/qUEaH3oK/Tf0lOG/CG/bnvLdubacc9o7B5QS6JF5ILMffCEuzBrxyMZLhBQYm1a
+h6dSEbCsDNkc6sQMHLYg/0qG1N+cILXVyusGGCCEDTfmXb/AI4rEKaJt0XMCAwEA
+AaOCAkowggJGMB8GA1UdIwQYMBaAFGWlqz4/yLZRbRF+X8MKB+ZDoAi2MB0GA1Ud
+DgQWBBSHoSD4nd2UJuwzmJnJud0LWSO+MzALBgNVHQ8EBAMCBPAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMBEGCWCGSAGG+EIBAQQEAwIFoDB1BgNVHSAE
+bjBsMGoGCCsGAQQBtWsCMF4wMQYIKwYBBQUHAgEWJWh0dHBzOi8vYWNnNC5hY2Vw
+dGEuY29tL0NQUy1BY2VwdGFjb20wKQYIKwYBBQUHAgIwHTAWFg9BY2VwdGEuY29t
+IFMuQS4wAwIBCRoDVEJEMFoGA1UdEgRTMFGgGAYIKwYBBAHBAQKgDBYKOTY5MTkw
+NTAtOKAkBggrBgEFBQcIA6AYMBYMCjk2OTE5MDUwLTgGCCsGAQQBwQECgQ9pbmZv
+QGFjZXB0YS5jb20waAYDVR0RBGEwX6AYBggrBgEEAcEBAaAMFgoxNjQ3Nzc1Mi05
+oCQGCCsGAQUFBwgDoBgwFgwKMTY0Nzc3NTItOQYIKwYBBAHBAQKBHWRhbmllbC5h
+cmF2ZW5hQGlubm92YW1vYmVsLmNsMEcGCCsGAQUFBwEBBDswOTA3BggrBgEFBQcw
+AYYraHR0cHM6Ly9hY2c0LmFjZXB0YS5jb20vYWNnNC9vY3NwL0NsYXNlMi1HNDA/
+BgNVHR8EODA2MDSgMqAwhi5odHRwczovL2FjZzQuYWNlcHRhLmNvbS9hY2c0L2Ny
+bC9DbGFzZTItRzQuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCx+mdIdIu1QQf6mnFD
+CYfcyhU5t5iKV+8Pr8LVWZdlwGmKRbzhqYKZ8oo5Bfmto105z7JYJIFyZiny/8sb
+9IcoPLNG/6LtWZZFmHkZabC9sUEjSxU/w8w2VMhrCILonVjnhLX8VHNMkc3Xy17J
+gvUAIcor2MHfNxn0lyEM3EZdROkgDxwuWfS388mqg8KBB/QNi7AB5U9kB7M5wfGr
+2lYAvkzlTmHlcBFI2fI6odZlfzLnyKN/ow9mow4Z4ngKuhlTpTUVrACgjhl1gijA
+NMhS1SwNpPgOLlf54KbXTQxWrrwt9mEMZBH7w6imtxJGzNWPjPcykRB7YQxhrHkf
+zmrw
+</X509Certificate></X509Data></KeyInfo></Signature>
+            </DTECedido>
+            <Cesion version="1.0">
+                <DocumentoCesion ID="CEScb25217b7cff4df6b54d4f399856b2d1">
+                    <SeqCesion>1</SeqCesion>
+                    <IdDTE>
+                        <TipoDTE>33</TipoDTE>
+                        <RUTEmisor>76399752-9</RUTEmisor>
+                        <RUTReceptor>96874030-K</RUTReceptor>
+                        <Folio>25568</Folio>
+                        <FchEmis>2019-03-29</FchEmis>
+                        <MntTotal>230992</MntTotal>
+                    </IdDTE>
+                    <Cedente>
+                        <RUT>76399752-9</RUT>
+                        <RazonSocial>COMERCIALIZADORA INNOVA MOBEL SPA</RazonSocial>
+                        <Direccion>LOS CIPRESES 2834</Direccion>
+                        <eMail>camilo.perez@innovamobel.cl</eMail>
+                        <RUTAutorizado>
+                            <RUT>76399752-9</RUT>
+                            <Nombre>COMERCIALIZADORA INNOVA MOBEL SPA</Nombre>
+                        </RUTAutorizado>
+                        <DeclaracionJurada>Se declara bajo juramento que COMERCIALIZADORA INNOVA MOBEL SPA, RUT 76399752-9 ha puesto a disposición del cesionario ST CAPITAL S.A., RUT 76389992-6, el o los documentos donde constan los recibos de las mercaderías entregadas o servicios prestados, entregados por parte del deudor de la factura EMPRESAS LA POLAR S.A., RUT 96874030-K, deacuerdo a lo establecido en la Ley N°19.983.</DeclaracionJurada>
+                    </Cedente>
+                    <Cesionario>
+                        <RUT>76389992-6</RUT>
+                        <RazonSocial>ST CAPITAL S.A.</RazonSocial>
+                        <Direccion>Isidora Goyenechea 2939 Oficina 602</Direccion>
+                        <eMail>fynpal-app-notif-st-capital@fynpal.com</eMail>
+                    </Cesionario>
+                    <MontoCesion>230992</MontoCesion>
+                    <UltimoVencimiento>2019-04-28</UltimoVencimiento>
+                    <TmstCesion>2019-04-04T09:09:52</TmstCesion>
+                </DocumentoCesion><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI="#CEScb25217b7cff4df6b54d4f399856b2d1"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>qvEd+eB0/sEOf1o/7FpHckvpcLg=</DigestValue></Reference></SignedInfo><SignatureValue>
+V+K6hraGHgDnk9LJoEC/A2jOPgfnb7akYxZ8n6TlKMxf+1hHb9njiaiJOfyp1owV
+/zQHd74CXlFy9v52pPpwVA9BFbda0J/AZCt8lmT21/WBqDwjrByhsfZ/+kmRxdxg
+ZnfFV/41zHtlo4ifUkyQLinLJHsM5KCjHiKMvQhc9QF/f9V0K9iPV0O8bJcPsYdZ
+H2JvmyWjJBB2Z1wEg7lQLlFmztM5tLGM8Iy58ENYiwfNbkVFx0Kiu/vUSqtNKDlu
+eb+1D4npn9KletXlgp7xFUH8lGJhk0QfjC691z51E0Pf1klcOz0tJChteiBDWSFZ
+SMCiVGE1L4Pv8cUN+CaRSg==
+</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>
+0tBhZ9dE624+LIifJE5Bz4NnYt2m9pKHFTqJTbEH4JCzvgdn6hLUEg3OYvWD2hju
+Ee9P78f6G5w6U3vGiYf9S4OKSOjJKOFsffEEzOHqpYe8Opx9OzBi4cRLaE72R5PP
+DK3JQg8dNy0w0nfaYhD98ZTwf5B/tp21X4DuTeNeC8K7cNDlx55HXFTINtNchYkO
+2DbXmxrdhKS2jeI81KGqIp4Z+yH+pQRofegr9N/SU4b8Ib9ue8t25tpxz2jsHlBL
+okXkgsx98IS7MGvHIxkuEFBibVqHp1IRsKwM2RzqxAwctiD/SobU35wgtdXK6wYY
+IIQNN+Zdv8AjisQpom3Rcw==
+</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIF/zCCBOegAwIBAgICMhQwDQYJKoZIhvcNAQELBQAwgaYxCzAJBgNVBAYTAkNM
+MRgwFgYDVQQKEw9BY2VwdGEuY29tIFMuQS4xSDBGBgNVBAMTP0FjZXB0YS5jb20g
+QXV0b3JpZGFkIENlcnRpZmljYWRvcmEgQ2xhc2UgMiBQZXJzb25hIE5hdHVyYWwg
+LSBHNDEeMBwGCSqGSIb3DQEJARYPaW5mb0BhY2VwdGEuY29tMRMwEQYDVQQFEwo5
+NjkxOTA1MC04MB4XDTE3MDEwNjE0MDI1NFoXDTIwMDEwNjE0MDI1NFowgY8xCzAJ
+BgNVBAYTAkNMMRgwFgYDVQQMEw9QRVJTT05BIE5BVFVSQUwxIzAhBgNVBAMTGkdJ
+QU5JTkEgQkVMRU4gRElBWiBVUlJVVElBMSwwKgYJKoZIhvcNAQkBFh1kYW5pZWwu
+YXJhdmVuYUBpbm5vdmFtb2JlbC5jbDETMBEGA1UEBRMKMTY0Nzc3NTItOTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANLQYWfXROtuPiyInyROQc+DZ2Ld
+pvaShxU6iU2xB+CQs74HZ+oS1BINzmL1g9oY7hHvT+/H+hucOlN7xomH/UuDikjo
+ySjhbH3xBMzh6qWHvDqcfTswYuHES2hO9keTzwytyUIPHTctMNJ32mIQ/fGU8H+Q
+f7adtV+A7k3jXgvCu3DQ5ceeR1xUyDbTXIWJDtg215sa3YSkto3iPNShqiKeGfsh
+/qUEaH3oK/Tf0lOG/CG/bnvLdubacc9o7B5QS6JF5ILMffCEuzBrxyMZLhBQYm1a
+h6dSEbCsDNkc6sQMHLYg/0qG1N+cILXVyusGGCCEDTfmXb/AI4rEKaJt0XMCAwEA
+AaOCAkowggJGMB8GA1UdIwQYMBaAFGWlqz4/yLZRbRF+X8MKB+ZDoAi2MB0GA1Ud
+DgQWBBSHoSD4nd2UJuwzmJnJud0LWSO+MzALBgNVHQ8EBAMCBPAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMBEGCWCGSAGG+EIBAQQEAwIFoDB1BgNVHSAE
+bjBsMGoGCCsGAQQBtWsCMF4wMQYIKwYBBQUHAgEWJWh0dHBzOi8vYWNnNC5hY2Vw
+dGEuY29tL0NQUy1BY2VwdGFjb20wKQYIKwYBBQUHAgIwHTAWFg9BY2VwdGEuY29t
+IFMuQS4wAwIBCRoDVEJEMFoGA1UdEgRTMFGgGAYIKwYBBAHBAQKgDBYKOTY5MTkw
+NTAtOKAkBggrBgEFBQcIA6AYMBYMCjk2OTE5MDUwLTgGCCsGAQQBwQECgQ9pbmZv
+QGFjZXB0YS5jb20waAYDVR0RBGEwX6AYBggrBgEEAcEBAaAMFgoxNjQ3Nzc1Mi05
+oCQGCCsGAQUFBwgDoBgwFgwKMTY0Nzc3NTItOQYIKwYBBAHBAQKBHWRhbmllbC5h
+cmF2ZW5hQGlubm92YW1vYmVsLmNsMEcGCCsGAQUFBwEBBDswOTA3BggrBgEFBQcw
+AYYraHR0cHM6Ly9hY2c0LmFjZXB0YS5jb20vYWNnNC9vY3NwL0NsYXNlMi1HNDA/
+BgNVHR8EODA2MDSgMqAwhi5odHRwczovL2FjZzQuYWNlcHRhLmNvbS9hY2c0L2Ny
+bC9DbGFzZTItRzQuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCx+mdIdIu1QQf6mnFD
+CYfcyhU5t5iKV+8Pr8LVWZdlwGmKRbzhqYKZ8oo5Bfmto105z7JYJIFyZiny/8sb
+9IcoPLNG/6LtWZZFmHkZabC9sUEjSxU/w8w2VMhrCILonVjnhLX8VHNMkc3Xy17J
+gvUAIcor2MHfNxn0lyEM3EZdROkgDxwuWfS388mqg8KBB/QNi7AB5U9kB7M5wfGr
+2lYAvkzlTmHlcBFI2fI6odZlfzLnyKN/ow9mow4Z4ngKuhlTpTUVrACgjhl1gijA
+NMhS1SwNpPgOLlf54KbXTQxWrrwt9mEMZBH7w6imtxJGzNWPjPcykRB7YQxhrHkf
+zmrw
+</X509Certificate></X509Data></KeyInfo></Signature>
+            </Cesion>
+        </Cesiones>
+    </DocumentoAEC><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI="#AEC1589423e81824cdcbfd2f0f4496f2dfb"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>KUMkp+Ku3epZ2QCjeZ75tiEncMQ=</DigestValue></Reference></SignedInfo><SignatureValue>
+hBUBX/XDhmNokXXfZ7R3drK78N5SX8xLn6sYyAaBTut4wILA4kHB9BW45oV0wS/A
+53l7EX5yg42KHRXQ+vVzc5R+zYpGvgAPnv8eM2lCQKmyEdhR0YoQ1YnRL/7vchJ2
+8TnrTxSMMePj589rOAUD8IeTr1vKyfdih+r6maTA6C+O2dzVf3zl/GtTstoZdX2B
+ZEf6/yzX9T7kFQ27zZ3WKGLFFjQKaQa2Nh/dIPEcfci1KgCZhozGPw9++xPG3P9I
+ewG3h95UvHjL1jOag3grvrEG+yCYlUpMq4vnUTuGfbwcW7nYq+HSU0IKDPccmzlh
+PCUn28yVEm+JlH0/P8QL3w==
+</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>
+0tBhZ9dE624+LIifJE5Bz4NnYt2m9pKHFTqJTbEH4JCzvgdn6hLUEg3OYvWD2hju
+Ee9P78f6G5w6U3vGiYf9S4OKSOjJKOFsffEEzOHqpYe8Opx9OzBi4cRLaE72R5PP
+DK3JQg8dNy0w0nfaYhD98ZTwf5B/tp21X4DuTeNeC8K7cNDlx55HXFTINtNchYkO
+2DbXmxrdhKS2jeI81KGqIp4Z+yH+pQRofegr9N/SU4b8Ib9ue8t25tpxz2jsHlBL
+okXkgsx98IS7MGvHIxkuEFBibVqHp1IRsKwM2RzqxAwctiD/SobU35wgtdXK6wYY
+IIQNN+Zdv8AjisQpom3Rcw==
+</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIF/zCCBOegAwIBAgICMhQwDQYJKoZIhvcNAQELBQAwgaYxCzAJBgNVBAYTAkNM
+MRgwFgYDVQQKEw9BY2VwdGEuY29tIFMuQS4xSDBGBgNVBAMTP0FjZXB0YS5jb20g
+QXV0b3JpZGFkIENlcnRpZmljYWRvcmEgQ2xhc2UgMiBQZXJzb25hIE5hdHVyYWwg
+LSBHNDEeMBwGCSqGSIb3DQEJARYPaW5mb0BhY2VwdGEuY29tMRMwEQYDVQQFEwo5
+NjkxOTA1MC04MB4XDTE3MDEwNjE0MDI1NFoXDTIwMDEwNjE0MDI1NFowgY8xCzAJ
+BgNVBAYTAkNMMRgwFgYDVQQMEw9QRVJTT05BIE5BVFVSQUwxIzAhBgNVBAMTGkdJ
+QU5JTkEgQkVMRU4gRElBWiBVUlJVVElBMSwwKgYJKoZIhvcNAQkBFh1kYW5pZWwu
+YXJhdmVuYUBpbm5vdmFtb2JlbC5jbDETMBEGA1UEBRMKMTY0Nzc3NTItOTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANLQYWfXROtuPiyInyROQc+DZ2Ld
+pvaShxU6iU2xB+CQs74HZ+oS1BINzmL1g9oY7hHvT+/H+hucOlN7xomH/UuDikjo
+ySjhbH3xBMzh6qWHvDqcfTswYuHES2hO9keTzwytyUIPHTctMNJ32mIQ/fGU8H+Q
+f7adtV+A7k3jXgvCu3DQ5ceeR1xUyDbTXIWJDtg215sa3YSkto3iPNShqiKeGfsh
+/qUEaH3oK/Tf0lOG/CG/bnvLdubacc9o7B5QS6JF5ILMffCEuzBrxyMZLhBQYm1a
+h6dSEbCsDNkc6sQMHLYg/0qG1N+cILXVyusGGCCEDTfmXb/AI4rEKaJt0XMCAwEA
+AaOCAkowggJGMB8GA1UdIwQYMBaAFGWlqz4/yLZRbRF+X8MKB+ZDoAi2MB0GA1Ud
+DgQWBBSHoSD4nd2UJuwzmJnJud0LWSO+MzALBgNVHQ8EBAMCBPAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMBEGCWCGSAGG+EIBAQQEAwIFoDB1BgNVHSAE
+bjBsMGoGCCsGAQQBtWsCMF4wMQYIKwYBBQUHAgEWJWh0dHBzOi8vYWNnNC5hY2Vw
+dGEuY29tL0NQUy1BY2VwdGFjb20wKQYIKwYBBQUHAgIwHTAWFg9BY2VwdGEuY29t
+IFMuQS4wAwIBCRoDVEJEMFoGA1UdEgRTMFGgGAYIKwYBBAHBAQKgDBYKOTY5MTkw
+NTAtOKAkBggrBgEFBQcIA6AYMBYMCjk2OTE5MDUwLTgGCCsGAQQBwQECgQ9pbmZv
+QGFjZXB0YS5jb20waAYDVR0RBGEwX6AYBggrBgEEAcEBAaAMFgoxNjQ3Nzc1Mi05
+oCQGCCsGAQUFBwgDoBgwFgwKMTY0Nzc3NTItOQYIKwYBBAHBAQKBHWRhbmllbC5h
+cmF2ZW5hQGlubm92YW1vYmVsLmNsMEcGCCsGAQUFBwEBBDswOTA3BggrBgEFBQcw
+AYYraHR0cHM6Ly9hY2c0LmFjZXB0YS5jb20vYWNnNC9vY3NwL0NsYXNlMi1HNDA/
+BgNVHR8EODA2MDSgMqAwhi5odHRwczovL2FjZzQuYWNlcHRhLmNvbS9hY2c0L2Ny
+bC9DbGFzZTItRzQuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCx+mdIdIu1QQf6mnFD
+CYfcyhU5t5iKV+8Pr8LVWZdlwGmKRbzhqYKZ8oo5Bfmto105z7JYJIFyZiny/8sb
+9IcoPLNG/6LtWZZFmHkZabC9sUEjSxU/w8w2VMhrCILonVjnhLX8VHNMkc3Xy17J
+gvUAIcor2MHfNxn0lyEM3EZdROkgDxwuWfS388mqg8KBB/QNi7AB5U9kB7M5wfGr
+2lYAvkzlTmHlcBFI2fI6odZlfzLnyKN/ow9mow4Z4ngKuhlTpTUVrACgjhl1gijA
+NMhS1SwNpPgOLlf54KbXTQxWrrwt9mEMZBH7w6imtxJGzNWPjPcykRB7YQxhrHkf
+zmrw
+</X509Certificate></X509Data></KeyInfo></Signature>
+</AEC>
