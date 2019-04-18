@@ -72,7 +72,7 @@ DTE_TIPO_DTE_FIELD_MIN_VALUE = 1
 class TipoDteEnum(enum.IntEnum):
 
     """
-    Enum of Tipo de DTE.
+    Enum of "Tipo de DTE".
 
     Source: XML type ``DTEType`` (enum) in official schema ``SiiTypes_v10.xsd``.
     https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L63-L99
@@ -80,21 +80,78 @@ class TipoDteEnum(enum.IntEnum):
     """
 
     FACTURA_ELECTRONICA = 33
-    """Factura Electrónica."""
+    """Factura electrónica de venta."""
 
     FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA = 34
-    """Factura no Afecta o Exenta Electrónica."""
+    """Factura electrónica de venta, no afecta o exenta de IVA."""
+    # aka 'Factura no Afecta o Exenta Electrónica'
     # aka 'Factura Electrónica de Venta de Bienes y Servicios No afectos o Exento de IVA'
 
     FACTURA_COMPRA_ELECTRONICA = 46
-    """Factura de Compra Electrónica."""
+    """Factura electrónica de compra."""
+    # aka 'Factura de Compra Electrónica'
     # Name should have been 'Factura Electrónica de Compra'.
 
     GUIA_DESPACHO_ELECTRONICA = 52
-    """Guía de Despacho Electrónica."""
+    """Guía electrónica de despacho."""
+    # aka 'Guía de Despacho Electrónica'
 
     NOTA_DEBITO_ELECTRONICA = 56
-    """Nota de Débito Electrónica."""
+    """Nota electrónica de débito."""
+    # aka 'Nota de Débito Electrónica'
 
     NOTA_CREDITO_ELECTRONICA = 61
-    """Nota de Crédito Electrónica."""
+    """Nota electrónica de crédito."""
+    # aka 'Nota de Crédito Electrónica'
+
+    @property
+    def is_factura(self) -> bool:
+        if self is TipoDteEnum.FACTURA_ELECTRONICA:
+            result = True
+        elif self is TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA:
+            result = True
+        elif self is TipoDteEnum.FACTURA_COMPRA_ELECTRONICA:
+            result = True
+        else:
+            result = False
+
+        return result
+
+    @property
+    def is_factura_venta(self) -> bool:
+        if self is TipoDteEnum.FACTURA_ELECTRONICA:
+            result = True
+        elif self is TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA:
+            result = True
+        else:
+            result = False
+
+        return result
+
+    @property
+    def is_factura_compra(self) -> bool:
+        if self is TipoDteEnum.FACTURA_COMPRA_ELECTRONICA:
+            result = True
+        else:
+            result = False
+
+        return result
+
+    @property
+    def is_nota(self) -> bool:
+        if self is TipoDteEnum.NOTA_DEBITO_ELECTRONICA:
+            result = True
+        elif self is TipoDteEnum.NOTA_CREDITO_ELECTRONICA:
+            result = True
+        else:
+            result = False
+
+        return result
+
+    @property
+    def emisor_is_vendedor(self) -> bool:
+        return self.is_factura_venta
+
+    @property
+    def receptor_is_vendedor(self) -> bool:
+        return self.is_factura_compra
