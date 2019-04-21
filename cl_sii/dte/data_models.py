@@ -229,10 +229,6 @@ class DteDataL1(DteDataL0):
 
         validate_dte_monto_total(self.monto_total)
 
-    @property
-    def natural_key(self) -> DteNaturalKey:
-        return DteNaturalKey(emisor_rut=self.emisor_rut, tipo_dte=self.tipo_dte, folio=self.folio)
-
 
 @dataclasses.dataclass(frozen=True)
 class DteDataL2(DteDataL1):
