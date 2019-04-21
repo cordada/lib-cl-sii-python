@@ -1,3 +1,20 @@
+"""
+DTE data models
+===============
+
+Concepts
+--------
+
+In the domain of a DTE, a:
+
+* "Vendedor": is who sold goods or services to "deudor" in a
+  transaction for which the DTE was issued.
+  It *usually* corresponds to the DTE's "emisor", but not always.
+* "Deudor": is who purchased goods or services from "vendedor" in a
+  transaction for which the DTE was issued.
+  It *usually* corresponds to the DTE's "receptor", but not always.
+
+"""
 import dataclasses
 from dataclasses import field as dc_field
 from datetime import date
@@ -228,6 +245,40 @@ class DteDataL1(DteDataL0):
             raise TypeError("Inappropriate type of 'monto_total'.")
 
         validate_dte_monto_total(self.monto_total)
+
+    @property
+    def vendedor_rut(self) -> Rut:
+        """
+        Return the RUT of the "vendedor".
+
+        :raises ValueError:
+        """
+        if self.tipo_dte.emisor_is_vendedor:
+            result = self.emisor_rut
+        elif self.tipo_dte.receptor_is_vendedor:
+            result = self.receptor_rut
+        else:
+            raise ValueError(
+                "Concept \"vendedor\" does not apply for this 'tipo_dte'.", self.tipo_dte)
+
+        return result
+
+    @property
+    def deudor_rut(self) -> Rut:
+        """
+        Return the RUT of the "deudor".
+
+        :raises ValueError:
+        """
+        if self.tipo_dte.emisor_is_vendedor:
+            result = self.receptor_rut
+        elif self.tipo_dte.receptor_is_vendedor:
+            result = self.emisor_rut
+        else:
+            raise ValueError(
+                "Concept \"deudor\" does not apply for this 'tipo_dte'.", self.tipo_dte)
+
+        return result
 
 
 @dataclasses.dataclass(frozen=True)
