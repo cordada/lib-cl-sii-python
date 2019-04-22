@@ -17,7 +17,7 @@ In the domain of a DTE, a:
 """
 import dataclasses
 from dataclasses import field as dc_field
-from datetime import date
+from datetime import date, datetime
 from typing import Mapping, Optional
 
 import cl_sii.contribuyente.constants
@@ -72,6 +72,16 @@ def validate_contribuyente_razon_social(value: str) -> None:
 
     if len(value) > cl_sii.contribuyente.constants.RAZON_SOCIAL_LONG_MAX_LENGTH:
         raise ValueError("Value exceeds max allowed length.")
+
+
+def validate_clean_str(value: str) -> None:
+    if len(value.strip()) != len(value):
+        raise ValueError("Value has leading or trailing whitespace characters.", value)
+
+
+def validate_non_empty_str(value: str) -> None:
+    if len(value.strip()) == 0:
+        raise ValueError("String (stripped) length is 0.")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -312,6 +322,36 @@ class DteDataL2(DteDataL1):
     "Fecha de vencimiento (pago)" of the DTE.
     """
 
+    firma_documento_dt_naive: Optional[datetime] = dc_field(default=None)
+    """
+    Datetime on which the "documento" was digitally signed.
+    """
+
+    signature_value_base64: Optional[str] = dc_field(default=None)
+    """
+    DTE's digital signature's value (as base64 str).
+    """
+
+    signature_x509_cert_base64: Optional[str] = dc_field(default=None)
+    """
+    DTE's digital signature's X509 certificate (as base64 str).
+    """
+
+    emisor_giro: Optional[str] = dc_field(default=None)
+    """
+    "Giro" of the "emisor" of the DTE.
+    """
+
+    emisor_email: Optional[str] = dc_field(default=None)
+    """
+    Email address of the "emisor" of the DTE.
+    """
+
+    receptor_email: Optional[str] = dc_field(default=None)
+    """
+    Email address of the "receptor" of the DTE.
+    """
+
     def __post_init__(self) -> None:
         """
         Run validation automatically after setting the fields values.
@@ -332,3 +372,41 @@ class DteDataL2(DteDataL1):
         if self.fecha_vencimiento_date is not None:
             if not isinstance(self.fecha_vencimiento_date, date):
                 raise TypeError("Inappropriate type of 'fecha_vencimiento_date'.")
+
+        if self.firma_documento_dt_naive is not None:
+            if not isinstance(self.firma_documento_dt_naive, datetime):
+                raise TypeError("Inappropriate type of 'firma_documento_dt_naive'.")
+
+        if self.signature_value_base64 is not None:
+            if not isinstance(self.signature_value_base64, str):
+                raise TypeError("Inappropriate type of 'signature_value_base64'.")
+            # TODO: validate that it is base64
+            # TODO: bytes?
+            validate_clean_str(self.signature_value_base64)
+            validate_non_empty_str(self.signature_value_base64)
+
+        if self.signature_x509_cert_base64 is not None:
+            if not isinstance(self.signature_x509_cert_base64, str):
+                raise TypeError("Inappropriate type of 'signature_x509_cert_base64'.")
+            # TODO: validate that it is base64
+            # TODO: bytes?
+            validate_clean_str(self.signature_x509_cert_base64)
+            validate_non_empty_str(self.signature_x509_cert_base64)
+
+        if self.emisor_giro is not None:
+            if not isinstance(self.emisor_giro, str):
+                raise TypeError("Inappropriate type of 'emisor_giro'.")
+            validate_clean_str(self.emisor_giro)
+            validate_non_empty_str(self.emisor_giro)
+
+        if self.emisor_email is not None:
+            if not isinstance(self.emisor_email, str):
+                raise TypeError("Inappropriate type of 'emisor_email'.")
+            validate_clean_str(self.emisor_email)
+            validate_non_empty_str(self.emisor_email)
+
+        if self.receptor_email is not None:
+            if not isinstance(self.receptor_email, str):
+                raise TypeError("Inappropriate type of 'receptor_email'.")
+            validate_clean_str(self.receptor_email)
+            validate_non_empty_str(self.receptor_email)

@@ -20,7 +20,7 @@ True
 import io
 import logging
 import os
-from datetime import date
+from datetime import date, datetime
 from typing import Tuple
 
 from cl_sii.libs import xml_utils
@@ -146,10 +146,9 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     exportaciones_em = xml_em.find(
         'sii-dte:Exportaciones',  # "Informacion Tributaria de exportaciones"
         namespaces=DTE_XMLNS_MAP)
-    # note: excluded because currently it is not useful.
-    # signature_em = xml_em.find(
-    #     'ds:Signature',  # "Firma Digital sobre Documento"
-    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_em = xml_em.find(
+        'ds:Signature',  # "Firma Digital sobre Documento"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
 
     if liquidacion_em is not None or exportaciones_em is not None:
         raise NotImplementedError("XML element 'Documento' is the only one supported.")
@@ -181,10 +180,9 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     # ted_em = documento_em.find(
     #     'sii-dte:TED',  # "Timbre Electronico de DTE"
     #     namespaces=DTE_XMLNS_MAP)
-    # note: excluded because currently it is not useful.
-    # tmst_firma_em = documento_em.find(
-    #     'sii-dte:TmstFirma',  # "Fecha y Hora en que se Firmo Digitalmente el Documento"
-    #     namespaces=DTE_XMLNS_MAP)
+    tmst_firma_em = documento_em.find(
+        'sii-dte:TmstFirma',  # "Fecha y Hora en que se Firmo Digitalmente el Documento"
+        namespaces=DTE_XMLNS_MAP)
 
     # 'Documento.Encabezado'
     # Excluded elements (optional according to the XML schema but the SII may require some of these
@@ -277,8 +275,6 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     # 'Documento.Encabezado.Emisor'
     # Excluded elements (optional according to the XML schema but the SII may require some of these
     #   depending on 'tipo_dte' and other criteria):
-    #   - 'CorreoEmisor':
-    #     "Correo Elect. de contacto en empresa del receptor" (wrong!)
     #   - 'Telefono': (occurrences: 0..2)
     #     "Telefono Emisor"
     #   - 'Acteco': (occurrences: 0..4)
@@ -299,21 +295,24 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     #     "Codigo del Vendedor"
     #   - 'IdAdicEmisor':
     #     "Identificador Adicional del Emisor"
+    # (required):
     emisor_rut_em = emisor_em.find(
         'sii-dte:RUTEmisor',  # "RUT del Emisor del DTE"
         namespaces=DTE_XMLNS_MAP)
     emisor_razon_social_em = emisor_em.find(
         'sii-dte:RznSoc',  # "Nombre o Razon Social del Emisor"
         namespaces=DTE_XMLNS_MAP)
-    # emisor_giro_em = emisor_em.find(
-    #     'sii-dte:GiroEmis',  # "Giro Comercial del Emisor Relevante para el DTE"
-    #     namespaces=DTE_XMLNS_MAP)
+    emisor_giro_em = emisor_em.find(
+        'sii-dte:GiroEmis',  # "Giro Comercial del Emisor Relevante para el DTE"
+        namespaces=DTE_XMLNS_MAP)
+    # (optional):
+    emisor_email_em = emisor_em.find(
+        'sii-dte:CorreoEmisor',  # "Correo Elect. de contacto en empresa del receptor" (wrong!)
+        namespaces=DTE_XMLNS_MAP)
 
     # 'Documento.Encabezado.Receptor'
     # Excluded elements (optional according to the XML schema but the SII may require some of these
     #   depending on 'tipo_dte' and other criteria):
-    #   - 'CorreoRecep':
-    #     "Correo Elect. de contacto en empresa del receptor"
     #   - 'CdgIntRecep':
     #     "Codigo Interno del Receptor"
     #   - 'Extranjero':
@@ -336,11 +335,16 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     #     "Comuna Postal"
     #   - 'CiudadPostal':
     #     "Ciudad Postal"
+    # (required):
     receptor_rut_em = receptor_em.find(
         'sii-dte:RUTRecep',  # "RUT del Receptor del DTE"
         namespaces=DTE_XMLNS_MAP)
     receptor_razon_social_em = receptor_em.find(
         'sii-dte:RznSocRecep',  # "Nombre o Razon Social del Receptor"
+        namespaces=DTE_XMLNS_MAP)
+    # (optional):
+    receptor_email_em = emisor_em.find(
+        'sii-dte:CorreoRecep',  # "Correo Elect. de contacto en empresa del receptor"
         namespaces=DTE_XMLNS_MAP)
 
     # 'Documento.Encabezado.Totales'
@@ -384,6 +388,35 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
         'sii-dte:MntTotal',  # "Monto Total del DTE"
         namespaces=DTE_XMLNS_MAP)
 
+    # 'Signature'
+    # signature_signed_info_em = signature_em.find(
+    #     'ds:SignedInfo',  # "Descripcion de la Informacion Firmada y del Metodo de Firma"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_signed_info_canonicalization_method_em = signature_signed_info_em.find(
+    #     'ds:CanonicalizationMethod',  # "Algoritmo de Canonicalizacion"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_signed_info_signature_method_em = signature_signed_info_em.find(
+    #     'ds:SignatureMethod',  # "Algoritmo de Firma"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_signed_info_reference_em = signature_signed_info_em.find(
+    #     'ds:Reference',  # "Referencia a Elemento Firmado"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_signature_value_em = signature_em.find(
+        'ds:SignatureValue',  # "Valor de la Firma Digital"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_key_info_em = signature_em.find(
+        'ds:KeyInfo',  # "Informacion de Claves Publicas y Certificado"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_key_info_key_value_em = signature_key_info_em.find(
+    #     'ds:KeyValue',
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_key_info_x509_data_em = signature_key_info_em.find(
+        'ds:X509Data',  # "Informacion del Certificado Publico"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_key_info_x509_cert_em = signature_key_info_x509_data_em.find(
+        'ds:X509Certificate',  # "Certificado Publico"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+
     ###########################################################################
     # values parsing
     ###########################################################################
@@ -397,11 +430,19 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
 
     emisor_rut_value = Rut(emisor_rut_em.text.strip())
     emisor_razon_social_value = emisor_razon_social_em.text.strip()
+    emisor_giro_value = emisor_giro_em.text.strip()
+    emisor_email_value = emisor_email_em.text.strip() if emisor_email_em is not None else None
 
     receptor_rut_value = Rut(receptor_rut_em.text.strip())
     receptor_razon_social_value = receptor_razon_social_em.text.strip()
+    receptor_email_value = receptor_email_em.text.strip() if receptor_email_em is not None else None
 
     monto_total_value = int(monto_total_em.text.strip())
+
+    tmst_firma_value = datetime.fromisoformat(tmst_firma_em.text)
+
+    signature_signature_value_base64 = signature_signature_value_em.text.strip()
+    signature_key_info_x509_cert_base64 = signature_key_info_x509_cert_em.text.strip()
 
     return data_models.DteDataL2(
         emisor_rut=emisor_rut_value,
@@ -413,6 +454,12 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
         emisor_razon_social=emisor_razon_social_value,
         receptor_razon_social=receptor_razon_social_value,
         fecha_vencimiento_date=fecha_vencimiento_value,
+        firma_documento_dt_naive=tmst_firma_value,
+        signature_value_base64=signature_signature_value_base64,
+        signature_x509_cert_base64=signature_key_info_x509_cert_base64,
+        emisor_giro=emisor_giro_value,
+        emisor_email=emisor_email_value,
+        receptor_email=receptor_email_value,
     )
 
 

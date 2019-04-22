@@ -1,6 +1,6 @@
 import dataclasses
 import unittest
-from datetime import date
+from datetime import date, datetime
 
 from cl_sii.rut import Rut  # noqa: F401
 
@@ -150,6 +150,12 @@ class DteDataL2Test(unittest.TestCase):
             emisor_razon_social='INGENIERIA ENACON SPA',
             receptor_razon_social='MINERA LOS PELAMBRES',
             fecha_vencimiento_date=None,
+            firma_documento_dt_naive=datetime(2019, 4, 1, 1, 36, 40),
+            signature_value_base64=None,
+            signature_x509_cert_base64=None,
+            emisor_giro='Ingenieria y Construccion',
+            emisor_email='hello@example.com',
+            receptor_email=None,
         )
 
     def test_init_fail(self) -> None:
@@ -169,6 +175,12 @@ class DteDataL2Test(unittest.TestCase):
                 emisor_razon_social='INGENIERIA ENACON SPA',
                 receptor_razon_social='MINERA LOS PELAMBRES',
                 fecha_vencimiento_date=None,
+                firma_documento_dt_naive=datetime(2019, 4, 1, 1, 36, 40),
+                signature_value_base64=None,
+                signature_x509_cert_base64=None,
+                emisor_giro='Ingenieria y Construccion',
+                emisor_email='hello@example.com',
+                receptor_email=None,
             ))
 
 
