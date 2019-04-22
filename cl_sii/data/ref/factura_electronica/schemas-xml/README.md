@@ -17,6 +17,8 @@ The most significant structures are:
 
 Note:
 - DTE means "Documento Tributario Electrónico".
+- RTC: "Registro Transferencia de Crédito" aka RPETC; "Registro Electrónico de Cesión de Créditos".
+- RPETC: "Registro Público Electrónico de Transferencia de Crédito" aka RTC.
 - IECV means "Información Electrónica de Libros de Compra y Venta".
 - LCE means "Libros Contables Electrónicos".
 
@@ -39,6 +41,23 @@ referenced from official webpage
 / [FORMATO XML DE DOCUMENTOS ELECTRÓNICOS](http://www.sii.cl/factura_electronica/formato_xml.htm)
 as
 "[Bajar schema XML de Documentos Tributarios Electrónicos](http://www.sii.cl/factura_electronica/schema_dte.zip) (Incluye Documentos de exportación)"
+
+
+#### Cesion (RTC)
+
+Archive [schema_cesion.zip](http://www.sii.cl/factura_electronica/schema_cesion.zip),
+referenced from official webpage
+[SII](http://www.sii.cl)
+/ [Servicios online](http://www.sii.cl/servicios_online/index.html)
+/ [Factura electrónica](http://www.sii.cl/servicios_online/1039-.html)
+/ [Sistema de facturación de mercado](http://www.sii.cl/servicios_online/1039-1184.html)
+/ [Registro electrónico de cesión de créditos](https://palena.sii.cl/rtc/RTC/RTCMenu.html)
+/ [Formatos de archivos electrónicos](http://www.sii.cl/factura_electronica/form_ele.htm)
+as
+"[Formato XML del Archivo Electrónico de Cesión](http://www.sii.cl/factura_electronica/schema_cesion.zip)"
+
+- Retrieval date: 2019-04-16
+- MD5 checksum: `82d426fc3bd5f3a29e61a1d07ed4d6dd`.
 
 
 #### IECV
@@ -135,6 +154,82 @@ Schema files will be updated as necessary, indicating the source in the correspo
     - `Dec6_4Type`: "Monto con 6 Digitos de Cuerpo y 4 Decimales".
     - `Dec12_6Type`: "Monto con 12 Digitos de Cuerpo y 6 Decimales".
     - `PctType`: "Monto de Porcentaje ( 3 y 2)".
+
+
+#### Cesion (RTC)
+
+- `AEC_v10.xsd`: main schema; it includes (directly or indirectly) all the others of this section.
+  - XML target namespace: `http://www.sii.cl/SiiDte`.
+  - XML included/imported schemas: `Cesion_v10.xsd`, `DTECedido_v10.xsd`, `xmldsignature_v10.xsd`.
+  - XML elements:
+    - `AEC`: "Archivo Electronico de Cesion"
+      - `DocumentoAEC`: "Documento de AEC"
+        - `Caratula`: "Informacion de AEC"
+        - `Cesiones`: "Cesiones"
+          - ref `DTECedido`: "Representacion XML y Grafica del DTE Cedido"
+          - ref `Cesion` (1..N occurrences):
+            "Informacion Electronica de Recepcion y Aceptacion del DTE por Parte del Receptor"
+  - XML data types: no explicit definitions.
+
+- `Cesion_v10.xsd`: ?
+  - XML target namespace: `http://www.sii.cl/SiiDte`.
+  - XML included/imported schemas: `SiiTypes_v10.xsd`, `xmldsignature_v10.xsd`.
+  - XML elements:
+    - `Cesion`: "Envio de Informacion de Transferencias  Electronicas".
+  - XML data types:
+    - `CesionDefType`: "Documento Tributario Electronico" (sic).
+      Relevant elements:
+      - `DocumentoCesion`: (no description nor annotations)
+        - `SeqCesion`: "Secuencia de Cesiones (1, 2, 3, ... )".
+        - `IdDTE`: "Identificacion del DTE Cedido".
+        - `Cedente`: "Identificacion del Cedente".
+        - `Cesionario`: "Identificacion del Cesionario".
+        - `MontoCesion`: "Monto del Credito Cedido".
+        - `UltimoVencimiento`: "Fecha de Ultimo Vencimiento".
+        - `OtrasCondiciones`: "Otras Condiciones de la Cesion".
+        - `eMailDeudor`: "Correo Electronico del Deudor del DTE".
+        - `TmstCesion`: "TimeStamp de la Cesion del DTE".
+
+- `DTECedido_v10.xsd`: ?
+  - XML target namespace: `http://www.sii.cl/SiiDte`.
+  - XML included/imported schemas: `DTE_v10.xsd`, `Recibos_v10.xsd`, `xmldsignature_v10.xsd`.
+  - XML elements:
+    - `DTECedido`: "DTE con Imagen y Recibos".
+  - XML data types:
+    - `DTECedidoDefType`: "Documento Tributario Electronico".
+      Relevant elements:
+      - `DocumentoDTECedido`: (no description nor annotations)
+        - ref `DTE`: "Representacion XML del DTE Cedido".
+        - `ImagenDTE` (optional): "Representacion PDF del DTE Cedido" (binary as base64)
+        - ref `Recibo` (0..N occurrences):
+          "Informacion Electronica de Recepcion y Aceptacion del DTE por Parte del Receptor".
+        - `ImagenAR` (optional):
+          "Representacion PDF del los Acuse de Recibo" (sic) (binary as base64)
+        - `TmstFirma`:
+          "Fecha y Hora en que se Firmo Digitalmente el Documento Cedido AAAA-MM-DDTHH:MI:SS".
+
+- `Recibos_v10.xsd`: ?
+  - XML target namespace: `http://www.sii.cl/SiiDte`.
+  - XML included/imported schemas: `SiiTypes_v10.xsd`, `xmldsignature_v10.xsd`.
+  - XML elements:
+    - `Recibo`:
+        doc 1: "Comprobante de Recepcion de Mercaderias o Servicios Prestados".
+        doc 2: "Recibos de Recepcion de Mercaderias o Servicios Prestados".
+  - XML data types:
+    - `ReciboDefType`: "Documento Tributario Electronico" (sic)
+      Relevant elements:
+      - `DocumentoRecibo`: "Identificacion del Documento Recibido" (sic)
+        - `TipoDoc`: "Tipo de Documento".
+        - `Folio`: "Folio del Documento".
+        - `FchEmis`: "Fecha Emision Contable del Documento (AAAA-MM-DD)".
+        - `RUTEmisor`: "RUT Emisor del Documento".
+        - `RUTRecep`: "RUT Receptor del Documento".
+        - `MntTotal`: "Monto Total del Documento".
+        - `Recinto`: "Lugar donde se materializa la recepción conforme".
+        - `RutFirma`: "RUT de quien Firma el Recibo".
+        - `Declaracion` (fixed string):
+          "Texto Ley 19.983, acredita la recepcion mercaderías o servicio.".
+        - `TmstFirmaRecibo`: "Fecha y Hora de la Firma del Recibo".
 
 
 #### IECV
