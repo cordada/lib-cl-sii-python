@@ -24,9 +24,8 @@ from dataclasses import MISSING, _MISSING_TYPE
 from datetime import date
 from typing import Optional, Tuple, Union
 
-import lxml.etree
-
 from cl_sii.libs import xml_utils
+from cl_sii.libs.xml_utils import XmlElement
 from cl_sii.rut import Rut
 from . import constants
 from . import data_models
@@ -72,10 +71,10 @@ It is read from a file at import time to avoid unnecessary reads afterwards.
 ###############################################################################
 
 def clean_dte_xml(
-    xml_doc: lxml.etree.ElementBase,
+    xml_doc: XmlElement,
     set_missing_xmlns: bool = False,
     remove_doc_personalizado: bool = True,
-) -> Tuple[lxml.etree.ElementBase, bool]:
+) -> Tuple[XmlElement, bool]:
     """
     Apply changes to ``xml_doc`` towards compliance to DTE XML schema.
 
@@ -103,7 +102,7 @@ def clean_dte_xml(
     return xml_doc, modified
 
 
-def validate_dte_xml(xml_doc: lxml.etree.ElementBase) -> None:
+def validate_dte_xml(xml_doc: XmlElement) -> None:
     """
     Validate ``xml_doc`` against DTE's XML schema.
 
@@ -114,7 +113,7 @@ def validate_dte_xml(xml_doc: lxml.etree.ElementBase) -> None:
     xml_utils.validate_xml_doc(DTE_XML_SCHEMA_OBJ, xml_doc)
 
 
-def parse_dte_xml(xml_doc: lxml.etree.ElementBase) -> data_models.DteDataL2:
+def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     """
     Parse and deserialize DTE data from ``xml_doc``.
 
@@ -123,18 +122,18 @@ def parse_dte_xml(xml_doc: lxml.etree.ElementBase) -> data_models.DteDataL2:
     #   performed by XML-agnostic code (perhaps using Marshmallow or data clacases?).
     #   See :class:`cl_sii.rcv.parse.RcvCsvRowSchema`.
 
-    xml_element_root_tree = xml_doc.getroottree()
+    xml_em = xml_doc
 
     obj_struct = data_models.DteDataL2(
-        emisor_rut=_get_emisor_rut(xml_element_root_tree),
-        tipo_dte=_get_tipo_dte(xml_element_root_tree),
-        folio=_get_folio(xml_element_root_tree),
-        fecha_emision_date=_get_fecha_emision(xml_element_root_tree),
-        receptor_rut=_get_receptor_rut(xml_element_root_tree),
-        monto_total=_get_monto_total(xml_element_root_tree),
-        emisor_razon_social=_get_emisor_razon_social(xml_element_root_tree),
-        receptor_razon_social=_get_receptor_razon_social(xml_element_root_tree),
-        fecha_vencimiento_date=_get_fecha_vencimiento(xml_element_root_tree, default=None),
+        emisor_rut=_get_emisor_rut(xml_em),
+        tipo_dte=_get_tipo_dte(xml_em),
+        folio=_get_folio(xml_em),
+        fecha_emision_date=_get_fecha_emision(xml_em),
+        receptor_rut=_get_receptor_rut(xml_em),
+        monto_total=_get_monto_total(xml_em),
+        emisor_razon_social=_get_emisor_razon_social(xml_em),
+        receptor_razon_social=_get_receptor_razon_social(xml_em),
+        fecha_vencimiento_date=_get_fecha_vencimiento(xml_em, default=None),
     )
 
     return obj_struct
@@ -144,9 +143,7 @@ def parse_dte_xml(xml_doc: lxml.etree.ElementBase) -> data_models.DteDataL2:
 # helpers
 ###############################################################################
 
-def _set_dte_xml_missing_xmlns(
-    xml_doc: lxml.etree.ElementBase,
-) -> Tuple[lxml.etree.ElementBase, bool]:
+def _set_dte_xml_missing_xmlns(xml_doc: XmlElement) -> Tuple[XmlElement, bool]:
 
     # source: name of the XML element without namespace.
     #   cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L22 (f57a326)
@@ -180,9 +177,7 @@ def _set_dte_xml_missing_xmlns(
     return xml_doc, modified
 
 
-def _remove_dte_xml_doc_personalizado(
-    xml_doc: lxml.etree.ElementBase,
-) -> Tuple[lxml.etree.ElementBase, bool]:
+def _remove_dte_xml_doc_personalizado(xml_doc: XmlElement) -> Tuple[XmlElement, bool]:
     # Remove non-standard but popular element 'DocPersonalizado', it if exists.
 
     modified = False
@@ -196,41 +191,41 @@ def _remove_dte_xml_doc_personalizado(
     return xml_doc, modified
 
 
-def _get_tipo_dte(xml_etree: lxml.etree.ElementTree) -> constants.TipoDteEnum:
+def _get_tipo_dte(xml_em: XmlElement) -> constants.TipoDteEnum:
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:IdDoc/sii-dte:TipoDTE'
 
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
+    value_str = xml_em.findtext(em_path, namespaces=DTE_XMLNS_MAP)
     if value_str is None:
         raise Exception("Element 'TipoDTE' was not found in the XML document.")
     return constants.TipoDteEnum(int(value_str))
 
 
-def _get_folio(xml_etree: lxml.etree.ElementTree) -> int:
+def _get_folio(xml_em: XmlElement) -> int:
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:IdDoc/sii-dte:Folio'
 
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
+    value_str = xml_em.findtext(em_path, namespaces=DTE_XMLNS_MAP)
     if value_str is None:
         raise Exception("Element 'Folio' was not found in the XML document.")
     return int(value_str)
 
 
-def _get_fecha_emision(xml_etree: lxml.etree.ElementTree) -> date:
+def _get_fecha_emision(xml_em: XmlElement) -> date:
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:IdDoc/sii-dte:FchEmis'
 
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
+    value_str = xml_em.findtext(em_path, namespaces=DTE_XMLNS_MAP)
     if value_str is None:
         raise Exception("Element 'FchEmis' was not found in the XML document.")
     return date.fromisoformat(value_str)
 
 
 def _get_fecha_vencimiento(
-    xml_etree: lxml.etree.ElementTree,
+    xml_em: XmlElement,
     default: Union[date, None, _MISSING_TYPE] = MISSING,
 ) -> Optional[date]:
 
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:IdDoc/sii-dte:FchVenc'
 
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
+    value_str = xml_em.findtext(em_path, namespaces=DTE_XMLNS_MAP)
     if value_str is None:
         if default is None or isinstance(default, date):
             value = default
@@ -244,46 +239,46 @@ def _get_fecha_vencimiento(
     return value
 
 
-def _get_emisor_rut(xml_etree: lxml.etree.ElementTree) -> Rut:
+def _get_emisor_rut(xml_em: XmlElement) -> Rut:
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Emisor/sii-dte:RUTEmisor'
 
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
+    value_str = xml_em.findtext(em_path, namespaces=DTE_XMLNS_MAP)
     if value_str is None:
         raise Exception("Element 'RUTEmisor' was not found in the XML document.")
     return Rut(value_str)
 
 
-def _get_emisor_razon_social(xml_etree: lxml.etree.ElementTree) -> str:
+def _get_emisor_razon_social(xml_em: XmlElement) -> str:
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Emisor/sii-dte:RznSoc'
 
-    value_str: str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
+    value_str: str = xml_em.findtext(em_path, namespaces=DTE_XMLNS_MAP)
     if value_str is None:
         raise Exception("Element 'RznSoc' was not found in the XML document.")
     return value_str
 
 
-def _get_receptor_rut(xml_etree: lxml.etree.ElementTree) -> Rut:
+def _get_receptor_rut(xml_em: XmlElement) -> Rut:
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Receptor/sii-dte:RUTRecep'
 
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
+    value_str = xml_em.findtext(em_path, namespaces=DTE_XMLNS_MAP)
     if value_str is None:
         raise Exception("Element 'RUTRecep' was not found in the XML document.")
     return Rut(value_str)
 
 
-def _get_receptor_razon_social(xml_etree: lxml.etree.ElementTree) -> str:
+def _get_receptor_razon_social(xml_em: XmlElement) -> str:
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Receptor/sii-dte:RznSocRecep'
 
-    value_str: str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
+    value_str: str = xml_em.findtext(em_path, namespaces=DTE_XMLNS_MAP)
     if value_str is None:
         raise Exception("Element 'RznSocRecep' was not found in the XML document.")
     return value_str
 
 
-def _get_monto_total(xml_etree: lxml.etree.ElementTree) -> int:
+def _get_monto_total(xml_em: XmlElement) -> int:
     em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Totales/sii-dte:MntTotal'
 
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
+    value_str = xml_em.findtext(em_path, namespaces=DTE_XMLNS_MAP)
     if value_str is None:
         raise Exception("Element 'MntTotal' was not found in the XML document.")
     return int(value_str)
