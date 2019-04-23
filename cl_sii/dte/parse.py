@@ -20,13 +20,11 @@ True
 import io
 import logging
 import os
-from dataclasses import MISSING, _MISSING_TYPE
-from datetime import date
-from typing import Optional, Tuple, Union
-
-import lxml.etree
+from datetime import date, datetime
+from typing import Tuple
 
 from cl_sii.libs import xml_utils
+from cl_sii.libs.xml_utils import XmlElement
 from cl_sii.rut import Rut
 from . import constants
 from . import data_models
@@ -72,10 +70,10 @@ It is read from a file at import time to avoid unnecessary reads afterwards.
 ###############################################################################
 
 def clean_dte_xml(
-    xml_doc: lxml.etree.ElementBase,
+    xml_doc: XmlElement,
     set_missing_xmlns: bool = False,
     remove_doc_personalizado: bool = True,
-) -> Tuple[lxml.etree.ElementBase, bool]:
+) -> Tuple[XmlElement, bool]:
     """
     Apply changes to ``xml_doc`` towards compliance to DTE XML schema.
 
@@ -103,7 +101,7 @@ def clean_dte_xml(
     return xml_doc, modified
 
 
-def validate_dte_xml(xml_doc: lxml.etree.ElementBase) -> None:
+def validate_dte_xml(xml_doc: XmlElement) -> None:
     """
     Validate ``xml_doc`` against DTE's XML schema.
 
@@ -114,39 +112,362 @@ def validate_dte_xml(xml_doc: lxml.etree.ElementBase) -> None:
     xml_utils.validate_xml_doc(DTE_XML_SCHEMA_OBJ, xml_doc)
 
 
-def parse_dte_xml(xml_doc: lxml.etree.ElementBase) -> data_models.DteDataL2:
+# TODO: rename to 'parse_dte_xml_data'
+def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     """
-    Parse and deserialize DTE data from ``xml_doc``.
+    Parse data from a DTE XML doc.
+
+    .. warning::
+        It is assumed that ``xml_doc`` is an
+        ``{http://www.sii.cl/SiiDte}/DTE``  XML element.
 
     """
+    # TODO: change response type to a dataclass like 'DteXmlData'.
     # TODO: separate the XML parsing stage from the deserialization stage, which could be
     #   performed by XML-agnostic code (perhaps using Marshmallow or data clacases?).
     #   See :class:`cl_sii.rcv.parse.RcvCsvRowSchema`.
 
-    xml_element_root_tree = xml_doc.getroottree()
+    xml_em = xml_doc
 
-    obj_struct = data_models.DteDataL2(
-        emisor_rut=_get_emisor_rut(xml_element_root_tree),
-        tipo_dte=_get_tipo_dte(xml_element_root_tree),
-        folio=_get_folio(xml_element_root_tree),
-        fecha_emision_date=_get_fecha_emision(xml_element_root_tree),
-        receptor_rut=_get_receptor_rut(xml_element_root_tree),
-        monto_total=_get_monto_total(xml_element_root_tree),
-        emisor_razon_social=_get_emisor_razon_social(xml_element_root_tree),
-        receptor_razon_social=_get_receptor_razon_social(xml_element_root_tree),
-        fecha_vencimiento_date=_get_fecha_vencimiento(xml_element_root_tree, default=None),
+    ###########################################################################
+    # XML elements finding
+    ###########################################################################
+
+    # Schema requires one, and only one, of these:
+    # a) 'Documento'
+    # b) 'Liquidacion'
+    # c) 'Exportaciones'
+    documento_em = xml_em.find(
+        'sii-dte:Documento',  # "Informacion Tributaria del DTE"
+        namespaces=DTE_XMLNS_MAP)
+    liquidacion_em = xml_em.find(
+        'sii-dte:Liquidacion',  # "Informacion Tributaria de Liquidaciones"
+        namespaces=DTE_XMLNS_MAP)
+    exportaciones_em = xml_em.find(
+        'sii-dte:Exportaciones',  # "Informacion Tributaria de exportaciones"
+        namespaces=DTE_XMLNS_MAP)
+    signature_em = xml_em.find(
+        'ds:Signature',  # "Firma Digital sobre Documento"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+
+    if liquidacion_em is not None or exportaciones_em is not None:
+        raise NotImplementedError("XML element 'Documento' is the only one supported.")
+
+    if documento_em is None:
+        raise ValueError("Top level XML element 'Document' is required.")
+
+    # This value seems to be worthless (only useful for internal references in the XML doc).
+    #   e.g. 'MiPE76354771-13419', 'MiPE76399752-6048'
+    # documento_em_id = documento_em.attrib['ID']
+
+    # 'Documento'
+    # Excluded elements (optional according to the XML schema but the SII may require some of these
+    #   depending on 'tipo_dte' and other criteria):
+    #   - 'Detalle': (occurrences: 0..60)
+    #     "Detalle de Itemes del Documento"
+    #   - 'SubTotInfo': (occurrences: 0..20)
+    #     "Subtotales Informativos"
+    #   - 'DscRcgGlobal': (occurrences: 0..20)
+    #     "Descuentos y/o Recargos que afectan al total del Documento"
+    #   - 'Referencia': (occurrences: 0..40)
+    #     "Identificacion de otros documentos Referenciados por Documento"
+    #   - 'Comisiones': (occurrences: 0..20)
+    #     "Comisiones y otros cargos es obligatoria para Liquidaciones Factura"
+    encabezado_em = documento_em.find(
+        'sii-dte:Encabezado',  # "Identificacion y Totales del Documento"
+        namespaces=DTE_XMLNS_MAP)
+    # note: excluded because currently it is not useful.
+    # ted_em = documento_em.find(
+    #     'sii-dte:TED',  # "Timbre Electronico de DTE"
+    #     namespaces=DTE_XMLNS_MAP)
+    tmst_firma_em = documento_em.find(
+        'sii-dte:TmstFirma',  # "Fecha y Hora en que se Firmo Digitalmente el Documento"
+        namespaces=DTE_XMLNS_MAP)
+
+    # 'Documento.Encabezado'
+    # Excluded elements (optional according to the XML schema but the SII may require some of these
+    #   depending on 'tipo_dte' and other criteria):
+    #   - 'RUTMandante':
+    #     "RUT a Cuenta de Quien se Emite el DTE"
+    #   - 'RUTSolicita':
+    #     "RUT que solicita el DTE en Venta a Publico"
+    #   - 'Transporte':
+    #     "Informacion de Transporte de Mercaderias"
+    #   - 'OtraMoneda':
+    #     "Otra Moneda"
+    id_doc_em = encabezado_em.find(
+        'sii-dte:IdDoc',  # "Identificacion del DTE"
+        namespaces=DTE_XMLNS_MAP)
+    emisor_em = encabezado_em.find(
+        'sii-dte:Emisor',  # "Datos del Emisor"
+        namespaces=DTE_XMLNS_MAP)
+    receptor_em = encabezado_em.find(
+        'sii-dte:Receptor',  # "Datos del Receptor"
+        namespaces=DTE_XMLNS_MAP)
+    totales_em = encabezado_em.find(
+        'sii-dte:Totales',  # "Montos Totales del DTE"
+        namespaces=DTE_XMLNS_MAP)
+
+    # 'Documento.Encabezado.IdDoc'
+    # Excluded elements (optional according to the XML schema but the SII may require some of these
+    #   depending on 'tipo_dte' and other criteria):
+    #   - 'IndNoRebaja':
+    #     "Nota de Credito sin Derecho a Descontar Debito"
+    #   - 'TipoDespacho':
+    #     "Indica Modo de Despacho de los Bienes que Acompanan al DTE"
+    #   - 'IndTraslado':
+    #     "Incluido en Guias de Despacho para Especifiicar el Tipo de Traslado de Productos"
+    #   - 'TpoImpresion':
+    #     "Tipo de impresión N (Normal)  o T (Ticket)"
+    #   - 'IndServicio':
+    #     "Indica si Transaccion Corresponde a la Prestacion de un Servicio"
+    #   - 'MntBruto':
+    #     "Indica el Uso de Montos Brutos en Detalle"
+    #   - 'TpoTranCompra':
+    #     "Tipo de Transacción para el comprador"
+    #   - 'TpoTranVenta':
+    #     "Tipo de Transacción para el vendedor"
+    #   - 'FmaPago':
+    #     "Forma de Pago del DTE"
+    #   - 'FmaPagExp':
+    #     "Forma de Pago Exportación Tabla Formas de Pago de Aduanas"
+    #   - 'FchCancel':
+    #     "Fecha de Cancelacion del DTE"
+    #   - 'MntCancel':
+    #     "Monto Cancelado al emitirse el documento"
+    #   - 'SaldoInsol':
+    #     "Saldo Insoluto al emitirse el documento"
+    #   - 'MntPagos': (occurrences: 0..30)
+    #     "Tabla de Montos de Pago"
+    #   - 'PeriodoDesde':
+    #     "Periodo de Facturacion - Desde"
+    #   - 'PeriodoHasta':
+    #     "Periodo Facturacion - Hasta"
+    #   - 'MedioPago':
+    #     "Medio de Pago"
+    #   - 'TpoCtaPago':
+    #     "Tipo Cuenta de Pago"
+    #   - 'NumCtaPago':
+    #     "Número de la cuenta del pago"
+    #   - 'BcoPago':
+    #     "Banco donde se realiza el pago"
+    #   - 'TermPagoCdg':
+    #     "Codigo del Termino de Pago Acordado"
+    #   - 'TermPagoGlosa':
+    #     "Términos del Pago - glosa"
+    #   - 'TermPagoDias':
+    #     "Dias de Acuerdo al Codigo de Termino de Pago"
+    # (required):
+    tipo_dte_em = id_doc_em.find(
+        'sii-dte:TipoDTE',  # "Tipo de DTE"
+        namespaces=DTE_XMLNS_MAP)
+    folio_em = id_doc_em.find(
+        'sii-dte:Folio',  # "Folio del Documento Electronico"
+        namespaces=DTE_XMLNS_MAP)
+    fecha_emision_em = id_doc_em.find(
+        'sii-dte:FchEmis',  # "Fecha Emision Contable del DTE"
+        namespaces=DTE_XMLNS_MAP)
+    # (optional):
+    fecha_vencimiento_em = id_doc_em.find(
+        'sii-dte:FchVenc',  # "Fecha de Vencimiento del Pago"
+        namespaces=DTE_XMLNS_MAP)
+
+    # 'Documento.Encabezado.Emisor'
+    # Excluded elements (optional according to the XML schema but the SII may require some of these
+    #   depending on 'tipo_dte' and other criteria):
+    #   - 'Telefono': (occurrences: 0..2)
+    #     "Telefono Emisor"
+    #   - 'Acteco': (occurrences: 0..4)
+    #     "Codigo de Actividad Economica del Emisor Relevante para el DTE"
+    #   - 'GuiaExport':
+    #     "Emisor de una Guía de despacho para Exportación"
+    #   - 'Sucursal':
+    #     "Sucursal que Emite el DTE"
+    #   - 'CdgSIISucur':
+    #     "Codigo de Sucursal Entregado por el SII"
+    #   - 'DirOrigen':
+    #     "Direccion de Origen"
+    #   - 'CmnaOrigen':
+    #     "Comuna de Origen"
+    #   - 'CiudadOrigen':
+    #     "Ciudad de Origen"
+    #   - 'CdgVendedor':
+    #     "Codigo del Vendedor"
+    #   - 'IdAdicEmisor':
+    #     "Identificador Adicional del Emisor"
+    # (required):
+    emisor_rut_em = emisor_em.find(
+        'sii-dte:RUTEmisor',  # "RUT del Emisor del DTE"
+        namespaces=DTE_XMLNS_MAP)
+    emisor_razon_social_em = emisor_em.find(
+        'sii-dte:RznSoc',  # "Nombre o Razon Social del Emisor"
+        namespaces=DTE_XMLNS_MAP)
+    emisor_giro_em = emisor_em.find(
+        'sii-dte:GiroEmis',  # "Giro Comercial del Emisor Relevante para el DTE"
+        namespaces=DTE_XMLNS_MAP)
+    # (optional):
+    emisor_email_em = emisor_em.find(
+        'sii-dte:CorreoEmisor',  # "Correo Elect. de contacto en empresa del receptor" (wrong!)
+        namespaces=DTE_XMLNS_MAP)
+
+    # 'Documento.Encabezado.Receptor'
+    # Excluded elements (optional according to the XML schema but the SII may require some of these
+    #   depending on 'tipo_dte' and other criteria):
+    #   - 'CdgIntRecep':
+    #     "Codigo Interno del Receptor"
+    #   - 'Extranjero':
+    #     "Receptor Extranjero"
+    #   - 'GiroRecep':
+    #     "Giro Comercial del Receptor"
+    #   - 'Contacto':
+    #     "Telefono o E-mail de Contacto del Receptor"
+    #   - 'CorreoRecep':
+    #     "Correo Elect. de contacto en empresa del receptor"
+    #   - 'DirRecep':
+    #     "Direccion en la Cual se Envian los Productos o se Prestan los Servicios"
+    #   - 'CmnaRecep':
+    #     "Comuna de Recepcion"
+    #   - 'CiudadRecep':
+    #     "Ciudad de Recepcion"
+    #   - 'DirPostal':
+    #     "Direccion Postal"
+    #   - 'CmnaPostal':
+    #     "Comuna Postal"
+    #   - 'CiudadPostal':
+    #     "Ciudad Postal"
+    # (required):
+    receptor_rut_em = receptor_em.find(
+        'sii-dte:RUTRecep',  # "RUT del Receptor del DTE"
+        namespaces=DTE_XMLNS_MAP)
+    receptor_razon_social_em = receptor_em.find(
+        'sii-dte:RznSocRecep',  # "Nombre o Razon Social del Receptor"
+        namespaces=DTE_XMLNS_MAP)
+    # (optional):
+    receptor_email_em = emisor_em.find(
+        'sii-dte:CorreoRecep',  # "Correo Elect. de contacto en empresa del receptor"
+        namespaces=DTE_XMLNS_MAP)
+
+    # 'Documento.Encabezado.Totales'
+    # Excluded elements (optional according to the XML schema but the SII may require some of these
+    #   depending on 'tipo_dte' and other criteria):
+    # - 'MntNeto':
+    #   "Monto Neto del DTE"
+    # - 'MntExe':
+    #   "Monto Exento del DTE"
+    # - 'MntBase':
+    #   "Monto Base Faenamiento Carne" (???)
+    # - 'MntMargenCom':
+    #   "Monto Base de Márgenes de Comercialización. Monto informado"
+    # - 'TasaIVA':
+    #   "Tasa de IVA" (percentage)
+    # - 'IVA':
+    #   "Monto de IVA del DTE"
+    # - 'IVAProp':
+    #   "Monto del IVA propio"
+    # - 'IVATerc':
+    #   "Monto del IVA de Terceros"
+    # - 'ImptoReten': (occurrences: 0..20)
+    #   "Impuestos y Retenciones Adicionales"
+    # - 'IVANoRet':
+    #   "IVA No Retenido"
+    # - 'CredEC':
+    #   "Credito Especial Empresas Constructoras"
+    # - 'GrntDep':
+    #   "Garantia por Deposito de Envases o Embalajes"
+    # - 'Comisiones':
+    #   "Comisiones y otros cargos es obligatoria para Liquidaciones Factura"
+    # - 'MontoNF':
+    #   "Monto No Facturable - Corresponde a Bienes o Servicios Facturados Previamente"
+    # - 'MontoPeriodo':
+    #   "Total de Ventas o Servicios del Periodo"
+    # - 'SaldoAnterior':
+    #   "Saldo Anterior - Puede ser Negativo o Positivo"
+    # - 'VlrPagar':
+    #   "Valor a Pagar Total del documento"
+    monto_total_em = totales_em.find(
+        'sii-dte:MntTotal',  # "Monto Total del DTE"
+        namespaces=DTE_XMLNS_MAP)
+
+    # 'Signature'
+    # signature_signed_info_em = signature_em.find(
+    #     'ds:SignedInfo',  # "Descripcion de la Informacion Firmada y del Metodo de Firma"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_signed_info_canonicalization_method_em = signature_signed_info_em.find(
+    #     'ds:CanonicalizationMethod',  # "Algoritmo de Canonicalizacion"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_signed_info_signature_method_em = signature_signed_info_em.find(
+    #     'ds:SignatureMethod',  # "Algoritmo de Firma"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_signed_info_reference_em = signature_signed_info_em.find(
+    #     'ds:Reference',  # "Referencia a Elemento Firmado"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_signature_value_em = signature_em.find(
+        'ds:SignatureValue',  # "Valor de la Firma Digital"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_key_info_em = signature_em.find(
+        'ds:KeyInfo',  # "Informacion de Claves Publicas y Certificado"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_key_info_key_value_em = signature_key_info_em.find(
+    #     'ds:KeyValue',
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_key_info_x509_data_em = signature_key_info_em.find(
+        'ds:X509Data',  # "Informacion del Certificado Publico"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_key_info_x509_cert_em = signature_key_info_x509_data_em.find(
+        'ds:X509Certificate',  # "Certificado Publico"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+
+    ###########################################################################
+    # values parsing
+    ###########################################################################
+
+    tipo_dte_value = constants.TipoDteEnum(int(tipo_dte_em.text.strip()))
+    folio_value = int(folio_em.text.strip())
+    fecha_emision_value = date.fromisoformat(fecha_emision_em.text.strip())
+    fecha_vencimiento_value = None
+    if fecha_vencimiento_em is not None:
+        fecha_vencimiento_value = date.fromisoformat(fecha_vencimiento_em.text.strip())
+
+    emisor_rut_value = Rut(emisor_rut_em.text.strip())
+    emisor_razon_social_value = emisor_razon_social_em.text.strip()
+    emisor_giro_value = emisor_giro_em.text.strip()
+    emisor_email_value = emisor_email_em.text.strip() if emisor_email_em is not None else None
+
+    receptor_rut_value = Rut(receptor_rut_em.text.strip())
+    receptor_razon_social_value = receptor_razon_social_em.text.strip()
+    receptor_email_value = receptor_email_em.text.strip() if receptor_email_em is not None else None
+
+    monto_total_value = int(monto_total_em.text.strip())
+
+    tmst_firma_value = datetime.fromisoformat(tmst_firma_em.text)
+
+    signature_signature_value_base64 = signature_signature_value_em.text.strip()
+    signature_key_info_x509_cert_base64 = signature_key_info_x509_cert_em.text.strip()
+
+    return data_models.DteDataL2(
+        emisor_rut=emisor_rut_value,
+        tipo_dte=tipo_dte_value,
+        folio=folio_value,
+        fecha_emision_date=fecha_emision_value,
+        receptor_rut=receptor_rut_value,
+        monto_total=monto_total_value,
+        emisor_razon_social=emisor_razon_social_value,
+        receptor_razon_social=receptor_razon_social_value,
+        fecha_vencimiento_date=fecha_vencimiento_value,
+        firma_documento_dt_naive=tmst_firma_value,
+        signature_value_base64=signature_signature_value_base64,
+        signature_x509_cert_base64=signature_key_info_x509_cert_base64,
+        emisor_giro=emisor_giro_value,
+        emisor_email=emisor_email_value,
+        receptor_email=receptor_email_value,
     )
-
-    return obj_struct
 
 
 ###############################################################################
 # helpers
 ###############################################################################
 
-def _set_dte_xml_missing_xmlns(
-    xml_doc: lxml.etree.ElementBase,
-) -> Tuple[lxml.etree.ElementBase, bool]:
+def _set_dte_xml_missing_xmlns(xml_doc: XmlElement) -> Tuple[XmlElement, bool]:
 
     # source: name of the XML element without namespace.
     #   cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L22 (f57a326)
@@ -180,9 +501,7 @@ def _set_dte_xml_missing_xmlns(
     return xml_doc, modified
 
 
-def _remove_dte_xml_doc_personalizado(
-    xml_doc: lxml.etree.ElementBase,
-) -> Tuple[lxml.etree.ElementBase, bool]:
+def _remove_dte_xml_doc_personalizado(xml_doc: XmlElement) -> Tuple[XmlElement, bool]:
     # Remove non-standard but popular element 'DocPersonalizado', it if exists.
 
     modified = False
@@ -194,96 +513,3 @@ def _remove_dte_xml_doc_personalizado(
         xml_doc.remove(xml_em)
 
     return xml_doc, modified
-
-
-def _get_tipo_dte(xml_etree: lxml.etree.ElementTree) -> constants.TipoDteEnum:
-    em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:IdDoc/sii-dte:TipoDTE'
-
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
-    if value_str is None:
-        raise Exception("Element 'TipoDTE' was not found in the XML document.")
-    return constants.TipoDteEnum(int(value_str))
-
-
-def _get_folio(xml_etree: lxml.etree.ElementTree) -> int:
-    em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:IdDoc/sii-dte:Folio'
-
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
-    if value_str is None:
-        raise Exception("Element 'Folio' was not found in the XML document.")
-    return int(value_str)
-
-
-def _get_fecha_emision(xml_etree: lxml.etree.ElementTree) -> date:
-    em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:IdDoc/sii-dte:FchEmis'
-
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
-    if value_str is None:
-        raise Exception("Element 'FchEmis' was not found in the XML document.")
-    return date.fromisoformat(value_str)
-
-
-def _get_fecha_vencimiento(
-    xml_etree: lxml.etree.ElementTree,
-    default: Union[date, None, _MISSING_TYPE] = MISSING,
-) -> Optional[date]:
-
-    em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:IdDoc/sii-dte:FchVenc'
-
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
-    if value_str is None:
-        if default is None or isinstance(default, date):
-            value = default
-        elif default is MISSING:
-            raise Exception("Element 'FchVenc' was not found in the XML document.")
-        else:
-            raise TypeError("Invalid type of 'default'.")
-    else:
-        value = date.fromisoformat(value_str)
-
-    return value
-
-
-def _get_emisor_rut(xml_etree: lxml.etree.ElementTree) -> Rut:
-    em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Emisor/sii-dte:RUTEmisor'
-
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
-    if value_str is None:
-        raise Exception("Element 'RUTEmisor' was not found in the XML document.")
-    return Rut(value_str)
-
-
-def _get_emisor_razon_social(xml_etree: lxml.etree.ElementTree) -> str:
-    em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Emisor/sii-dte:RznSoc'
-
-    value_str: str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
-    if value_str is None:
-        raise Exception("Element 'RznSoc' was not found in the XML document.")
-    return value_str
-
-
-def _get_receptor_rut(xml_etree: lxml.etree.ElementTree) -> Rut:
-    em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Receptor/sii-dte:RUTRecep'
-
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
-    if value_str is None:
-        raise Exception("Element 'RUTRecep' was not found in the XML document.")
-    return Rut(value_str)
-
-
-def _get_receptor_razon_social(xml_etree: lxml.etree.ElementTree) -> str:
-    em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Receptor/sii-dte:RznSocRecep'
-
-    value_str: str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
-    if value_str is None:
-        raise Exception("Element 'RznSocRecep' was not found in the XML document.")
-    return value_str
-
-
-def _get_monto_total(xml_etree: lxml.etree.ElementTree) -> int:
-    em_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Totales/sii-dte:MntTotal'
-
-    value_str = xml_etree.findtext(em_path, namespaces=DTE_XMLNS_MAP)
-    if value_str is None:
-        raise Exception("Element 'MntTotal' was not found in the XML document.")
-    return int(value_str)
