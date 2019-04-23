@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+  <!-- O Win32 Chrome 73 central VERSION: v20190227 -->
+<Documento ID="MiPE76354771-13419">
+    <Encabezado>
+      <IdDoc>
+        <TipoDTE>33</TipoDTE>
+        <Folio>170</Folio>
+        <FchEmis>2019-04-01</FchEmis>
+        <TpoTranCompra>1</TpoTranCompra>
+        <TpoTranVenta>1</TpoTranVenta>
+        <FmaPago>2</FmaPago>
+      </IdDoc>
+      <Emisor>
+        <RUTEmisor>76354771-K</RUTEmisor>
+        <RznSoc>INGENIERIA ENACON SPA</RznSoc>
+        <GiroEmis>Ingenieria y Construccion</GiroEmis>
+        <CorreoEmisor>ENACONLTDA@GMAIL.COM</CorreoEmisor>
+        <Acteco>421000</Acteco>
+        <CdgSIISucur>078525666</CdgSIISucur>
+        <DirOrigen>MERCED 753  16 ARBOLEDA DE QUIILOTA</DirOrigen>
+        <CmnaOrigen>QUILLOTA</CmnaOrigen>
+        <CiudadOrigen>QUILLOTA</CiudadOrigen>
+      </Emisor>
+      <Receptor>
+        <RUTRecep>96790240-3</RUTRecep>
+        <RznSocRecep>MINERA LOS PELAMBRES</RznSocRecep>
+        <GiroRecep>EXTRACCION Y PROCESAMIENTO DE COBRE</GiroRecep>
+        <Contacto>Felipe Barria</Contacto>
+        <DirRecep>Av. Apoquindo 4001  1802</DirRecep>
+        <CmnaRecep>LAS CONDES</CmnaRecep>
+        <CiudadRecep>SANTIAGO</CiudadRecep>
+      </Receptor>
+      <Totales>
+        <MntNeto>2517900</MntNeto>
+        <TasaIVA>19.00</TasaIVA>
+        <IVA>478401</IVA>
+        <MntTotal>2996301</MntTotal>
+      </Totales>
+    </Encabezado>
+    <Detalle>
+      <NroLinDet>1</NroLinDet>
+      <NmbItem>Tableros electricos 3 tom</NmbItem>
+      <DscItem>as 3p + t; 380v; 50 hz; 32a; 3 tomas monofasicas 2p + t; 240v; 50 hz; 16a; proteccion ip, segun orden de compra de la referencia.-</DscItem>
+      <QtyItem>2.00</QtyItem>
+      <UnmdItem>Unid</UnmdItem>
+      <PrcItem>1258950.00</PrcItem>
+      <MontoItem>2517900</MontoItem>
+    </Detalle>
+    <Referencia>
+      <NroLinRef>1</NroLinRef>
+      <TpoDocRef>801</TpoDocRef>
+      <FolioRef>4510083633</FolioRef>
+      <FchRef>2019-03-22</FchRef>
+    </Referencia>
+<TED version="1.0"><DD><RE>76354771-K</RE><TD>33</TD><F>170</F><FE>2019-04-01</FE><RR>96790240-3</RR><RSR>MINERA LOS PELAMBRES</RSR><MNT>2996301</MNT><IT1>Tableros electricos 3 tom</IT1><CAF version="1.0"><DA><RE>76354771-K</RE><RS>INGENIERIA ENACON SPA</RS><TD>33</TD><RNG><D>170</D><H>170</H></RNG><FA>2019-04-01</FA><RSAPK><M>uv7BUO3yg/7RoMjh1mPXXG/8YIwjtXsu7kcOq7dZQj66QCiY4FVz2fIhF1jaU0GSikq/jq26IFGylGus92OnPQ==</M><E>Aw==</E></RSAPK><IDK>300</IDK></DA><FRMA algoritmo="SHA1withRSA">PI7bw8y0RNUJrGxyhb2gr6BjFtv/Ikyo/6g69wycoXTHSoRML3xvZvOBytreN7REw9JF0Ldoj91RRtaZbH38bA==</FRMA></CAF><TSTED>2019-04-01T01:36:40</TSTED></DD><FRMT algoritmo="SHA1withRSA">DKFS7bNYRpVYLNEII+eyLcBHmNwQIHVkbqgR96wKcnDEcU6NsHQUMUyXpr7ql7xD9iuGkZDmNxHuY+Mq913oSA==</FRMT></TED>
+    <TmstFirma>2019-04-01T01:36:40</TmstFirma>
+
+  </Documento>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<SignedInfo>
+<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<Reference URI="#MiPE76354771-13419">
+<Transforms>
+<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</Transforms>
+<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<DigestValue>ij2Qn6xOc2eRx3hwyO/GrzptoBk=</DigestValue>
+</Reference>
+</SignedInfo>
+<SignatureValue>
+fsYP5p/lNfofAz8POShrJjqXdBTNNtvv4/TWCxbvwTIAXr7BLrlvX3C/Hpfo4viqaxSu1OGFgPnk
+ddDIFwj/ZsVdbdB+MhpKkyha83RxhJpYBVBY3c+y9J6oMfdIdMAYXhEkFw8w63KHyhdf2E9dnbKi
+wqSxDcYjTT6vXsLPrZk=
+</SignatureValue>
+<KeyInfo>
+<KeyValue>
+<RSAKeyValue>
+<Modulus>
+pB4Bs0Op+L0za/zpFQYBiCrVlIOKgULo4uvRLCI5picuxI6X4rE7f3g9XBIZrqtmTUSshmifKLXl
+9T/ScdkuLyIcsHj0QHkbe0LCHSzw1+pH1yTT/dn5NeFVR2InIkL/PzHkjmVJR/M0R50lGJ1W+nqN
+Uavs/9J+gR9BBMs/eYE=
+</Modulus>
+<Exponent>AQAB</Exponent>
+</RSAKeyValue>
+</KeyValue>
+<X509Data>
+<X509Certificate>
+abc
+</X509Certificate>
+</X509Data>
+</KeyInfo>
+</Signature></DTE>
