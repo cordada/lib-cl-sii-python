@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+  <!-- O Win32 Chrome 73 central VERSION: v20190227 -->
+<Documento ID="MiPE76354771-13419">
+    <Encabezado>
+      <IdDoc>
+        <TipoDTE>33</TipoDTE>
+        <Folio>170</Folio>
+        <FchEmis>2019-04-01</FchEmis>
+        <TpoTranCompra>1</TpoTranCompra>
+        <TpoTranVenta>1</TpoTranVenta>
+        <FmaPago>2</FmaPago>
+      </IdDoc>
+      <Emisor>
+        <RUTEmisor>76354771-K</RUTEmisor>
+        <RznSoc>INGENIERIA ENACON SPA</RznSoc>
+        <GiroEmis>Ingenieria y Construccion</GiroEmis>
+        <CorreoEmisor>ENACONLTDA@GMAIL.COM</CorreoEmisor>
+        <Acteco>421000</Acteco>
+        <CdgSIISucur>078525666</CdgSIISucur>
+        <DirOrigen>MERCED 753  16 ARBOLEDA DE QUIILOTA</DirOrigen>
+        <CmnaOrigen>QUILLOTA</CmnaOrigen>
+        <CiudadOrigen>QUILLOTA</CiudadOrigen>
+      </Emisor>
+      <Receptor>
+        <RUTRecep>96790240-3</RUTRecep>
+        <RznSocRecep>MINERA LOS PELAMBRES</RznSocRecep>
+        <GiroRecep>EXTRACCION Y PROCESAMIENTO DE COBRE</GiroRecep>
+        <Contacto>Felipe Barria</Contacto>
+        <DirRecep>Av. Apoquindo 4001  1802</DirRecep>
+        <CmnaRecep>LAS CONDES</CmnaRecep>
+        <CiudadRecep>SANTIAGO</CiudadRecep>
+      </Receptor>
+      <Totales>
+        <MntNeto>2517900</MntNeto>
+        <TasaIVA>19.00</TasaIVA>
+        <IVA>478401</IVA>
+        <MntTotal>2996301</MntTotal>
+      </Totales>
+    </Encabezado>
+    <Detalle>
+      <NroLinDet>1</NroLinDet>
+      <NmbItem>Tableros electricos 3 tom</NmbItem>
+      <DscItem>as 3p + t; 380v; 50 hz; 32a; 3 tomas monofasicas 2p + t; 240v; 50 hz; 16a; proteccion ip, segun orden de compra de la referencia.-</DscItem>
+      <QtyItem>2.00</QtyItem>
+      <UnmdItem>Unid</UnmdItem>
+      <PrcItem>1258950.00</PrcItem>
+      <MontoItem>2517900</MontoItem>
+    </Detalle>
+    <Referencia>
+      <NroLinRef>1</NroLinRef>
+      <TpoDocRef>801</TpoDocRef>
+      <FolioRef>4510083633</FolioRef>
+      <FchRef>2019-03-22</FchRef>
+    </Referencia>
+<TED version="1.0"><DD><RE>76354771-K</RE><TD>33</TD><F>170</F><FE>2019-04-01</FE><RR>96790240-3</RR><RSR>MINERA LOS PELAMBRES</RSR><MNT>2996301</MNT><IT1>Tableros electricos 3 tom</IT1><CAF version="1.0"><DA><RE>76354771-K</RE><RS>INGENIERIA ENACON SPA</RS><TD>33</TD><RNG><D>170</D><H>170</H></RNG><FA>2019-04-01</FA><RSAPK><M>uv7BUO3yg/7RoMjh1mPXXG/8YIwjtXsu7kcOq7dZQj66QCiY4FVz2fIhF1jaU0GSikq/jq26IFGylGus92OnPQ==</M><E>Aw==</E></RSAPK><IDK>300</IDK></DA><FRMA algoritmo="SHA1withRSA">PI7bw8y0RNUJrGxyhb2gr6BjFtv/Ikyo/6g69wycoXTHSoRML3xvZvOBytreN7REw9JF0Ldoj91RRtaZbH38bA==</FRMA></CAF><TSTED>2019-04-01T01:36:40</TSTED></DD><FRMT algoritmo="SHA1withRSA">DKFS7bNYRpVYLNEII+eyLcBHmNwQIHVkbqgR96wKcnDEcU6NsHQUMUyXpr7ql7xD9iuGkZDmNxHuY+Mq913oSA==</FRMT></TED>
+    <TmstFirma>2019-04-01T01:36:40</TmstFirma>
+
+  </Documento>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<SignedInfo>
+<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<Reference URI="#MiPE76354771-13419">
+<Transforms>
+<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+</Transforms>
+<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<DigestValue>ij2Qn6xOc2eRx3hwyO/GrzptoBk=</DigestValue>
+</Reference>
+</SignedInfo>
+<SignatureValue>
+fsYP5p/lNfofAz8POShrJjqXdBTNNtvv4/TWCxbvwTIAXr7BLrlvX3C/Hpfo4viqaxSu1OGFgPnk
+ddDIFwj/ZsVdbdB+MhpKkyha83RxhJpYBVBY3c+y9J6oMfdIdMAYXhEkFw8w63KHyhdf2E9dnbKi
+wqSxDcYjTT6vXsLPrZk=
+</SignatureValue>
+<KeyInfo>
+<KeyValue>
+<RSAKeyValue>
+<Modulus>
+pB4Bs0Op+L0za/zpFQYBiCrVlIOKgULo4uvRLCI5picuxI6X4rE7f3g9XBIZrqtmTUSshmifKLXl
+9T/ScdkuLyIcsHj0QHkbe0LCHSzw1+pH1yTT/dn5NeFVR2InIkL/PzHkjmVJR/M0R50lGJ1W+nqN
+Uavs/9J+gR9BBMs/eYE=
+</Modulus>
+<Exponent>AQAB</Exponent>
+</RSAKeyValue>
+</KeyValue>
+<X509Data>
+<X509Certificate>
+MIIGVDCCBTygAwIBAgIKMUWmvgAAAAjUHTANBgkqhkiG9w0BAQUFADCB0jELMAkGA1UEBhMCQ0wx
+HTAbBgNVBAgTFFJlZ2lvbiBNZXRyb3BvbGl0YW5hMREwDwYDVQQHEwhTYW50aWFnbzEUMBIGA1UE
+ChMLRS1DRVJUQ0hJTEUxIDAeBgNVBAsTF0F1dG9yaWRhZCBDZXJ0aWZpY2Fkb3JhMTAwLgYDVQQD
+EydFLUNFUlRDSElMRSBDQSBGSVJNQSBFTEVDVFJPTklDQSBTSU1QTEUxJzAlBgkqhkiG9w0BCQEW
+GHNjbGllbnRlc0BlLWNlcnRjaGlsZS5jbDAeFw0xNzA5MDQyMTExMTJaFw0yMDA5MDMyMTExMTJa
+MIHXMQswCQYDVQQGEwJDTDEUMBIGA1UECBMLVkFMUEFSQUlTTyAxETAPBgNVBAcTCFF1aWxsb3Rh
+MS8wLQYDVQQKEyZTZXJ2aWNpb3MgQm9uaWxsYSB5IExvcGV6IHkgQ2lhLiBMdGRhLjEkMCIGA1UE
+CwwbSW5nZW5pZXLDrWEgeSBDb25zdHJ1Y2Npw7NuMSMwIQYDVQQDExpSYW1vbiBodW1iZXJ0byBM
+b3BleiAgSmFyYTEjMCEGCSqGSIb3DQEJARYUZW5hY29ubHRkYUBnbWFpbC5jb20wgZ8wDQYJKoZI
+hvcNAQEBBQADgY0AMIGJAoGBAKQeAbNDqfi9M2v86RUGAYgq1ZSDioFC6OLr0SwiOaYnLsSOl+Kx
+O394PVwSGa6rZk1ErIZonyi15fU/0nHZLi8iHLB49EB5G3tCwh0s8NfqR9ck0/3Z+TXhVUdiJyJC
+/z8x5I5lSUfzNEedJRidVvp6jVGr7P/SfoEfQQTLP3mBAgMBAAGjggKnMIICozA9BgkrBgEEAYI3
+FQcEMDAuBiYrBgEEAYI3FQiC3IMvhZOMZoXVnReC4twnge/sPGGBy54UhqiCWAIBZAIBBDAdBgNV
+HQ4EFgQU1dVHhF0UVe7RXIz4cjl3/Vew+qowCwYDVR0PBAQDAgTwMB8GA1UdIwQYMBaAFHjhPp/S
+ErN6PI3NMA5Ts0MpB7NVMD4GA1UdHwQ3MDUwM6AxoC+GLWh0dHA6Ly9jcmwuZS1jZXJ0Y2hpbGUu
+Y2wvZWNlcnRjaGlsZWNhRkVTLmNybDA6BggrBgEFBQcBAQQuMCwwKgYIKwYBBQUHMAGGHmh0dHA6
+Ly9vY3NwLmVjZXJ0Y2hpbGUuY2wvb2NzcDAjBgNVHREEHDAaoBgGCCsGAQQBwQEBoAwWCjEzMTg1
+MDk1LTYwIwYDVR0SBBwwGqAYBggrBgEEAcEBAqAMFgo5NjkyODE4MC01MIIBTQYDVR0gBIIBRDCC
+AUAwggE8BggrBgEEAcNSBTCCAS4wLQYIKwYBBQUHAgEWIWh0dHA6Ly93d3cuZS1jZXJ0Y2hpbGUu
+Y2wvQ1BTLmh0bTCB/AYIKwYBBQUHAgIwge8egewAQwBlAHIAdABpAGYAaQBjAGEAZABvACAARgBp
+AHIAbQBhACAAUwBpAG0AcABsAGUALgAgAEgAYQAgAHMAaQBkAG8AIAB2AGEAbABpAGQAYQBkAG8A
+IABlAG4AIABmAG8AcgBtAGEAIABwAHIAZQBzAGUAbgBjAGkAYQBsACwAIABxAHUAZQBkAGEAbgBk
+AG8AIABoAGEAYgBpAGwAaQB0AGEAZABvACAAZQBsACAAQwBlAHIAdABpAGYAaQBjAGEAZABvACAA
+cABhAHIAYQAgAHUAcwBvACAAdAByAGkAYgB1AHQAYQByAGkAbzANBgkqhkiG9w0BAQUFAAOCAQEA
+mxtPpXWslwI0+uJbyuS9s/S3/Vs0imn758xMU8t4BHUd+OlMdNAMQI1G2+q/OugdLQ/a9Sg3clKD
+qXR4lHGl8d/Yq4yoJzDD3Ceez8qenY3JwGUhPzw9oDpg4mXWvxQDXSFeW/u/BgdadhfGnpwx61Un
++/fU24ZgU1dDJ4GKj5oIPHUIjmoSBhnstEhIr6GJWSTcDKTyzRdqBlaVhenH2Qs6Mw6FrOvRPuud
+B7lo1+OgxMb/Gjyu6XnEaPu7Vq4XlLYMoCD2xrV7WEADaDTm7KcNLczVAYqWSF1WUqYSxmPoQDFY
++kMTThJyCXBlE0NADInrkwWgLLygkKI7zXkwaw==
+</X509Certificate>
+</X509Data>
+</KeyInfo>
+</Signature></DTE>
