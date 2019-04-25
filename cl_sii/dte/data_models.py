@@ -22,6 +22,7 @@ from typing import Mapping, Optional
 
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
+from cl_sii.libs import encoding_utils
 from cl_sii.rut import Rut
 
 from . import constants
@@ -79,9 +80,19 @@ def validate_clean_str(value: str) -> None:
         raise ValueError("Value has leading or trailing whitespace characters.", value)
 
 
+def validate_clean_bytes(value: bytes) -> None:
+    if len(value.strip()) != len(value):
+        raise ValueError("Value has leading or trailing whitespace characters.", value)
+
+
 def validate_non_empty_str(value: str) -> None:
     if len(value.strip()) == 0:
-        raise ValueError("String (stripped) length is 0.")
+        raise ValueError("String value length (stripped) is 0.")
+
+
+def validate_non_empty_bytes(value: bytes) -> None:
+    if len(value.strip()) == 0:
+        raise ValueError("Bytes value length (stripped) is 0.")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -327,14 +338,16 @@ class DteDataL2(DteDataL1):
     Datetime on which the "documento" was digitally signed.
     """
 
-    signature_value_base64: Optional[str] = dc_field(default=None)
+    signature_value: Optional[bytes] = dc_field(default=None)
     """
-    DTE's digital signature's value (as base64 str).
+    DTE's digital signature's value (raw bytes, without base64 encoding).
     """
 
-    signature_x509_cert_base64: Optional[str] = dc_field(default=None)
+    signature_x509_cert_pem: Optional[bytes] = dc_field(default=None)
     """
-    DTE's digital signature's X509 certificate (as base64 str).
+    DTE's digital signature's PEM-encoded X.509 cert.
+
+    PEM-encoded implies base64-encoded.
     """
 
     emisor_giro: Optional[str] = dc_field(default=None)
@@ -377,21 +390,18 @@ class DteDataL2(DteDataL1):
             if not isinstance(self.firma_documento_dt_naive, datetime):
                 raise TypeError("Inappropriate type of 'firma_documento_dt_naive'.")
 
-        if self.signature_value_base64 is not None:
-            if not isinstance(self.signature_value_base64, str):
-                raise TypeError("Inappropriate type of 'signature_value_base64'.")
-            # TODO: validate that it is base64
-            # TODO: bytes?
-            validate_clean_str(self.signature_value_base64)
-            validate_non_empty_str(self.signature_value_base64)
+        if self.signature_value is not None:
+            if not isinstance(self.signature_value, bytes):
+                raise TypeError("Inappropriate type of 'signature_value'.")
+            validate_clean_bytes(self.signature_value)
+            validate_non_empty_bytes(self.signature_value)
 
-        if self.signature_x509_cert_base64 is not None:
-            if not isinstance(self.signature_x509_cert_base64, str):
-                raise TypeError("Inappropriate type of 'signature_x509_cert_base64'.")
-            # TODO: validate that it is base64
-            # TODO: bytes?
-            validate_clean_str(self.signature_x509_cert_base64)
-            validate_non_empty_str(self.signature_x509_cert_base64)
+        if self.signature_x509_cert_pem is not None:
+            if not isinstance(self.signature_x509_cert_pem, bytes):
+                raise TypeError("Inappropriate type of 'signature_x509_cert_pem'.")
+            validate_clean_bytes(self.signature_x509_cert_pem)
+            validate_non_empty_bytes(self.signature_x509_cert_pem)
+            encoding_utils.validate_base64(self.signature_x509_cert_pem)
 
         if self.emisor_giro is not None:
             if not isinstance(self.emisor_giro, str):
