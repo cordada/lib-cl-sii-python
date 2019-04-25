@@ -29,7 +29,8 @@ import lxml.etree
 import xml.parsers.expat
 import xml.parsers.expat.errors
 from lxml.etree import ElementBase as XmlElement  # noqa: F401
-from lxml.etree import ElementTree as XmlElementTree  # noqa: F401
+# note: 'lxml.etree.ElementTree' is a **function**, not a class.
+from lxml.etree import _ElementTree as XmlElementTree  # noqa: F401
 from lxml.etree import XMLSchema as XmlSchema  # noqa: F401
 
 
