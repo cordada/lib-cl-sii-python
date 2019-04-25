@@ -29,6 +29,7 @@ requirements = [
     'marshmallow>=2.16.3',
     'pyOpenSSL>=18.0.0',
     'pytz>=2018.7',
+    'signxml>=2.6.0',
 ]
 
 extras_requirements = {
