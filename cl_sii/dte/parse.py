@@ -23,8 +23,9 @@ import os
 from datetime import date, datetime
 from typing import Tuple
 
+from cl_sii.libs import encoding_utils
 from cl_sii.libs import xml_utils
-from cl_sii.libs.xml_utils import XmlElement
+from cl_sii.libs.xml_utils import XmlElement, XmlElementTree
 from cl_sii.rut import Rut
 from . import constants
 from . import data_models
@@ -121,11 +122,18 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
         It is assumed that ``xml_doc`` is an
         ``{http://www.sii.cl/SiiDte}/DTE``  XML element.
 
+    :raises ValueError:
+    :raises TypeError:
+    :raises NotImplementedError:
+
     """
     # TODO: change response type to a dataclass like 'DteXmlData'.
     # TODO: separate the XML parsing stage from the deserialization stage, which could be
     #   performed by XML-agnostic code (perhaps using Marshmallow or data clacases?).
     #   See :class:`cl_sii.rcv.parse.RcvCsvRowSchema`.
+
+    if not isinstance(xml_doc, (XmlElement, XmlElementTree)):
+        raise TypeError("'xml_doc' must be an 'XmlElement'.")
 
     xml_em = xml_doc
 
@@ -441,8 +449,10 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
 
     tmst_firma_value = datetime.fromisoformat(tmst_firma_em.text)
 
-    signature_signature_value_base64 = signature_signature_value_em.text.strip()
-    signature_key_info_x509_cert_base64 = signature_key_info_x509_cert_em.text.strip()
+    signature_signature_value = encoding_utils.decode_base64_strict(
+        signature_signature_value_em.text.strip())
+    signature_key_info_x509_cert_pem = encoding_utils.clean_base64(
+        signature_key_info_x509_cert_em.text.strip())
 
     return data_models.DteDataL2(
         emisor_rut=emisor_rut_value,
@@ -455,8 +465,8 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
         receptor_razon_social=receptor_razon_social_value,
         fecha_vencimiento_date=fecha_vencimiento_value,
         firma_documento_dt_naive=tmst_firma_value,
-        signature_value_base64=signature_signature_value_base64,
-        signature_x509_cert_base64=signature_key_info_x509_cert_base64,
+        signature_value=signature_signature_value,
+        signature_x509_cert_pem=signature_key_info_x509_cert_pem,
         emisor_giro=emisor_giro_value,
         emisor_email=emisor_email_value,
         receptor_email=receptor_email_value,
