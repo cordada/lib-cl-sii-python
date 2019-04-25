@@ -5,7 +5,7 @@
 defusedxml==0.5.0
 lxml==4.2.5
 marshmallow==2.16.3
-pytz==2018.9
+pytz==2019.1
 
 # Packages dependencies:
 #none
