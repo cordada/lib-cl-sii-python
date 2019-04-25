@@ -13,6 +13,7 @@ tox==3.7.0
 #       - coverage
 #       - requests
 #   - flake8:
+#       - entrypoints
 #       - mccabe
 #       - pycodestyle
 #       - pyflakes
@@ -25,13 +26,14 @@ tox==3.7.0
 #       - py
 #       - toml
 #       - virtualenv
+entrypoints==0.3
 filelock==3.0.10
 mccabe==0.6.1
 mypy-extensions==0.4.1
 pluggy==0.9.0
 py==1.8.0
 pycodestyle==2.5.0
-pyflakes==2.1.0
+pyflakes==2.1.1
 toml==0.10.0
-typed-ast==1.3.1
-virtualenv==16.4.3
+typed-ast==1.3.4
+virtualenv==16.5.0
