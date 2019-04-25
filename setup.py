@@ -23,6 +23,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 # TODO: add reasonable upper-bound for some of these packages?
 requirements = [
+    'cryptography>=2.6.1',
     'defusedxml>=0.5.0',
     'lxml>=4.2.6',
     'marshmallow>=2.16.3',
