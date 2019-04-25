@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<DTE version="1.0">
+  <!-- O Win32 Chrome 73 central VERSION: v20190227 -->
+<Documento ID="MiPE76399752-6048">
+    <Encabezado>
+      <IdDoc>
+        <TipoDTE>33</TipoDTE>
+        <Folio>25568</Folio>
+        <FchEmis>2019-03-29</FchEmis>
+        <TpoTranCompra>1</TpoTranCompra>
+        <TpoTranVenta>1</TpoTranVenta>
+        <FmaPago>2</FmaPago>
+      </IdDoc>
+      <Emisor>
+        <RUTEmisor>76399752-9</RUTEmisor>
+        <RznSoc>COMERCIALIZADORA INNOVA MOBEL SPA</RznSoc>
+        <GiroEmis>COMERCIALIZACION DE PRODUCTOS PARA EL HOGAR</GiroEmis>
+        <Telefono>87 472133</Telefono>
+        <CorreoEmisor>ANGEL.PEZO@APCASESORIAS.CL</CorreoEmisor>
+        <Acteco>310001</Acteco>
+        <CdgSIISucur>078904860</CdgSIISucur>
+        <DirOrigen>LOS CIPRESES 2834</DirOrigen>
+        <CmnaOrigen>LA PINTANA</CmnaOrigen>
+        <CiudadOrigen>SANTIAGO</CiudadOrigen>
+      </Emisor>
+      <Receptor>
+        <RUTRecep>96874030-K</RUTRecep>
+        <RznSocRecep>EMPRESAS LA POLAR S.A.</RznSocRecep>
+        <GiroRecep>VENTA AL POR MENOR EN COMERCIOS DE VESTU</GiroRecep>
+        <Contacto>N° Lote Despacho: 20921554 / N° Sello: 660620</Contacto>
+        <DirRecep>AVDA. SANTA CLARA 207  62 CIUDAD EMPRESARIAL</DirRecep>
+        <CmnaRecep>HUECHURABA</CmnaRecep>
+        <CiudadRecep>SANTIAGO</CiudadRecep>
+      </Receptor>
+      <Totales>
+        <MntNeto>194111</MntNeto>
+        <TasaIVA>19.00</TasaIVA>
+        <IVA>36881</IVA>
+        <MntTotal>230992</MntTotal>
+      </Totales>
+    </Encabezado>
+    <Detalle>
+      <NroLinDet>1</NroLinDet>
+      <CdgItem>
+        <TpoCodigo>SKU</TpoCodigo>
+        <VlrCodigo>19586316</VlrCodigo>
+      </CdgItem>
+      <NmbItem>JUEGO_LIVI - CHOCOLATE</NmbItem>
+      <DscItem>ROMA 3.1.1</DscItem>
+      <QtyItem>1.00</QtyItem>
+      <UnmdItem>UN</UnmdItem>
+      <PrcItem>194111.00</PrcItem>
+      <MontoItem>194111</MontoItem>
+    </Detalle>
+    <Referencia>
+      <NroLinRef>1</NroLinRef>
+      <TpoDocRef>801</TpoDocRef>
+      <FolioRef>638370</FolioRef>
+      <FchRef>2019-03-28</FchRef>
+    </Referencia>
+<TED version="1.0"><DD><RE>76399752-9</RE><TD>33</TD><F>25568</F><FE>2019-03-29</FE><RR>96874030-K</RR><RSR>EMPRESAS LA POLAR S.A.</RSR><MNT>230992</MNT><IT1>JUEGO_LIVI - CHOCOLATE</IT1><CAF version="1.0"><DA><RE>76399752-9</RE><RS>COMERCIALIZADORA INNOVA MOBEL SPA</RS><TD>33</TD><RNG><D>25568</D><H>25568</H></RNG><FA>2019-03-28</FA><RSAPK><M>7EKJUPVmefPeVcgm9Q81Dp6q1MP+UvccH0mfsugbuK6UPYLn3tO7DxpZQIgoQC9LgdwYTtC9EHajZlgsk0iZjw==</M><E>Aw==</E></RSAPK><IDK>300</IDK></DA><FRMA algoritmo="SHA1withRSA">byDdqUAqlKoALIOrNLlGmuFCOk866v4BQvnZqdiqGvrHk6jneiTMjYBSMB2GaY4t/dTFgVSOsqa/BnkRskel7Q==</FRMA></CAF><TSTED>2019-03-28T13:59:52</TSTED></DD><FRMT algoritmo="SHA1withRSA">viuqScpeQueqAnye1MLhttAAOAnO4raWlPdJ5kbSpUEeUT+pZgE/rr79kgVqirnIRM+HUpB3Yt4fbyMaARGqtA==</FRMT></TED>
+    <TmstFirma>2019-03-28T13:59:52</TmstFirma>
+
+  </Documento>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<SignedInfo>
+<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+<Reference URI="#MiPE76399752-6048">
+<Transforms>
+<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+</Transforms>
+<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+<DigestValue>tk/D3mfO/KtdWyFXYZHe7dtYijg=</DigestValue>
+</Reference>
+</SignedInfo>
+<SignatureValue>
+wwOMQuFqa6c5gzYSJ5PWfo0OiAf+yNcJK6wx4xJ3VNehlAcMrUB2q+rK/DDhCvjxAoX4NxBACiFD
+MrTMIfvxrwXjLd1oX37lSFOtsWX6JxL0SV+tLF7qvWCu1Yzw8ypUf7GDkbymJkoTYDF9JFF8kYU4
+FdU2wttiwne9XH8QFHgXsocKP/aygwiOeGqiNX9o/O5XS2GWpt+KM20jrvtYn7UFMED/3aPacCb1
+GABizr8mlVEZggZgJunMDChpFQyEigSXMK5I737Ac8D2bw7WB47Wj1WBL3sCFRDlXUXtnMvChBVp
+0HRUXYuKHyfpCzqIBXygYrIZexxXgOSnKu/yGg==
+</SignatureValue>
+<KeyInfo>
+<KeyValue>
+<RSAKeyValue>
+<Modulus>
+0tBhZ9dE624+LIifJE5Bz4NnYt2m9pKHFTqJTbEH4JCzvgdn6hLUEg3OYvWD2hjuEe9P78f6G5w6
+U3vGiYf9S4OKSOjJKOFsffEEzOHqpYe8Opx9OzBi4cRLaE72R5PPDK3JQg8dNy0w0nfaYhD98ZTw
+f5B/tp21X4DuTeNeC8K7cNDlx55HXFTINtNchYkO2DbXmxrdhKS2jeI81KGqIp4Z+yH+pQRofegr
+9N/SU4b8Ib9ue8t25tpxz2jsHlBLokXkgsx98IS7MGvHIxkuEFBibVqHp1IRsKwM2RzqxAwctiD/
+SobU35wgtdXK6wYYIIQNN+Zdv8AjisQpom3Rcw==
+</Modulus>
+<Exponent>AQAB</Exponent>
+</RSAKeyValue>
+</KeyValue>
+<X509Data>
+<X509Certificate>
+MIIF/zCCBOegAwIBAgICMhQwDQYJKoZIhvcNAQELBQAwgaYxCzAJBgNVBAYTAkNMMRgwFgYDVQQK
+Ew9BY2VwdGEuY29tIFMuQS4xSDBGBgNVBAMTP0FjZXB0YS5jb20gQXV0b3JpZGFkIENlcnRpZmlj
+YWRvcmEgQ2xhc2UgMiBQZXJzb25hIE5hdHVyYWwgLSBHNDEeMBwGCSqGSIb3DQEJARYPaW5mb0Bh
+Y2VwdGEuY29tMRMwEQYDVQQFEwo5NjkxOTA1MC04MB4XDTE3MDEwNjE0MDI1NFoXDTIwMDEwNjE0
+MDI1NFowgY8xCzAJBgNVBAYTAkNMMRgwFgYDVQQMEw9QRVJTT05BIE5BVFVSQUwxIzAhBgNVBAMT
+GkdJQU5JTkEgQkVMRU4gRElBWiBVUlJVVElBMSwwKgYJKoZIhvcNAQkBFh1kYW5pZWwuYXJhdmVu
+YUBpbm5vdmFtb2JlbC5jbDETMBEGA1UEBRMKMTY0Nzc3NTItOTCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBANLQYWfXROtuPiyInyROQc+DZ2LdpvaShxU6iU2xB+CQs74HZ+oS1BINzmL1
+g9oY7hHvT+/H+hucOlN7xomH/UuDikjoySjhbH3xBMzh6qWHvDqcfTswYuHES2hO9keTzwytyUIP
+HTctMNJ32mIQ/fGU8H+Qf7adtV+A7k3jXgvCu3DQ5ceeR1xUyDbTXIWJDtg215sa3YSkto3iPNSh
+qiKeGfsh/qUEaH3oK/Tf0lOG/CG/bnvLdubacc9o7B5QS6JF5ILMffCEuzBrxyMZLhBQYm1ah6dS
+EbCsDNkc6sQMHLYg/0qG1N+cILXVyusGGCCEDTfmXb/AI4rEKaJt0XMCAwEAAaOCAkowggJGMB8G
+A1UdIwQYMBaAFGWlqz4/yLZRbRF+X8MKB+ZDoAi2MB0GA1UdDgQWBBSHoSD4nd2UJuwzmJnJud0L
+WSO+MzALBgNVHQ8EBAMCBPAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBEGCWCGSAGG
++EIBAQQEAwIFoDB1BgNVHSAEbjBsMGoGCCsGAQQBtWsCMF4wMQYIKwYBBQUHAgEWJWh0dHBzOi8v
+YWNnNC5hY2VwdGEuY29tL0NQUy1BY2VwdGFjb20wKQYIKwYBBQUHAgIwHTAWFg9BY2VwdGEuY29t
+IFMuQS4wAwIBCRoDVEJEMFoGA1UdEgRTMFGgGAYIKwYBBAHBAQKgDBYKOTY5MTkwNTAtOKAkBggr
+BgEFBQcIA6AYMBYMCjk2OTE5MDUwLTgGCCsGAQQBwQECgQ9pbmZvQGFjZXB0YS5jb20waAYDVR0R
+BGEwX6AYBggrBgEEAcEBAaAMFgoxNjQ3Nzc1Mi05oCQGCCsGAQUFBwgDoBgwFgwKMTY0Nzc3NTIt
+OQYIKwYBBAHBAQKBHWRhbmllbC5hcmF2ZW5hQGlubm92YW1vYmVsLmNsMEcGCCsGAQUFBwEBBDsw
+OTA3BggrBgEFBQcwAYYraHR0cHM6Ly9hY2c0LmFjZXB0YS5jb20vYWNnNC9vY3NwL0NsYXNlMi1H
+NDA/BgNVHR8EODA2MDSgMqAwhi5odHRwczovL2FjZzQuYWNlcHRhLmNvbS9hY2c0L2NybC9DbGFz
+ZTItRzQuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCx+mdIdIu1QQf6mnFDCYfcyhU5t5iKV+8Pr8LV
+WZdlwGmKRbzhqYKZ8oo5Bfmto105z7JYJIFyZiny/8sb9IcoPLNG/6LtWZZFmHkZabC9sUEjSxU/
+w8w2VMhrCILonVjnhLX8VHNMkc3Xy17JgvUAIcor2MHfNxn0lyEM3EZdROkgDxwuWfS388mqg8KB
+B/QNi7AB5U9kB7M5wfGr2lYAvkzlTmHlcBFI2fI6odZlfzLnyKN/ow9mow4Z4ngKuhlTpTUVrACg
+jhl1gijANMhS1SwNpPgOLlf54KbXTQxWrrwt9mEMZBH7w6imtxJGzNWPjPcykRB7YQxhrHkfzmrw
+</X509Certificate>
+</X509Data>
+</KeyInfo>
+</Signature></DTE>

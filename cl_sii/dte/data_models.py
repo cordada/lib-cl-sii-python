@@ -1,10 +1,28 @@
+"""
+DTE data models
+===============
+
+Concepts
+--------
+
+In the domain of a DTE, a:
+
+* "Vendedor": is who sold goods or services to "deudor" in a
+  transaction for which the DTE was issued.
+  It *usually* corresponds to the DTE's "emisor", but not always.
+* "Deudor": is who purchased goods or services from "vendedor" in a
+  transaction for which the DTE was issued.
+  It *usually* corresponds to the DTE's "receptor", but not always.
+
+"""
 import dataclasses
 from dataclasses import field as dc_field
-from datetime import date
+from datetime import date, datetime
 from typing import Mapping, Optional
 
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
+from cl_sii.libs import encoding_utils
 from cl_sii.rut import Rut
 
 from . import constants
@@ -55,6 +73,26 @@ def validate_contribuyente_razon_social(value: str) -> None:
 
     if len(value) > cl_sii.contribuyente.constants.RAZON_SOCIAL_LONG_MAX_LENGTH:
         raise ValueError("Value exceeds max allowed length.")
+
+
+def validate_clean_str(value: str) -> None:
+    if len(value.strip()) != len(value):
+        raise ValueError("Value has leading or trailing whitespace characters.", value)
+
+
+def validate_clean_bytes(value: bytes) -> None:
+    if len(value.strip()) != len(value):
+        raise ValueError("Value has leading or trailing whitespace characters.", value)
+
+
+def validate_non_empty_str(value: str) -> None:
+    if len(value.strip()) == 0:
+        raise ValueError("String value length (stripped) is 0.")
+
+
+def validate_non_empty_bytes(value: bytes) -> None:
+    if len(value.strip()) == 0:
+        raise ValueError("Bytes value length (stripped) is 0.")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -230,8 +268,38 @@ class DteDataL1(DteDataL0):
         validate_dte_monto_total(self.monto_total)
 
     @property
-    def natural_key(self) -> DteNaturalKey:
-        return DteNaturalKey(emisor_rut=self.emisor_rut, tipo_dte=self.tipo_dte, folio=self.folio)
+    def vendedor_rut(self) -> Rut:
+        """
+        Return the RUT of the "vendedor".
+
+        :raises ValueError:
+        """
+        if self.tipo_dte.emisor_is_vendedor:
+            result = self.emisor_rut
+        elif self.tipo_dte.receptor_is_vendedor:
+            result = self.receptor_rut
+        else:
+            raise ValueError(
+                "Concept \"vendedor\" does not apply for this 'tipo_dte'.", self.tipo_dte)
+
+        return result
+
+    @property
+    def deudor_rut(self) -> Rut:
+        """
+        Return the RUT of the "deudor".
+
+        :raises ValueError:
+        """
+        if self.tipo_dte.emisor_is_vendedor:
+            result = self.receptor_rut
+        elif self.tipo_dte.receptor_is_vendedor:
+            result = self.emisor_rut
+        else:
+            raise ValueError(
+                "Concept \"deudor\" does not apply for this 'tipo_dte'.", self.tipo_dte)
+
+        return result
 
 
 @dataclasses.dataclass(frozen=True)
@@ -265,6 +333,38 @@ class DteDataL2(DteDataL1):
     "Fecha de vencimiento (pago)" of the DTE.
     """
 
+    firma_documento_dt_naive: Optional[datetime] = dc_field(default=None)
+    """
+    Datetime on which the "documento" was digitally signed.
+    """
+
+    signature_value: Optional[bytes] = dc_field(default=None)
+    """
+    DTE's digital signature's value (raw bytes, without base64 encoding).
+    """
+
+    signature_x509_cert_pem: Optional[bytes] = dc_field(default=None)
+    """
+    DTE's digital signature's PEM-encoded X.509 cert.
+
+    PEM-encoded implies base64-encoded.
+    """
+
+    emisor_giro: Optional[str] = dc_field(default=None)
+    """
+    "Giro" of the "emisor" of the DTE.
+    """
+
+    emisor_email: Optional[str] = dc_field(default=None)
+    """
+    Email address of the "emisor" of the DTE.
+    """
+
+    receptor_email: Optional[str] = dc_field(default=None)
+    """
+    Email address of the "receptor" of the DTE.
+    """
+
     def __post_init__(self) -> None:
         """
         Run validation automatically after setting the fields values.
@@ -285,3 +385,38 @@ class DteDataL2(DteDataL1):
         if self.fecha_vencimiento_date is not None:
             if not isinstance(self.fecha_vencimiento_date, date):
                 raise TypeError("Inappropriate type of 'fecha_vencimiento_date'.")
+
+        if self.firma_documento_dt_naive is not None:
+            if not isinstance(self.firma_documento_dt_naive, datetime):
+                raise TypeError("Inappropriate type of 'firma_documento_dt_naive'.")
+
+        if self.signature_value is not None:
+            if not isinstance(self.signature_value, bytes):
+                raise TypeError("Inappropriate type of 'signature_value'.")
+            validate_clean_bytes(self.signature_value)
+            validate_non_empty_bytes(self.signature_value)
+
+        if self.signature_x509_cert_pem is not None:
+            if not isinstance(self.signature_x509_cert_pem, bytes):
+                raise TypeError("Inappropriate type of 'signature_x509_cert_pem'.")
+            validate_clean_bytes(self.signature_x509_cert_pem)
+            validate_non_empty_bytes(self.signature_x509_cert_pem)
+            encoding_utils.validate_base64(self.signature_x509_cert_pem)
+
+        if self.emisor_giro is not None:
+            if not isinstance(self.emisor_giro, str):
+                raise TypeError("Inappropriate type of 'emisor_giro'.")
+            validate_clean_str(self.emisor_giro)
+            validate_non_empty_str(self.emisor_giro)
+
+        if self.emisor_email is not None:
+            if not isinstance(self.emisor_email, str):
+                raise TypeError("Inappropriate type of 'emisor_email'.")
+            validate_clean_str(self.emisor_email)
+            validate_non_empty_str(self.emisor_email)
+
+        if self.receptor_email is not None:
+            if not isinstance(self.receptor_email, str):
+                raise TypeError("Inappropriate type of 'receptor_email'.")
+            validate_clean_str(self.receptor_email)
+            validate_non_empty_str(self.receptor_email)

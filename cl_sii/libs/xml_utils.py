@@ -1,3 +1,24 @@
+"""
+XML utils
+=========
+
+
+XML (Digital) Signature
+-----------------------
+
+a.k.a. 'XMLDSig', 'XML-DSig', XML-Sig'
+
+XML Signature [..] defines an XML syntax for digital signatures and is
+defined in the W3C recommendation "XML Signature Syntax and Processing"
+(``xmldsig-core``). Functionally, it has much in common with ``PKCS#7 ``
+but is more extensible and geared towards signing XML documents.
+It is used by various Web technologies such as SOAP, SAML, and others.
+
+.. seealso::
+    https://en.wikipedia.org/wiki/XML_Signature
+
+
+"""
 import logging
 import os
 from typing import IO
@@ -7,9 +28,31 @@ import defusedxml.lxml
 import lxml.etree
 import xml.parsers.expat
 import xml.parsers.expat.errors
+from lxml.etree import ElementBase as XmlElement  # noqa: F401
+# note: 'lxml.etree.ElementTree' is a **function**, not a class.
+from lxml.etree import _ElementTree as XmlElementTree  # noqa: F401
+from lxml.etree import XMLSchema as XmlSchema  # noqa: F401
 
 
 logger = logging.getLogger(__name__)
+
+
+XML_DSIG_NS_MAP = dict(
+    ds='http://www.w3.org/2000/09/xmldsig#',
+    dsig11='http://www.w3.org/2009/xmldsig11#',
+    dsig2='http://www.w3.org/2010/xmldsig2#',
+    ec='http://www.w3.org/2001/10/xml-exc-c14n#',
+    dsig_more='http://www.w3.org/2001/04/xmldsig-more#',
+    xenc='http://www.w3.org/2001/04/xmlenc#',
+    xenc11='http://www.w3.org/2009/xmlenc11#',
+)
+"""
+Mapping from XML namespace prefix to full name, for XML Signature.
+
+Source:
+``signxml.namespaces`` @ 16503242 (~ v2.6.0)
+https://github.com/XML-Security/signxml/blob/16503242/signxml/__init__.py#L23-L31
+"""
 
 
 ###############################################################################
@@ -72,7 +115,7 @@ class XmlSchemaDocValidationError(Exception):
 # functions
 ###############################################################################
 
-def parse_untrusted_xml(value: bytes) -> lxml.etree.ElementBase:
+def parse_untrusted_xml(value: bytes) -> XmlElement:
     """
     Parse XML-encoded content in value.
 
@@ -115,7 +158,7 @@ def parse_untrusted_xml(value: bytes) -> lxml.etree.ElementBase:
             base_url=None,         # default: None
             forbid_dtd=False,      # default: False (allow Document Type Definition)
             forbid_entities=True,  # default: True (forbid Entity definitions/declarations)
-        )  # type: lxml.etree.ElementBase
+        )  # type: XmlElement
 
     except (defusedxml.DTDForbidden,
             defusedxml.EntitiesForbidden,
@@ -192,7 +235,7 @@ def parse_untrusted_xml(value: bytes) -> lxml.etree.ElementBase:
     return xml_root_em
 
 
-def read_xml_schema(filename: str) -> lxml.etree.XMLSchema:
+def read_xml_schema(filename: str) -> XmlSchema:
     """
     Instantiate an XML schema object from a file.
 
@@ -200,11 +243,11 @@ def read_xml_schema(filename: str) -> lxml.etree.XMLSchema:
 
     """
     if os.path.exists(filename) and os.path.isfile(filename):
-        return lxml.etree.XMLSchema(file=filename)
+        return XmlSchema(file=filename)
     raise ValueError("XML schema file not found.", filename)
 
 
-def validate_xml_doc(xml_schema: lxml.etree.XMLSchema, xml_doc: lxml.etree.ElementBase) -> None:
+def validate_xml_doc(xml_schema: XmlSchema, xml_doc: XmlElement) -> None:
     """
     Validate ``xml_doc`` against XML schema ``xml_schema``.
 
@@ -240,7 +283,7 @@ def validate_xml_doc(xml_schema: lxml.etree.XMLSchema, xml_doc: lxml.etree.Eleme
         raise XmlSchemaDocValidationError(validation_error_msg) from exc
 
 
-def write_xml_doc(xml_doc: lxml.etree.ElementBase, output: IO[bytes]) -> None:
+def write_xml_doc(xml_doc: XmlElement, output: IO[bytes]) -> None:
     """
     Write ``xml_doc`` to bytes stream ``output``.
 
@@ -264,7 +307,7 @@ def write_xml_doc(xml_doc: lxml.etree.ElementBase, output: IO[bytes]) -> None:
     # note: use `IO[X]` for arguments and `TextIO`/`BinaryIO` for return types (says GVR).
     #   https://github.com/python/typing/issues/518#issuecomment-350903120
 
-    xml_etree: lxml.etree.ElementTree = xml_doc.getroottree()
+    xml_etree: XmlElementTree = xml_doc.getroottree()
 
     # See:
     #   https://lxml.de/api/lxml.etree._ElementTree-class.html#write

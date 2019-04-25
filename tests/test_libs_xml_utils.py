@@ -2,6 +2,7 @@ import unittest
 
 import lxml.etree
 
+from cl_sii.libs.xml_utils import XmlElement
 from cl_sii.libs.xml_utils import (  # noqa: F401
     XmlSyntaxError, XmlFeatureForbidden,
     parse_untrusted_xml, read_xml_schema, validate_xml_doc, write_xml_doc,
@@ -20,7 +21,7 @@ class FunctionParseUntrustedXmlTests(unittest.TestCase):
             b'   <empty-element/>\n'
             b'</root>')
         xml = parse_untrusted_xml(value)
-        self.assertIsInstance(xml, lxml.etree.ElementBase)
+        self.assertIsInstance(xml, XmlElement)
         # print(xml)
         self.assertEqual(
             lxml.etree.tostring(xml, pretty_print=False),

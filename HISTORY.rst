@@ -3,6 +3,21 @@
 History
 -------
 
+0.5.0 (2019-04-25)
++++++++++++++++++++++++
+
+* (PR #29, 2019-04-25) dte.data_models: modify new fields of `DteDataL2`
+* (PR #28, 2019-04-25) libs: add module `crypto_utils`
+* (PR #27, 2019-04-25) libs: add module `encoding_utils`
+* (PR #26, 2019-04-25) test_data: add files
+* (PR #25, 2019-04-25) libs.xml_utils: fix class alias `XmlElementTree`
+* (PR #24, 2019-04-25) requirements: add and update packages
+* (PR #22, 2019-04-24) test_data: add files
+* (PR #21, 2019-04-22) dte: many improvements
+* (PR #20, 2019-04-22) libs.xml_utils: misc improvements
+* (PR #19, 2019-04-22) test_data: fix and add real SII DTE & AEC XML files
+* (PR #18, 2019-04-22) data.ref: add XML schemas for "Cesion" (RTC)
+
 0.4.0 (2019-04-16)
 +++++++++++++++++++++++
 
