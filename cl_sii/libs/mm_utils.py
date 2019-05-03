@@ -48,8 +48,9 @@ class CustomMarshmallowDateField(marshmallow.fields.Field):
         """
         super().__init__(**kwargs)
         # Allow this to be None. It may be set later in the ``_serialize``
-        # or ``_desrialize`` methods This allows a Schema to dynamically set the
+        # or ``_deserialize`` methods This allows a Schema to dynamically set the
         # dateformat, e.g. from a Meta option
+        # TODO: for 'marshmallow 3', rename 'dateformat' to 'datetimeformat'.
         self.dateformat = format
 
     def _add_to_schema(self, field_name: str, schema: marshmallow.Schema) -> None:
