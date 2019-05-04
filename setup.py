@@ -21,12 +21,11 @@ version = get_version('cl_sii', '__init__.py')
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
-# TODO: add reasonable upper-bound for some of these packages?
 requirements = [
-    'cryptography>=2.6.1',
-    'defusedxml>=0.5.0',
-    'lxml>=4.2.6',
-    'marshmallow>=2.16.3',
+    'cryptography>=2.6.1,<3',
+    'defusedxml>=0.5.0,<1',
+    'lxml>=4.2.6,<5',
+    'marshmallow>=2.16.3,<3',
     # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<19'
     'pyOpenSSL>=18.0.0,<19',
     'pytz>=2018.7',
