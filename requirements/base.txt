@@ -3,9 +3,9 @@
 
 # Required packages:
 cryptography==2.6.1
-defusedxml==0.5.0
-lxml==4.2.6
-marshmallow==2.16.3
+defusedxml==0.6.0
+lxml==4.3.3
+marshmallow==2.19.2
 pyOpenSSL==18.0.0
 pytz==2019.1
 signxml==2.6.0
