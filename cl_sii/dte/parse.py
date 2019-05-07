@@ -24,6 +24,7 @@ from datetime import date, datetime
 from typing import Tuple
 
 from cl_sii.libs import encoding_utils
+from cl_sii.libs import tz_utils
 from cl_sii.libs import xml_utils
 from cl_sii.libs.xml_utils import XmlElement, XmlElementTree
 from cl_sii.rut import Rut
@@ -447,7 +448,9 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
 
     monto_total_value = int(monto_total_em.text.strip())
 
-    tmst_firma_value = datetime.fromisoformat(tmst_firma_em.text)
+    tmst_firma_value = tz_utils.convert_naive_dt_to_tz_aware(
+        dt=datetime.fromisoformat(tmst_firma_em.text),
+        tz=data_models.DteDataL2.DATETIME_FIELDS_TZ)
 
     signature_signature_value = encoding_utils.decode_base64_strict(
         signature_signature_value_em.text.strip())
@@ -464,7 +467,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
         emisor_razon_social=emisor_razon_social_value,
         receptor_razon_social=receptor_razon_social_value,
         fecha_vencimiento_date=fecha_vencimiento_value,
-        firma_documento_dt_naive=tmst_firma_value,
+        firma_documento_dt=tmst_firma_value,
         signature_value=signature_signature_value,
         signature_x509_cert_pem=signature_key_info_x509_cert_pem,
         emisor_giro=emisor_giro_value,

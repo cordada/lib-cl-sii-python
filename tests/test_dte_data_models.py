@@ -2,6 +2,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
+from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut  # noqa: F401
 
 from cl_sii.dte.constants import TipoDteEnum  # noqa: F401
@@ -150,7 +151,9 @@ class DteDataL2Test(unittest.TestCase):
             emisor_razon_social='INGENIERIA ENACON SPA',
             receptor_razon_social='MINERA LOS PELAMBRES',
             fecha_vencimiento_date=None,
-            firma_documento_dt_naive=datetime(2019, 4, 1, 1, 36, 40),
+            firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                dt=datetime(2019, 4, 1, 1, 36, 40),
+                tz=DteDataL2.DATETIME_FIELDS_TZ),
             signature_value=None,
             signature_x509_cert_pem=None,
             emisor_giro='Ingenieria y Construccion',
@@ -175,7 +178,9 @@ class DteDataL2Test(unittest.TestCase):
                 emisor_razon_social='INGENIERIA ENACON SPA',
                 receptor_razon_social='MINERA LOS PELAMBRES',
                 fecha_vencimiento_date=None,
-                firma_documento_dt_naive=datetime(2019, 4, 1, 1, 36, 40),
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 4, 1, 1, 36, 40),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ),
                 signature_value=None,
                 signature_x509_cert_pem=None,
                 emisor_giro='Ingenieria y Construccion',
@@ -196,4 +201,24 @@ class FunctionsTest(unittest.TestCase):
 
     def test_validate_dte_monto_total(self) -> None:
         # TODO: implement for 'validate_dte_monto_total'
+        pass
+
+    def test_validate_clean_str(self) -> None:
+        # TODO: implement for 'validate_clean_str'
+        pass
+
+    def test_validate_clean_bytes(self) -> None:
+        # TODO: implement for 'validate_clean_bytes'
+        pass
+
+    def test_validate_non_empty_str(self) -> None:
+        # TODO: implement for 'validate_non_empty_str'
+        pass
+
+    def test_validate_non_empty_bytes(self) -> None:
+        # TODO: implement for 'validate_non_empty_bytes'
+        pass
+
+    def test_validate_correct_tz(self) -> None:
+        # TODO: implement for 'validate_correct_tz'
         pass
