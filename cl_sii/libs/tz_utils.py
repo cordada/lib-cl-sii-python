@@ -1,3 +1,15 @@
+"""
+Timezone utils
+==============
+
+
+Naive and aware
+---------------
+
+These concept are defined in Python standard library module datetime
+`docs <https://docs.python.org/3/library/datetime.html#module-datetime>`_.
+
+"""
 from datetime import datetime
 from typing import Union
 
@@ -68,3 +80,41 @@ def convert_naive_dt_to_tz_aware(dt: datetime, tz: PytzTimezone) -> datetime:
     """
     dt_tz_aware = tz.localize(dt)  # type: datetime
     return dt_tz_aware
+
+
+def dt_is_aware(value: datetime) -> bool:
+    """
+    Return whether datetime ``value`` is "aware".
+
+    >>> dt_naive = datetime(2018, 10, 23, 1, 54, 13)
+    >>> dt_is_aware(dt_naive)
+    False
+    >>> dt_is_aware(convert_naive_dt_to_tz_aware(dt_naive, TZ_UTC))
+    True
+    >>> dt_is_aware(convert_naive_dt_to_tz_aware(dt_naive, TZ_CL_SANTIAGO))
+    True
+
+    """
+    if not isinstance(value, datetime):
+        raise TypeError
+    # source: 'django.utils.timezone.is_aware' @ Django 2.1.7
+    return value.utcoffset() is not None
+
+
+def dt_is_naive(value: datetime) -> bool:
+    """
+    Return whether datetime ``value`` is "naive".
+
+    >>> dt_naive = datetime(2018, 10, 23, 1, 54, 13)
+    >>> dt_is_naive(dt_naive)
+    True
+    >>> dt_is_naive(convert_naive_dt_to_tz_aware(dt_naive, TZ_UTC))
+    False
+    >>> dt_is_naive(convert_naive_dt_to_tz_aware(dt_naive, TZ_CL_SANTIAGO))
+    False
+
+    """
+    if not isinstance(value, datetime):
+        raise TypeError
+    # source: 'django.utils.timezone.is_naive' @ Django 2.1.7
+    return value.utcoffset() is None
