@@ -76,7 +76,7 @@ csv.register_dialect(_RCV_CSV_DIALECT_KEY, _RcvCsvDialect)
 class RcvCsvRowSchema(marshmallow.Schema):
 
     EXPECTED_INPUT_FIELDS = tuple(_RCV_CSV_EXPECTED_FIELD_NAMES) + (_CSV_ROW_DICT_EXTRA_FIELDS_KEY, )  # type: ignore  # noqa: E501
-    FIELD_FECHA_RECEPCION_DATETIME_TZ = tz_utils.TIMEZONE_CL_SANTIAGO
+    FIELD_FECHA_RECEPCION_DATETIME_TZ = tz_utils.TZ_CL_SANTIAGO
 
     class Meta:
         strict = True
