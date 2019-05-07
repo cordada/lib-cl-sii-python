@@ -78,6 +78,43 @@ def convert_naive_dt_to_tz_aware(dt: datetime, tz: PytzTimezone) -> datetime:
     return dt_tz_aware
 
 
+def convert_tz_aware_dt_to_naive(dt: datetime, tz: PytzTimezone = None) -> datetime:
+    """
+    Convert a timezone-aware datetime object to an offset-naive one.
+
+    Default ``tz`` is UTC.
+
+    >>> dt_tz_aware = datetime(2018, 10, 1, 2, 30, 0, tzinfo=TZ_UTC)
+    >>> dt_tz_aware.isoformat()
+    '2018-10-01T02:30:00+00:00'
+
+    >>> dt_naive_utc = convert_tz_aware_dt_to_naive(dt_tz_aware, TZ_UTC)
+    >>> dt_naive_utc.isoformat()
+    '2018-10-01T02:30:00'
+
+    >>> dt_naive_cl_santiago = convert_tz_aware_dt_to_naive(dt_tz_aware, _TZ_CL_SANTIAGO)
+    >>> dt_naive_cl_santiago.isoformat()
+    '2018-09-30T23:30:00'
+
+    >>> int((dt_naive_cl_santiago - dt_naive_utc).total_seconds() / 3600)
+    -3
+    >>> (dt_naive_cl_santiago.date() - dt_naive_utc.date()).days
+    -1
+
+    :param dt: timezone-aware datetime
+    :param tz: timezone e.g. ``pytz.timezone('America/Santiago')``
+    :raises ValueError: if ``dt`` is not timezone-aware
+
+    """
+    if not dt_is_aware(dt):
+        raise ValueError("Value must be a timezone-aware datetime object.")
+
+    if tz is None:
+        tz = TZ_UTC
+    dt_naive = dt.astimezone(tz).replace(tzinfo=None)  # type: datetime
+    return dt_naive
+
+
 def dt_is_aware(value: datetime) -> bool:
     """
     Return whether datetime ``value`` is "aware".
