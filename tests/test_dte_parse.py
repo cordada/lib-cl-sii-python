@@ -4,8 +4,10 @@ import unittest
 from datetime import date, datetime
 
 import cl_sii.dte.constants
+from cl_sii.dte.data_models import DteDataL2
 from cl_sii.libs import crypto_utils
 from cl_sii.libs import encoding_utils
+from cl_sii.libs import tz_utils
 from cl_sii.libs import xml_utils
 from cl_sii.rut import Rut
 
@@ -341,7 +343,9 @@ class FunctionParseDteXmlTest(unittest.TestCase):
                 emisor_razon_social='INGENIERIA ENACON SPA',
                 receptor_razon_social='MINERA LOS PELAMBRES',
                 fecha_vencimiento_date=None,
-                firma_documento_dt_naive=datetime(2019, 4, 1, 1, 36, 40),
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 4, 1, 1, 36, 40),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ),
                 signature_value=self._TEST_DTE_1_SIGNATURE_VALUE,
                 signature_x509_cert_pem=self.dte_clean_xml_1_cert_pem_bytes,
                 emisor_giro='Ingenieria y Construccion',
@@ -365,7 +369,9 @@ class FunctionParseDteXmlTest(unittest.TestCase):
                 emisor_razon_social='COMERCIALIZADORA INNOVA MOBEL SPA',
                 receptor_razon_social='EMPRESAS LA POLAR S.A.',
                 fecha_vencimiento_date=None,
-                firma_documento_dt_naive=datetime(2019, 3, 28, 13, 59, 52),
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 3, 28, 13, 59, 52),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ),
                 signature_value=self._TEST_DTE_2_SIGNATURE_VALUE,
                 signature_x509_cert_pem=self.dte_clean_xml_2_cert_pem_bytes,
                 emisor_giro='COMERCIALIZACION DE PRODUCTOS PARA EL HOGAR',
