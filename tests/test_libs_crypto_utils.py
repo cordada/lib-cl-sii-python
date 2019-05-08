@@ -6,7 +6,9 @@ import cryptography.x509
 from cryptography.x509 import oid
 
 from cl_sii.libs.crypto_utils import (  # noqa: F401
-    X509Cert, add_pem_cert_header_footer, load_pem_x509_cert, remove_pem_cert_header_footer,
+    X509Cert, add_pem_cert_header_footer, load_der_x509_cert, load_pem_x509_cert,
+    remove_pem_cert_header_footer,
+    x509_cert_der_to_pem, x509_cert_pem_to_der,
 )
 
 from . import utils
@@ -40,11 +42,11 @@ class FunctionsTest(unittest.TestCase):
 
 class LoadPemX509CertTest(unittest.TestCase):
 
-    def test_load_pem_x509_cert_ok(self) -> None:
-        cert_pem_bytes = utils.read_test_file_bytes(
-            'test_data/crypto/wildcard-google-com-cert.pem')
+    def test_load_der_x509_cert_ok(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/crypto/wildcard-google-com-cert.der')
 
-        x509_cert = load_pem_x509_cert(cert_pem_bytes)
+        x509_cert = load_der_x509_cert(cert_der_bytes)
 
         self.assertIsInstance(x509_cert, X509Cert)
 
@@ -217,11 +219,11 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertIs(crl_distribution_points_ext.value._distribution_points[0].reasons, None)
         self.assertIs(crl_distribution_points_ext.value._distribution_points[0].relative_name, None)
 
-    def test_load_pem_x509_cert_ok_cert_real_dte(self) -> None:
-        cert_pem_bytes = utils.read_test_file_bytes(
-            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.pem')
+    def test_load_der_x509_cert_ok_cert_real_dte(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
 
-        x509_cert = load_pem_x509_cert(cert_pem_bytes)
+        x509_cert = load_der_x509_cert(cert_der_bytes)
 
         self.assertIsInstance(x509_cert, X509Cert)
 
@@ -439,10 +441,11 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertEqual(some_microsoft_ext.critical, False)
         self.assertTrue(isinstance(some_microsoft_ext.value.value, bytes))
 
-    def test_load_pem_x509_cert_ok_prueba_sii(self) -> None:
-        cert_pem_bytes = utils.read_test_file_bytes('test_data/sii-crypto/prueba-sii-cert.pem')
+    def test_load_der_x509_cert_ok_prueba_sii(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/prueba-sii-cert.der')
 
-        x509_cert = load_pem_x509_cert(cert_pem_bytes)
+        x509_cert = load_der_x509_cert(cert_der_bytes)
 
         self.assertIsInstance(x509_cert, X509Cert)
 
@@ -615,6 +618,54 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertIs(crl_distribution_points_ext.value._distribution_points[0].reasons, None)
         self.assertIs(crl_distribution_points_ext.value._distribution_points[0].relative_name, None)
 
+    def test_load_der_x509_cert_fail_type_error(self) -> None:
+        with self.assertRaises(TypeError) as cm:
+            load_der_x509_cert(1)
+        self.assertEqual(cm.exception.args, ("Value must be bytes.", ))
+
+    def test_load_der_x509_cert_fail_value_error(self) -> None:
+        with self.assertRaises(ValueError) as cm:
+            load_der_x509_cert(b'hello')
+        self.assertEqual(
+            cm.exception.args,
+            ("Unable to load certificate", ))
+
+    def test_load_pem_x509_cert_ok(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/crypto/wildcard-google-com-cert.der')
+        cert_pem_bytes = utils.read_test_file_bytes(
+            'test_data/crypto/wildcard-google-com-cert.pem')
+
+        x509_cert_from_der = load_der_x509_cert(cert_der_bytes)
+        x509_cert_from_pem = load_pem_x509_cert(cert_pem_bytes)
+
+        self.assertIsInstance(x509_cert_from_pem, X509Cert)
+        self.assertEqual(x509_cert_from_der, x509_cert_from_pem)
+
+    def test_load_pem_x509_cert_ok_cert_real_dte(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
+        cert_pem_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.pem')
+
+        x509_cert_from_der = load_der_x509_cert(cert_der_bytes)
+        x509_cert_from_pem = load_pem_x509_cert(cert_pem_bytes)
+
+        self.assertIsInstance(x509_cert_from_pem, X509Cert)
+        self.assertEqual(x509_cert_from_der, x509_cert_from_pem)
+
+    def test_load_pem_x509_cert_ok_prueba_sii(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/prueba-sii-cert.der')
+        cert_pem_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/prueba-sii-cert.pem')
+
+        x509_cert_from_der = load_der_x509_cert(cert_der_bytes)
+        x509_cert_from_pem = load_pem_x509_cert(cert_pem_bytes)
+
+        self.assertIsInstance(x509_cert_from_pem, X509Cert)
+        self.assertEqual(x509_cert_from_der, x509_cert_from_pem)
+
     def test_load_pem_x509_cert_ok_str_ascii(self) -> None:
         cert_pem_str_ascii = utils.read_test_file_str_ascii(
             'test_data/crypto/wildcard-google-com-cert.pem')
@@ -642,3 +693,68 @@ class LoadPemX509CertTest(unittest.TestCase):
             ("Unable to load certificate. See "
              "https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file "
              "for more details.", ))
+
+    def test_x509_cert_der_to_pem_pem_to_der_ok_1(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/crypto/wildcard-google-com-cert.der')
+        cert_pem_bytes = utils.read_test_file_bytes(
+            'test_data/crypto/wildcard-google-com-cert.pem')
+
+        # note: we test the function with a double call because the input PEM data
+        #   may have different line lengths and different line separators.
+        self.assertEqual(
+            x509_cert_pem_to_der(x509_cert_der_to_pem(cert_der_bytes)),
+            x509_cert_pem_to_der(cert_pem_bytes))
+
+    def test_x509_cert_der_to_pem_pem_to_der_ok_2(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
+        cert_pem_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.pem')
+
+        # note: we test the function with a double call because the input PEM data
+        #   may have different line lengths and different line separators.
+        self.assertEqual(
+            x509_cert_pem_to_der(x509_cert_der_to_pem(cert_der_bytes)),
+            x509_cert_pem_to_der(cert_pem_bytes))
+
+    def test_x509_cert_der_to_pem_pem_to_der_ok_3(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/prueba-sii-cert.der')
+        cert_pem_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/prueba-sii-cert.pem')
+
+        # note: we test the function with a double call because the input PEM data
+        #   may have different line lengths and different line separators.
+        self.assertEqual(
+            x509_cert_pem_to_der(x509_cert_der_to_pem(cert_der_bytes)),
+            x509_cert_pem_to_der(cert_pem_bytes))
+
+    def test_x509_cert_der_to_pem_type_error(self) -> None:
+        with self.assertRaises(TypeError) as cm:
+            x509_cert_der_to_pem(1)
+        self.assertEqual(cm.exception.args, ("Value must be bytes.", ))
+
+    def test_x509_cert_pem_to_der_type_error(self) -> None:
+        with self.assertRaises(TypeError) as cm:
+            x509_cert_pem_to_der(1)
+        self.assertEqual(cm.exception.args, ("Value must be bytes.", ))
+
+    def test_x509_cert_pem_to_der_valuetype_error(self) -> None:
+        with self.assertRaises(ValueError) as cm:
+            x509_cert_pem_to_der(b'hello')
+        self.assertEqual(
+            cm.exception.args,
+            (
+                "Input is not a valid base64 value.",
+                "Invalid base64-encoded string: number of data characters (5) cannot be 1 more "
+                "than a multiple of 4",
+            ))
+
+    def test_add_pem_cert_header_footer(self) -> None:
+        # TODO: implement for 'add_pem_cert_header_footer'
+        pass
+
+    def test_remove_pem_cert_header_footer(self) -> None:
+        # TODO: implement for 'remove_pem_cert_header_footer'
+        pass
