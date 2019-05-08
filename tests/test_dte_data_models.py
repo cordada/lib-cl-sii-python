@@ -2,6 +2,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
+from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut  # noqa: F401
 
@@ -10,6 +11,8 @@ from cl_sii.dte.data_models import (  # noqa: F401
     DteDataL0, DteDataL1, DteDataL2, DteNaturalKey,
     validate_contribuyente_razon_social, validate_dte_folio, validate_dte_monto_total,
 )
+
+from .utils import read_test_file_bytes
 
 
 class DteNaturalKeyTest(unittest.TestCase):
@@ -138,6 +141,15 @@ class DteDataL1Test(unittest.TestCase):
 
 class DteDataL2Test(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.dte_1_xml_signature_value = encoding_utils.decode_base64_strict(read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76354771-K--33--170-signature-value-base64.txt'))
+        cls.dte_1_xml_cert_der = read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
+
     def setUp(self) -> None:
         super().setUp()
 
@@ -154,8 +166,8 @@ class DteDataL2Test(unittest.TestCase):
             firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
                 tz=DteDataL2.DATETIME_FIELDS_TZ),
-            signature_value=None,
-            signature_x509_cert_pem=None,
+            signature_value=self.dte_1_xml_signature_value,
+            signature_x509_cert_der=self.dte_1_xml_cert_der,
             emisor_giro='Ingenieria y Construccion',
             emisor_email='hello@example.com',
             receptor_email=None,
@@ -181,8 +193,8 @@ class DteDataL2Test(unittest.TestCase):
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                     dt=datetime(2019, 4, 1, 1, 36, 40),
                     tz=DteDataL2.DATETIME_FIELDS_TZ),
-                signature_value=None,
-                signature_x509_cert_pem=None,
+                signature_value=self.dte_1_xml_signature_value,
+                signature_x509_cert_der=self.dte_1_xml_cert_der,
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email='hello@example.com',
                 receptor_email=None,
