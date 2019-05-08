@@ -22,7 +22,7 @@ from typing import Mapping, Optional
 
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
-from cl_sii.libs import encoding_utils
+from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
 from . import constants
@@ -93,6 +93,13 @@ def validate_non_empty_str(value: str) -> None:
 def validate_non_empty_bytes(value: bytes) -> None:
     if len(value.strip()) == 0:
         raise ValueError("Bytes value length (stripped) is 0.")
+
+
+def validate_correct_tz(value: datetime, tz: tz_utils.PytzTimezone) -> None:
+    if not tz_utils.dt_is_aware(value):
+        raise ValueError("Value must be a timezone-aware datetime.", value)
+    if value.tzinfo.zone != tz.zone:  # type: ignore
+        raise ValueError(f"Timezone of datetime value must be '{tz.zone!s}'.", value)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -318,6 +325,16 @@ class DteDataL2(DteDataL1):
 
     """
 
+    ###########################################################################
+    # constants
+    ###########################################################################
+
+    DATETIME_FIELDS_TZ = tz_utils.TZ_CL_SANTIAGO
+
+    ###########################################################################
+    # fields
+    ###########################################################################
+
     emisor_razon_social: str = dc_field()
     """
     "Razón social" (legal name) of the "emisor" of the DTE.
@@ -333,7 +350,7 @@ class DteDataL2(DteDataL1):
     "Fecha de vencimiento (pago)" of the DTE.
     """
 
-    firma_documento_dt_naive: Optional[datetime] = dc_field(default=None)
+    firma_documento_dt: Optional[datetime] = dc_field(default=None)
     """
     Datetime on which the "documento" was digitally signed.
     """
@@ -343,11 +360,13 @@ class DteDataL2(DteDataL1):
     DTE's digital signature's value (raw bytes, without base64 encoding).
     """
 
-    signature_x509_cert_pem: Optional[bytes] = dc_field(default=None)
+    signature_x509_cert_der: Optional[bytes] = dc_field(default=None)
     """
-    DTE's digital signature's PEM-encoded X.509 cert.
+    DTE's digital signature's DER-encoded X.509 cert.
 
-    PEM-encoded implies base64-encoded.
+    .. seealso::
+        Functions :func:`cl_sii.libs.crypto_utils.load_der_x509_cert`
+        and :func:`cl_sii.libs.crypto_utils.x509_cert_der_to_pem`.
     """
 
     emisor_giro: Optional[str] = dc_field(default=None)
@@ -386,9 +405,10 @@ class DteDataL2(DteDataL1):
             if not isinstance(self.fecha_vencimiento_date, date):
                 raise TypeError("Inappropriate type of 'fecha_vencimiento_date'.")
 
-        if self.firma_documento_dt_naive is not None:
-            if not isinstance(self.firma_documento_dt_naive, datetime):
-                raise TypeError("Inappropriate type of 'firma_documento_dt_naive'.")
+        if self.firma_documento_dt is not None:
+            if not isinstance(self.firma_documento_dt, datetime):
+                raise TypeError("Inappropriate type of 'firma_documento_dt'.")
+            validate_correct_tz(self.firma_documento_dt, self.DATETIME_FIELDS_TZ)
 
         if self.signature_value is not None:
             if not isinstance(self.signature_value, bytes):
@@ -396,12 +416,11 @@ class DteDataL2(DteDataL1):
             validate_clean_bytes(self.signature_value)
             validate_non_empty_bytes(self.signature_value)
 
-        if self.signature_x509_cert_pem is not None:
-            if not isinstance(self.signature_x509_cert_pem, bytes):
-                raise TypeError("Inappropriate type of 'signature_x509_cert_pem'.")
-            validate_clean_bytes(self.signature_x509_cert_pem)
-            validate_non_empty_bytes(self.signature_x509_cert_pem)
-            encoding_utils.validate_base64(self.signature_x509_cert_pem)
+        if self.signature_x509_cert_der is not None:
+            if not isinstance(self.signature_x509_cert_der, bytes):
+                raise TypeError("Inappropriate type of 'signature_x509_cert_der'.")
+            validate_clean_bytes(self.signature_x509_cert_der)
+            validate_non_empty_bytes(self.signature_x509_cert_der)
 
         if self.emisor_giro is not None:
             if not isinstance(self.emisor_giro, str):

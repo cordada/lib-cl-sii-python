@@ -4,8 +4,10 @@ import unittest
 from datetime import date, datetime
 
 import cl_sii.dte.constants
+from cl_sii.dte.data_models import DteDataL2
 from cl_sii.libs import crypto_utils
 from cl_sii.libs import encoding_utils
+from cl_sii.libs import tz_utils
 from cl_sii.libs import xml_utils
 from cl_sii.rut import Rut
 
@@ -293,9 +295,13 @@ class FunctionParseDteXmlTest(unittest.TestCase):
         cls.dte_clean_xml_1_cert_pem_bytes = encoding_utils.clean_base64(
             crypto_utils.remove_pem_cert_header_footer(
                 read_test_file_bytes('test_data/sii-crypto/DTE--76354771-K--33--170-cert.pem')))
+        cls.dte_clean_xml_1_cert_der = read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
         cls.dte_clean_xml_2_cert_pem_bytes = encoding_utils.clean_base64(
             crypto_utils.remove_pem_cert_header_footer(
                 read_test_file_bytes('test_data/sii-crypto/DTE--76399752-9--33--25568-cert.pem')))
+        cls.dte_clean_xml_2_cert_der = read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76399752-9--33--25568-cert.der')
 
         cls._TEST_DTE_1_SIGNATURE_VALUE = encoding_utils.decode_base64_strict(
             read_test_file_bytes(
@@ -325,6 +331,13 @@ class FunctionParseDteXmlTest(unittest.TestCase):
             b"\xe5]E\xed\x9c\xcb\xc2\x84\x15i\xd0tT]\x8b\x8a\x1f'\xe9\x0b:\x88\x05|\xa0b\xb2"
             b"\x19{\x1cW\x80\xe4\xa7*\xef\xf2\x1a")
 
+        self.assertEqual(
+            crypto_utils.x509_cert_pem_to_der(self.dte_clean_xml_1_cert_pem_bytes),
+            self.dte_clean_xml_1_cert_der)
+        self.assertEqual(
+            crypto_utils.x509_cert_pem_to_der(self.dte_clean_xml_2_cert_pem_bytes),
+            self.dte_clean_xml_2_cert_der)
+
     def test_parse_dte_xml_ok_1(self) -> None:
         xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_1_xml_bytes)
 
@@ -341,9 +354,11 @@ class FunctionParseDteXmlTest(unittest.TestCase):
                 emisor_razon_social='INGENIERIA ENACON SPA',
                 receptor_razon_social='MINERA LOS PELAMBRES',
                 fecha_vencimiento_date=None,
-                firma_documento_dt_naive=datetime(2019, 4, 1, 1, 36, 40),
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 4, 1, 1, 36, 40),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ),
                 signature_value=self._TEST_DTE_1_SIGNATURE_VALUE,
-                signature_x509_cert_pem=self.dte_clean_xml_1_cert_pem_bytes,
+                signature_x509_cert_der=self.dte_clean_xml_1_cert_der,
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email='ENACONLTDA@GMAIL.COM',
                 receptor_email=None,
@@ -365,9 +380,11 @@ class FunctionParseDteXmlTest(unittest.TestCase):
                 emisor_razon_social='COMERCIALIZADORA INNOVA MOBEL SPA',
                 receptor_razon_social='EMPRESAS LA POLAR S.A.',
                 fecha_vencimiento_date=None,
-                firma_documento_dt_naive=datetime(2019, 3, 28, 13, 59, 52),
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 3, 28, 13, 59, 52),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ),
                 signature_value=self._TEST_DTE_2_SIGNATURE_VALUE,
-                signature_x509_cert_pem=self.dte_clean_xml_2_cert_pem_bytes,
+                signature_x509_cert_der=self.dte_clean_xml_2_cert_der,
                 emisor_giro='COMERCIALIZACION DE PRODUCTOS PARA EL HOGAR',
                 emisor_email='ANGEL.PEZO@APCASESORIAS.CL',
                 receptor_email=None,

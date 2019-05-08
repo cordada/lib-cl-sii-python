@@ -46,7 +46,7 @@ Add new entry to changelog including the changes summary (remember to format as 
 Either of the following alternatives::
 
     bumpversion major|minor|patch
-    bumpversion --new-version 'X.Y.Z'
+    bumpversion --new-version 'X.Y.Z' part  # 'part' is a dummy argument.
 
 Push commit ``abcd1234`` and tag ``vX.Y.Z`` automatically created by ``bumpversion``::
 
