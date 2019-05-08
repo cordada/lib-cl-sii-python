@@ -22,7 +22,6 @@ from typing import Mapping, Optional
 
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
-from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
@@ -361,11 +360,13 @@ class DteDataL2(DteDataL1):
     DTE's digital signature's value (raw bytes, without base64 encoding).
     """
 
-    signature_x509_cert_pem: Optional[bytes] = dc_field(default=None)
+    signature_x509_cert_der: Optional[bytes] = dc_field(default=None)
     """
-    DTE's digital signature's PEM-encoded X.509 cert.
+    DTE's digital signature's DER-encoded X.509 cert.
 
-    PEM-encoded implies base64-encoded.
+    .. seealso::
+        Functions :func:`cl_sii.libs.crypto_utils.load_der_x509_cert`
+        and :func:`cl_sii.libs.crypto_utils.x509_cert_der_to_pem`.
     """
 
     emisor_giro: Optional[str] = dc_field(default=None)
@@ -415,12 +416,11 @@ class DteDataL2(DteDataL1):
             validate_clean_bytes(self.signature_value)
             validate_non_empty_bytes(self.signature_value)
 
-        if self.signature_x509_cert_pem is not None:
-            if not isinstance(self.signature_x509_cert_pem, bytes):
-                raise TypeError("Inappropriate type of 'signature_x509_cert_pem'.")
-            validate_clean_bytes(self.signature_x509_cert_pem)
-            validate_non_empty_bytes(self.signature_x509_cert_pem)
-            encoding_utils.validate_base64(self.signature_x509_cert_pem)
+        if self.signature_x509_cert_der is not None:
+            if not isinstance(self.signature_x509_cert_der, bytes):
+                raise TypeError("Inappropriate type of 'signature_x509_cert_der'.")
+            validate_clean_bytes(self.signature_x509_cert_der)
+            validate_non_empty_bytes(self.signature_x509_cert_der)
 
         if self.emisor_giro is not None:
             if not isinstance(self.emisor_giro, str):

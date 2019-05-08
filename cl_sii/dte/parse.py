@@ -454,7 +454,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
 
     signature_signature_value = encoding_utils.decode_base64_strict(
         signature_signature_value_em.text.strip())
-    signature_key_info_x509_cert_pem = encoding_utils.clean_base64(
+    signature_key_info_x509_cert_der = encoding_utils.decode_base64_strict(
         signature_key_info_x509_cert_em.text.strip())
 
     return data_models.DteDataL2(
@@ -469,7 +469,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
         fecha_vencimiento_date=fecha_vencimiento_value,
         firma_documento_dt=tmst_firma_value,
         signature_value=signature_signature_value,
-        signature_x509_cert_pem=signature_key_info_x509_cert_pem,
+        signature_x509_cert_der=signature_key_info_x509_cert_der,
         emisor_giro=emisor_giro_value,
         emisor_email=emisor_email_value,
         receptor_email=receptor_email_value,
