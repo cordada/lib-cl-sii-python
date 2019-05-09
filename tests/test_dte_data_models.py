@@ -1,3 +1,4 @@
+import base64
 import dataclasses
 import unittest
 from datetime import date, datetime
@@ -176,6 +177,46 @@ class DteDataL2Test(unittest.TestCase):
     def test_init_fail(self) -> None:
         # TODO: implement for 'DteDataL2()'
         pass
+
+    def test_init_fail_regression_signature_value_bytes_with_x20(self) -> None:
+        bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
+        bytes_value_with_x20 = b'\x20\xdd\xa9\x900q\xa89\xc6\x97\x83\xdf\xbd\xba"'
+
+        self.assertEqual(b'\x20', b' ')
+        self.assertEqual(
+            bytes_value_with_x20,
+            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+
+        init_kwars = self.dte_l2_1.as_dict()
+        init_kwars.update(dict(signature_value=bytes_value_with_x20))
+
+        # with self.assertRaises(ValueError) as cm:
+        #     _ = DteDataL2(**init_kwars)
+        # self.assertEqual(
+        #     cm.exception.args,
+        #     ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
+        # )
+        _ = DteDataL2(**init_kwars)
+
+    def test_init_fail_regression_signature_cert_der_bytes_with_x20(self) -> None:
+        bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
+        bytes_value_with_x20 = b'\x20\xdd\xa9\x900q\xa89\xc6\x97\x83\xdf\xbd\xba"'
+
+        self.assertEqual(b'\x20', b' ')
+        self.assertEqual(
+            bytes_value_with_x20,
+            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+
+        init_kwars = self.dte_l2_1.as_dict()
+        init_kwars.update(dict(signature_x509_cert_der=bytes_value_with_x20))
+
+        # with self.assertRaises(ValueError) as cm:
+        #     _ = DteDataL2(**init_kwars)
+        # self.assertEqual(
+        #     cm.exception.args,
+        #     ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
+        # )
+        _ = DteDataL2(**init_kwars)
 
     def test_as_dict(self) -> None:
         self.assertDictEqual(
