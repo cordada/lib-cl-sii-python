@@ -190,12 +190,13 @@ class DteDataL2Test(unittest.TestCase):
         init_kwars = self.dte_l2_1.as_dict()
         init_kwars.update(dict(signature_value=bytes_value_with_x20))
 
-        with self.assertRaises(ValueError) as cm:
-            _ = DteDataL2(**init_kwars)
-        self.assertEqual(
-            cm.exception.args,
-            ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
-        )
+        # with self.assertRaises(ValueError) as cm:
+        #     _ = DteDataL2(**init_kwars)
+        # self.assertEqual(
+        #     cm.exception.args,
+        #     ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
+        # )
+        _ = DteDataL2(**init_kwars)
 
     def test_init_fail_regression_signature_cert_der_bytes_with_x20(self) -> None:
         bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
@@ -209,12 +210,13 @@ class DteDataL2Test(unittest.TestCase):
         init_kwars = self.dte_l2_1.as_dict()
         init_kwars.update(dict(signature_x509_cert_der=bytes_value_with_x20))
 
-        with self.assertRaises(ValueError) as cm:
-            _ = DteDataL2(**init_kwars)
-        self.assertEqual(
-            cm.exception.args,
-            ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
-        )
+        # with self.assertRaises(ValueError) as cm:
+        #     _ = DteDataL2(**init_kwars)
+        # self.assertEqual(
+        #     cm.exception.args,
+        #     ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
+        # )
+        _ = DteDataL2(**init_kwars)
 
     def test_as_dict(self) -> None:
         self.assertDictEqual(
