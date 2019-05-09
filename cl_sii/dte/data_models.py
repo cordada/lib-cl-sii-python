@@ -80,19 +80,17 @@ def validate_clean_str(value: str) -> None:
         raise ValueError("Value has leading or trailing whitespace characters.", value)
 
 
-def validate_clean_bytes(value: bytes) -> None:
-    if len(value.strip()) != len(value):
-        raise ValueError("Value has leading or trailing whitespace characters.", value)
-
-
 def validate_non_empty_str(value: str) -> None:
     if len(value.strip()) == 0:
         raise ValueError("String value length (stripped) is 0.")
 
 
 def validate_non_empty_bytes(value: bytes) -> None:
-    if len(value.strip()) == 0:
-        raise ValueError("Bytes value length (stripped) is 0.")
+    # warning: do NOT strip a bytes value because "strip" implies an ASCII-encoded text,
+    #   which may not be the case.
+    # if len(value.strip()) == 0:
+    if len(value) == 0:
+        raise ValueError("Bytes value length is 0.")
 
 
 def validate_correct_tz(value: datetime, tz: tz_utils.PytzTimezone) -> None:
@@ -413,13 +411,15 @@ class DteDataL2(DteDataL1):
         if self.signature_value is not None:
             if not isinstance(self.signature_value, bytes):
                 raise TypeError("Inappropriate type of 'signature_value'.")
-            validate_clean_bytes(self.signature_value)
+            # warning: do NOT strip a bytes value because "strip" implies an ASCII-encoded text,
+            #   which in this case it is not.
             validate_non_empty_bytes(self.signature_value)
 
         if self.signature_x509_cert_der is not None:
             if not isinstance(self.signature_x509_cert_der, bytes):
                 raise TypeError("Inappropriate type of 'signature_x509_cert_der'.")
-            validate_clean_bytes(self.signature_x509_cert_der)
+            # warning: do NOT strip a bytes value because "strip" implies an ASCII-encoded text,
+            #   which in this case it is not.
             validate_non_empty_bytes(self.signature_x509_cert_der)
 
         if self.emisor_giro is not None:
