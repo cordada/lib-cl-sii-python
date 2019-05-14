@@ -21,7 +21,7 @@ import io
 import logging
 import os
 from datetime import date, datetime
-from typing import Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
@@ -512,6 +512,153 @@ def _text_strip_or_raise(xml_em: XmlElement) -> str:
         stripped_text: str = xml_em.text.strip()
 
     return stripped_text
+
+
+def parse_envio_dte_xml_data(xml_doc: XmlElement) -> Any:
+    """
+    Parse data from an XML doc of an ``EnvioDTE``.
+
+    ``EnvioDTE``: "Envio de Documentos Tributarios Electronicos".
+
+    :raises ValueError:
+
+    """
+    # TODO: create a data model resembling the data in a 'EnvioDTE' XML doc.
+
+    # source: name of the XML element without namespace.
+    #   cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L17 (f57a326)
+    expected_em_tag_simple = 'EnvioDTE'
+
+    em_namespace = DTE_XMLNS
+    expected_em_tag_namespaced = '{%s}%s' % (em_namespace, expected_em_tag_simple)
+
+    xml_em = xml_doc
+    xml_em_tag = xml_em.tag
+
+    if xml_em.tag not in (expected_em_tag_simple, expected_em_tag_namespaced):
+        exc_msg = "XML element tag does not match the expected simple or namespaced name."
+        raise ValueError(exc_msg, expected_em_tag_simple, expected_em_tag_namespaced, xml_em_tag)
+
+    ###########################################################################
+    # XML elements finding
+    ###########################################################################
+
+    set_dte_em = xml_em.find(
+        'sii-dte:SetDTE',  # "Conjunto de DTE enviados"
+        namespaces=DTE_XMLNS_MAP)
+    signature_em = xml_em.find(
+        'ds:Signature',  # "Firma Digital sobre SetDTE"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+
+    caratula_em = set_dte_em.find(
+        'sii-dte:Caratula',  # "Resumen de Informacion Enviada"
+        namespaces=DTE_XMLNS_MAP)
+    dte_em_list: List[XmlElement] = set_dte_em.findall(
+        'sii-dte:DTE',  # "Documento Tributario Electronico" (occurrences: 1..2000)
+        namespaces=DTE_XMLNS_MAP)
+
+    # 'Caratula'
+    caratula_rut_emisor_em = caratula_em.find(
+        'sii-dte:RutEmisor',  # "RUT Emisor de los DTE"
+        namespaces=DTE_XMLNS_MAP)
+    caratula_rut_envia_em = caratula_em.find(
+        'sii-dte:RutEnvia',  # "RUT que envia los DTE"
+        namespaces=DTE_XMLNS_MAP)
+    caratula_rut_receptor_em = caratula_em.find(
+        'sii-dte:RutReceptor',  # "RUT al que se le envian los DTE"
+        namespaces=DTE_XMLNS_MAP)
+    # caratula_fecha_resol_em = caratula_em.find(
+    #     'sii-dte:FchResol',  # "Fecha de Resolucion que Autoriza el Envio de DTE (AAAA-MM-DD)"
+    #     namespaces=DTE_XMLNS_MAP)
+    # caratula_num_resol_em = caratula_em.find(
+    #     'sii-dte:NroResol',  # "Numero de Resolucion que Autoriza el Envio de DTE"
+    #     namespaces=DTE_XMLNS_MAP)
+    caratula_tmst_firma_em = caratula_em.find(
+        'sii-dte:TmstFirmaEnv',  # "Fecha y Hora de la Firma del Archivo de Envio"
+        namespaces=DTE_XMLNS_MAP)
+    caratula_subtotal_dte_em_list: List[XmlElement] = caratula_em.findall(
+        'sii-dte:SubTotDTE',  # 'Subtotales de DTE enviados'  (occurrences: 1..20)
+        namespaces=DTE_XMLNS_MAP)
+
+    # 'Caratula.SubTotDTE'
+    caratula_subtotal_dte_em_pair_list: List[Tuple[XmlElement, XmlElement]] = []
+    for subtotal_dte_em in caratula_subtotal_dte_em_list:
+        caratula_subtotal_dte_em_pair_list.append((
+            subtotal_dte_em.find(
+                'sii-dte:TpoDTE',  # "Tipo de DTE Enviado"
+                namespaces=DTE_XMLNS_MAP),
+            subtotal_dte_em.find(
+                'sii-dte:NroDTE',  # "Numero de DTE Enviados"
+                namespaces=DTE_XMLNS_MAP),
+        ))
+
+    # 'Signature'
+    # signature_signed_info_em = signature_em.find(
+    #     'ds:SignedInfo',  # "Descripcion de la Informacion Firmada y del Metodo de Firma"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_signed_info_canonicalization_method_em = signature_signed_info_em.find(
+    #     'ds:CanonicalizationMethod',  # "Algoritmo de Canonicalizacion"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_signed_info_signature_method_em = signature_signed_info_em.find(
+    #     'ds:SignatureMethod',  # "Algoritmo de Firma"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_signed_info_reference_em = signature_signed_info_em.find(
+    #     'ds:Reference',  # "Referencia a Elemento Firmado"
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_signature_value_em = signature_em.find(
+        'ds:SignatureValue',  # "Valor de la Firma Digital"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_key_info_em = signature_em.find(
+        'ds:KeyInfo',  # "Informacion de Claves Publicas y Certificado"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+    # signature_key_info_key_value_em = signature_key_info_em.find(
+    #     'ds:KeyValue',
+    #     namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_key_info_x509_data_em = signature_key_info_em.find(
+        'ds:X509Data',  # "Informacion del Certificado Publico"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+    signature_key_info_x509_cert_em = signature_key_info_x509_data_em.find(
+        'ds:X509Certificate',  # "Certificado Publico"
+        namespaces=xml_utils.XML_DSIG_NS_MAP)
+
+    ###########################################################################
+    # values parsing
+    ###########################################################################
+
+    emisor_rut_value = Rut(caratula_rut_emisor_em.text.strip())
+    receptor_rut_value = Rut(caratula_rut_receptor_em.text.strip())
+    enviador_rut_value = Rut(caratula_rut_envia_em.text.strip())
+
+    subtotales_dte = [
+        (
+            constants.TipoDteEnum(int(caratula_subtotal_dte_em_pair[0].text)),
+            int(caratula_subtotal_dte_em_pair[1].text),
+        )
+        for caratula_subtotal_dte_em_pair in caratula_subtotal_dte_em_pair_list
+    ]
+
+    dte_data_list = [parse_dte_xml(dte_em) for dte_em in dte_em_list]
+
+    # TODO: change 'tz' reference to the data model to be created.
+    tmst_firma_value = tz_utils.convert_naive_dt_to_tz_aware(
+        dt=datetime.fromisoformat(caratula_tmst_firma_em.text),
+        tz=data_models.DteDataL2.DATETIME_FIELDS_TZ)
+
+    signature_signature_value = encoding_utils.decode_base64_strict(
+        signature_signature_value_em.text.strip())
+    signature_key_info_x509_cert_der = encoding_utils.decode_base64_strict(
+        signature_key_info_x509_cert_em.text.strip())
+
+    return dict(
+        emisor_rut=emisor_rut_value,
+        receptor_rut=receptor_rut_value,
+        enviador_rut=enviador_rut_value,
+        subtotales_dte=subtotales_dte,
+        dte_data_list=dte_data_list,
+        firma_dt=tmst_firma_value,
+        signature_value=signature_signature_value,
+        signature_x509_cert_der=signature_key_info_x509_cert_der,
+    )
 
 
 ###############################################################################
