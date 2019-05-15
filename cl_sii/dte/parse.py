@@ -21,7 +21,7 @@ import io
 import logging
 import os
 from datetime import date, datetime
-from typing import Tuple
+from typing import Optional, Tuple
 
 from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
@@ -430,32 +430,37 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     # values parsing
     ###########################################################################
 
-    tipo_dte_value = constants.TipoDteEnum(int(tipo_dte_em.text.strip()))
-    folio_value = int(folio_em.text.strip())
-    fecha_emision_value = date.fromisoformat(fecha_emision_em.text.strip())
+    tipo_dte_value = constants.TipoDteEnum(int(_text_strip_or_raise(tipo_dte_em)))
+    folio_value = int(_text_strip_or_raise(folio_em))
+    fecha_emision_value = date.fromisoformat(_text_strip_or_raise(fecha_emision_em))
     fecha_vencimiento_value = None
     if fecha_vencimiento_em is not None:
-        fecha_vencimiento_value = date.fromisoformat(fecha_vencimiento_em.text.strip())
+        fecha_vencimiento_value = date.fromisoformat(
+            _text_strip_or_raise(fecha_vencimiento_em))
 
-    emisor_rut_value = Rut(emisor_rut_em.text.strip())
-    emisor_razon_social_value = emisor_razon_social_em.text.strip()
-    emisor_giro_value = emisor_giro_em.text.strip()
-    emisor_email_value = emisor_email_em.text.strip() if emisor_email_em is not None else None
+    emisor_rut_value = Rut(_text_strip_or_raise(emisor_rut_em))
+    emisor_razon_social_value = _text_strip_or_raise(emisor_razon_social_em)
+    emisor_giro_value = _text_strip_or_raise(emisor_giro_em)
+    emisor_email_value = None
+    if emisor_email_em is not None:
+        emisor_email_value = _text_strip_or_none(emisor_email_em)
 
-    receptor_rut_value = Rut(receptor_rut_em.text.strip())
-    receptor_razon_social_value = receptor_razon_social_em.text.strip()
-    receptor_email_value = receptor_email_em.text.strip() if receptor_email_em is not None else None
+    receptor_rut_value = Rut(_text_strip_or_raise(receptor_rut_em))
+    receptor_razon_social_value = _text_strip_or_raise(receptor_razon_social_em)
+    receptor_email_value = None
+    if receptor_email_em is not None:
+        receptor_email_value = _text_strip_or_none(receptor_email_em)
 
-    monto_total_value = int(monto_total_em.text.strip())
+    monto_total_value = int(_text_strip_or_raise(monto_total_em))
 
     tmst_firma_value = tz_utils.convert_naive_dt_to_tz_aware(
-        dt=datetime.fromisoformat(tmst_firma_em.text),
+        dt=datetime.fromisoformat(_text_strip_or_raise(tmst_firma_em)),
         tz=data_models.DteDataL2.DATETIME_FIELDS_TZ)
 
     signature_signature_value = encoding_utils.decode_base64_strict(
-        signature_signature_value_em.text.strip())
+        _text_strip_or_raise(signature_signature_value_em))
     signature_key_info_x509_cert_der = encoding_utils.decode_base64_strict(
-        signature_key_info_x509_cert_em.text.strip())
+        _text_strip_or_raise(signature_key_info_x509_cert_em))
 
     return data_models.DteDataL2(
         emisor_rut=emisor_rut_value,
@@ -474,6 +479,39 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
         emisor_email=emisor_email_value,
         receptor_email=receptor_email_value,
     )
+
+
+def _text_strip_or_none(xml_em: XmlElement) -> Optional[str]:
+    # note: we need the pair of functions '_text_strip_or_none' and '_text_strip_or_raise'
+    #   because, under certain circumstances, an XML tag:
+    #   - with no content -> `xml_em.text` is None instead of ''
+    #   - with leading and/or trailing whitespace -> `xml_em.text` may or may not include that
+
+    if xml_em is None:
+        raise ValueError("Value must be an XML element, not None.")
+
+    stripped_text: Optional[str] = None
+    if xml_em.text is not None:
+        stripped_text = xml_em.text.strip()
+
+    return stripped_text
+
+
+def _text_strip_or_raise(xml_em: XmlElement) -> str:
+    # note: we need the pair of functions '_text_strip_or_none' and '_text_strip_or_raise'
+    #   because, under certain circumstances, an XML tag:
+    #   - with no content -> `xml_em.text` is None instead of ''
+    #   - with leading and/or trailing whitespace -> `xml_em.text` may or may not include that
+
+    if xml_em is None:
+        raise ValueError("Value must be an XML element, not None.")
+
+    if xml_em.text is None:
+        raise ValueError("Text of XML element is None.")
+    else:
+        stripped_text: str = xml_em.text.strip()
+
+    return stripped_text
 
 
 ###############################################################################

@@ -24,7 +24,13 @@ def clean_base64(value: Union[str, bytes]) -> bytes:
         raise TypeError("Value must be str or bytes.")
 
     # remove line breaks and spaces
-    value_base64_bytes_cleaned = value_base64_bytes.replace(b'\n', b'').replace(b' ', b'')
+    # warning: we may only remove characters that are not part of the standard base-64 alphabet
+    #   (or any of its popular alternatives).
+    value_base64_bytes_cleaned = value_base64_bytes \
+        .replace(b'\n', b'') \
+        .replace(b'\r', b'') \
+        .replace(b'\t', b'') \
+        .replace(b' ', b'')
 
     return value_base64_bytes_cleaned
 

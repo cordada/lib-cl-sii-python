@@ -3,6 +3,12 @@
 History
 -------
 
+0.6.2 (2019-05-15)
++++++++++++++++++++++++
+
+* (PR #45, 2019-05-15) libs.encoding_utils: improve ``clean_base64``
+* (PR #44, 2019-05-15) dte.parse: fix edge case in ``parse_dte_xml``
+
 0.6.1 (2019-05-08)
 +++++++++++++++++++++++
 
