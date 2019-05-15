@@ -291,6 +291,8 @@ class FunctionParseDteXmlTest(unittest.TestCase):
             'test_data/sii-dte/DTE--76354771-K--33--170--cleaned.xml')
         cls.dte_clean_xml_2_xml_bytes = read_test_file_bytes(
             'test_data/sii-dte/DTE--76399752-9--33--25568--cleaned.xml')
+        cls.dte_clean_xml_1b_xml_bytes = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-empty-emails.xml')
 
         cls.dte_clean_xml_1_cert_pem_bytes = encoding_utils.clean_base64(
             crypto_utils.remove_pem_cert_header_footer(
@@ -361,6 +363,32 @@ class FunctionParseDteXmlTest(unittest.TestCase):
                 signature_x509_cert_der=self.dte_clean_xml_1_cert_der,
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email='ENACONLTDA@GMAIL.COM',
+                receptor_email=None,
+            ))
+
+    def test_parse_dte_xml_ok_1b(self) -> None:
+        xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_1b_xml_bytes)
+
+        parsed_dte = parse_dte_xml(xml_doc)
+        self.assertDictEqual(
+            dict(parsed_dte.as_dict()),
+            dict(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=cl_sii.dte.constants.TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=170,
+                fecha_emision_date=date(2019, 4, 1),
+                receptor_rut=Rut('96790240-3'),
+                monto_total=2996301,
+                emisor_razon_social='INGENIERIA ENACON SPA',
+                receptor_razon_social='MINERA LOS PELAMBRES',
+                fecha_vencimiento_date=None,
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 4, 1, 1, 36, 40),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ),
+                signature_value=self._TEST_DTE_1_SIGNATURE_VALUE,
+                signature_x509_cert_der=self.dte_clean_xml_1_cert_der,
+                emisor_giro='Ingenieria y Construccion',
+                emisor_email=None,
                 receptor_email=None,
             ))
 
