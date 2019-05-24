@@ -241,6 +241,19 @@ class DteDataL2Test(unittest.TestCase):
                 receptor_email=None,
             ))
 
+    def test_as_dte_data_l1(self) -> None:
+        self.assertEqual(
+            self.dte_l2_1.as_dte_data_l1(),
+            DteDataL1(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=170,
+                fecha_emision_date=date(2019, 4, 1),
+                receptor_rut=Rut('96790240-3'),
+                monto_total=2996301,
+            )
+        )
+
 
 class FunctionsTest(unittest.TestCase):
 
