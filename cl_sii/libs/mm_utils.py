@@ -6,6 +6,48 @@ import marshmallow.fields
 import marshmallow.utils
 
 
+###############################################################################
+# validators
+###############################################################################
+
+def validate_no_unexpected_input_fields(
+    schema: marshmallow.Schema,
+    data: dict,
+    original_data: dict,
+) -> None:
+    """
+    Fail validation if there was an unexpected input field.
+
+    Usage::
+
+        class MySchema(marshmallow.Schema):
+
+            class Meta:
+                strict = True
+
+            folio = marshmallow.fields.Integer()
+
+            @marshmallow.validates_schema(pass_original=True)
+            def validate_schema(self, data: dict, original_data: dict) -> None:
+                validate_no_unexpected_input_fields(self, data, original_data)
+
+    """
+    # Original inspiration from
+    #   https://marshmallow.readthedocs.io/en/2.x-line/extending.html#validating-original-input-data
+    fields_name_or_load_from = {
+        field.name if field.load_from is None else field.load_from
+        for field_key, field in schema.fields.items()
+    }
+    unexpected_input_fields = set(original_data) - fields_name_or_load_from
+    if unexpected_input_fields:
+        raise marshmallow.ValidationError(
+            "Unexpected input field.", field_names=list(unexpected_input_fields))
+
+
+###############################################################################
+# fields
+###############################################################################
+
 class CustomMarshmallowDateField(marshmallow.fields.Field):
     """
     A formatted date string.
