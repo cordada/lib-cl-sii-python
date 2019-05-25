@@ -3,6 +3,15 @@
 History
 -------
 
+0.6.3 (2019-05-24)
++++++++++++++++++++++++
+
+* (PR #52, 2019-05-24) rcv: add module ``parse_csv``
+* (PR #51, 2019-05-24) libs: add module ``rows_processing``
+* (PR #50, 2019-05-24) libs: add module ``csv_utils``
+* (PR #49, 2019-05-24) libs.mm_utils: add ``validate_no_unexpected_input_fields``
+* (PR #48, 2019-05-24) dte.data_models: add ``DteDataL2.as_dte_data_l1``
+
 0.6.2 (2019-05-15)
 +++++++++++++++++++++++
 

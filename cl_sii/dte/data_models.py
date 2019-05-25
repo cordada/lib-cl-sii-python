@@ -439,3 +439,12 @@ class DteDataL2(DteDataL1):
                 raise TypeError("Inappropriate type of 'receptor_email'.")
             validate_clean_str(self.receptor_email)
             validate_non_empty_str(self.receptor_email)
+
+    def as_dte_data_l1(self) -> DteDataL1:
+        return DteDataL1(
+            emisor_rut=self.emisor_rut,
+            tipo_dte=self.tipo_dte,
+            folio=self.folio,
+            fecha_emision_date=self.fecha_emision_date,
+            receptor_rut=self.receptor_rut,
+            monto_total=self.monto_total)
