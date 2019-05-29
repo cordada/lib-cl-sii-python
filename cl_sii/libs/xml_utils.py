@@ -382,6 +382,8 @@ def verify_xml_signature(
 
     :param xml_doc:
     :param trusted_x509_cert: a trusted external X.509 certificate, or None
+    :raises :class:`XmlSignatureUnverified`:
+        signature did not verify
     :raises :class:`XmlSignatureInvalidCertificate`:
         certificate validation failed
     :raises :class:`XmlSignatureInvalid`:
@@ -441,10 +443,7 @@ def verify_xml_signature(
         raise XmlSignatureInvalidCertificate(str(exc)) from exc
 
     except signxml.exceptions.InvalidSignature as exc:
-        logger.exception(
-            "Unexpected exception (it should have been an instance of subclass of "
-            "'InvalidSignature'). Error: %s",
-            str(exc))
+        # XML signature is invalid, for any reason.
         raise XmlSignatureInvalid(str(exc)) from exc
 
     except signxml.exceptions.InvalidInput as exc:
