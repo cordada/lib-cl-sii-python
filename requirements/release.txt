@@ -6,7 +6,7 @@
 bumpversion==0.5.3
 setuptools==41.0.1
 twine==1.13.0
-wheel==0.33.1
+wheel==0.33.4
 
 # Packages dependencies:
 #   - twine:
@@ -18,6 +18,6 @@ wheel==0.33.1
 #       - tqdm
 pkginfo==1.5.0.1
 readme-renderer==24.0
-requests==2.21.0
+requests==2.22.0
 requests-toolbelt==0.9.1
-tqdm==4.31.1
+tqdm==4.32.1
