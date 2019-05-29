@@ -3,6 +3,12 @@
 History
 -------
 
+0.6.4 (2019-05-29)
++++++++++++++++++++++++
+
+* (PR #55, 2019-05-29) libs.xml_utils: add ``verify_xml_signature``
+* (PR #54, 2019-05-28) libs: add module ``dataclass_utils``
+
 0.6.3 (2019-05-24)
 +++++++++++++++++++++++
 
@@ -32,7 +38,7 @@ Includes backwards-incompatible changes to data model ``DteDataL2``.
 * (PR #37, 2019-05-08) dte.data_models: alter field ``DteDataL2.firma_documento_dt_naive``
 * (PR #36, 2019-05-08) libs.crypto_utils: add functions
 * (PR #35, 2019-05-07) libs.tz_utils: minor improvements
-* (PR #34, 2019-05-06) docs: Fix `bumpversion` command
+* (PR #34, 2019-05-06) docs: Fix ``bumpversion`` command
 
 0.5.1 (2019-05-03)
 +++++++++++++++++++++++

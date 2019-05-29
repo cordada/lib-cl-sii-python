@@ -1,5 +1,6 @@
 # note: it is mandatory to register all dependencies of the required packages.
 -r base.txt
+-r extras.txt
 
 # Required packages:
 codecov==2.0.15
