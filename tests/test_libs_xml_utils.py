@@ -123,6 +123,8 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
 
         cls.xml_doc_cert_pem_bytes = read_test_file_bytes(
             'test_data/sii-crypto/DTE--76354771-K--33--170-cert.pem')
+        cls.xml_doc_2_cert_pem_bytes = read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76399752-9--33--25568-cert.pem')
 
         cls.with_valid_signature = read_test_file_bytes(
             'test_data/sii-dte/DTE--76354771-K--33--170--cleaned.xml')
@@ -145,6 +147,8 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-bad-cert-no-base64.xml')
         cls.with_signature_and_modified = read_test_file_bytes(
             'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-changed-monto.xml')
+        cls.with_replaced_cert = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-replaced-cert.xml')
 
     def test_ok_external_trusted_cert(self) -> None:
         xml_doc = parse_untrusted_xml(self.with_valid_signature)
@@ -191,6 +195,16 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             cm.exception.args,
             ("'xml_doc' must be an XML document/element.", ))
 
+    def test_fail_verify_with_other_cert(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_valid_signature_signature_xml)
+        cert = load_pem_x509_cert(self.xml_doc_2_cert_pem_bytes)
+
+        with self.assertRaises(XmlSignatureInvalid) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=cert)
+        self.assertEqual(
+            cm.exception.args,
+            ("Signature verification failed: wrong signature length", ))
+
     def test_bad_cert_included(self) -> None:
         # If the included certificate is bad, it does not matter, as long as it does not break XML.
         xml_doc_with_bad_cert = parse_untrusted_xml(self.with_bad_cert)
@@ -206,6 +220,16 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             cm.exception.args,
             ("Element '{http://www.w3.org/2000/09/xmldsig#}X509Certificate': '\nabc\n"
              "' is not a valid value of the atomic type 'xs:base64Binary'., line 30", ))
+
+    def test_fail_replaced_cert(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_replaced_cert)
+        cert = load_pem_x509_cert(self.any_x509_cert_pem_file)
+
+        with self.assertRaises(XmlSignatureInvalid) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=cert)
+        self.assertEqual(
+            cm.exception.args,
+            ("Signature verification failed: header too long", ))
 
     def test_fail_included_cert_not_from_a_known_ca(self) -> None:
         xml_doc = parse_untrusted_xml(self.with_valid_signature)
