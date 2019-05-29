@@ -19,19 +19,24 @@ It is used by various Web technologies such as SOAP, SAML, and others.
 
 
 """
+import io
 import logging
 import os
-from typing import IO
+from typing import IO, Tuple, Union
 
 import defusedxml
 import defusedxml.lxml
 import lxml.etree
+import signxml
+import signxml.exceptions
 import xml.parsers.expat
 import xml.parsers.expat.errors
 from lxml.etree import ElementBase as XmlElement  # noqa: F401
 # note: 'lxml.etree.ElementTree' is a **function**, not a class.
 from lxml.etree import _ElementTree as XmlElementTree  # noqa: F401
 from lxml.etree import XMLSchema as XmlSchema  # noqa: F401
+
+from . import crypto_utils
 
 
 logger = logging.getLogger(__name__)
@@ -108,6 +113,29 @@ class XmlSchemaDocValidationError(Exception):
     """
     XML document did not be validate against an XML schema.
 
+    """
+
+
+class XmlSignatureInvalid(Exception):
+
+    """
+    XML signature is invalid, for any reason.
+    """
+
+
+class XmlSignatureUnverified(XmlSignatureInvalid):
+
+    """
+    XML signature verification (i.e. digest validation) failed.
+
+    This means the signature is not to be trusted.
+    """
+
+
+class XmlSignatureInvalidCertificate(XmlSignatureInvalid):
+
+    """
+    Certificate validation failed on XML signature processing.
     """
 
 
@@ -323,3 +351,111 @@ def write_xml_doc(xml_doc: XmlElement, output: IO[bytes]) -> None:
         # default: True.
         with_tail=True,
     )
+
+
+def verify_xml_signature(
+    xml_doc: XmlElement,
+    trusted_x509_cert: Union[crypto_utils.X509Cert, crypto_utils._X509CertOpenSsl] = None,
+) -> Tuple[bytes, XmlElementTree, XmlElementTree]:
+    """
+    Verify the XML signature in ``xml_doc``.
+
+    .. note::
+        XML document with more than one signature is not supported.
+
+    If the inputs are ok but the XML signature does not verify,
+    raises :class:`XmlSignatureUnverified`.
+
+    If ``trusted_x509_cert`` is None, it requires that the signature in
+    ``xml_doc`` includes a a valid X.509 **certificate chain** that
+    validates against the *known certificate authorities*.
+
+    If ``trusted_x509_cert`` is given, it must be a **trusted** external
+    X.509 certificate, and the verification will be of whether the XML
+    signature in ``xml_doc`` was signed by ``trusted_x509_cert`` or not;
+    thus **it overrides** any X.509 certificate information included
+    in the signature.
+
+    .. note::
+        It is strongly recommended to validate ``xml_doc`` beforehand
+        (against the corresponding XML schema, using :func:`validate_xml_doc`).
+
+    :param xml_doc:
+    :param trusted_x509_cert: a trusted external X.509 certificate, or None
+    :raises :class:`XmlSignatureInvalidCertificate`:
+        certificate validation failed
+    :raises :class:`XmlSignatureInvalid`:
+        signature is invalid
+    :raises :class:`XmlSchemaDocValidationError`:
+        XML doc is not valid
+    :raises :class:`ValueError`:
+
+    """
+    if not isinstance(xml_doc, XmlElement):
+        raise TypeError("'xml_doc' must be an XML document/element.")
+
+    n_signatures = (
+        len(xml_doc.findall('.//ds:Signature', namespaces=XML_DSIG_NS_MAP))
+        + len(xml_doc.findall('.//dsig11:Signature', namespaces=XML_DSIG_NS_MAP))
+        + len(xml_doc.findall('.//dsig2:Signature', namespaces=XML_DSIG_NS_MAP)))
+
+    if n_signatures > 1:
+        raise NotImplementedError("XML document with more than one signature is not supported.")
+
+    xml_verifier = signxml.XMLVerifier()
+
+    if isinstance(trusted_x509_cert, crypto_utils._X509CertOpenSsl):
+        trusted_x509_cert_open_ssl = trusted_x509_cert
+    elif isinstance(trusted_x509_cert, crypto_utils.X509Cert):
+        trusted_x509_cert_open_ssl = crypto_utils._X509CertOpenSsl.from_cryptography(
+            trusted_x509_cert)
+    elif trusted_x509_cert is None:
+        trusted_x509_cert_open_ssl = None
+    else:
+        # A 'crypto_utils._X509CertOpenSsl' is ok but we prefer 'crypto_utils.X509Cert'.
+        raise TypeError("'trusted_x509_cert' must be a 'crypto_utils.X509Cert' instance, or None.")
+
+    # warning: performance issue.
+    # note: 'signxml.XMLVerifier.verify()' calls 'signxml.util.XMLProcessor.get_root()',
+    #   which converts the data to string, and then reparses it using the same function we use
+    #   in 'parse_untrusted_xml()' ('defusedxml.lxml.fromstring'), but without all the precautions
+    #   we have there. See:
+    #      https://github.com/XML-Security/signxml/blob/v2.6.0/signxml/util/__init__.py#L141-L151
+    #   Considering that, we'd rather write to bytes ourselves and control the process.
+    f = io.BytesIO()
+    write_xml_doc(xml_doc, f)
+    tmp_bytes = f.getvalue()
+
+    try:
+        # note: by passing 'x509_cert' we override any X.509 certificate information supplied
+        #   by the signature itself.
+        result: signxml.VerifyResult = xml_verifier.verify(
+            data=tmp_bytes, require_x509=True, x509_cert=trusted_x509_cert_open_ssl)
+
+    except signxml.exceptions.InvalidDigest as exc:
+        # warning: catch before 'InvalidSignature' (it is the parent of 'InvalidDigest').
+        raise XmlSignatureUnverified(str(exc)) from exc
+
+    except signxml.exceptions.InvalidCertificate as exc:
+        # warning: catch before 'InvalidSignature' (it is the parent of 'InvalidCertificate').
+        raise XmlSignatureInvalidCertificate(str(exc)) from exc
+
+    except signxml.exceptions.InvalidSignature as exc:
+        logger.exception(
+            "Unexpected exception (it should have been an instance of subclass of "
+            "'InvalidSignature'). Error: %s",
+            str(exc))
+        raise XmlSignatureInvalid(str(exc)) from exc
+
+    except signxml.exceptions.InvalidInput as exc:
+        raise ValueError("Invalid input.", str(exc)) from exc
+
+    except lxml.etree.DocumentInvalid as exc:
+        # Simplest and safest way to get the error message (see 'validate_xml_doc()').
+        # Error example:
+        #   "Element '{http://www.w3.org/2000/09/xmldsig#}X509Certificate': '\nabc\n' is not a
+        #   valid value of the atomic type 'xs:base64Binary'., line 30"
+        validation_error_msg = str(exc)
+        raise XmlSchemaDocValidationError(validation_error_msg) from exc
+
+    return result.signed_data, result.signed_xml, result.signature_xml

@@ -1,11 +1,15 @@
+import io
 import unittest
 
 import lxml.etree
 
+from cl_sii.libs.crypto_utils import load_pem_x509_cert
+
 from cl_sii.libs.xml_utils import XmlElement
 from cl_sii.libs.xml_utils import (  # noqa: F401
-    XmlSyntaxError, XmlFeatureForbidden,
-    parse_untrusted_xml, read_xml_schema, validate_xml_doc, write_xml_doc,
+    XmlSyntaxError, XmlFeatureForbidden, XmlSchemaDocValidationError,
+    XmlSignatureInvalid, XmlSignatureInvalidCertificate, XmlSignatureUnverified,
+    parse_untrusted_xml, read_xml_schema, validate_xml_doc, verify_xml_signature, write_xml_doc,
 )
 
 from .utils import read_test_file_bytes
@@ -106,3 +110,168 @@ class FunctionWriteXmlDocTest(unittest.TestCase):
 
     # TODO: implement for function 'write_xml_doc'. Consider each of the "observations".
     pass
+
+
+class FunctionVerifyXmlSignatureTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.any_x509_cert_pem_file = read_test_file_bytes(
+            'test_data/crypto/wildcard-google-com-cert.pem')
+
+        cls.xml_doc_cert_pem_bytes = read_test_file_bytes(
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.pem')
+
+        cls.with_valid_signature = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned.xml')
+        cls.with_valid_signature_signed_data = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-signed_data.xml')
+        cls.with_valid_signature_signed_xml = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-signed_xml.xml')
+        cls.with_valid_signature_signature_xml = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-signature_xml.xml')
+
+        cls.trivial_without_signature = read_test_file_bytes(
+            'test_data/xml/trivial-doc.xml')
+        cls.with_too_many_signatures = read_test_file_bytes(
+            'test_data/sii-rtc/AEC--76354771-K--33--170--SEQ-2.xml')
+        cls.without_signature = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-removed-signature.xml')
+        cls.with_bad_cert = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-bad-cert.xml')
+        cls.with_bad_cert_no_base64 = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-bad-cert-no-base64.xml')
+        cls.with_signature_and_modified = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-changed-monto.xml')
+
+    def test_ok_external_trusted_cert(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_valid_signature)
+        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+
+        signed_data, signed_xml, signature_xml = verify_xml_signature(
+            xml_doc, trusted_x509_cert=cert)
+
+        self.assertEqual(signed_data, self.with_valid_signature_signed_data)
+
+        f = io.BytesIO()
+        write_xml_doc(signed_xml, f)
+        signed_xml_bytes = f.getvalue()
+        self.assertEqual(signed_xml_bytes, self.with_valid_signature_signed_xml)
+
+        f = io.BytesIO()
+        write_xml_doc(signature_xml, f)
+        signature_xml_bytes = f.getvalue()
+        self.assertEqual(signature_xml_bytes, self.with_valid_signature_signature_xml)
+
+    def test_ok_cert_in_signature(self) -> None:
+        # TODO: implement!
+
+        # xml_doc = parse_untrusted_xml(...)
+        # verify_xml_signature(xml_doc, trusted_x509_cert=None)
+        pass
+
+    def test_fail_cert_type_error(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_valid_signature)
+        cert = self.any_x509_cert_pem_file
+
+        with self.assertRaises(TypeError) as cm:
+            _ = verify_xml_signature(xml_doc, trusted_x509_cert=cert)
+        self.assertEqual(
+            cm.exception.args,
+            ("'trusted_x509_cert' must be a 'crypto_utils.X509Cert' instance, or None.", ))
+
+    def test_fail_xml_doc_type_error(self) -> None:
+        cert = self.any_x509_cert_pem_file
+
+        with self.assertRaises(TypeError) as cm:
+            _ = verify_xml_signature(xml_doc=object(), trusted_x509_cert=cert)
+        self.assertEqual(
+            cm.exception.args,
+            ("'xml_doc' must be an XML document/element.", ))
+
+    def test_bad_cert_included(self) -> None:
+        # If the included certificate is bad, it does not matter, as long as it does not break XML.
+        xml_doc_with_bad_cert = parse_untrusted_xml(self.with_bad_cert)
+        xml_doc_with_bad_cert_no_base64 = parse_untrusted_xml(self.with_bad_cert_no_base64)
+
+        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+
+        verify_xml_signature(xml_doc_with_bad_cert, trusted_x509_cert=cert)
+
+        with self.assertRaises(XmlSchemaDocValidationError) as cm:
+            verify_xml_signature(xml_doc_with_bad_cert_no_base64, trusted_x509_cert=cert)
+        self.assertEqual(
+            cm.exception.args,
+            ("Element '{http://www.w3.org/2000/09/xmldsig#}X509Certificate': '\nabc\n"
+             "' is not a valid value of the atomic type 'xs:base64Binary'., line 30", ))
+
+    def test_fail_included_cert_not_from_a_known_ca(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_valid_signature)
+
+        # Without cert: fails because the issuer of the cert in the signature is not a known CA.
+        with self.assertRaises(XmlSignatureInvalidCertificate) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=None)
+        self.assertEqual(
+            cm.exception.args,
+            ("[20, 0, 'unable to get local issuer certificate']", ))
+
+    def test_fail_signed_data_modified(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_signature_and_modified)
+        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+
+        with self.assertRaises(XmlSignatureUnverified) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=cert)
+        self.assertEqual(cm.exception.args, ("Digest mismatch for reference 0", ))
+
+    def test_xml_doc_without_signature_1(self) -> None:
+        xml_doc = parse_untrusted_xml(self.without_signature)
+
+        expected_exc_args = (
+            'Invalid input.',
+            'Expected to find XML element Signature in {http://www.sii.cl/SiiDte}DTE')
+
+        # Without cert:
+        with self.assertRaises(ValueError) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=None)
+        self.assertEqual(cm.exception.args, expected_exc_args)
+
+        # With cert:
+        cert = load_pem_x509_cert(self.any_x509_cert_pem_file)
+        with self.assertRaises(ValueError) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=cert)
+        self.assertEqual(cm.exception.args, expected_exc_args)
+
+    def test_fail_xml_doc_without_signature_2(self) -> None:
+        xml_doc = parse_untrusted_xml(self.trivial_without_signature)
+
+        expected_exc_args = (
+            'Invalid input.', 'Expected to find XML element Signature in data')
+
+        # Without cert:
+        with self.assertRaises(ValueError) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=None)
+        self.assertEqual(cm.exception.args, expected_exc_args)
+
+        # With cert:
+        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+        with self.assertRaises(ValueError) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=cert)
+        self.assertEqual(cm.exception.args, expected_exc_args)
+
+    def test_fail_xml_doc_with_too_many_signatures(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_too_many_signatures)
+
+        expected_exc_args = ("XML document with more than one signature is not supported.", )
+
+        # Without cert:
+        with self.assertRaises(NotImplementedError) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=None)
+        self.assertEqual(cm.exception.args, expected_exc_args)
+
+        # With cert:
+        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+        with self.assertRaises(NotImplementedError) as cm:
+            verify_xml_signature(xml_doc, trusted_x509_cert=cert)
+        self.assertEqual(cm.exception.args, expected_exc_args)
