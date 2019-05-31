@@ -139,6 +139,303 @@ def parse_rcv_venta_csv_file(
     )
 
 
+def parse_rcv_compra_registro_csv_file(
+    receptor_rut: Rut,
+    receptor_razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Iterable[Tuple[Optional[DteDataL2], int, Dict[str, object], Dict[str, object]]]:
+    """
+    Parse DTE data objects from a RCV "Compra/Registro" file (CSV).
+
+    """
+    schema_context = dict(
+        receptor_rut=receptor_rut,
+        receptor_razon_social=receptor_razon_social,
+    )
+    input_csv_row_schema = RcvCompraRegistroCsvRowSchema(context=schema_context)
+
+    expected_input_field_names = (
+        'Nro',
+        'Tipo Doc',  # 'tipo_dte'
+        'Tipo Compra',
+        'RUT Proveedor',  # 'emisor_rut'
+        'Razon Social',  # 'emisor_razon_social'
+        'Folio',  # 'folio'
+        'Fecha Docto',  # 'fecha_emision_date'
+        'Fecha Recepcion',  # 'fecha_recepcion_dt'
+        'Fecha Acuse',  # 'fecha_acuse_dt'
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Total',  # 'monto_total'
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'Tabacos Puros',
+        'Tabacos Cigarrillos',
+        'Tabacos Elaborados',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    fields_to_remove_names = (
+        'Nro',
+        'Tipo Compra',
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'Tabacos Puros',
+        'Tabacos Cigarrillos',
+        'Tabacos Elaborados',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    yield from _parse_rcv_csv_file(
+        input_csv_row_schema,
+        expected_input_field_names,
+        fields_to_remove_names,
+        input_file_path,
+        n_rows_offset,
+        max_n_rows,
+    )
+
+
+def parse_rcv_compra_no_incluir_csv_file(
+    receptor_rut: Rut,
+    receptor_razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Iterable[Tuple[Optional[DteDataL2], int, Dict[str, object], Dict[str, object]]]:
+    """
+    Parse DTE data objects from a RCV "Compra/no incluir" file (CSV).
+
+    """
+    schema_context = dict(
+        receptor_rut=receptor_rut,
+        receptor_razon_social=receptor_razon_social,
+    )
+    input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema(context=schema_context)
+
+    expected_input_field_names = (
+        'Nro',
+        'Tipo Doc',  # 'tipo_dte'
+        'Tipo Compra',
+        'RUT Proveedor',  # 'emisor_rut'
+        'Razon Social',  # 'emisor_razon_social'
+        'Folio',  # 'folio'
+        'Fecha Docto',  # 'fecha_emision_date'
+        'Fecha Recepcion',  # 'fecha_recepcion_dt'
+        'Fecha Acuse',  # 'fecha_acuse_dt'
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Total',  # 'monto_total'
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    fields_to_remove_names = (
+        'Nro',
+        'Tipo Compra',
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    yield from _parse_rcv_csv_file(
+        input_csv_row_schema,
+        expected_input_field_names,
+        fields_to_remove_names,
+        input_file_path,
+        n_rows_offset,
+        max_n_rows,
+    )
+
+
+def parse_rcv_compra_reclamado_csv_file(
+    receptor_rut: Rut,
+    receptor_razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Iterable[Tuple[Optional[DteDataL2], int, Dict[str, object], Dict[str, object]]]:
+    """
+    Parse DTE data objects from a RCV "Compra/reclamado" file (CSV).
+
+    """
+    schema_context = dict(
+        receptor_rut=receptor_rut,
+        receptor_razon_social=receptor_razon_social,
+    )
+    input_csv_row_schema = RcvCompraReclamadoCsvRowSchema(context=schema_context)
+
+    expected_input_field_names = (
+        'Nro',
+        'Tipo Doc',  # 'tipo_dte'
+        'Tipo Compra',
+        'RUT Proveedor',  # 'emisor_rut'
+        'Razon Social',  # 'emisor_razon_social'
+        'Folio',  # 'folio'
+        'Fecha Docto',  # 'fecha_emision_date'
+        'Fecha Recepcion',  # 'fecha_recepcion_dt'
+        'Fecha Reclamo',  # 'fecha_reclamo_dt'
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Total',  # 'monto_total'
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    fields_to_remove_names = (
+        'Nro',
+        'Tipo Compra',
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    yield from _parse_rcv_csv_file(
+        input_csv_row_schema,
+        expected_input_field_names,
+        fields_to_remove_names,
+        input_file_path,
+        n_rows_offset,
+        max_n_rows,
+    )
+
+
+def parse_rcv_compra_pendiente_csv_file(
+    receptor_rut: Rut,
+    receptor_razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Iterable[Tuple[Optional[DteDataL2], int, Dict[str, object], Dict[str, object]]]:
+    """
+    Parse DTE data objects from a RCV "Compra/pendiente" file (CSV).
+
+    """
+    schema_context = dict(
+        receptor_rut=receptor_rut,
+        receptor_razon_social=receptor_razon_social,
+    )
+    input_csv_row_schema = RcvCompraPendienteCsvRowSchema(context=schema_context)
+
+    expected_input_field_names = (
+        'Nro',
+        'Tipo Doc',  # 'tipo_dte'
+        'Tipo Compra',
+        'RUT Proveedor',  # 'emisor_rut'
+        'Razon Social',  # 'emisor_razon_social'
+        'Folio',  # 'folio'
+        'Fecha Docto',  # 'fecha_emision_date'
+        'Fecha Recepcion',  # 'fecha_recepcion_dt'
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Total',  # 'monto_total'
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    fields_to_remove_names = (
+        'Nro',
+        'Tipo Compra',
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    yield from _parse_rcv_csv_file(
+        input_csv_row_schema,
+        expected_input_field_names,
+        fields_to_remove_names,
+        input_file_path,
+        n_rows_offset,
+        max_n_rows,
+    )
+
+
 ###############################################################################
 # schemas
 ###############################################################################
@@ -303,6 +600,309 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         if 'fecha_reclamo_dt' in data and data['fecha_reclamo_dt']:
             data['fecha_reclamo_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
                 dt=data['fecha_reclamo_dt'], tz=self.FIELD_FECHA_RECLAMO_DT_TZ)
+
+        return data
+
+
+class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
+
+    FIELD_FECHA_RECEPCION_DT_TZ = DteDataL2.DATETIME_FIELDS_TZ
+    FIELD_FECHA_ACUSE_DT_TZ = DteDataL2.DATETIME_FIELDS_TZ
+
+    class Meta:
+        strict = True
+
+    ###########################################################################
+    # basic fields
+    ###########################################################################
+
+    emisor_rut = mm_fields.RutField(
+        required=True,
+        load_from='RUT Proveedor',
+    )
+    tipo_dte = mm_fields.TipoDteField(
+        required=True,
+        load_from='Tipo Doc',
+    )
+    folio = marshmallow.fields.Integer(
+        required=True,
+        load_from='Folio',
+    )
+    fecha_emision_date = mm_utils.CustomMarshmallowDateField(
+        format='%d/%m/%Y',  # e.g. '22/10/2018'
+        required=True,
+        load_from='Fecha Docto',
+    )
+    monto_total = marshmallow.fields.Integer(
+        required=True,
+        load_from='Monto Total',
+    )
+    emisor_razon_social = marshmallow.fields.String(
+        required=True,
+        load_from='Razon Social',
+    )
+
+    ###########################################################################
+    # fields whose value is set using data passed in the schema context
+    ###########################################################################
+
+    receptor_rut = mm_fields.RutField(
+        required=True,
+    )
+    receptor_razon_social = marshmallow.fields.String(
+        required=True,
+    )
+
+    ###########################################################################
+    # extra fields: not included in the returned struct
+    ###########################################################################
+
+    fecha_recepcion_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        load_from='Fecha Recepcion',
+    )
+    fecha_acuse_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        allow_none=True,
+        load_from='Fecha Acuse',
+    )
+
+    @marshmallow.pre_load
+    def preprocess(self, in_data: dict) -> dict:
+        # note: required fields checks are run later on automatically thus we may not assume that
+        #   values of required fields (`required=True`) exist.
+
+        # Set field value only if it was not in the input data.
+        in_data.setdefault('receptor_rut', self.context['receptor_rut'])
+        in_data.setdefault('receptor_razon_social', self.context['receptor_razon_social'])
+
+        # Fix missing/default values.
+        if 'Fecha Acuse' in in_data:
+            if in_data['Fecha Acuse'] == '':
+                in_data['Fecha Acuse'] = None
+
+        return in_data
+
+    @marshmallow.post_load
+    def postprocess(self, data: dict) -> dict:
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13'
+        data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13-03:00'
+        # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
+        # '2018-10-23T04:54:13+00:00'
+
+        if data['fecha_acuse_dt']:
+            data['fecha_acuse_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+                dt=data['fecha_acuse_dt'], tz=self.FIELD_FECHA_ACUSE_DT_TZ)
+
+        # note: to express this value in another timezone (but the value does not change), do
+        #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
+
+        return data
+
+
+RcvCompraNoIncluirCsvRowSchema = RcvCompraRegistroCsvRowSchema
+
+
+class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
+
+    FIELD_FECHA_RECEPCION_DT_TZ = DteDataL2.DATETIME_FIELDS_TZ
+    FIELD_FECHA_RECLAMO_DT_TZ = DteDataL2.DATETIME_FIELDS_TZ
+
+    class Meta:
+        strict = True
+
+    ###########################################################################
+    # basic fields
+    ###########################################################################
+
+    emisor_rut = mm_fields.RutField(
+        required=True,
+        load_from='RUT Proveedor',
+    )
+    tipo_dte = mm_fields.TipoDteField(
+        required=True,
+        load_from='Tipo Doc',
+    )
+    folio = marshmallow.fields.Integer(
+        required=True,
+        load_from='Folio',
+    )
+    fecha_emision_date = mm_utils.CustomMarshmallowDateField(
+        format='%d/%m/%Y',  # e.g. '22/10/2018'
+        required=True,
+        load_from='Fecha Docto',
+    )
+    monto_total = marshmallow.fields.Integer(
+        required=True,
+        load_from='Monto Total',
+    )
+    emisor_razon_social = marshmallow.fields.String(
+        required=True,
+        load_from='Razon Social',
+    )
+
+    ###########################################################################
+    # fields whose value is set using data passed in the schema context
+    ###########################################################################
+
+    receptor_rut = mm_fields.RutField(
+        required=True,
+    )
+    receptor_razon_social = marshmallow.fields.String(
+        required=True,
+    )
+
+    ###########################################################################
+    # extra fields: not included in the returned struct
+    ###########################################################################
+
+    fecha_recepcion_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        load_from='Fecha Recepcion',
+    )
+    fecha_reclamo_dt = marshmallow.fields.DateTime(
+        # note: for some reason the DTEs with `tipo_dte=<TipoDteEnum.NOTA_CREDITO_ELECTRONICA: 61>`
+        #   (and maybe others as well) do not have this field set (always? we do not know).
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=False,
+        allow_none=True,
+        load_from='Fecha Reclamo',
+    )
+
+    @marshmallow.pre_load
+    def preprocess(self, in_data: dict) -> dict:
+        # note: required fields checks are run later on automatically thus we may not assume that
+        #   values of required fields (`required=True`) exist.
+
+        # Set field value only if it was not in the input data.
+        in_data.setdefault('receptor_rut', self.context['receptor_rut'])
+        in_data.setdefault('receptor_razon_social', self.context['receptor_razon_social'])
+
+        # Fix missing/default values.
+        # note: for some reason the DTEs with `tipo_dte=<TipoDteEnum.NOTA_CREDITO_ELECTRONICA: 61>`
+        #   (and maybe others as well) do not have this field set (always? we do not know).
+        if 'Fecha Reclamo' in in_data:
+            if in_data['Fecha Reclamo'] == '' or 'null' in in_data['Fecha Reclamo']:
+                in_data['Fecha Reclamo'] = None
+
+        return in_data
+
+    @marshmallow.post_load
+    def postprocess(self, data: dict) -> dict:
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13'
+        data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13-03:00'
+        # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
+        # '2018-10-23T04:54:13+00:00'
+
+        if data['fecha_reclamo_dt']:
+            data['fecha_reclamo_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+                dt=data['fecha_reclamo_dt'], tz=self.FIELD_FECHA_RECLAMO_DT_TZ)
+
+        # note: to express this value in another timezone (but the value does not change), do
+        #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
+
+        return data
+
+
+class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
+
+    FIELD_FECHA_RECEPCION_DT_TZ = DteDataL2.DATETIME_FIELDS_TZ
+    FIELD_FECHA_ACUSE_DT_TZ = DteDataL2.DATETIME_FIELDS_TZ
+
+    class Meta:
+        strict = True
+
+    ###########################################################################
+    # basic fields
+    ###########################################################################
+
+    emisor_rut = mm_fields.RutField(
+        required=True,
+        load_from='RUT Proveedor',
+    )
+    tipo_dte = mm_fields.TipoDteField(
+        required=True,
+        load_from='Tipo Doc',
+    )
+    folio = marshmallow.fields.Integer(
+        required=True,
+        load_from='Folio',
+    )
+    fecha_emision_date = mm_utils.CustomMarshmallowDateField(
+        format='%d/%m/%Y',  # e.g. '22/10/2018'
+        required=True,
+        load_from='Fecha Docto',
+    )
+    monto_total = marshmallow.fields.Integer(
+        required=True,
+        load_from='Monto Total',
+    )
+    emisor_razon_social = marshmallow.fields.String(
+        required=True,
+        load_from='Razon Social',
+    )
+
+    ###########################################################################
+    # fields whose value is set using data passed in the schema context
+    ###########################################################################
+
+    receptor_rut = mm_fields.RutField(
+        required=True,
+    )
+    receptor_razon_social = marshmallow.fields.String(
+        required=True,
+    )
+
+    ###########################################################################
+    # extra fields: not included in the returned struct
+    ###########################################################################
+
+    fecha_recepcion_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        load_from='Fecha Recepcion',
+    )
+
+    @marshmallow.pre_load
+    def preprocess(self, in_data: dict) -> dict:
+        # note: required fields checks are run later on automatically thus we may not assume that
+        #   values of required fields (`required=True`) exist.
+
+        # Set field value only if it was not in the input data.
+        in_data.setdefault('receptor_rut', self.context['receptor_rut'])
+        in_data.setdefault('receptor_razon_social', self.context['receptor_razon_social'])
+
+        # Fix missing/default values.
+        if 'Fecha Acuse' in in_data:
+            if in_data['Fecha Acuse'] == '':
+                in_data['Fecha Acuse'] = None
+
+        return in_data
+
+    @marshmallow.post_load
+    def postprocess(self, data: dict) -> dict:
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13'
+        data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13-03:00'
+        # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
+        # '2018-10-23T04:54:13+00:00'
+
+        # note: to express this value in another timezone (but the value does not change), do
+        #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
 
         return data
 
