@@ -131,7 +131,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     # TODO: change response type to a dataclass like 'DteXmlData'.
     # TODO: separate the XML parsing stage from the deserialization stage, which could be
     #   performed by XML-agnostic code (perhaps using Marshmallow or data clacases?).
-    #   See :class:`cl_sii.rcv.parse.RcvCsvRowSchema`.
+    #   See :class:`cl_sii.rcv.parse_csv.RcvVentaCsvRowSchema`.
 
     if not isinstance(xml_doc, (XmlElement, XmlElementTree)):
         raise TypeError("'xml_doc' must be an 'XmlElement'.")
