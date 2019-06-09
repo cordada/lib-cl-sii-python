@@ -3,7 +3,11 @@ import unittest
 
 import marshmallow
 
-from cl_sii.extras.mm_fields import Rut, RutField, TipoDteEnum, TipoDteField
+from cl_sii.extras.mm_fields import (
+    RcvTipoDocto, RcvTipoDoctoField,
+    Rut, RutField,
+    TipoDteEnum, TipoDteField,
+)
 
 
 class RutFieldTest(unittest.TestCase):
@@ -290,3 +294,148 @@ class TipoDteFieldTest(unittest.TestCase):
         self.assertDictEqual(errors, {'tipo_dte': ['Invalid input type.']})
         data, errors = schema.dump(obj_invalid_5)
         self.assertDictEqual(errors, {'tipo_dte': ['Invalid input type.']})
+
+
+class RcvTipoDoctoFieldTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+
+        class MyObj:
+            def __init__(self, tipo_docto: RcvTipoDocto, other_field: int = None) -> None:
+                self.tipo_docto = tipo_docto
+                self.other_field = other_field
+
+        class MyBadObj:
+            def __init__(self, some_field: int) -> None:
+                self.some_field = some_field
+
+        class MyMmSchema(marshmallow.Schema):
+
+            class Meta:
+                strict = False
+
+            tipo_docto = RcvTipoDoctoField(
+                required=True,
+                load_from='source field name',
+            )
+            other_field = marshmallow.fields.Integer(
+                required=False,
+            )
+
+        class MyMmSchemaStrict(marshmallow.Schema):
+
+            class Meta:
+                strict = True
+
+            tipo_docto = RcvTipoDoctoField(
+                required=True,
+                load_from='source field name',
+            )
+            other_field = marshmallow.fields.Integer(
+                required=False,
+            )
+
+        self.MyObj = MyObj
+        self.MyBadObj = MyBadObj
+        self.MyMmSchema = MyMmSchema
+        self.MyMmSchemaStrict = MyMmSchemaStrict
+
+    def test_load_ok_valid(self) -> None:
+        schema = self.MyMmSchema()
+
+        data_valid_1 = {'source field name': 33}
+        data_valid_2 = {'source field name': RcvTipoDocto(33)}
+        data_valid_3 = {'source field name': '  33 \t '}
+
+        result = schema.load(data_valid_1)
+        self.assertDictEqual(dict(result.data), {'tipo_docto': RcvTipoDocto(33)})
+        self.assertDictEqual(dict(result.errors), {})
+
+        result = schema.load(data_valid_2)
+        self.assertDictEqual(dict(result.data), {'tipo_docto': RcvTipoDocto(33)})
+        self.assertDictEqual(dict(result.errors), {})
+
+        result = schema.load(data_valid_3)
+        self.assertDictEqual(dict(result.data), {'tipo_docto': RcvTipoDocto(33)})
+        self.assertDictEqual(dict(result.errors), {})
+
+    def test_dump_ok_valid(self) -> None:
+        schema = self.MyMmSchema()
+
+        obj_valid_1 = self.MyObj(tipo_docto=RcvTipoDocto(33))
+        obj_valid_2 = self.MyObj(tipo_docto=None)
+
+        data, errors = schema.dump(obj_valid_1)
+        self.assertDictEqual(data, {'tipo_docto': 33, 'other_field': None})
+        self.assertDictEqual(errors, {})
+
+        data, errors = schema.dump(obj_valid_2)
+        self.assertDictEqual(data, {'tipo_docto': None, 'other_field': None})
+        self.assertDictEqual(errors, {})
+
+    def test_dump_ok_strange(self) -> None:
+        # If the class of the object to be dumped has attributes that do not match at all the
+        #   fields of the schema, there are no errors! Even if the schema has `strict = True` set.
+
+        schema = self.MyMmSchema()
+        schema_strict = self.MyMmSchemaStrict()
+
+        obj_valid_1 = self.MyBadObj(some_field=123)
+        obj_valid_2 = self.MyBadObj(some_field=None)
+
+        data, errors = schema.dump(obj_valid_1)
+        self.assertEqual((data, errors), ({}, {}))
+
+        data, errors = schema_strict.dump(obj_valid_1)
+        self.assertEqual((data, errors), ({}, {}))
+
+        data, errors = schema.dump(obj_valid_2)
+        self.assertEqual((data, errors), ({}, {}))
+
+        data, errors = schema_strict.dump(obj_valid_2)
+        self.assertEqual((data, errors), ({}, {}))
+
+    def test_load_fail(self) -> None:
+
+        schema = self.MyMmSchema()
+
+        data_invalid_1 = {'source field name': '123'}
+        data_invalid_2 = {'source field name': True}
+        data_invalid_3 = {'source field name': None}
+        data_invalid_4 = {}
+
+        result = schema.load(data_invalid_1)
+        self.assertDictEqual(dict(result.data), {})
+        self.assertDictEqual(dict(result.errors), {'source field name': ["Not a valid RCV's Tipo de Documento."]})  # noqa: E501
+
+        result = schema.load(data_invalid_2)
+        self.assertDictEqual(dict(result.data), {})
+        self.assertDictEqual(dict(result.errors), {'source field name': ['Invalid input type.']})
+
+        result = schema.load(data_invalid_3)
+        self.assertDictEqual(dict(result.data), {})
+        self.assertDictEqual(dict(result.errors), {'source field name': ['Field may not be null.']})
+
+        result = schema.load(data_invalid_4)
+        self.assertDictEqual(dict(result.data), {})
+        self.assertDictEqual(dict(result.errors), {'source field name': ['Missing data for required field.']})  # noqa: E501
+
+    def test_dump_fail(self) -> None:
+        schema = self.MyMmSchema()
+
+        obj_invalid_1 = self.MyObj(tipo_docto=100)
+        obj_invalid_2 = self.MyObj(tipo_docto=True)
+        obj_invalid_3 = self.MyObj(tipo_docto='FACTURA_ELECTRONICA')
+        obj_invalid_4 = self.MyObj(tipo_docto='')
+        obj_invalid_5 = self.MyObj(tipo_docto=date(2018, 12, 23))
+
+        data, errors = schema.dump(obj_invalid_1)
+        self.assertDictEqual(errors, {'tipo_docto': ["Not a valid RCV's Tipo de Documento."]})
+        data, errors = schema.dump(obj_invalid_2)
+        self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})
+        data, errors = schema.dump(obj_invalid_3)
+        self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})
+        data, errors = schema.dump(obj_invalid_4)
+        self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})
+        data, errors = schema.dump(obj_invalid_5)
+        self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})

@@ -14,6 +14,7 @@ from typing import Optional
 import marshmallow.fields
 
 from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.rcv.constants import RcvTipoDocto
 from cl_sii.rut import Rut
 
 
@@ -115,5 +116,58 @@ class TipoDteField(marshmallow.fields.Field):
                 validated = TipoDteEnum(value)  # type: ignore
             except ValueError:
                 # TipoDteEnum('x') raises 'ValueError', not 'TypeError'
+                self.fail('invalid')
+        return validated
+
+
+class RcvTipoDoctoField(marshmallow.fields.Field):
+
+    """
+    Marshmallow field for RCV's "tipo documento".
+
+    Data types:
+    * native/primitive/internal/deserialized: :class:`RcvTipoDocto`
+    * representation/serialized: int, same as for Marshmallow field
+      :class:`marshmallow.fields.Integer`
+
+    The field performs some input value cleaning when it is an str;
+    for example ``'  33 \t '`` is allowed and the resulting value
+    is ``RcvTipoDocto(33)``.
+
+    Implementation almost identical to :class:`TipoDteField`.
+
+    """
+
+    default_error_messages = {
+        'invalid': "Not a valid RCV's Tipo de Documento."
+    }
+
+    def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[int]:
+        validated: Optional[RcvTipoDocto] = self._validated(value)
+        return validated.value if validated is not None else None
+
+    def _deserialize(self, value: object, attr: str, data: dict) -> Optional[RcvTipoDocto]:
+        return self._validated(value)
+
+    def _validated(self, value: Optional[object]) -> Optional[RcvTipoDocto]:
+        if value is None or isinstance(value, RcvTipoDocto):
+            validated = value
+        else:
+            if isinstance(value, bool):
+                # is value is bool, `isinstance(value, int)` is True and `int(value)` works!
+                self.fail('type')
+            try:
+                value = int(value)  # type: ignore
+            except ValueError:
+                # `int('x')` raises 'ValueError', not 'TypeError'
+                self.fail('type')
+            except TypeError:
+                # `int(date(2018, 10, 10))` raises 'TypeError', unlike `int('x')`
+                self.fail('type')
+
+            try:
+                validated = RcvTipoDocto(value)  # type: ignore
+            except ValueError:
+                # RcvTipoDocto('x') raises 'ValueError', not 'TypeError'
                 self.fail('invalid')
         return validated
