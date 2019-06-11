@@ -114,3 +114,13 @@ def dt_is_naive(value: datetime) -> bool:
         raise TypeError
     # source: 'django.utils.timezone.is_naive' @ Django 2.1.7
     return value.utcoffset() is None
+
+
+def validate_dt_tz(value: datetime, tz: PytzTimezone) -> None:
+    """
+    Validate that ``tz`` is the timezone of ``value``.
+    """
+    if not dt_is_aware(value):
+        raise ValueError("Value must be a timezone-aware datetime object.")
+    if value.tzinfo.zone != tz.zone:  # type: ignore
+        raise ValueError(f"Timezone of datetime value must be '{tz.zone!s}'.", value)

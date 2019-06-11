@@ -94,13 +94,6 @@ def validate_non_empty_bytes(value: bytes) -> None:
         raise ValueError("Bytes value length is 0.")
 
 
-def validate_correct_tz(value: datetime, tz: tz_utils.PytzTimezone) -> None:
-    if not tz_utils.dt_is_aware(value):
-        raise ValueError("Value must be a timezone-aware datetime.", value)
-    if value.tzinfo.zone != tz.zone:  # type: ignore
-        raise ValueError(f"Timezone of datetime value must be '{tz.zone!s}'.", value)
-
-
 @dataclasses.dataclass(frozen=True)
 class DteNaturalKey:
 
@@ -407,7 +400,7 @@ class DteDataL2(DteDataL1):
         if self.firma_documento_dt is not None:
             if not isinstance(self.firma_documento_dt, datetime):
                 raise TypeError("Inappropriate type of 'firma_documento_dt'.")
-            validate_correct_tz(self.firma_documento_dt, self.DATETIME_FIELDS_TZ)
+            tz_utils.validate_dt_tz(self.firma_documento_dt, self.DATETIME_FIELDS_TZ)
 
         if self.signature_value is not None:
             if not isinstance(self.signature_value, bytes):
