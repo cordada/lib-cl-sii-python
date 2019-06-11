@@ -22,6 +22,7 @@ from typing import Mapping, Optional
 
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
+from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
@@ -327,7 +328,7 @@ class DteDataL2(DteDataL1):
     # constants
     ###########################################################################
 
-    DATETIME_FIELDS_TZ = tz_utils.TZ_CL_SANTIAGO
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
 
     ###########################################################################
     # fields

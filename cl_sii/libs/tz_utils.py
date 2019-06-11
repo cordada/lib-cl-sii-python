@@ -27,11 +27,7 @@ PytzTimezone = Union[
 
 
 TZ_UTC = pytz.UTC  # type: PytzTimezone
-TZ_CL_SANTIAGO = pytz.timezone('America/Santiago')  # type: PytzTimezone
-
-# TODO: remove
-UTC = TZ_UTC
-TIMEZONE_CL_SANTIAGO = TZ_CL_SANTIAGO
+_TZ_CL_SANTIAGO: PytzTimezone = pytz.timezone('America/Santiago')
 
 
 def get_now_tz_aware() -> datetime:
@@ -66,7 +62,7 @@ def convert_naive_dt_to_tz_aware(dt: datetime, tz: PytzTimezone) -> datetime:
     >>> dt_tz_aware_1.isoformat()
     '2018-10-23T04:54:13+00:00'
 
-    >>> dt_tz_aware_2 = convert_naive_dt_to_tz_aware(dt_naive, TZ_CL_SANTIAGO)
+    >>> dt_tz_aware_2 = convert_naive_dt_to_tz_aware(dt_naive, _TZ_CL_SANTIAGO)
     >>> dt_tz_aware_2
     datetime.datetime(2018, 10, 23, 1, 54, 13, tzinfo=<DstTzInfo 'America/Santiago'
     -03-1 day, 21:00:00 DST>)
@@ -91,7 +87,7 @@ def dt_is_aware(value: datetime) -> bool:
     False
     >>> dt_is_aware(convert_naive_dt_to_tz_aware(dt_naive, TZ_UTC))
     True
-    >>> dt_is_aware(convert_naive_dt_to_tz_aware(dt_naive, TZ_CL_SANTIAGO))
+    >>> dt_is_aware(convert_naive_dt_to_tz_aware(dt_naive, _TZ_CL_SANTIAGO))
     True
 
     """
@@ -110,7 +106,7 @@ def dt_is_naive(value: datetime) -> bool:
     True
     >>> dt_is_naive(convert_naive_dt_to_tz_aware(dt_naive, TZ_UTC))
     False
-    >>> dt_is_naive(convert_naive_dt_to_tz_aware(dt_naive, TZ_CL_SANTIAGO))
+    >>> dt_is_naive(convert_naive_dt_to_tz_aware(dt_naive, _TZ_CL_SANTIAGO))
     False
 
     """

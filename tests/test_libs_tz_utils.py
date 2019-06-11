@@ -2,7 +2,7 @@ import unittest
 
 from cl_sii.libs.tz_utils import (  # noqa: F401
     convert_naive_dt_to_tz_aware, dt_is_aware, dt_is_naive, get_now_tz_aware,
-    PytzTimezone, TZ_CL_SANTIAGO, TZ_UTC,
+    PytzTimezone, TZ_UTC,
 )
 
 
