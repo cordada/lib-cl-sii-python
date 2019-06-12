@@ -284,7 +284,3 @@ class FunctionsTest(unittest.TestCase):
     def test_validate_non_empty_bytes(self) -> None:
         # TODO: implement for 'validate_non_empty_bytes'
         pass
-
-    def test_validate_correct_tz(self) -> None:
-        # TODO: implement for 'validate_correct_tz'
-        pass
