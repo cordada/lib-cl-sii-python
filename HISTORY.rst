@@ -3,6 +3,15 @@
 History
 -------
 
+0.7.0 (2019-06-13)
++++++++++++++++++++++++
+
+* (PR #63, 2019-06-13) rcv.parse_csv: significant changes to parse functions
+* (PR #62, 2019-06-13) libs: add module ``io_utils``
+* (PR #61, 2019-06-12) rcv: add data models, constants and more
+* (PR #60, 2019-06-12) libs.tz_utils: misc
+* (PR #59, 2019-05-31) rcv.parse_csv: add ``parse_rcv_compra_X_csv_file``
+
 0.6.5 (2019-05-29)
 +++++++++++++++++++++++
 
