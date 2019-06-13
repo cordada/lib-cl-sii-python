@@ -71,10 +71,12 @@ def main(
         [Rut, str, str, int, Optional[int]],
         Iterable[Tuple[Optional[RcvDetalleEntry], int, Dict[str, object], Dict[str, object]]]]
 
+    if not rcv_kind.is_estado_contable_compatible(estado_contable):
+        raise ValueError(
+            "Incompatible values of 'rcv_kind' and 'estado_contable'.", rcv_kind, estado_contable)
+
     if rcv_kind == RcvKind.COMPRAS:
-        if estado_contable is None:
-            raise ValueError("'estado_contable' must not be None when 'rcv_kind' is 'COMPRAS'.")
-        elif estado_contable == RcEstadoContable.REGISTRO:
+        if estado_contable == RcEstadoContable.REGISTRO:
             parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_registro_csv_file
         elif estado_contable == RcEstadoContable.NO_INCLUIR:
             parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_no_incluir_csv_file
@@ -87,8 +89,6 @@ def main(
                 "Programming error. No handler for given 'estado_contable'.", estado_contable)
 
     elif rcv_kind == RcvKind.VENTAS:
-        if estado_contable is not None:
-            raise ValueError("'estado_contable' must be None when 'rcv_kind' is 'VENTAS'.")
         parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_venta_csv_file
 
     else:
