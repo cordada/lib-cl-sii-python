@@ -71,28 +71,31 @@ def main(
         [Rut, str, str, int, Optional[int]],
         Iterable[Tuple[Optional[RcvDetalleEntry], int, Dict[str, object], Dict[str, object]]]]
 
-    if not rcv_kind.is_estado_contable_compatible(estado_contable):
-        raise ValueError(
-            "Incompatible values of 'rcv_kind' and 'estado_contable'.", rcv_kind, estado_contable)
+    # if not rcv_kind.is_estado_contable_compatible(estado_contable):
+    #     raise ValueError(
+    #         "Incompatible values of 'rcv_kind' and 'estado_contable'.", rcv_kind, estado_contable)
+    #
+    # if rcv_kind == RcvKind.COMPRAS:
+    #     if estado_contable == RcEstadoContable.REGISTRO:
+    #         parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_registro_csv_file
+    #     elif estado_contable == RcEstadoContable.NO_INCLUIR:
+    #         parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_no_incluir_csv_file
+    #     elif estado_contable == RcEstadoContable.RECLAMADO:
+    #         parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_reclamado_csv_file
+    #     elif estado_contable == RcEstadoContable.PENDIENTE:
+    #         parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_pendiente_csv_file
+    #     else:
+    #         raise Exception(
+    #             "Programming error. No handler for given 'estado_contable'.", estado_contable)
+    #
+    # elif rcv_kind == RcvKind.VENTAS:
+    #     parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_venta_csv_file
+    #
+    # else:
+    #     raise Exception("Programming error. No handler for given 'rcv_kind'.", rcv_kind)
 
-    if rcv_kind == RcvKind.COMPRAS:
-        if estado_contable == RcEstadoContable.REGISTRO:
-            parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_registro_csv_file
-        elif estado_contable == RcEstadoContable.NO_INCLUIR:
-            parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_no_incluir_csv_file
-        elif estado_contable == RcEstadoContable.RECLAMADO:
-            parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_reclamado_csv_file
-        elif estado_contable == RcEstadoContable.PENDIENTE:
-            parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_compra_pendiente_csv_file
-        else:
-            raise Exception(
-                "Programming error. No handler for given 'estado_contable'.", estado_contable)
-
-    elif rcv_kind == RcvKind.VENTAS:
-        parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.parse_rcv_venta_csv_file
-
-    else:
-        raise Exception("Programming error. No handler for given 'rcv_kind'.", rcv_kind)
+    parse_rcv_csv_file_func = cl_sii.rcv.parse_csv.get_parse_rcv_csv_file_func(
+        rcv_kind, estado_contable)
 
     errors = []
     try:

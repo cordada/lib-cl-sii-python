@@ -4,10 +4,12 @@ Parse RCV files (CSV)
 
 
 """
+from __future__ import annotations
+
 import csv
 import logging
 from datetime import date, datetime
-from typing import Dict, Iterable, Optional, Sequence, Tuple
+from typing import Callable, Dict, Iterable, Optional, Sequence, Tuple
 
 import marshmallow
 import marshmallow.fields
@@ -22,6 +24,7 @@ from cl_sii.libs import rows_processing
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
+from .constants import RcvKind, RcEstadoContable
 from .data_models import (
     RcvDetalleEntry, RcNoIncluirDetalleEntry,
     RcPendienteDetalleEntry, RcReclamadoDetalleEntry,
@@ -30,6 +33,83 @@ from .data_models import (
 
 
 logger = logging.getLogger(__name__)
+
+
+def get_parse_rcv_csv_file_func(
+    rcv_kind: RcvKind,
+    estado_contable: Optional[RcEstadoContable],
+) -> Callable:
+
+    if not rcv_kind.is_estado_contable_compatible(estado_contable):
+        raise ValueError(
+            "Incompatible values of 'rcv_kind' and 'estado_contable'.", rcv_kind, estado_contable)
+
+    if rcv_kind == RcvKind.COMPRAS:
+        if estado_contable == RcEstadoContable.REGISTRO:
+            parse_rcv_csv_file_func = parse_rcv_compra_registro_csv_file
+        elif estado_contable == RcEstadoContable.NO_INCLUIR:
+            parse_rcv_csv_file_func = parse_rcv_compra_no_incluir_csv_file
+        elif estado_contable == RcEstadoContable.RECLAMADO:
+            parse_rcv_csv_file_func = parse_rcv_compra_reclamado_csv_file
+        elif estado_contable == RcEstadoContable.PENDIENTE:
+            parse_rcv_csv_file_func = parse_rcv_compra_pendiente_csv_file
+        else:
+            raise Exception(
+                "Programming error. No handler for given 'estado_contable'.", estado_contable)
+
+    elif rcv_kind == RcvKind.VENTAS:
+        parse_rcv_csv_file_func = parse_rcv_venta_csv_file
+
+    else:
+        raise Exception("Programming error. No handler for given 'rcv_kind'.", rcv_kind)
+
+    return parse_rcv_csv_file_func
+
+
+def parse_rcv_csv_file(
+    rcv_kind: RcvKind,
+    estado_contable: Optional[RcEstadoContable],
+    rut: Rut,
+    razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Iterable[Tuple[Optional[RcvDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
+    """
+    Parse entries from an RCV ("Registro de Compra y Ventas") (CSV file).
+    """
+
+    if not rcv_kind.is_estado_contable_compatible(estado_contable):
+        raise ValueError(
+            "Incompatible values of 'rcv_kind' and 'estado_contable'.", rcv_kind, estado_contable)
+
+    if rcv_kind == RcvKind.COMPRAS:
+        if estado_contable == RcEstadoContable.REGISTRO:
+            get_params_func = parse_rcv_compra_registro_csv_file
+        elif estado_contable == RcEstadoContable.NO_INCLUIR:
+            get_params_func = parse_rcv_compra_no_incluir_csv_file
+        elif estado_contable == RcEstadoContable.RECLAMADO:
+            get_params_func = parse_rcv_compra_reclamado_csv_file
+        elif estado_contable == RcEstadoContable.PENDIENTE:
+            get_params_func = parse_rcv_compra_pendiente_csv_file
+        else:
+            raise Exception(
+                "Programming error. No handler for given 'estado_contable'.", estado_contable)
+
+    elif rcv_kind == RcvKind.VENTAS:
+        get_params_func = _get_parse_rcv_venta_csv_file_params
+
+    else:
+        raise Exception("Programming error. No handler for given 'rcv_kind'.", rcv_kind)
+
+    g_params = get_params_func(
+        rut=rut,
+        razon_social=razon_social,
+        input_file_path=input_file_path,
+        n_rows_offset=n_rows_offset,
+        max_n_rows=max_n_rows,
+    )
+    yield from _parse_rcv_csv_file(*g_params)
 
 
 def parse_rcv_venta_csv_file(
@@ -43,6 +123,26 @@ def parse_rcv_venta_csv_file(
     Parse entries from an RV ("Registro de Ventas") (CSV file).
 
     """
+    # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
+    #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
+    return parse_rcv_csv_file(
+        rcv_kind=RcvKind.VENTAS,
+        estado_contable=None,
+        rut=rut,
+        razon_social=razon_social,
+        input_file_path=input_file_path,
+        n_rows_offset=n_rows_offset,
+        max_n_rows=max_n_rows,
+    )
+
+
+def _get_parse_rcv_venta_csv_file_params(
+    rut: Rut,
+    razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Tuple[_RcvCsvRowSchemaBase, Sequence[str], Sequence[str], str, int, Optional[int]]:
     # warning: this looks like it would be executed before the iteration begins but it is not.
     if not isinstance(razon_social, str):
         raise TypeError("Inappropriate type of 'razon_social'.")
@@ -137,9 +237,7 @@ def parse_rcv_venta_csv_file(
         'Tasa Otro Imp.',
     )
 
-    # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
-    #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
-    yield from _parse_rcv_csv_file(  # type: ignore
+    return (
         input_csv_row_schema,
         expected_input_field_names,
         fields_to_remove_names,
@@ -160,6 +258,26 @@ def parse_rcv_compra_registro_csv_file(
     Parse entries from an RC ("Registro de Compras") / "registro" (CSV file).
 
     """
+    # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
+    #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
+    return parse_rcv_csv_file(
+        rcv_kind=RcvKind.COMPRAS,
+        estado_contable=RcEstadoContable.REGISTRO,
+        rut=rut,
+        razon_social=razon_social,
+        input_file_path=input_file_path,
+        n_rows_offset=n_rows_offset,
+        max_n_rows=max_n_rows,
+    )
+
+
+def _get_parse_rcv_compra_registro_csv_file_params(
+    rut: Rut,
+    razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Tuple[_RcvCsvRowSchemaBase, Sequence[str], Sequence[str], str, int, Optional[int]]:
     # warning: this looks like it would be executed before the iteration begins but it is not.
     if not isinstance(razon_social, str):
         raise TypeError("Inappropriate type of 'razon_social'.")
@@ -223,9 +341,7 @@ def parse_rcv_compra_registro_csv_file(
         'Tasa Otro Impuesto',
     )
 
-    # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
-    #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
-    yield from _parse_rcv_csv_file(  # type: ignore
+    return (
         input_csv_row_schema,
         expected_input_field_names,
         fields_to_remove_names,
