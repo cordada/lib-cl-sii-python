@@ -5,15 +5,15 @@ Parse RCV files (CSV)
 
 """
 import csv
-from datetime import date
 import logging
+from datetime import date, datetime
 from typing import Dict, Iterable, Optional, Sequence, Tuple
 
 import marshmallow
 import marshmallow.fields
 import marshmallow.validate
 
-from cl_sii.dte.data_models import DteDataL2
+from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.extras import mm_fields
 from cl_sii.libs import csv_utils
 from cl_sii.libs import mm_utils
@@ -21,40 +21,44 @@ from cl_sii.libs import rows_processing
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
+from .data_models import (
+    RcvDetalleEntry, RcNoIncluirDetalleEntry,
+    RcPendienteDetalleEntry, RcReclamadoDetalleEntry,
+    RcRegistroDetalleEntry, RvDetalleEntry,
+)
+
 
 logger = logging.getLogger(__name__)
 
 
 def parse_rcv_venta_csv_file(
-    emisor_rut: Rut,
-    emisor_razon_social: str,
+    rut: Rut,
+    razon_social: str,
     input_file_path: str,
     n_rows_offset: int = 0,
     max_n_rows: int = None,
-) -> Iterable[Tuple[Optional[DteDataL2], int, Dict[str, object], Dict[str, object]]]:
+) -> Iterable[Tuple[Optional[RvDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
     """
-    Parse DTE data objects from a RCV "Venta" file (CSV).
+    Parse entries from an RV ("Registro de Ventas") (CSV file).
 
     """
     schema_context = dict(
-        emisor_rut=emisor_rut,
-        emisor_razon_social=emisor_razon_social,
+        emisor_rut=rut,
+        emisor_razon_social=razon_social,
     )
     input_csv_row_schema = RcvVentaCsvRowSchema(context=schema_context)
 
     expected_input_field_names = (
         'Nro',
-        'Tipo Doc',  # 'tipo_dte'
+        'Tipo Doc',  # 'tipo_docto'
         'Tipo Venta',
         'Rut cliente',  # 'receptor_rut'
         'Razon Social',  # 'receptor_razon_social'
         'Folio',  # 'folio'
         'Fecha Docto',  # 'fecha_emision_date'
         'Fecha Recepcion',  # 'fecha_recepcion_dt'
-        # 'Fecha Acuse Recibo',  # 'fecha_acuse_recibo_dt'
-        'Fecha Acuse Recibo',
-        # 'Fecha Reclamo',  # 'fecha_reclamo_dt'
-        'Fecha Reclamo',
+        'Fecha Acuse Recibo',  # 'fecha_acuse_dt'
+        'Fecha Reclamo',  # 'fecha_reclamo_dt'
         'Monto Exento',
         'Monto Neto',
         'Monto IVA',
@@ -93,8 +97,6 @@ def parse_rcv_venta_csv_file(
     fields_to_remove_names = (
         'Nro',
         'Tipo Venta',
-        'Fecha Acuse Recibo',
-        'Fecha Reclamo',
         'Monto Exento',
         'Monto Neto',
         'Monto IVA',
@@ -129,7 +131,314 @@ def parse_rcv_venta_csv_file(
         'Tasa Otro Imp.',
     )
 
-    yield from _parse_rcv_csv_file(
+    # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
+    #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
+    yield from _parse_rcv_csv_file(  # type: ignore
+        input_csv_row_schema,
+        expected_input_field_names,
+        fields_to_remove_names,
+        input_file_path,
+        n_rows_offset,
+        max_n_rows,
+    )
+
+
+def parse_rcv_compra_registro_csv_file(
+    rut: Rut,
+    razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Iterable[Tuple[Optional[RcRegistroDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
+    """
+    Parse entries from an RC ("Registro de Compras") / "registro" (CSV file).
+
+    """
+    schema_context = dict(
+        receptor_rut=rut,
+        receptor_razon_social=razon_social,
+    )
+    input_csv_row_schema = RcvCompraRegistroCsvRowSchema(context=schema_context)
+
+    expected_input_field_names = (
+        'Nro',
+        'Tipo Doc',  # 'tipo_docto'
+        'Tipo Compra',
+        'RUT Proveedor',  # 'emisor_rut'
+        'Razon Social',  # 'emisor_razon_social'
+        'Folio',  # 'folio'
+        'Fecha Docto',  # 'fecha_emision_date'
+        'Fecha Recepcion',  # 'fecha_recepcion_dt'
+        'Fecha Acuse',  # 'fecha_acuse_dt'
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Total',  # 'monto_total'
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'Tabacos Puros',
+        'Tabacos Cigarrillos',
+        'Tabacos Elaborados',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    fields_to_remove_names = (
+        'Nro',
+        'Tipo Compra',
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'Tabacos Puros',
+        'Tabacos Cigarrillos',
+        'Tabacos Elaborados',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
+    #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
+    yield from _parse_rcv_csv_file(  # type: ignore
+        input_csv_row_schema,
+        expected_input_field_names,
+        fields_to_remove_names,
+        input_file_path,
+        n_rows_offset,
+        max_n_rows,
+    )
+
+
+def parse_rcv_compra_no_incluir_csv_file(
+    rut: Rut,
+    razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Iterable[Tuple[Optional[RcNoIncluirDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
+    """
+    Parse entries from an RC ("Registro de Compras") / "no incluir" (CSV file).
+
+    """
+    schema_context = dict(
+        receptor_rut=rut,
+        receptor_razon_social=razon_social,
+    )
+    input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema(context=schema_context)
+
+    expected_input_field_names = (
+        'Nro',
+        'Tipo Doc',  # 'tipo_docto'
+        'Tipo Compra',
+        'RUT Proveedor',  # 'emisor_rut'
+        'Razon Social',  # 'emisor_razon_social'
+        'Folio',  # 'folio'
+        'Fecha Docto',  # 'fecha_emision_date'
+        'Fecha Recepcion',  # 'fecha_recepcion_dt'
+        'Fecha Acuse',  # 'fecha_acuse_dt'
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Total',  # 'monto_total'
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    fields_to_remove_names = (
+        'Nro',
+        'Tipo Compra',
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
+    #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
+    yield from _parse_rcv_csv_file(  # type: ignore
+        input_csv_row_schema,
+        expected_input_field_names,
+        fields_to_remove_names,
+        input_file_path,
+        n_rows_offset,
+        max_n_rows,
+    )
+
+
+def parse_rcv_compra_reclamado_csv_file(
+    rut: Rut,
+    razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Iterable[Tuple[Optional[RcReclamadoDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
+    """
+    Parse entries from an RC ("Registro de Compras") / "reclamado" (CSV file).
+
+    """
+    schema_context = dict(
+        receptor_rut=rut,
+        receptor_razon_social=razon_social,
+    )
+    input_csv_row_schema = RcvCompraReclamadoCsvRowSchema(context=schema_context)
+
+    expected_input_field_names = (
+        'Nro',
+        'Tipo Doc',  # 'tipo_docto'
+        'Tipo Compra',
+        'RUT Proveedor',  # 'emisor_rut'
+        'Razon Social',  # 'emisor_razon_social'
+        'Folio',  # 'folio'
+        'Fecha Docto',  # 'fecha_emision_date'
+        'Fecha Recepcion',  # 'fecha_recepcion_dt'
+        'Fecha Reclamo',  # 'fecha_reclamo_dt'
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Total',  # 'monto_total'
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    fields_to_remove_names = (
+        'Nro',
+        'Tipo Compra',
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
+    #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
+    yield from _parse_rcv_csv_file(  # type: ignore
+        input_csv_row_schema,
+        expected_input_field_names,
+        fields_to_remove_names,
+        input_file_path,
+        n_rows_offset,
+        max_n_rows,
+    )
+
+
+def parse_rcv_compra_pendiente_csv_file(
+    rut: Rut,
+    razon_social: str,
+    input_file_path: str,
+    n_rows_offset: int = 0,
+    max_n_rows: int = None,
+) -> Iterable[Tuple[Optional[RcPendienteDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
+    """
+    Parse entries from an RC ("Registro de Compras") / "pendiente" (CSV file).
+
+    """
+    schema_context = dict(
+        receptor_rut=rut,
+        receptor_razon_social=razon_social,
+    )
+    input_csv_row_schema = RcvCompraPendienteCsvRowSchema(context=schema_context)
+
+    expected_input_field_names = (
+        'Nro',
+        'Tipo Doc',  # 'tipo_docto'
+        'Tipo Compra',
+        'RUT Proveedor',  # 'emisor_rut'
+        'Razon Social',  # 'emisor_razon_social'
+        'Folio',  # 'folio'
+        'Fecha Docto',  # 'fecha_emision_date'
+        'Fecha Recepcion',  # 'fecha_recepcion_dt'
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Total',  # 'monto_total'
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    fields_to_remove_names = (
+        'Nro',
+        'Tipo Compra',
+        'Monto Exento',
+        'Monto Neto',
+        'Monto IVA Recuperable',
+        'Monto Iva No Recuperable',
+        'Codigo IVA No Rec.',
+        'Monto Neto Activo Fijo',
+        'IVA Activo Fijo',
+        'IVA uso Comun',
+        'Impto. Sin Derecho a Credito',
+        'IVA No Retenido',
+        'NCE o NDE sobre Fact. de Compra',
+        'Codigo Otro Impuesto',
+        'Valor Otro Impuesto',
+        'Tasa Otro Impuesto',
+    )
+
+    # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
+    #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
+    yield from _parse_rcv_csv_file(  # type: ignore
         input_csv_row_schema,
         expected_input_field_names,
         fields_to_remove_names,
@@ -153,50 +462,15 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
     # def validate_field_x(self, value):
     #     pass
 
-    def to_dte_data_l2(self, data: dict) -> DteDataL2:
-        # note: the data of some serializer fields may not be included in the returned struct.
-
-        try:
-            emisor_rut: Rut = data['emisor_rut']  # type: ignore
-            receptor_rut: Rut = data['receptor_rut']  # type: ignore
-            tipo_dte = data['tipo_dte']  # type: ignore
-            folio: int = data['folio']  # type: ignore
-            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
-            monto_total: int = data['monto_total']  # type: ignore
-            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
-            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
-        except KeyError as exc:
-            raise ValueError("Programming error: a referenced field is missing.") from exc
-
-        try:
-            dte_data = DteDataL2(
-                emisor_rut=emisor_rut,
-                tipo_dte=tipo_dte,
-                folio=folio,
-                fecha_emision_date=fecha_emision_date,
-                receptor_rut=receptor_rut,
-                monto_total=monto_total,
-                emisor_razon_social=emisor_razon_social,
-                receptor_razon_social=receptor_razon_social,
-                # fecha_vencimiento_date='',
-                # firma_documento_dt='',
-                # signature_value='',
-                # signature_x509_cert_der='',
-                # emisor_giro='',
-                # emisor_email='',
-                # receptor_email='',
-            )
-        except (TypeError, ValueError):
-            raise
-
-        return dte_data
+    def to_detalle_entry(self, data: dict) -> RcvDetalleEntry:
+        raise NotImplementedError
 
 
 class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
 
-    FIELD_FECHA_RECEPCION_DT_TZ = DteDataL2.DATETIME_FIELDS_TZ
-    FIELD_FECHA_ACUSE_RECIBO_DT_TZ = DteDataL2.DATETIME_FIELDS_TZ
-    FIELD_FECHA_RECLAMO_DT_TZ = DteDataL2.DATETIME_FIELDS_TZ
+    FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
+    FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
+    FIELD_FECHA_RECLAMO_DT_TZ = SII_OFFICIAL_TZ
 
     class Meta:
         strict = True
@@ -205,7 +479,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
     # basic fields
     ###########################################################################
 
-    tipo_dte = mm_fields.TipoDteField(
+    tipo_docto = mm_fields.RcvTipoDoctoField(
         required=True,
         load_from='Tipo Doc',
     )
@@ -251,7 +525,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         required=True,
         load_from='Fecha Recepcion',
     )
-    fecha_acuse_recibo_dt = marshmallow.fields.DateTime(
+    fecha_acuse_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=False,
         allow_none=True,
@@ -297,14 +571,484 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         # note: to express this value in another timezone (but the value does not change), do
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
 
-        if 'fecha_acuse_recibo_dt' in data and data['fecha_acuse_recibo_dt']:
-            data['fecha_acuse_recibo_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
-                dt=data['fecha_acuse_recibo_dt'], tz=self.FIELD_FECHA_ACUSE_RECIBO_DT_TZ)
+        if 'fecha_acuse_dt' in data and data['fecha_acuse_dt']:
+            data['fecha_acuse_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+                dt=data['fecha_acuse_dt'], tz=self.FIELD_FECHA_ACUSE_DT_TZ)
         if 'fecha_reclamo_dt' in data and data['fecha_reclamo_dt']:
             data['fecha_reclamo_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
                 dt=data['fecha_reclamo_dt'], tz=self.FIELD_FECHA_RECLAMO_DT_TZ)
 
         return data
+
+    def to_detalle_entry(self, data: dict) -> RvDetalleEntry:
+        try:
+            emisor_rut: Rut = data['emisor_rut']  # type: ignore
+            tipo_docto = data['tipo_docto']  # type: ignore
+            folio: int = data['folio']  # type: ignore
+            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
+            receptor_rut: Rut = data['receptor_rut']  # type: ignore
+            monto_total: int = data['monto_total']  # type: ignore
+            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
+            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
+            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']  # type: ignore
+            fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']  # type: ignore
+        except KeyError as exc:
+            raise ValueError("Programming error: a referenced field is missing.") from exc
+
+        try:
+            detalle_entry = RvDetalleEntry(
+                emisor_rut=emisor_rut,
+                tipo_docto=tipo_docto,
+                folio=folio,
+                fecha_emision_date=fecha_emision_date,
+                receptor_rut=receptor_rut,
+                monto_total=monto_total,
+                emisor_razon_social=emisor_razon_social,
+                receptor_razon_social=receptor_razon_social,
+                fecha_recepcion_dt=fecha_recepcion_dt,
+                fecha_acuse_dt=fecha_acuse_dt,
+                fecha_reclamo_dt=fecha_reclamo_dt,
+            )
+        except (TypeError, ValueError):
+            raise
+
+        return detalle_entry
+
+
+class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
+
+    FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
+    FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
+
+    class Meta:
+        strict = True
+
+    ###########################################################################
+    # basic fields
+    ###########################################################################
+
+    emisor_rut = mm_fields.RutField(
+        required=True,
+        load_from='RUT Proveedor',
+    )
+    tipo_docto = mm_fields.RcvTipoDoctoField(
+        required=True,
+        load_from='Tipo Doc',
+    )
+    folio = marshmallow.fields.Integer(
+        required=True,
+        load_from='Folio',
+    )
+    fecha_emision_date = mm_utils.CustomMarshmallowDateField(
+        format='%d/%m/%Y',  # e.g. '22/10/2018'
+        required=True,
+        load_from='Fecha Docto',
+    )
+    monto_total = marshmallow.fields.Integer(
+        required=True,
+        load_from='Monto Total',
+    )
+    emisor_razon_social = marshmallow.fields.String(
+        required=True,
+        load_from='Razon Social',
+    )
+
+    ###########################################################################
+    # fields whose value is set using data passed in the schema context
+    ###########################################################################
+
+    receptor_rut = mm_fields.RutField(
+        required=True,
+    )
+    receptor_razon_social = marshmallow.fields.String(
+        required=True,
+    )
+
+    ###########################################################################
+    # extra fields: not included in the returned struct
+    ###########################################################################
+
+    fecha_recepcion_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        load_from='Fecha Recepcion',
+    )
+    fecha_acuse_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        allow_none=True,
+        load_from='Fecha Acuse',
+    )
+
+    @marshmallow.pre_load
+    def preprocess(self, in_data: dict) -> dict:
+        # note: required fields checks are run later on automatically thus we may not assume that
+        #   values of required fields (`required=True`) exist.
+
+        # Set field value only if it was not in the input data.
+        in_data.setdefault('receptor_rut', self.context['receptor_rut'])
+        in_data.setdefault('receptor_razon_social', self.context['receptor_razon_social'])
+
+        # Fix missing/default values.
+        if 'Fecha Acuse' in in_data:
+            if in_data['Fecha Acuse'] == '':
+                in_data['Fecha Acuse'] = None
+
+        return in_data
+
+    @marshmallow.post_load
+    def postprocess(self, data: dict) -> dict:
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13'
+        data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13-03:00'
+        # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
+        # '2018-10-23T04:54:13+00:00'
+
+        if data['fecha_acuse_dt']:
+            data['fecha_acuse_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+                dt=data['fecha_acuse_dt'], tz=self.FIELD_FECHA_ACUSE_DT_TZ)
+
+        # note: to express this value in another timezone (but the value does not change), do
+        #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
+
+        return data
+
+    def to_detalle_entry(self, data: dict) -> RcRegistroDetalleEntry:
+        try:
+            emisor_rut: Rut = data['emisor_rut']  # type: ignore
+            tipo_docto = data['tipo_docto']  # type: ignore
+            folio: int = data['folio']  # type: ignore
+            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
+            receptor_rut: Rut = data['receptor_rut']  # type: ignore
+            monto_total: int = data['monto_total']  # type: ignore
+            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
+            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
+            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']  # type: ignore
+        except KeyError as exc:
+            raise ValueError("Programming error: a referenced field is missing.") from exc
+
+        try:
+            detalle_entry = RcRegistroDetalleEntry(
+                emisor_rut=emisor_rut,
+                tipo_docto=tipo_docto,
+                folio=folio,
+                fecha_emision_date=fecha_emision_date,
+                receptor_rut=receptor_rut,
+                monto_total=monto_total,
+                emisor_razon_social=emisor_razon_social,
+                receptor_razon_social=receptor_razon_social,
+                fecha_recepcion_dt=fecha_recepcion_dt,
+                fecha_acuse_dt=fecha_acuse_dt,
+            )
+        except (TypeError, ValueError):
+            raise
+
+        return detalle_entry
+
+
+class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
+
+    def to_detalle_entry(self, data: dict) -> RcNoIncluirDetalleEntry:
+        try:
+            emisor_rut: Rut = data['emisor_rut']  # type: ignore
+            tipo_docto = data['tipo_docto']  # type: ignore
+            folio: int = data['folio']  # type: ignore
+            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
+            receptor_rut: Rut = data['receptor_rut']  # type: ignore
+            monto_total: int = data['monto_total']  # type: ignore
+            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
+            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
+            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']  # type: ignore
+        except KeyError as exc:
+            raise ValueError("Programming error: a referenced field is missing.") from exc
+
+        try:
+            detalle_entry = RcNoIncluirDetalleEntry(
+                emisor_rut=emisor_rut,
+                tipo_docto=tipo_docto,
+                folio=folio,
+                fecha_emision_date=fecha_emision_date,
+                receptor_rut=receptor_rut,
+                monto_total=monto_total,
+                emisor_razon_social=emisor_razon_social,
+                receptor_razon_social=receptor_razon_social,
+                fecha_recepcion_dt=fecha_recepcion_dt,
+                fecha_acuse_dt=fecha_acuse_dt,
+            )
+        except (TypeError, ValueError):
+            raise
+
+        return detalle_entry
+
+
+class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
+
+    FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
+    FIELD_FECHA_RECLAMO_DT_TZ = SII_OFFICIAL_TZ
+
+    class Meta:
+        strict = True
+
+    ###########################################################################
+    # basic fields
+    ###########################################################################
+
+    emisor_rut = mm_fields.RutField(
+        required=True,
+        load_from='RUT Proveedor',
+    )
+    tipo_docto = mm_fields.RcvTipoDoctoField(
+        required=True,
+        load_from='Tipo Doc',
+    )
+    folio = marshmallow.fields.Integer(
+        required=True,
+        load_from='Folio',
+    )
+    fecha_emision_date = mm_utils.CustomMarshmallowDateField(
+        format='%d/%m/%Y',  # e.g. '22/10/2018'
+        required=True,
+        load_from='Fecha Docto',
+    )
+    monto_total = marshmallow.fields.Integer(
+        required=True,
+        load_from='Monto Total',
+    )
+    emisor_razon_social = marshmallow.fields.String(
+        required=True,
+        load_from='Razon Social',
+    )
+
+    ###########################################################################
+    # fields whose value is set using data passed in the schema context
+    ###########################################################################
+
+    receptor_rut = mm_fields.RutField(
+        required=True,
+    )
+    receptor_razon_social = marshmallow.fields.String(
+        required=True,
+    )
+
+    ###########################################################################
+    # extra fields: not included in the returned struct
+    ###########################################################################
+
+    fecha_recepcion_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        load_from='Fecha Recepcion',
+    )
+    fecha_reclamo_dt = marshmallow.fields.DateTime(
+        # note: for some reason the rows with 'tipo_docto' equal to
+        #   '<RcvTipoDocto.NOTA_CREDITO_ELECTRONICA: 61>' (and maybe others as well) do not
+        #   have this field set (always? we do not know).
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=False,
+        allow_none=True,
+        load_from='Fecha Reclamo',
+    )
+
+    @marshmallow.pre_load
+    def preprocess(self, in_data: dict) -> dict:
+        # note: required fields checks are run later on automatically thus we may not assume that
+        #   values of required fields (`required=True`) exist.
+
+        # Set field value only if it was not in the input data.
+        in_data.setdefault('receptor_rut', self.context['receptor_rut'])
+        in_data.setdefault('receptor_razon_social', self.context['receptor_razon_social'])
+
+        # Fix missing/default values.
+        # note: for some reason the rows with 'tipo_docto' equal to
+        #   '<RcvTipoDocto.NOTA_CREDITO_ELECTRONICA: 61>' (and maybe others as well) do not
+        #   have this field set (always? we do not know).
+        if 'Fecha Reclamo' in in_data:
+            if in_data['Fecha Reclamo'] == '' or 'null' in in_data['Fecha Reclamo']:
+                in_data['Fecha Reclamo'] = None
+
+        return in_data
+
+    @marshmallow.post_load
+    def postprocess(self, data: dict) -> dict:
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13'
+        data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13-03:00'
+        # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
+        # '2018-10-23T04:54:13+00:00'
+
+        if data['fecha_reclamo_dt']:
+            data['fecha_reclamo_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+                dt=data['fecha_reclamo_dt'], tz=self.FIELD_FECHA_RECLAMO_DT_TZ)
+
+        # note: to express this value in another timezone (but the value does not change), do
+        #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
+
+        return data
+
+    def to_detalle_entry(self, data: dict) -> RcReclamadoDetalleEntry:
+        try:
+            emisor_rut: Rut = data['emisor_rut']  # type: ignore
+            tipo_docto = data['tipo_docto']  # type: ignore
+            folio: int = data['folio']  # type: ignore
+            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
+            receptor_rut: Rut = data['receptor_rut']  # type: ignore
+            monto_total: int = data['monto_total']  # type: ignore
+            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
+            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
+            fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']  # type: ignore
+        except KeyError as exc:
+            raise ValueError("Programming error: a referenced field is missing.") from exc
+
+        try:
+            detalle_entry = RcReclamadoDetalleEntry(
+                emisor_rut=emisor_rut,
+                tipo_docto=tipo_docto,
+                folio=folio,
+                fecha_emision_date=fecha_emision_date,
+                receptor_rut=receptor_rut,
+                monto_total=monto_total,
+                emisor_razon_social=emisor_razon_social,
+                receptor_razon_social=receptor_razon_social,
+                fecha_recepcion_dt=fecha_recepcion_dt,
+                fecha_reclamo_dt=fecha_reclamo_dt,
+            )
+        except (TypeError, ValueError):
+            raise
+
+        return detalle_entry
+
+
+class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
+
+    FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
+    FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
+
+    class Meta:
+        strict = True
+
+    ###########################################################################
+    # basic fields
+    ###########################################################################
+
+    emisor_rut = mm_fields.RutField(
+        required=True,
+        load_from='RUT Proveedor',
+    )
+    tipo_docto = mm_fields.RcvTipoDoctoField(
+        required=True,
+        load_from='Tipo Doc',
+    )
+    folio = marshmallow.fields.Integer(
+        required=True,
+        load_from='Folio',
+    )
+    fecha_emision_date = mm_utils.CustomMarshmallowDateField(
+        format='%d/%m/%Y',  # e.g. '22/10/2018'
+        required=True,
+        load_from='Fecha Docto',
+    )
+    monto_total = marshmallow.fields.Integer(
+        required=True,
+        load_from='Monto Total',
+    )
+    emisor_razon_social = marshmallow.fields.String(
+        required=True,
+        load_from='Razon Social',
+    )
+
+    ###########################################################################
+    # fields whose value is set using data passed in the schema context
+    ###########################################################################
+
+    receptor_rut = mm_fields.RutField(
+        required=True,
+    )
+    receptor_razon_social = marshmallow.fields.String(
+        required=True,
+    )
+
+    ###########################################################################
+    # extra fields: not included in the returned struct
+    ###########################################################################
+
+    fecha_recepcion_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        load_from='Fecha Recepcion',
+    )
+
+    @marshmallow.pre_load
+    def preprocess(self, in_data: dict) -> dict:
+        # note: required fields checks are run later on automatically thus we may not assume that
+        #   values of required fields (`required=True`) exist.
+
+        # Set field value only if it was not in the input data.
+        in_data.setdefault('receptor_rut', self.context['receptor_rut'])
+        in_data.setdefault('receptor_razon_social', self.context['receptor_razon_social'])
+
+        # Fix missing/default values.
+        if 'Fecha Acuse' in in_data:
+            if in_data['Fecha Acuse'] == '':
+                in_data['Fecha Acuse'] = None
+
+        return in_data
+
+    @marshmallow.post_load
+    def postprocess(self, data: dict) -> dict:
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13'
+        data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13-03:00'
+        # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
+        # '2018-10-23T04:54:13+00:00'
+
+        # note: to express this value in another timezone (but the value does not change), do
+        #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
+
+        return data
+
+    def to_detalle_entry(self, data: dict) -> RcPendienteDetalleEntry:
+        try:
+            emisor_rut: Rut = data['emisor_rut']  # type: ignore
+            tipo_docto = data['tipo_docto']  # type: ignore
+            folio: int = data['folio']  # type: ignore
+            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
+            receptor_rut: Rut = data['receptor_rut']  # type: ignore
+            monto_total: int = data['monto_total']  # type: ignore
+            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
+            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
+        except KeyError as exc:
+            raise ValueError("Programming error: a referenced field is missing.") from exc
+
+        try:
+            detalle_entry = RcPendienteDetalleEntry(
+                emisor_rut=emisor_rut,
+                tipo_docto=tipo_docto,
+                folio=folio,
+                fecha_emision_date=fecha_emision_date,
+                receptor_rut=receptor_rut,
+                monto_total=monto_total,
+                emisor_razon_social=emisor_razon_social,
+                receptor_razon_social=receptor_razon_social,
+                fecha_recepcion_dt=fecha_recepcion_dt,
+            )
+        except (TypeError, ValueError):
+            raise
+
+        return detalle_entry
 
 
 ###############################################################################
@@ -342,11 +1086,12 @@ def _parse_rcv_csv_file(
     input_file_path: str,
     n_rows_offset: int,
     max_n_rows: int = None,
-) -> Iterable[Tuple[Optional[DteDataL2], int, Dict[str, object], Dict[str, object]]]:
+) -> Iterable[Tuple[Optional[RcvDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
     """
-    Parse DTE data objects from a RCV file (CSV).
+    Parse entries from an RC or RV (CSV file).
 
-    Common implementation for the different kinds of RCV files (CSV).
+    Common implementation for the different alternatives that depend on the
+    kind of RC and RV.
 
     """
     for field_to_remove_name in fields_to_remove_names:
@@ -382,15 +1127,13 @@ def _parse_rcv_csv_file(
         )
 
         for row_ix, row_data, deserialized_row_data, validation_errors in g:
-            logger.debug("Processing row %s. Content: %s", row_ix, repr(row_data))
-
-            dte_data = None
+            entry: Optional[RcvDetalleEntry] = None
             row_errors: Dict[str, object] = {}
             conversion_error = None
 
             if not validation_errors:
                 try:
-                    dte_data = input_csv_row_schema.to_dte_data_l2(deserialized_row_data)
+                    entry = input_csv_row_schema.to_detalle_entry(deserialized_row_data)
                 except Exception as exc:
                     conversion_error = str(exc)
                     logger.exception(
@@ -403,4 +1146,4 @@ def _parse_rcv_csv_file(
             if conversion_error:
                 row_errors['other'] = conversion_error
 
-            yield dte_data, row_ix, row_data, row_errors
+            yield entry, row_ix, row_data, row_errors
