@@ -22,6 +22,19 @@ class RcvKindTest(unittest.TestCase):
             {str}
         )
 
+    def test_is_estado_contable_compatible(self):
+        self.assertTrue(RcvKind.VENTAS.is_estado_contable_compatible(None))
+        self.assertTrue(RcvKind.COMPRAS.is_estado_contable_compatible(RcEstadoContable.REGISTRO))
+        self.assertTrue(RcvKind.COMPRAS.is_estado_contable_compatible(RcEstadoContable.NO_INCLUIR))
+        self.assertTrue(RcvKind.COMPRAS.is_estado_contable_compatible(RcEstadoContable.RECLAMADO))
+        self.assertTrue(RcvKind.COMPRAS.is_estado_contable_compatible(RcEstadoContable.PENDIENTE))
+
+        self.assertFalse(RcvKind.COMPRAS.is_estado_contable_compatible(None))
+        self.assertFalse(RcvKind.VENTAS.is_estado_contable_compatible(RcEstadoContable.REGISTRO))
+        self.assertFalse(RcvKind.VENTAS.is_estado_contable_compatible(RcEstadoContable.NO_INCLUIR))
+        self.assertFalse(RcvKind.VENTAS.is_estado_contable_compatible(RcEstadoContable.RECLAMADO))
+        self.assertFalse(RcvKind.VENTAS.is_estado_contable_compatible(RcEstadoContable.PENDIENTE))
+
 
 class RcEstadoContableTest(unittest.TestCase):
 

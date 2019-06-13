@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import enum
+from typing import Optional
 
 from ..dte.constants import TipoDteEnum
 
@@ -32,6 +35,19 @@ class RcvKind(enum.Enum):
 
     VENTAS = 'VENTAS'
     """RCV / ventas."""
+
+    def is_estado_contable_compatible(self, value: Optional[RcEstadoContable]) -> bool:
+        if value is not None and not isinstance(value, RcEstadoContable):
+            raise TypeError("Value must be None or a 'RcEstadoContable'.")
+
+        if self == RcvKind.COMPRAS and value is not None:
+            result = True
+        elif self == RcvKind.VENTAS and value is None:
+            result = True
+        else:
+            result = False
+
+        return result
 
 
 @enum.unique
