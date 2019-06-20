@@ -13,6 +13,7 @@ import marshmallow
 import marshmallow.fields
 import marshmallow.validate
 
+import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.extras import mm_fields
 from cl_sii.libs import csv_utils
@@ -42,6 +43,11 @@ def parse_rcv_venta_csv_file(
     Parse entries from an RV ("Registro de Ventas") (CSV file).
 
     """
+    # warning: this looks like it would be executed before the iteration begins but it is not.
+    if not isinstance(razon_social, str):
+        raise TypeError("Inappropriate type of 'razon_social'.")
+    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
+
     schema_context = dict(
         emisor_rut=rut,
         emisor_razon_social=razon_social,
@@ -154,6 +160,11 @@ def parse_rcv_compra_registro_csv_file(
     Parse entries from an RC ("Registro de Compras") / "registro" (CSV file).
 
     """
+    # warning: this looks like it would be executed before the iteration begins but it is not.
+    if not isinstance(razon_social, str):
+        raise TypeError("Inappropriate type of 'razon_social'.")
+    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
+
     schema_context = dict(
         receptor_rut=rut,
         receptor_razon_social=razon_social,
@@ -235,6 +246,11 @@ def parse_rcv_compra_no_incluir_csv_file(
     Parse entries from an RC ("Registro de Compras") / "no incluir" (CSV file).
 
     """
+    # warning: this looks like it would be executed before the iteration begins but it is not.
+    if not isinstance(razon_social, str):
+        raise TypeError("Inappropriate type of 'razon_social'.")
+    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
+
     schema_context = dict(
         receptor_rut=rut,
         receptor_razon_social=razon_social,
@@ -310,6 +326,11 @@ def parse_rcv_compra_reclamado_csv_file(
     Parse entries from an RC ("Registro de Compras") / "reclamado" (CSV file).
 
     """
+    # warning: this looks like it would be executed before the iteration begins but it is not.
+    if not isinstance(razon_social, str):
+        raise TypeError("Inappropriate type of 'razon_social'.")
+    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
+
     schema_context = dict(
         receptor_rut=rut,
         receptor_razon_social=razon_social,
@@ -385,6 +406,11 @@ def parse_rcv_compra_pendiente_csv_file(
     Parse entries from an RC ("Registro de Compras") / "pendiente" (CSV file).
 
     """
+    # warning: this looks like it would be executed before the iteration begins but it is not.
+    if not isinstance(razon_social, str):
+        raise TypeError("Inappropriate type of 'razon_social'.")
+    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
+
     schema_context = dict(
         receptor_rut=rut,
         receptor_razon_social=razon_social,
