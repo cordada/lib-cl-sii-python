@@ -43,6 +43,11 @@ def get_now_tz_aware() -> datetime:
     #   - `pytz.UTC.localize(datetime.utcnow())`
 
     # source: 'django.utils.timezone.now' @ Django 2.1.3
+    # warning: setting 'tzinfo' does not work for many timezones. To be safe, only use it for UTC
+    #   and None.
+    #   > Unfortunately using the tzinfo argument of the standard datetime constructors
+    #   > "does not work" with pytz for many timezones.
+    #   https://pythonhosted.org/pytz/#localized-times-and-date-arithmetic
     return datetime.utcnow().replace(tzinfo=TZ_UTC)
 
 
@@ -74,6 +79,8 @@ def convert_naive_dt_to_tz_aware(dt: datetime, tz: PytzTimezone) -> datetime:
     :raises ValueError: if ``dt`` is already timezone-aware
 
     """
+    # equivalent to:
+    #   dt.astimezone(tz)
     dt_tz_aware = tz.localize(dt)  # type: datetime
     return dt_tz_aware
 
