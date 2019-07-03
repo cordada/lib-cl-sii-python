@@ -11,12 +11,20 @@ class RutTest(unittest.TestCase):
     valid_rut_digits: str
     valid_rut_digits_with_dots: str
     valid_rut_verbose: str
+    valid_rut_leading_zero: str
 
     invalid_rut_canonical: str
     invalid_rut_dv: str
 
     valid_rut_instance: rut.Rut
     invalid_rut_instance: rut.Rut
+    valid_rut_instance_copy: rut.Rut
+    valid_rut_leading_zero_instance: rut.Rut
+
+    valid_rut_2_canonical: str
+    valid_rut_2_instance: rut.Rut
+    valid_rut_3_canonical: str
+    valid_rut_3_instance: rut.Rut
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -25,12 +33,20 @@ class RutTest(unittest.TestCase):
         cls.valid_rut_digits = '6824160'
         cls.valid_rut_digits_with_dots = '6.824.160'
         cls.valid_rut_verbose = '6.824.160-K'
+        cls.valid_rut_leading_zero = '06824160-K'
 
         cls.invalid_rut_canonical = '6824160-0'
         cls.invalid_rut_dv = '0'
 
         cls.valid_rut_instance = rut.Rut(cls.valid_rut_canonical)
         cls.invalid_rut_instance = rut.Rut(cls.invalid_rut_canonical)
+        cls.valid_rut_instance_copy = rut.Rut(cls.valid_rut_canonical)
+        cls.valid_rut_leading_zero_instance = rut.Rut(cls.valid_rut_leading_zero)
+
+        cls.valid_rut_2_canonical = '60803000-K'
+        cls.valid_rut_2_instance = rut.Rut(cls.valid_rut_2_canonical)
+        cls.valid_rut_3_canonical = '61002000-3'
+        cls.valid_rut_3_instance = rut.Rut(cls.valid_rut_3_canonical)
 
     ############################################################################
     # instance
@@ -133,6 +149,50 @@ class RutTest(unittest.TestCase):
         rut_repr = f"Rut('{self.valid_rut_canonical}')"
         self.assertEqual(self.valid_rut_instance.__repr__(), rut_repr)
 
+    def test__lt__true(self) -> None:
+        # "<"
+        self.assertLess(self.valid_rut_instance, self.valid_rut_2_instance)
+        self.assertLess(self.valid_rut_2_instance, self.valid_rut_3_instance)
+
+        # "<" and leading zero
+        self.assertLess(self.valid_rut_leading_zero_instance, self.valid_rut_2_instance)
+
+    def test__lt__false(self) -> None:
+        # ">"
+        self.assertFalse(self.valid_rut_2_instance < self.valid_rut_instance)
+        self.assertFalse(self.valid_rut_3_instance < self.valid_rut_2_instance)
+
+        # ">" and leading zero
+        self.assertFalse(self.valid_rut_2_instance < self.valid_rut_leading_zero_instance)
+
+        # "="
+        self.assertFalse(self.valid_rut_instance < self.valid_rut_instance_copy)
+
+    def test__lt__not_rut_instance(self) -> None:
+        self.assertIs(self.valid_rut_instance.__lt__(self.valid_rut_canonical), NotImplemented)
+
+    def test__le__true(self) -> None:
+        # "<"
+        self.assertLessEqual(self.valid_rut_instance, self.valid_rut_2_instance)
+        self.assertLessEqual(self.valid_rut_2_instance, self.valid_rut_3_instance)
+
+        # "<" and leading zero
+        self.assertLessEqual(self.valid_rut_leading_zero_instance, self.valid_rut_2_instance)
+
+        # "="
+        self.assertLessEqual(self.valid_rut_instance, self.valid_rut_instance_copy)
+
+    def test__le__false(self) -> None:
+        # ">"
+        self.assertFalse(self.valid_rut_2_instance <= self.valid_rut_instance)
+        self.assertFalse(self.valid_rut_3_instance <= self.valid_rut_2_instance)
+
+        # ">" and leading zero
+        self.assertFalse(self.valid_rut_2_instance <= self.valid_rut_leading_zero_instance)
+
+    def test__le__not_rut_instance(self) -> None:
+        self.assertIs(self.valid_rut_instance.__le__(self.valid_rut_canonical), NotImplemented)
+
     def test__eq__true(self) -> None:
         rut_instance = rut.Rut(self.valid_rut_canonical)
         self.assertTrue(self.valid_rut_instance.__eq__(rut_instance))
@@ -142,6 +202,56 @@ class RutTest(unittest.TestCase):
 
     def test__eq__not_rut_instance(self) -> None:
         self.assertFalse(self.valid_rut_instance.__eq__(self.valid_rut_canonical))
+
+    def test__gt__true(self) -> None:
+        # ">"
+        self.assertGreater(self.valid_rut_2_instance, self.valid_rut_instance)
+        self.assertGreater(self.valid_rut_3_instance, self.valid_rut_2_instance)
+
+        # ">" and leading zero
+        self.assertGreater(self.valid_rut_2_instance, self.valid_rut_leading_zero_instance)
+
+    def test__gt__false(self) -> None:
+        # "<"
+        self.assertFalse(self.valid_rut_instance > self.valid_rut_2_instance)
+        self.assertFalse(self.valid_rut_2_instance > self.valid_rut_3_instance)
+
+        # "<" and leading zero
+        self.assertFalse(self.valid_rut_leading_zero_instance > self.valid_rut_2_instance)
+
+        # "="
+        self.assertFalse(self.valid_rut_instance > self.valid_rut_instance_copy)
+
+    def test__gt__not_rut_instance(self) -> None:
+        self.assertIs(
+            self.valid_rut_instance.__gt__(self.valid_rut_canonical),  # type: ignore
+            NotImplemented,
+        )
+
+    def test__ge__true(self) -> None:
+        # ">"
+        self.assertGreaterEqual(self.valid_rut_2_instance, self.valid_rut_instance)
+        self.assertGreaterEqual(self.valid_rut_3_instance, self.valid_rut_2_instance)
+
+        # ">" and leading zero
+        self.assertGreaterEqual(self.valid_rut_2_instance, self.valid_rut_leading_zero_instance)
+
+        # "="
+        self.assertGreaterEqual(self.valid_rut_instance, self.valid_rut_instance_copy)
+
+    def test__ge__false(self) -> None:
+        # "<"
+        self.assertFalse(self.valid_rut_instance >= self.valid_rut_2_instance)
+        self.assertFalse(self.valid_rut_2_instance >= self.valid_rut_3_instance)
+
+        # "<" and leading zero
+        self.assertFalse(self.valid_rut_leading_zero_instance >= self.valid_rut_2_instance)
+
+    def test__ge__not_rut_instance(self) -> None:
+        self.assertIs(
+            self.valid_rut_instance.__ge__(self.valid_rut_canonical),  # type: ignore
+            NotImplemented,
+        )
 
     def test__hash__(self) -> None:
         rut_hash = hash(self.valid_rut_instance.canonical)
