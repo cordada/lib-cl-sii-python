@@ -165,6 +165,22 @@ class RutTest(unittest.TestCase):
         message = exception.args[0]
         self.assertEqual(message, "'int' object has no attribute 'strip'")
 
+    def test_clean_str_leading_zeros(self) -> None:
+        # One leading zero
+        rut_value = f'0{self.valid_rut_canonical}'
+        clean_rut = rut.Rut.clean_str(rut_value)
+        self.assertEqual(clean_rut, self.valid_rut_canonical)
+
+        # Two leading zeros
+        rut_value = f'00{self.valid_rut_canonical}'
+        clean_rut = rut.Rut.clean_str(rut_value)
+        self.assertEqual(clean_rut, self.valid_rut_canonical)
+
+        # Eight leading zeros
+        rut_value = f'00000000{self.valid_rut_canonical}'
+        clean_rut = rut.Rut.clean_str(rut_value)
+        self.assertEqual(clean_rut, self.valid_rut_canonical)
+
     def test_calc_dv_ok(self) -> None:
         dv = rut.Rut.calc_dv(self.valid_rut_digits)
         self.assertEqual(dv, self.valid_rut_dv)
