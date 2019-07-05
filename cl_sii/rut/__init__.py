@@ -118,6 +118,15 @@ class Rut:
     def __repr__(self) -> str:
         return f"Rut('{self.canonical}')"
 
+    def __lt__(self, other: object) -> bool:
+        if isinstance(other, Rut):
+            return int(self.digits) < int(other.digits)
+        else:
+            return NotImplemented
+
+    def __le__(self, other: object) -> bool:
+        return self.__lt__(other) or self.__eq__(other)
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Rut):
             return self.canonical == other.canonical
