@@ -135,7 +135,7 @@ class Rut:
     def clean_str(cls, value: str) -> str:
         # note: unfortunately `value.strip('.')` does not remove all the occurrences of '.' in
         #   'value' (only the leading and trailing ones).
-        return value.strip().replace('.', '').upper()
+        return value.strip().lstrip('0').replace('.', '').upper()
 
     @classmethod
     def calc_dv(cls, rut_digits: str) -> str:
