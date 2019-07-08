@@ -3,6 +3,15 @@
 History
 -------
 
+0.7.2 (2019-07-08)
++++++++++++++++++++++++
+
+* (PR #72, 2019-07-08) extras: Handle ``str``-typed RUTs in Django ``RutField.get_prep_value()``
+* (PR #70, 2019-07-05) rut: Add less-than and greater-than methods
+* (PR #71, 2019-07-05) rut: Strip leading zeros from RUTs
+* (PR #69, 2019-07-02) libs.tz_utils: Fix setting of time zone information in datetimes
+* (PR #68, 2019-06-27) requirements: update all those for 'release' and 'test'
+
 0.7.1 (2019-06-20)
 +++++++++++++++++++++++
 
