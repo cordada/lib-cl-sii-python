@@ -49,6 +49,7 @@ def clean_dte_xml_file(input_file_path: str, output_file_path: str) -> Iterable[
         remove_doc_personalizado=True,
     )
 
+    # TODO: add exception with a nice message for the caller.
     cl_sii.dte.parse.validate_dte_xml(xml_doc_cleaned)
 
     with open(output_file_path, 'w+b') as f:

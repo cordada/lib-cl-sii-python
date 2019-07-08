@@ -105,7 +105,7 @@ class RutField(django.db.models.Field):
         # note: there is no parent implementation, for performance reasons.
         return self.to_python(value)
 
-    def get_prep_value(self, value: Optional[Rut]) -> Optional[str]:
+    def get_prep_value(self, value: Optional[object]) -> Optional[str]:
         """
         Convert the model's attribute value to a format suitable for the DB.
 
@@ -115,9 +115,13 @@ class RutField(django.db.models.Field):
         However, these are preliminary non-DB specific value checks and
         conversions (otherwise customize :meth:`get_db_prep_value`).
 
+        Note: Before returning, ``value`` will be passed to :meth:`to_python` so that, if needed, it
+        will be converted to an instance of :class:`Rut`, which is very convenient in cases such
+        as when the type of ``value`` is :class:`str`.
         """
         value = super().get_prep_value(value)
-        return value if value is None else value.canonical
+        value_rut: Optional[Rut] = self.to_python(value)
+        return value_rut if value_rut is None else value_rut.canonical
 
     def to_python(self, value: Optional[object]) -> Optional[Rut]:
         """

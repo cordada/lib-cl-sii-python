@@ -26,7 +26,6 @@ class FunctionParseUntrustedXmlTests(unittest.TestCase):
             b'</root>')
         xml = parse_untrusted_xml(value)
         self.assertIsInstance(xml, XmlElement)
-        # print(xml)
         self.assertEqual(
             lxml.etree.tostring(xml, pretty_print=False),
             value)

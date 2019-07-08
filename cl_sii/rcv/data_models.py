@@ -76,8 +76,9 @@ class PeriodoTributario:
 
     def as_datetime(self) -> datetime:
         # note: timezone-aware
-        return datetime(self.year, self.month, day=1, hour=0, minute=0, second=0).replace(
-            tzinfo=SII_OFFICIAL_TZ)
+        return tz_utils.convert_naive_dt_to_tz_aware(
+            datetime(self.year, self.month, day=1, hour=0, minute=0, second=0),
+            SII_OFFICIAL_TZ)
 
 
 @dataclasses.dataclass(frozen=True)

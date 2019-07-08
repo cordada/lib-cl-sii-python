@@ -118,6 +118,15 @@ class Rut:
     def __repr__(self) -> str:
         return f"Rut('{self.canonical}')"
 
+    def __lt__(self, other: object) -> bool:
+        if isinstance(other, Rut):
+            return int(self.digits) < int(other.digits)
+        else:
+            return NotImplemented
+
+    def __le__(self, other: object) -> bool:
+        return self.__lt__(other) or self.__eq__(other)
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Rut):
             return self.canonical == other.canonical
@@ -135,7 +144,7 @@ class Rut:
     def clean_str(cls, value: str) -> str:
         # note: unfortunately `value.strip('.')` does not remove all the occurrences of '.' in
         #   'value' (only the leading and trailing ones).
-        return value.strip().replace('.', '').upper()
+        return value.strip().lstrip('0').replace('.', '').upper()
 
     @classmethod
     def calc_dv(cls, rut_digits: str) -> str:
