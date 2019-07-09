@@ -2,7 +2,7 @@
 # note: it is mandatory to register all dependencies of the required packages.
 
 # Required packages:
-cryptography==2.6.1
+cryptography==2.7
 defusedxml==0.6.0
 lxml==4.3.3
 marshmallow==2.19.2
