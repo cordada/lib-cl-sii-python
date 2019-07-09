@@ -2,10 +2,10 @@
 # note: it is mandatory to register all dependencies of the required packages.
 
 # Required packages:
-cryptography==2.6.1
+cryptography==2.7
 defusedxml==0.6.0
 lxml==4.3.3
-marshmallow==2.19.2
+marshmallow==2.19.5
 pyOpenSSL==18.0.0
 pytz==2019.1
 signxml==2.6.0
@@ -26,7 +26,7 @@ signxml==2.6.0
 #       - pyOpenSSL
 #           - six
 asn1crypto==0.24.0
-certifi==2019.3.9
+certifi==2019.6.16
 cffi==1.12.3
 eight==0.4.2
 future==0.16.0
