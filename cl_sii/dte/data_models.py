@@ -266,10 +266,14 @@ class DteDataL1(DteDataL0):
 
         validate_dte_monto_total(self.monto_total)
 
+    ###########################################################################
+    # properties
+    ###########################################################################
+
     @property
     def vendedor_rut(self) -> Rut:
         """
-        Return the RUT of the "vendedor".
+        Return the RUT of the "vendedor" aka "proveedor" (supplier).
 
         :raises ValueError:
         """
@@ -284,9 +288,9 @@ class DteDataL1(DteDataL0):
         return result
 
     @property
-    def deudor_rut(self) -> Rut:
+    def comprador_rut(self) -> Rut:
         """
-        Return the RUT of the "deudor".
+        Return the RUT of the "comprador" aka "cliente" (buyer).
 
         :raises ValueError:
         """
@@ -296,9 +300,19 @@ class DteDataL1(DteDataL0):
             result = self.emisor_rut
         else:
             raise ValueError(
-                "Concept \"deudor\" does not apply for this 'tipo_dte'.", self.tipo_dte)
+                "Concepts \"comprador\" and \"deudor\" do not apply for this 'tipo_dte'.",
+                self.tipo_dte)
 
         return result
+
+    @property
+    def deudor_rut(self) -> Rut:
+        """
+        Return the RUT of the "deudor" (same as the "comprador").
+
+        :raises ValueError:
+        """
+        return self.comprador_rut
 
 
 @dataclasses.dataclass(frozen=True)
