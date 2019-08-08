@@ -74,8 +74,19 @@ class TipoDteEnum(enum.IntEnum):
     """
     Enum of "Tipo de DTE".
 
-    Source: XML type ``DTEType`` (enum) in official schema ``SiiTypes_v10.xsd``.
-    https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L63-L99
+    Source: from official schema ``SiiTypes_v10.xsd``, the XML types (enums)
+    ``DOCType``, ``DocType``, ``DTEType`` and ``DTEFacturasType`` which are
+    VERY similar.
+    https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd
+
+    Notes:
+    * Enums ``DocType`` and ``DTEType`` have exactly the same elements
+      (although descriptions differ).
+    * The elements of the following enums are strictly subgroups of enum ``DOCType``:
+      * ``DocType`` and ``DTEType``: same elements.
+      * ``DTEFacturasType``
+      * ``LIQType``: "Tipos de Liquidaciones".
+      * ``EXPType``: "Tipos de Facturas de Exportacion".
 
     """
 
@@ -86,6 +97,21 @@ class TipoDteEnum(enum.IntEnum):
     """Factura electrónica de venta, no afecta o exenta de IVA."""
     # aka 'Factura no Afecta o Exenta Electrónica'
     # aka 'Factura Electrónica de Venta de Bienes y Servicios No afectos o Exento de IVA'
+
+    LIQUIDACION_FACTURA_ELECTRONICA = 43
+    """Liquidación-Factura Electrónica."""
+    # For more info about a "liquidación-factura [electrónica]" see:
+    #   - SII / FAQ / "¿Qué son las Liquidaciones-Factura?"
+    #     http://www.sii.cl/preguntas_frecuentes/catastro/001_012_0247.htm
+    #   - SII / FAQ / "¿Para qué se utiliza la Liquidación Factura Electrónica?"
+    #     http://www.sii.cl/preguntas_frecuentes/catastro/001_012_3689.htm
+    #   - SII / FAQ / "¿Qué documentos tributarios deben emitir las partes involucradas en un
+    #     contrato de consignación?"
+    #     http://www.sii.cl/preguntas_frecuentes/catastro/001_012_2619.htm
+    #   - SII / resoluciones / "Resolución Exenta SII N°108 del 24 de Octubre del 2005.
+    #     Establece normas y procedimientos de operación referente a la emisión de
+    #     liquidaciones-facturas electrónicas"
+    #     http://www.sii.cl/documentos/resoluciones/2005/reso108.htm
 
     FACTURA_COMPRA_ELECTRONICA = 46
     """Factura electrónica de compra."""
@@ -104,6 +130,15 @@ class TipoDteEnum(enum.IntEnum):
     """Nota electrónica de crédito."""
     # aka 'Nota de Crédito Electrónica'
 
+    # TODO: add
+    #   110 Factura de exportación electrónica
+    #   111 Nota de débito de exportación electrónica
+    #   112 Nota de crédito de exportación electrónica
+    # https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L58-L60
+    # https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L708-L717
+    #   See 'cl_sii.rcv.constants.RcvTipoDocto'
+    #   Should 'is_factura' be true for a "Factura de exportación electrónica" (110) ?
+
     @property
     def is_factura(self) -> bool:
         if self is TipoDteEnum.FACTURA_ELECTRONICA:
@@ -111,6 +146,8 @@ class TipoDteEnum(enum.IntEnum):
         elif self is TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA:
             result = True
         elif self is TipoDteEnum.FACTURA_COMPRA_ELECTRONICA:
+            result = True
+        elif self is TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
             result = True
         else:
             result = False
@@ -122,6 +159,8 @@ class TipoDteEnum(enum.IntEnum):
         if self is TipoDteEnum.FACTURA_ELECTRONICA:
             result = True
         elif self is TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA:
+            result = True
+        elif self is TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
             result = True
         else:
             result = False

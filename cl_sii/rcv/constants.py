@@ -196,9 +196,8 @@ class RcvTipoDocto(enum.IntEnum):
     # "liquidación-factura"
     ###########################################################################
 
-    # For more info about a "liquidación-factura" see:
-    #   http://www.sii.cl/preguntas_frecuentes/catastro/001_012_0247.htm
-    #   http://www.sii.cl/preguntas_frecuentes/catastro/001_012_3689.htm
+    # For more info about a "liquidación-factura" see
+    #   'cl_sii.dte.constants.TipoDteEnum'.
 
     LIQUIDACION_FACTURA = 40
     """Liquidación-Factura."""

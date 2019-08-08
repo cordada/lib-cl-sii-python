@@ -109,7 +109,7 @@ class DteDataL1Test(unittest.TestCase):
                 monto_total=2996301,
             ))
 
-    def test_vendedor_rut_deudor_rut(self) -> None:
+    def test_vendedor_rut_comprador_rut(self) -> None:
         emisor_rut = self.dte_l1_1.emisor_rut
         receptor_rut = self.dte_l1_1.receptor_rut
         dte_factura_venta = dataclasses.replace(
@@ -121,6 +121,7 @@ class DteDataL1Test(unittest.TestCase):
         dte_nota_credito = dataclasses.replace(
             self.dte_l1_1, tipo_dte=TipoDteEnum.NOTA_CREDITO_ELECTRONICA)
 
+        # 'vendedor_rut'
         self.assertEqual(dte_factura_venta.vendedor_rut, emisor_rut)
         self.assertEqual(dte_factura_venta_exenta.vendedor_rut, emisor_rut)
         self.assertEqual(dte_factura_compra.vendedor_rut, receptor_rut)
@@ -130,6 +131,18 @@ class DteDataL1Test(unittest.TestCase):
             cm.exception.args,
             ("Concept \"vendedor\" does not apply for this 'tipo_dte'.", dte_nota_credito.tipo_dte))
 
+        # 'comprador_rut'
+        self.assertEqual(dte_factura_venta.comprador_rut, receptor_rut)
+        self.assertEqual(dte_factura_venta_exenta.comprador_rut, receptor_rut)
+        self.assertEqual(dte_factura_compra.comprador_rut, emisor_rut)
+        with self.assertRaises(ValueError) as cm:
+            self.assertIsNone(dte_nota_credito.comprador_rut)
+        self.assertEqual(
+            cm.exception.args,
+            ("Concepts \"comprador\" and \"deudor\" do not apply for this 'tipo_dte'.",
+             dte_nota_credito.tipo_dte))
+
+        # 'deudor_rut'
         self.assertEqual(dte_factura_venta.deudor_rut, receptor_rut)
         self.assertEqual(dte_factura_venta_exenta.deudor_rut, receptor_rut)
         self.assertEqual(dte_factura_compra.deudor_rut, emisor_rut)
@@ -137,7 +150,8 @@ class DteDataL1Test(unittest.TestCase):
             self.assertIsNone(dte_nota_credito.deudor_rut)
         self.assertEqual(
             cm.exception.args,
-            ("Concept \"deudor\" does not apply for this 'tipo_dte'.", dte_nota_credito.tipo_dte))
+            ("Concepts \"comprador\" and \"deudor\" do not apply for this 'tipo_dte'.",
+             dte_nota_credito.tipo_dte))
 
 
 class DteDataL2Test(unittest.TestCase):

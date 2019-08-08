@@ -12,6 +12,7 @@ class TipoDteEnumTest(unittest.TestCase):
             {
                 TipoDteEnum.FACTURA_ELECTRONICA,
                 TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,
+                TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA,
                 TipoDteEnum.FACTURA_COMPRA_ELECTRONICA,
                 TipoDteEnum.GUIA_DESPACHO_ELECTRONICA,
                 TipoDteEnum.NOTA_DEBITO_ELECTRONICA,
@@ -54,6 +55,24 @@ class TipoDteEnumTest(unittest.TestCase):
 
         for (result, expected) in assertions:
             self.assertTrue(result is expected)
+
+    def test_LIQUIDACION_FACTURA_ELECTRONICA(self):
+        value = TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA
+
+        self.assertEqual(value.name, 'LIQUIDACION_FACTURA_ELECTRONICA')
+        self.assertEqual(value.value, 43)
+
+        assertions = [
+            (value.is_factura, True),
+            (value.is_factura_venta, True),
+            (value.is_factura_compra, False),
+            (value.is_nota, False),
+            (value.emisor_is_vendedor, True),
+            (value.receptor_is_vendedor, False),
+        ]
+
+        for (result, expected) in assertions:
+            self.assertEqual(result, expected)
 
     def test_FACTURA_COMPRA_ELECTRONICA(self):
         value = TipoDteEnum.FACTURA_COMPRA_ELECTRONICA
