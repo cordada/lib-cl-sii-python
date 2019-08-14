@@ -1,0 +1,80 @@
+<Documento ID="DTE-33-2336600">
+<Encabezado>
+<IdDoc>
+<TipoDTE>33</TipoDTE>
+<Folio>2336600</Folio>
+<FchEmis>2019-08-08</FchEmis>
+<IndServicio>2</IndServicio>
+<FmaPago>1</FmaPago>
+<FchCancel>2019-08-08</FchCancel>
+<MedioPago>OT</MedioPago>
+<FchVenc>2019-08-08</FchVenc>
+</IdDoc>
+<Emisor>
+<RUTEmisor>60910000-1</RUTEmisor>
+<RznSoc>Universidad de Chile</RznSoc>
+<GiroEmis>Corporación Educacional y Servicios                 Profesionales</GiroEmis>
+<Acteco>803010</Acteco>
+<Sucursal>NIC Chile</Sucursal>
+<CdgSIISucur>67051191</CdgSIISucur>
+<DirOrigen>Miraflores 222, Piso 14</DirOrigen>
+<CmnaOrigen>Santiago</CmnaOrigen>
+<CiudadOrigen>Santiago</CiudadOrigen>
+</Emisor>
+<Receptor>
+<RUTRecep>76555835-2</RUTRecep>
+<RznSocRecep>FYNPAL SPA</RznSocRecep>
+<GiroRecep>PROCESAMIENTO DE DATOS Y ACTIVIDADES REL</GiroRecep>
+<Contacto>Germán Enrique Larraín Muñoz</Contacto>
+<DirRecep>El Bosque Norte 0177 Tel:+56.226051886</DirRecep>
+<CmnaRecep>Las Condes</CmnaRecep>
+<CiudadRecep>Santiago</CiudadRecep>
+</Receptor>
+<Totales>
+<MntNeto>8943</MntNeto>
+<TasaIVA>19</TasaIVA>
+<IVA>1699</IVA>
+<MntTotal>10642</MntTotal>
+</Totales>
+</Encabezado>
+<Detalle>
+<NroLinDet>1</NroLinDet>
+<NmbItem>dominio fyndata/6895189/1</NmbItem>
+<QtyItem>1.0</QtyItem>
+<PrcItem>8942.86</PrcItem>
+<MontoItem>8943</MontoItem>
+</Detalle>
+<TED version="1.0">
+<DD>
+<RE>60910000-1</RE>
+<TD>33</TD>
+<F>2336600</F>
+<FE>2019-08-08</FE>
+<RR>76555835-2</RR>
+<RSR>FYNPAL SPA</RSR>
+<MNT>10642</MNT>
+<IT1>dominio fyndata/6895189/1</IT1>
+<CAF version="1.0">
+<DA>
+<RE>60910000-1</RE>
+<RS>UNIVERSIDAD DE CHILE</RS>
+<TD>33</TD>
+<RNG>
+<D>2332141</D>
+<H>2342140</H>
+</RNG>
+<FA>2019-07-26</FA>
+<RSAPK>
+<M>x72ZshWkkg+YP+uhApMtGPaFPr7DKS3aK7LXTKvVBpCwWJmuvaQvTBnvxnBJVSnU0IVZUYPayO3NTLrLOFwxWw==</M>
+<E>Aw==</E>
+</RSAPK>
+<IDK>300</IDK>
+</DA>
+<FRMA algoritmo="SHA1withRSA">RJh0IgoGPl5SJrrRz/pZPt4i/3EweSAsnUFKo56OP0vwplcqNaaHmUT4IA21kJ7UJkt1KYKiDXco6P61sjLmFg==</FRMA>
+</CAF>
+<TSTED>2019-08-09T09:41:09</TSTED>
+</DD>
+<FRMT algoritmo="SHA1withRSA">NQe6wuZp1zwAjliDNobKgn7Pid6HlhTlEuP2n3xYDBgUZYe8NbJsOP337C3cptUPHylCBO7/8SmaBjJnPYgyyA==</FRMT>
+</TED>
+<TmstFirma>2019-08-09T09:41:09</TmstFirma>
+</Documento>

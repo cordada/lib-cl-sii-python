@@ -120,19 +120,29 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         cls.any_x509_cert_pem_file = read_test_file_bytes(
             'test_data/crypto/wildcard-google-com-cert.pem')
 
-        cls.xml_doc_cert_pem_bytes = read_test_file_bytes(
+        cls.xml_doc_1_cert_pem_bytes = read_test_file_bytes(
             'test_data/sii-crypto/DTE--76354771-K--33--170-cert.pem')
         cls.xml_doc_2_cert_pem_bytes = read_test_file_bytes(
             'test_data/sii-crypto/DTE--76399752-9--33--25568-cert.pem')
+        cls.xml_doc_3_cert_pem_bytes = read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.pem')
 
-        cls.with_valid_signature = read_test_file_bytes(
+        cls.doc_1_with_valid_signature = read_test_file_bytes(
             'test_data/sii-dte/DTE--76354771-K--33--170--cleaned.xml')
-        cls.with_valid_signature_signed_data = read_test_file_bytes(
+        cls.doc_1_with_valid_signature_signed_data = read_test_file_bytes(
             'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-signed_data.xml')
-        cls.with_valid_signature_signed_xml = read_test_file_bytes(
+        cls.doc_1_with_valid_signature_signed_xml = read_test_file_bytes(
             'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-signed_xml.xml')
-        cls.with_valid_signature_signature_xml = read_test_file_bytes(
+        cls.doc_1_with_valid_signature_signature_xml = read_test_file_bytes(
             'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-signature_xml.xml')
+        cls.doc_3_with_valid_signature = read_test_file_bytes(
+            'test_data/sii-dte/DTE--60910000-1--33--2336600--cleaned.xml')
+        cls.doc_3_with_valid_signature_signed_data = read_test_file_bytes(
+            'test_data/sii-dte/DTE--60910000-1--33--2336600--cleaned-signed_data.xml')
+        cls.doc_3_with_valid_signature_signed_xml = read_test_file_bytes(
+            'test_data/sii-dte/DTE--60910000-1--33--2336600--cleaned-signed_xml.xml')
+        cls.doc_3_with_valid_signature_signature_xml = read_test_file_bytes(
+            'test_data/sii-dte/DTE--60910000-1--33--2336600--cleaned-signature_xml.xml')
 
         cls.trivial_without_signature = read_test_file_bytes(
             'test_data/xml/trivial-doc.xml')
@@ -149,24 +159,43 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         cls.with_replaced_cert = read_test_file_bytes(
             'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-replaced-cert.xml')
 
-    def test_ok_external_trusted_cert(self) -> None:
-        xml_doc = parse_untrusted_xml(self.with_valid_signature)
-        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+    def test_ok_external_trusted_cert_1(self) -> None:
+        xml_doc = parse_untrusted_xml(self.doc_1_with_valid_signature)
+        cert = load_pem_x509_cert(self.xml_doc_1_cert_pem_bytes)
 
         signed_data, signed_xml, signature_xml = verify_xml_signature(
             xml_doc, trusted_x509_cert=cert)
 
-        self.assertEqual(signed_data, self.with_valid_signature_signed_data)
+        self.assertEqual(signed_data, self.doc_1_with_valid_signature_signed_data)
 
         f = io.BytesIO()
         write_xml_doc(signed_xml, f)
         signed_xml_bytes = f.getvalue()
-        self.assertEqual(signed_xml_bytes, self.with_valid_signature_signed_xml)
+        self.assertEqual(signed_xml_bytes, self.doc_1_with_valid_signature_signed_xml)
 
         f = io.BytesIO()
         write_xml_doc(signature_xml, f)
         signature_xml_bytes = f.getvalue()
-        self.assertEqual(signature_xml_bytes, self.with_valid_signature_signature_xml)
+        self.assertEqual(signature_xml_bytes, self.doc_1_with_valid_signature_signature_xml)
+
+    def test_ok_external_trusted_cert_3(self) -> None:
+        xml_doc = parse_untrusted_xml(self.doc_3_with_valid_signature)
+        cert = load_pem_x509_cert(self.xml_doc_3_cert_pem_bytes)
+
+        signed_data, signed_xml, signature_xml = verify_xml_signature(
+            xml_doc, trusted_x509_cert=cert)
+
+        self.assertEqual(signed_data, self.doc_3_with_valid_signature_signed_data)
+
+        f = io.BytesIO()
+        write_xml_doc(signed_xml, f)
+        signed_xml_bytes = f.getvalue()
+        self.assertEqual(signed_xml_bytes, self.doc_3_with_valid_signature_signed_xml)
+
+        f = io.BytesIO()
+        write_xml_doc(signature_xml, f)
+        signature_xml_bytes = f.getvalue()
+        self.assertEqual(signature_xml_bytes, self.doc_3_with_valid_signature_signature_xml)
 
     def test_ok_cert_in_signature(self) -> None:
         # TODO: implement!
@@ -176,7 +205,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         pass
 
     def test_fail_cert_type_error(self) -> None:
-        xml_doc = parse_untrusted_xml(self.with_valid_signature)
+        xml_doc = parse_untrusted_xml(self.doc_1_with_valid_signature)
         cert = self.any_x509_cert_pem_file
 
         with self.assertRaises(TypeError) as cm:
@@ -195,7 +224,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             ("'xml_doc' must be an XML document/element.", ))
 
     def test_fail_verify_with_other_cert(self) -> None:
-        xml_doc = parse_untrusted_xml(self.with_valid_signature_signature_xml)
+        xml_doc = parse_untrusted_xml(self.doc_1_with_valid_signature_signature_xml)
         cert = load_pem_x509_cert(self.xml_doc_2_cert_pem_bytes)
 
         with self.assertRaises(XmlSignatureInvalid) as cm:
@@ -209,7 +238,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         xml_doc_with_bad_cert = parse_untrusted_xml(self.with_bad_cert)
         xml_doc_with_bad_cert_no_base64 = parse_untrusted_xml(self.with_bad_cert_no_base64)
 
-        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+        cert = load_pem_x509_cert(self.xml_doc_1_cert_pem_bytes)
 
         verify_xml_signature(xml_doc_with_bad_cert, trusted_x509_cert=cert)
 
@@ -231,7 +260,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             ("Signature verification failed: header too long", ))
 
     def test_fail_included_cert_not_from_a_known_ca(self) -> None:
-        xml_doc = parse_untrusted_xml(self.with_valid_signature)
+        xml_doc = parse_untrusted_xml(self.doc_1_with_valid_signature)
 
         # Without cert: fails because the issuer of the cert in the signature is not a known CA.
         with self.assertRaises(XmlSignatureInvalidCertificate) as cm:
@@ -242,7 +271,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
 
     def test_fail_signed_data_modified(self) -> None:
         xml_doc = parse_untrusted_xml(self.with_signature_and_modified)
-        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+        cert = load_pem_x509_cert(self.xml_doc_1_cert_pem_bytes)
 
         with self.assertRaises(XmlSignatureUnverified) as cm:
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
@@ -278,7 +307,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         self.assertEqual(cm.exception.args, expected_exc_args)
 
         # With cert:
-        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+        cert = load_pem_x509_cert(self.xml_doc_1_cert_pem_bytes)
         with self.assertRaises(ValueError) as cm:
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(cm.exception.args, expected_exc_args)
@@ -294,7 +323,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         self.assertEqual(cm.exception.args, expected_exc_args)
 
         # With cert:
-        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+        cert = load_pem_x509_cert(self.xml_doc_1_cert_pem_bytes)
         with self.assertRaises(NotImplementedError) as cm:
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(cm.exception.args, expected_exc_args)
