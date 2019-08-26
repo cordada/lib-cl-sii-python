@@ -164,6 +164,10 @@ class DteDataL2Test(unittest.TestCase):
             'test_data/sii-crypto/DTE--76354771-K--33--170-signature-value-base64.txt'))
         cls.dte_1_xml_cert_der = read_test_file_bytes(
             'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
+        cls.dte_2_xml_signature_value = encoding_utils.decode_base64_strict(read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-signature-value-base64.txt'))
+        cls.dte_2_xml_cert_der = read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der')
 
     def setUp(self) -> None:
         super().setUp()
@@ -185,6 +189,25 @@ class DteDataL2Test(unittest.TestCase):
             signature_x509_cert_der=self.dte_1_xml_cert_der,
             emisor_giro='Ingenieria y Construccion',
             emisor_email='hello@example.com',
+            receptor_email=None,
+        )
+        self.dte_l2_2 = DteDataL2(
+            emisor_rut=Rut('60910000-1'),
+            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            folio=2336600,
+            fecha_emision_date=date(2019, 8, 8),
+            receptor_rut=Rut('76555835-2'),
+            monto_total=10642,
+            emisor_razon_social='Universidad de Chile',
+            receptor_razon_social='FYNPAL SPA',
+            fecha_vencimiento_date=date(2019, 8, 8),
+            firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                dt=datetime(2019, 8, 9, 9, 41, 9),
+                tz=DteDataL2.DATETIME_FIELDS_TZ),
+            signature_value=self.dte_2_xml_signature_value,
+            signature_x509_cert_der=self.dte_2_xml_cert_der,
+            emisor_giro='Corporación Educacional y Servicios                 Profesionales',
+            emisor_email=None,
             receptor_email=None,
         )
 
@@ -254,6 +277,27 @@ class DteDataL2Test(unittest.TestCase):
                 emisor_email='hello@example.com',
                 receptor_email=None,
             ))
+        self.assertDictEqual(
+            self.dte_l2_2.as_dict(),
+            dict(
+                emisor_rut=Rut('60910000-1'),
+                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=2336600,
+                fecha_emision_date=date(2019, 8, 8),
+                receptor_rut=Rut('76555835-2'),
+                monto_total=10642,
+                emisor_razon_social='Universidad de Chile',
+                receptor_razon_social='FYNPAL SPA',
+                fecha_vencimiento_date=date(2019, 8, 8),
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 8, 9, 9, 41, 9),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ),
+                signature_value=self.dte_2_xml_signature_value,
+                signature_x509_cert_der=self.dte_2_xml_cert_der,
+                emisor_giro='Corporación Educacional y Servicios                 Profesionales',
+                emisor_email=None,
+                receptor_email=None,
+            ))
 
     def test_as_dte_data_l1(self) -> None:
         self.assertEqual(
@@ -265,6 +309,17 @@ class DteDataL2Test(unittest.TestCase):
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
                 monto_total=2996301,
+            )
+        )
+        self.assertEqual(
+            self.dte_l2_2.as_dte_data_l1(),
+            DteDataL1(
+                emisor_rut=Rut('60910000-1'),
+                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=2336600,
+                fecha_emision_date=date(2019, 8, 8),
+                receptor_rut=Rut('76555835-2'),
+                monto_total=10642,
             )
         )
 

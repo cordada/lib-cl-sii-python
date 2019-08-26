@@ -1,4 +1,5 @@
 import unittest
+from binascii import a2b_hex
 from datetime import datetime
 
 import cryptography.hazmat.primitives.hashes
@@ -219,7 +220,7 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertIs(crl_distribution_points_ext.value._distribution_points[0].reasons, None)
         self.assertIs(crl_distribution_points_ext.value._distribution_points[0].relative_name, None)
 
-    def test_load_der_x509_cert_ok_cert_real_dte(self) -> None:
+    def test_load_der_x509_cert_ok_cert_real_dte_1(self) -> None:
         cert_der_bytes = utils.read_test_file_bytes(
             'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
 
@@ -384,7 +385,7 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertEqual(subject_key_identifier_ext.critical, False)
         self.assertEqual(
             subject_key_identifier_ext.value.digest,
-            b'\xd5\xd5G\x84]\x14U\xee\xd1\\\x8c\xf8r9w\xfdW\xb0\xfa\xaa')
+            a2b_hex('D5:D5:47:84:5D:14:55:EE:D1:5C:8C:F8:72:39:77:FD:57:B0:FA:AA'.replace(':', '')))
 
         # AUTHORITY_KEY_IDENTIFIER
         authority_key_identifier_ext = cert_extensions.get_extension_for_class(
@@ -394,16 +395,17 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertIs(authority_key_identifier_ext.value.authority_cert_serial_number, None)
         self.assertEqual(
             authority_key_identifier_ext.value.key_identifier,
-            b'x\xe1>\x9f\xd2\x12\xb3z<\x8d\xcd0\x0eS\xb3C)\x07\xb3U')
+            a2b_hex('78:E1:3E:9F:D2:12:B3:7A:3C:8D:CD:30:0E:53:B3:43:29:07:B3:55'.replace(':', '')))
 
         # CERTIFICATE_POLICIES
         certificate_policies_ext = cert_extensions.get_extension_for_class(
             cryptography.x509.extensions.CertificatePolicies)
         self.assertEqual(certificate_policies_ext.critical, False)
         self.assertEqual(len(certificate_policies_ext.value._policies), 1)
-        # TODO: find out where did OID '1.3.6.1.4.1.8658.5' come from.
-        #   Perhaps it was '1.3.6.1.4.1.8658'?
-        #   https://oidref.com/1.3.6.1.4.1.8658
+        # note: parent of OID '1.3.6.1.4.1.8658.5' is '1.3.6.1.4.1.42346'
+        #   ("Empresa Nacional de Certificacion Electronica ").
+        #   http://oidref.com/1.3.6.1.4.1.8658
+        #   http://oid-info.com/get/1.3.6.1.4.1.8658
         self.assertEqual(
             certificate_policies_ext.value._policies[0].policy_identifier,
             oid.ObjectIdentifier("1.3.6.1.4.1.8658.5"))
@@ -412,9 +414,11 @@ class LoadPemX509CertTest(unittest.TestCase):
             certificate_policies_ext.value._policies[0].policy_qualifiers[0],
             "http://www.e-certchile.cl/CPS.htm")
         self.assertEqual(
-            certificate_policies_ext.value._policies[0].policy_qualifiers[1].explicit_text,
-            "Certificado Firma Simple. Ha sido validado en forma presencial, quedando habilitado "
-            "el Certificado para uso tributario")
+            certificate_policies_ext.value._policies[0].policy_qualifiers[1],
+            cryptography.x509.extensions.UserNotice(
+                notice_reference=None,
+                explicit_text="Certificado Firma Simple. Ha sido validado en forma presencial, "
+                              "quedando habilitado el Certificado para uso tributario"))
 
         # CRL_DISTRIBUTION_POINTS
         crl_distribution_points_ext = cert_extensions.get_extension_for_class(
@@ -440,6 +444,207 @@ class LoadPemX509CertTest(unittest.TestCase):
         some_microsoft_ext = cert_extensions.get_extension_for_oid(some_microsoft_extension_oid)
         self.assertEqual(some_microsoft_ext.critical, False)
         self.assertTrue(isinstance(some_microsoft_ext.value.value, bytes))
+
+    def test_load_der_x509_cert_ok_cert_real_dte_3(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der')
+
+        x509_cert = load_der_x509_cert(cert_der_bytes)
+
+        self.assertIsInstance(x509_cert, X509Cert)
+
+        #######################################################################
+        # main properties
+        #######################################################################
+
+        self.assertEqual(
+            x509_cert.version,
+            cryptography.x509.Version.v3)
+        self.assertIsInstance(
+            x509_cert.signature_hash_algorithm,
+            cryptography.hazmat.primitives.hashes.SHA256)
+        self.assertEqual(
+            x509_cert.signature_algorithm_oid,
+            oid.SignatureAlgorithmOID.RSA_WITH_SHA256)
+
+        self.assertEqual(
+            x509_cert.serial_number,
+            6504844188525727926)
+        self.assertEqual(
+            x509_cert.not_valid_after,
+            datetime(2019, 9, 6, 21, 13, 0))
+        self.assertEqual(
+            x509_cert.not_valid_before,
+            datetime(2018, 9, 6, 21, 13, 0))
+
+        #######################################################################
+        # issuer
+        #######################################################################
+
+        self.assertEqual(len(x509_cert.issuer.rdns), 5)
+        self.assertEqual(
+            x509_cert.issuer.rfc4514_string(),
+            'C=CL,'
+            'O=E-Sign S.A.,'
+            'OU=Terms of use at www.esign-la.com/acuerdoterceros,'
+            'CN=E-Sign Class 2 Firma Tributaria CA,'
+            '1.2.840.113549.1.9.1=e-sign@esign-la.com')
+
+        self.assertEqual(
+            x509_cert.issuer.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
+            'CL')
+        self.assertEqual(
+            x509_cert.issuer.get_attributes_for_oid(oid.NameOID.ORGANIZATION_NAME)[0].value,
+            'E-Sign S.A.')
+        self.assertEqual(
+            x509_cert.issuer.get_attributes_for_oid(oid.NameOID.ORGANIZATIONAL_UNIT_NAME)[0].value,
+            'Terms of use at www.esign-la.com/acuerdoterceros')
+        self.assertEqual(
+            x509_cert.issuer.get_attributes_for_oid(oid.NameOID.COMMON_NAME)[0].value,
+            'E-Sign Class 2 Firma Tributaria CA')
+        self.assertEqual(
+            x509_cert.issuer.get_attributes_for_oid(oid.NameOID.EMAIL_ADDRESS)[0].value,
+            'e-sign@esign-la.com')
+
+        #######################################################################
+        # subject
+        #######################################################################
+
+        self.assertEqual(len(x509_cert.subject.rdns), 5)
+        self.assertEqual(
+            x509_cert.subject.rfc4514_string(),
+            'C=CL,'
+            'O=E-Sign S.A.,'
+            'OU=Terms of use at www.esign-la.com/acuerdoterceros,'
+            'CN=Jorge Enrique Cabello Ortiz,'
+            '1.2.840.113549.1.9.1=jcabello@nic.cl')
+        self.assertEqual(
+            x509_cert.subject.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
+            'CL')
+        self.assertEqual(
+            x509_cert.subject.get_attributes_for_oid(oid.NameOID.ORGANIZATION_NAME)[0].value,
+            'E-Sign S.A.')
+        self.assertEqual(
+            x509_cert.subject.get_attributes_for_oid(oid.NameOID.ORGANIZATIONAL_UNIT_NAME)[0].value,
+            'Terms of use at www.esign-la.com/acuerdoterceros')
+        self.assertEqual(
+            x509_cert.subject.get_attributes_for_oid(oid.NameOID.COMMON_NAME)[0].value,
+            'Jorge Enrique Cabello Ortiz')
+        self.assertEqual(
+            x509_cert.subject.get_attributes_for_oid(oid.NameOID.EMAIL_ADDRESS)[0].value,
+            'jcabello@nic.cl')
+
+        #######################################################################
+        # extensions
+        #######################################################################
+
+        cert_extensions = x509_cert.extensions
+        self.assertEqual(len(cert_extensions._extensions), 10)
+
+        # KEY_USAGE
+        key_usage_ext = cert_extensions.get_extension_for_class(
+            cryptography.x509.extensions.KeyUsage)
+        self.assertEqual(key_usage_ext.critical, True)
+        self.assertEqual(key_usage_ext.value.content_commitment, False)
+        self.assertEqual(key_usage_ext.value.crl_sign, False)
+        self.assertEqual(key_usage_ext.value.data_encipherment, False)
+        self.assertEqual(key_usage_ext.value.digital_signature, True)
+        self.assertEqual(key_usage_ext.value.key_agreement, False)
+        self.assertEqual(key_usage_ext.value.key_cert_sign, False)
+        self.assertEqual(key_usage_ext.value.key_encipherment, True)
+
+        # ISSUER_ALTERNATIVE_NAME
+        issuer_alt_name_ext = cert_extensions.get_extension_for_class(
+            cryptography.x509.extensions.IssuerAlternativeName)
+        self.assertEqual(issuer_alt_name_ext.critical, False)
+        self.assertEqual(len(issuer_alt_name_ext.value._general_names._general_names), 1)
+        self.assertEqual(
+            issuer_alt_name_ext.value._general_names._general_names[0].type_id,
+            _SII_CERT_CERTIFICADORA_EMISORA_RUT_OID)
+        self.assertEqual(
+            issuer_alt_name_ext.value._general_names._general_names[0].value,
+            b'\x16\n99551740-K')
+
+        # SUBJECT_ALTERNATIVE_NAME
+        subject_alt_name_ext = cert_extensions.get_extension_for_class(
+            cryptography.x509.extensions.SubjectAlternativeName)
+        self.assertEqual(subject_alt_name_ext.critical, False)
+        self.assertEqual(len(subject_alt_name_ext.value._general_names._general_names), 1)
+        self.assertEqual(
+            subject_alt_name_ext.value._general_names._general_names[0].type_id,
+            _SII_CERT_TITULAR_RUT_OID)
+        self.assertEqual(
+            subject_alt_name_ext.value._general_names._general_names[0].value,
+            b'\x16\t8480437-1')
+
+        # AUTHORITY_INFORMATION_ACCESS
+        authority_information_access_ext = cert_extensions.get_extension_for_class(
+            cryptography.x509.extensions.AuthorityInformationAccess)
+        self.assertEqual(authority_information_access_ext.critical, False)
+        self.assertEqual(len(authority_information_access_ext.value._descriptions), 2)
+        self.assertEqual(
+            authority_information_access_ext.value._descriptions[0].access_location.value,
+            'http://pki.esign-la.com/cacerts/pkiClass2FirmaTributariaCA.crt')
+        self.assertEqual(
+            authority_information_access_ext.value._descriptions[0].access_method,
+            oid.AuthorityInformationAccessOID.CA_ISSUERS)
+        self.assertEqual(
+            authority_information_access_ext.value._descriptions[1].access_location.value,
+            'http://ocsp.esign-la.com')
+        self.assertEqual(
+            authority_information_access_ext.value._descriptions[1].access_method,
+            oid.AuthorityInformationAccessOID.OCSP)
+
+        # SUBJECT_KEY_IDENTIFIER
+        subject_key_identifier_ext = cert_extensions.get_extension_for_class(
+            cryptography.x509.extensions.SubjectKeyIdentifier)
+        self.assertEqual(subject_key_identifier_ext.critical, False)
+        self.assertEqual(
+            subject_key_identifier_ext.value.digest,
+            a2b_hex('E9:FE:44:7A:91:0A:F0:40:F2:9D:86:B4:E2:4C:F6:FA:1D:07:5B:C7'.replace(':', '')))
+
+        # AUTHORITY_KEY_IDENTIFIER
+        authority_key_identifier_ext = cert_extensions.get_extension_for_class(
+            cryptography.x509.extensions.AuthorityKeyIdentifier)
+        self.assertEqual(authority_key_identifier_ext.critical, False)
+        self.assertIs(authority_key_identifier_ext.value.authority_cert_issuer, None)
+        self.assertIs(authority_key_identifier_ext.value.authority_cert_serial_number, None)
+        self.assertEqual(
+            authority_key_identifier_ext.value.key_identifier,
+            a2b_hex('F9:4A:FA:C2:C7:6E:C2:E7:12:9C:57:45:35:84:1A:6D:28:E9:4A:A4'.replace(':', '')))
+
+        # CERTIFICATE_POLICIES
+        certificate_policies_ext = cert_extensions.get_extension_for_class(
+            cryptography.x509.extensions.CertificatePolicies)
+        self.assertEqual(certificate_policies_ext.critical, False)
+        self.assertEqual(len(certificate_policies_ext.value._policies), 1)
+        # note: parent of OID '1.3.6.1.4.1.42346.1.4.1.2' is '1.3.6.1.4.1.42346' ("E-SIGN S.A.").
+        #   http://oidref.com/1.3.6.1.4.1.42346
+        #   http://oid-info.com/get/1.3.6.1.4.1.42346
+        self.assertEqual(
+            certificate_policies_ext.value._policies[0].policy_identifier,
+            oid.ObjectIdentifier("1.3.6.1.4.1.42346.1.4.1.2"))
+        self.assertEqual(len(certificate_policies_ext.value._policies[0].policy_qualifiers), 2)
+        self.assertEqual(
+            certificate_policies_ext.value._policies[0].policy_qualifiers[0],
+            cryptography.x509.extensions.UserNotice(
+                notice_reference=None,
+                explicit_text='Certificado para uso Tributario, Comercio, Pagos y Otros'))
+        self.assertEqual(
+            certificate_policies_ext.value._policies[0].policy_qualifiers[1],
+            "http://www.esign-la.com/cps")
+
+        # CRL_DISTRIBUTION_POINTS
+        crl_distribution_points_ext = cert_extensions.get_extension_for_class(
+            cryptography.x509.extensions.CRLDistributionPoints)
+        self.assertEqual(crl_distribution_points_ext.critical, False)
+        self.assertEqual(len(crl_distribution_points_ext.value._distribution_points), 1)
+        self.assertEqual(
+            crl_distribution_points_ext.value._distribution_points[0].full_name[0].value,
+            'http://pki.esign-la.com/crl/pkiClass2FirmaTributaria/enduser.crl')
+        self.assertIs(crl_distribution_points_ext.value._distribution_points[0].crl_issuer, None)
+        self.assertIs(crl_distribution_points_ext.value._distribution_points[0].reasons, None)
+        self.assertIs(crl_distribution_points_ext.value._distribution_points[0].relative_name, None)
 
     def test_load_der_x509_cert_ok_prueba_sii(self) -> None:
         cert_der_bytes = utils.read_test_file_bytes(
@@ -642,11 +847,23 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertIsInstance(x509_cert_from_pem, X509Cert)
         self.assertEqual(x509_cert_from_der, x509_cert_from_pem)
 
-    def test_load_pem_x509_cert_ok_cert_real_dte(self) -> None:
+    def test_load_pem_x509_cert_ok_cert_real_dte_1(self) -> None:
         cert_der_bytes = utils.read_test_file_bytes(
             'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
         cert_pem_bytes = utils.read_test_file_bytes(
             'test_data/sii-crypto/DTE--76354771-K--33--170-cert.pem')
+
+        x509_cert_from_der = load_der_x509_cert(cert_der_bytes)
+        x509_cert_from_pem = load_pem_x509_cert(cert_pem_bytes)
+
+        self.assertIsInstance(x509_cert_from_pem, X509Cert)
+        self.assertEqual(x509_cert_from_der, x509_cert_from_pem)
+
+    def test_load_pem_x509_cert_ok_cert_real_dte_3(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der')
+        cert_pem_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.pem')
 
         x509_cert_from_der = load_der_x509_cert(cert_der_bytes)
         x509_cert_from_pem = load_pem_x509_cert(cert_pem_bytes)
@@ -706,7 +923,7 @@ class LoadPemX509CertTest(unittest.TestCase):
             x509_cert_pem_to_der(x509_cert_der_to_pem(cert_der_bytes)),
             x509_cert_pem_to_der(cert_pem_bytes))
 
-    def test_x509_cert_der_to_pem_pem_to_der_ok_2(self) -> None:
+    def test_x509_cert_der_to_pem_pem_to_der_ok_cert_real_dte_1(self) -> None:
         cert_der_bytes = utils.read_test_file_bytes(
             'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
         cert_pem_bytes = utils.read_test_file_bytes(
@@ -718,7 +935,19 @@ class LoadPemX509CertTest(unittest.TestCase):
             x509_cert_pem_to_der(x509_cert_der_to_pem(cert_der_bytes)),
             x509_cert_pem_to_der(cert_pem_bytes))
 
-    def test_x509_cert_der_to_pem_pem_to_der_ok_3(self) -> None:
+    def test_x509_cert_der_to_pem_pem_to_der_ok_cert_real_dte_3(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der')
+        cert_pem_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.pem')
+
+        # note: we test the function with a double call because the input PEM data
+        #   may have different line lengths and different line separators.
+        self.assertEqual(
+            x509_cert_pem_to_der(x509_cert_der_to_pem(cert_der_bytes)),
+            x509_cert_pem_to_der(cert_pem_bytes))
+
+    def test_x509_cert_der_to_pem_pem_to_der_ok_prueba_sii(self) -> None:
         cert_der_bytes = utils.read_test_file_bytes(
             'test_data/sii-crypto/prueba-sii-cert.der')
         cert_pem_bytes = utils.read_test_file_bytes(
