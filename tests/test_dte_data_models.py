@@ -7,7 +7,10 @@ from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut  # noqa: F401
 
-from cl_sii.dte.constants import TipoDteEnum  # noqa: F401
+from cl_sii.dte.constants import (  # noqa: F401
+    DTE_MONTO_TOTAL_FIELD_MIN_VALUE, DTE_MONTO_TOTAL_FIELD_MAX_VALUE,
+    TipoDteEnum,
+)
 from cl_sii.dte.data_models import (  # noqa: F401
     DteDataL0, DteDataL1, DteDataL2, DteNaturalKey,
     validate_contribuyente_razon_social, validate_dte_folio, validate_dte_monto_total,
@@ -334,9 +337,55 @@ class FunctionsTest(unittest.TestCase):
         # TODO: implement for 'validate_dte_folio'
         pass
 
-    def test_validate_dte_monto_total(self) -> None:
-        # TODO: implement for 'validate_dte_monto_total'
-        pass
+    def test_validate_dte_monto_total_with_valid_values(self) -> None:
+        # Test value '0':
+        for tipo_dte in TipoDteEnum:
+            try:
+                validate_dte_monto_total(0, tipo_dte)
+            except ValueError as e:
+                self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
+        # Test value '1':
+        for tipo_dte in TipoDteEnum:
+            try:
+                validate_dte_monto_total(1, tipo_dte)
+            except ValueError as e:
+                self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
+        # Test maximum value:
+        for tipo_dte in TipoDteEnum:
+            try:
+                validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MAX_VALUE, tipo_dte)
+            except ValueError as e:
+                self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
+        # Test minimum value:
+        for tipo_dte in TipoDteEnum:
+            try:
+                validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MIN_VALUE, tipo_dte)
+            except ValueError as e:
+                self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
+    def test_validate_dte_monto_total_with_invalid_values(self) -> None:
+        expected_exc_msg = "Value is out of the valid range for 'monto_total'."
+
+        # Test value that is too large:
+        for tipo_dte in TipoDteEnum:
+            with self.assertRaises(ValueError) as assert_raises_cm:
+                validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MAX_VALUE + 1, tipo_dte)
+            self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
+
+        # Test value that is too small:
+        for tipo_dte in TipoDteEnum:
+            with self.assertRaises(ValueError) as assert_raises_cm:
+                validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MIN_VALUE - 1, tipo_dte)
+            self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
+
+        # Test value that is negative:
+        for tipo_dte in TipoDteEnum:
+            with self.assertRaises(ValueError) as assert_raises_cm:
+                validate_dte_monto_total(-1, tipo_dte)
+            self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
 
     def test_validate_clean_str(self) -> None:
         # TODO: implement for 'validate_clean_str'
