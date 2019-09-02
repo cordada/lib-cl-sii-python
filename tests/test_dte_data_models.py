@@ -352,6 +352,14 @@ class FunctionsTest(unittest.TestCase):
             except ValueError as e:
                 self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
 
+        # Test value '-1':
+        for tipo_dte in TipoDteEnum:
+            if tipo_dte == TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+                try:
+                    validate_dte_monto_total(-1, tipo_dte)
+                except ValueError as e:
+                    self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
         # Test maximum value:
         for tipo_dte in TipoDteEnum:
             try:
@@ -361,8 +369,13 @@ class FunctionsTest(unittest.TestCase):
 
         # Test minimum value:
         for tipo_dte in TipoDteEnum:
+            if tipo_dte == TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+                dte_monto_total_field_min_value = DTE_MONTO_TOTAL_FIELD_MIN_VALUE
+            else:
+                dte_monto_total_field_min_value = 0
+
             try:
-                validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MIN_VALUE, tipo_dte)
+                validate_dte_monto_total(dte_monto_total_field_min_value, tipo_dte)
             except ValueError as e:
                 self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
 
@@ -383,9 +396,10 @@ class FunctionsTest(unittest.TestCase):
 
         # Test value that is negative:
         for tipo_dte in TipoDteEnum:
-            with self.assertRaises(ValueError) as assert_raises_cm:
-                validate_dte_monto_total(-1, tipo_dte)
-            self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
+            if tipo_dte != TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+                with self.assertRaises(ValueError) as assert_raises_cm:
+                    validate_dte_monto_total(-1, tipo_dte)
+                self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
 
     def test_validate_clean_str(self) -> None:
         # TODO: implement for 'validate_clean_str'

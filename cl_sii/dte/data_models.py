@@ -44,7 +44,7 @@ def validate_dte_folio(value: int) -> None:
         raise ValueError("Value is out of the valid range for 'folio'.")
 
 
-def validate_dte_monto_total(value: int) -> None:
+def validate_dte_monto_total(value: int, tipo_dte: TipoDteEnum) -> None:
     """
     Validate value for DTE field ``monto_total``.
 
@@ -55,6 +55,9 @@ def validate_dte_monto_total(value: int) -> None:
     # note: mypy gets confused and complains about "Unsupported operand types for >/<".
     if (value < constants.DTE_MONTO_TOTAL_FIELD_MIN_VALUE  # type: ignore
             or value > constants.DTE_MONTO_TOTAL_FIELD_MAX_VALUE):  # type: ignore
+        raise ValueError("Value is out of the valid range for 'monto_total'.")
+
+    if value < 0 and tipo_dte != TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
         raise ValueError("Value is out of the valid range for 'monto_total'.")
 
 
@@ -264,7 +267,7 @@ class DteDataL1(DteDataL0):
         if not isinstance(self.monto_total, int):
             raise TypeError("Inappropriate type of 'monto_total'.")
 
-        validate_dte_monto_total(self.monto_total)
+        validate_dte_monto_total(self.monto_total, self.tipo_dte)
 
     ###########################################################################
     # properties
