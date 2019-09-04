@@ -3,6 +3,12 @@
 History
 -------
 
+0.8.0 (2019-09-03)
++++++++++++++++++++++++
+
+* (PR #80, 2019-09-03) dte: Allow negative "monto total" when DTE type is "liquidación-factura
+  electrónica"
+
 0.7.4 (2019-08-08)
 +++++++++++++++++++++++
 
