@@ -41,10 +41,25 @@ DTE_FOLIO_FIELD_MAX_VALUE = 10 ** 10
 # XML type 'MontoType' in official schema 'SiiTypes_v10.xsd'
 # - source:
 #   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L563-L570
+# Specification for field 'Monto Total'
+# - warning: In certain cases, such as whether negative values are allowed, the SII's specification
+#   document may contradict the XML schema.
+# - content:
+#   > Campo: Monto Total <MntTotal>
+#   > Descripción: [...]
+#   > Largo máximo: 18
+#   > Validación:
+#   >   Valor Numérico de acuerdo a descripción.
+#   >   En Liquidaciones-Factura, puede tomar valor negativo.
+#   >   En Documentos de exportación es “0” (cero) si forma de pago es = 21 (sin pago).
+#   > [...]
+# - source: SII Chile. 2019-07-10. Formato Documentos Tributarios Electrónicos v2.2.
+#   Contenido de Facturas y Documentos Asociados, Detalle por Zona, Encabezado, item nº 124.
+#   http://www.sii.cl/factura_electronica/factura_mercado/formato_dte.pdf
 
 DTE_MONTO_TOTAL_FIELD_TYPE = int
 """DTE field 'Monto Total' type."""
-DTE_MONTO_TOTAL_FIELD_MIN_VALUE = 0
+DTE_MONTO_TOTAL_FIELD_MIN_VALUE = -10 ** 18
 """DTE field 'Monto Total' min value."""
 DTE_MONTO_TOTAL_FIELD_MAX_VALUE = 10 ** 18
 """DTE field 'Monto Total' max value."""

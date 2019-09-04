@@ -7,7 +7,10 @@ from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut  # noqa: F401
 
-from cl_sii.dte.constants import TipoDteEnum  # noqa: F401
+from cl_sii.dte.constants import (  # noqa: F401
+    DTE_MONTO_TOTAL_FIELD_MIN_VALUE, DTE_MONTO_TOTAL_FIELD_MAX_VALUE,
+    TipoDteEnum,
+)
 from cl_sii.dte.data_models import (  # noqa: F401
     DteDataL0, DteDataL1, DteDataL2, DteNaturalKey,
     validate_contribuyente_razon_social, validate_dte_folio, validate_dte_monto_total,
@@ -164,6 +167,10 @@ class DteDataL2Test(unittest.TestCase):
             'test_data/sii-crypto/DTE--76354771-K--33--170-signature-value-base64.txt'))
         cls.dte_1_xml_cert_der = read_test_file_bytes(
             'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
+        cls.dte_2_xml_signature_value = encoding_utils.decode_base64_strict(read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-signature-value-base64.txt'))
+        cls.dte_2_xml_cert_der = read_test_file_bytes(
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der')
 
     def setUp(self) -> None:
         super().setUp()
@@ -185,6 +192,25 @@ class DteDataL2Test(unittest.TestCase):
             signature_x509_cert_der=self.dte_1_xml_cert_der,
             emisor_giro='Ingenieria y Construccion',
             emisor_email='hello@example.com',
+            receptor_email=None,
+        )
+        self.dte_l2_2 = DteDataL2(
+            emisor_rut=Rut('60910000-1'),
+            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            folio=2336600,
+            fecha_emision_date=date(2019, 8, 8),
+            receptor_rut=Rut('76555835-2'),
+            monto_total=10642,
+            emisor_razon_social='Universidad de Chile',
+            receptor_razon_social='FYNPAL SPA',
+            fecha_vencimiento_date=date(2019, 8, 8),
+            firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                dt=datetime(2019, 8, 9, 9, 41, 9),
+                tz=DteDataL2.DATETIME_FIELDS_TZ),
+            signature_value=self.dte_2_xml_signature_value,
+            signature_x509_cert_der=self.dte_2_xml_cert_der,
+            emisor_giro='Corporación Educacional y Servicios                 Profesionales',
+            emisor_email=None,
             receptor_email=None,
         )
 
@@ -254,6 +280,27 @@ class DteDataL2Test(unittest.TestCase):
                 emisor_email='hello@example.com',
                 receptor_email=None,
             ))
+        self.assertDictEqual(
+            self.dte_l2_2.as_dict(),
+            dict(
+                emisor_rut=Rut('60910000-1'),
+                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=2336600,
+                fecha_emision_date=date(2019, 8, 8),
+                receptor_rut=Rut('76555835-2'),
+                monto_total=10642,
+                emisor_razon_social='Universidad de Chile',
+                receptor_razon_social='FYNPAL SPA',
+                fecha_vencimiento_date=date(2019, 8, 8),
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 8, 9, 9, 41, 9),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ),
+                signature_value=self.dte_2_xml_signature_value,
+                signature_x509_cert_der=self.dte_2_xml_cert_der,
+                emisor_giro='Corporación Educacional y Servicios                 Profesionales',
+                emisor_email=None,
+                receptor_email=None,
+            ))
 
     def test_as_dte_data_l1(self) -> None:
         self.assertEqual(
@@ -265,6 +312,17 @@ class DteDataL2Test(unittest.TestCase):
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
                 monto_total=2996301,
+            )
+        )
+        self.assertEqual(
+            self.dte_l2_2.as_dte_data_l1(),
+            DteDataL1(
+                emisor_rut=Rut('60910000-1'),
+                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=2336600,
+                fecha_emision_date=date(2019, 8, 8),
+                receptor_rut=Rut('76555835-2'),
+                monto_total=10642,
             )
         )
 
@@ -279,9 +337,69 @@ class FunctionsTest(unittest.TestCase):
         # TODO: implement for 'validate_dte_folio'
         pass
 
-    def test_validate_dte_monto_total(self) -> None:
-        # TODO: implement for 'validate_dte_monto_total'
-        pass
+    def test_validate_dte_monto_total_with_valid_values(self) -> None:
+        # Test value '0':
+        for tipo_dte in TipoDteEnum:
+            try:
+                validate_dte_monto_total(0, tipo_dte)
+            except ValueError as e:
+                self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
+        # Test value '1':
+        for tipo_dte in TipoDteEnum:
+            try:
+                validate_dte_monto_total(1, tipo_dte)
+            except ValueError as e:
+                self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
+        # Test value '-1':
+        for tipo_dte in TipoDteEnum:
+            if tipo_dte == TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+                try:
+                    validate_dte_monto_total(-1, tipo_dte)
+                except ValueError as e:
+                    self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
+        # Test maximum value:
+        for tipo_dte in TipoDteEnum:
+            try:
+                validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MAX_VALUE, tipo_dte)
+            except ValueError as e:
+                self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
+        # Test minimum value:
+        for tipo_dte in TipoDteEnum:
+            if tipo_dte == TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+                dte_monto_total_field_min_value = DTE_MONTO_TOTAL_FIELD_MIN_VALUE
+            else:
+                dte_monto_total_field_min_value = 0
+
+            try:
+                validate_dte_monto_total(dte_monto_total_field_min_value, tipo_dte)
+            except ValueError as e:
+                self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
+
+    def test_validate_dte_monto_total_with_invalid_values(self) -> None:
+        expected_exc_msg = "Value is out of the valid range for 'monto_total'."
+
+        # Test value that is too large:
+        for tipo_dte in TipoDteEnum:
+            with self.assertRaises(ValueError) as assert_raises_cm:
+                validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MAX_VALUE + 1, tipo_dte)
+            self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
+
+        # Test value that is too small:
+        for tipo_dte in TipoDteEnum:
+            with self.assertRaises(ValueError) as assert_raises_cm:
+                validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MIN_VALUE - 1, tipo_dte)
+            self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
+
+        # Test value that is negative:
+        for tipo_dte in TipoDteEnum:
+            if tipo_dte != TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+                with self.assertRaises(ValueError) as assert_raises_cm:
+                    validate_dte_monto_total(-1, tipo_dte)
+                self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
 
     def test_validate_clean_str(self) -> None:
         # TODO: implement for 'validate_clean_str'
