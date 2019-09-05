@@ -604,6 +604,9 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
             data['fecha_reclamo_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
                 dt=data['fecha_reclamo_dt'], tz=self.FIELD_FECHA_RECLAMO_DT_TZ)
 
+        # Remove leading and trailing whitespace.
+        data['receptor_razon_social'] = data['receptor_razon_social'].strip()
+
         return data
 
     def to_detalle_entry(self, data: dict) -> RvDetalleEntry:
@@ -740,6 +743,9 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
 
         # note: to express this value in another timezone (but the value does not change), do
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
+
+        # Remove leading and trailing whitespace.
+        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
 
         return data
 
@@ -918,6 +924,9 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
         # note: to express this value in another timezone (but the value does not change), do
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
 
+        # Remove leading and trailing whitespace.
+        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
+
         return data
 
     def to_detalle_entry(self, data: dict) -> RcReclamadoDetalleEntry:
@@ -1042,6 +1051,9 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
 
         # note: to express this value in another timezone (but the value does not change), do
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
+
+        # Remove leading and trailing whitespace.
+        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
 
         return data
 
