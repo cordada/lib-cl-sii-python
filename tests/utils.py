@@ -4,6 +4,14 @@ import os
 _TESTS_DIR_PATH = os.path.dirname(__file__)
 
 
+def get_test_file_path(path: str) -> str:
+    filepath = os.path.join(
+        _TESTS_DIR_PATH,
+        path,
+    )
+    return filepath
+
+
 def read_test_file_bytes(path: str) -> bytes:
     filepath = os.path.join(
         _TESTS_DIR_PATH,
