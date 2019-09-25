@@ -1,0 +1,3 @@
+Nro;Tipo Doc;Tipo Compra;RUT Proveedor;Razon Social;Folio;Fecha Docto;Fecha Recepcion;Fecha Acuse;Monto Exento;Monto Neto;Monto IVA Recuperable;Monto Iva No Recuperable;Codigo IVA No Rec.;Monto Total;Monto Neto Activo Fijo;IVA Activo Fijo;IVA uso Comun;Impto. Sin Derecho a Credito;IVA No Retenido;Tabacos Puros;Tabacos Cigarrillos;Tabacos Elaborados;NCE o NDE sobre Fact. de Compra;Codigo Otro Impuesto;Valor Otro Impuesto;Tasa Otro Impuesto
+1;33;Del Giro;12345678-5;Fake Company S.A. ;23084;21/06/2019;24/06/2019 09:55:53;;0;240169;45632;;;285801;;;;;0;;;;0;;;;
+7;33;Del Giro;12345678-5;  Fake Company S.A.;31000097;02/07/2019;03/07/2019 00:15:30;;0;27356;5198;;;32554;;;;;0;;;;0;;;;
