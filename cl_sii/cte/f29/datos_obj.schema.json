@@ -1,0 +1,166 @@
+{
+  "title": "SII CTE Form 29 'datos' Object",
+  "description": "Schema of (a subset of) the 'datos' JavaScript object embedded in the IFrames of the HTML version of the CTE's 'Declaraciones de IVA (F29)'.",
+  "type": "object",
+  "properties": {
+    "campos": {
+      "type": "object",
+      "patternProperties": {
+        "^\\d{3}$": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "extras": {
+      "type": "object",
+      "properties": {
+        "BANCO": {
+          "type": "string"
+        },
+        "CALIDADDECLARANTE": {
+          "type": "string"
+        },
+        "CARTRIB": {
+          "type": "string"
+        },
+        "CLASE": {
+          "type": "string"
+        },
+        "CODINT": {
+          "type": "string",
+          "pattern": "^\\d+$"
+        },
+        "COD_FORM": {
+          "type": "string",
+          "enum": [
+            "F29"
+          ]
+        },
+        "DV_ORIGEN": {
+          "type": "string",
+          "pattern": "^(\\d|K)$"
+        },
+        "FECHA_HOY": {
+          "type": "string",
+          "pattern": "^\\d{1,2}/\\d{1,2}/\\d{4}$"
+        },
+        "FECHA_INGRESO": {
+          "type": "string",
+          "pattern": "^\\d{1,2}\\d{1,2}\\d{4}$"
+        },
+        "FOLIO": {
+          "type": "string",
+          "pattern": "^\\d+$"
+        },
+        "MEDIO_INGRESO": {
+          "type": "string"
+        },
+        "MEDIO_PAGO": {
+          "type": "string"
+        },
+        "MOSTRAR_FOLIO": {
+          "type": "string"
+        },
+        "NOMBRES": {
+          "type": "string"
+        },
+        "OPCION": {
+          "type": "string"
+        },
+        "PERIODO": {
+          "type": "string",
+          "pattern": "^\\d{4}\\d{2}$"
+        },
+        "RUT_ORIGEN": {
+          "type": "string",
+          "pattern": "^\\d+$"
+        },
+        "TIPO_MOVIMIENTO": {
+          "type": "string"
+        },
+        "TOKEN": {
+          "type": "string"
+        },
+        "USUARIO": {
+          "type": "string"
+        },
+        "cant_anuladas": {
+          "type": "integer"
+        }
+      },
+      "patternProperties": {
+        ".+": {
+          "type": [
+            "number",
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "PERIODO"
+      ],
+      "additionalProperties": false
+    },
+    "folioF": {
+      "type": "object"
+    },
+    "glosa": {
+      "type": "object",
+      "patternProperties": {
+        "^\\d{3}$": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "justif": {
+      "type": "object",
+      "patternProperties": {
+        "^\\d{3}$": {
+          "type": "string",
+          "enum": [
+            "I",
+            "D",
+            "-"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "linea": {
+      "type": "object",
+      "patternProperties": {
+        "^\\d{3}$": {
+          "type": "string",
+          "pattern": "^\\d+$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "tipos": {
+      "type": "object",
+      "patternProperties": {
+        "^\\d{3}$": {
+          "type": "string",
+          "enum": [
+            "C",
+            "D",
+            "F",
+            "M",
+            "N",
+            "R"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "campos",
+    "extras",
+    "glosa",
+    "tipos"
+  ],
+  "additionalProperties": true
+}
