@@ -9,12 +9,14 @@ try:
 except ImportError as exc:  # pragma: no cover
     raise ImportError("Package 'marshmallow' is required to use this module.") from exc
 
+import datetime
 from typing import Optional
 
 import marshmallow.fields
 
 from cl_sii.dte.constants import TipoDteEnum
 from cl_sii.rcv.constants import RcvTipoDocto
+from cl_sii.rcv.data_models import PeriodoTributario as RcvPeriodoTributario
 from cl_sii.rut import Rut
 
 
@@ -170,4 +172,42 @@ class RcvTipoDoctoField(marshmallow.fields.Field):
             except ValueError:
                 # RcvTipoDocto('x') raises 'ValueError', not 'TypeError'
                 self.fail('invalid')
+        return validated
+
+
+class RcvPeriodoTributarioField(marshmallow.fields.Field):
+    """
+    Marshmallow field for RCV's "periodo tributario".
+
+    Data types:
+    * native/primitive/internal/deserialized: :class:`RcvPeriodoTributario`
+    * representation/serialized: str
+    """
+
+    default_error_messages = {
+        'invalid': "Not a valid RCV Periodo Tributario.",
+    }
+    _string_format = '%Y-%m'  # Example: '2019-12'
+
+    def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[str]:
+        validated: Optional[RcvPeriodoTributario] = self._validated(value)
+        return validated.as_date().strftime(self._string_format) if validated is not None else None
+
+    def _deserialize(self, value: object, attr: str, data: dict) -> Optional[RcvPeriodoTributario]:
+        return self._validated(value)
+
+    def _validated(self, value: Optional[object]) -> Optional[RcvPeriodoTributario]:
+        if value is None or isinstance(value, RcvPeriodoTributario):
+            validated = value
+        else:
+            try:
+                value = datetime.datetime.strptime(value, self._string_format)  # type: ignore
+                value = value.date()
+            except ValueError:
+                self.fail('invalid')
+            except TypeError:
+                self.fail('type')
+
+            validated = RcvPeriodoTributario.from_date(value)  # type: ignore
+
         return validated
