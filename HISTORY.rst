@@ -3,6 +3,15 @@
 History
 -------
 
+0.8.2 (2019-10-28)
++++++++++++++++++++++++
+
+* (PR #89, 2019-10-28) cte: Move JSON Schema of F29 'datos' object to 'data'
+  directory and include it in the distribution packages
+* (PR #87, 2019-10-25) cte: add data model, parser and more
+* (PR #88, 2019-10-23) update config file for "deepsource"
+* (PR #86, 2019-10-08) add config file for "deepsource"
+
 0.8.1 (2019-09-25)
 +++++++++++++++++++++++
 

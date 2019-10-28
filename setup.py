@@ -24,6 +24,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 requirements = [
     'cryptography>=2.7,<3',
     'defusedxml>=0.5.0,<1',
+    'jsonschema>=3.1.1',
     'lxml>=4.3.3,<5',
     'marshmallow>=2.19.2,<3',
     # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<19'
@@ -58,6 +59,7 @@ _package_data = {
         # Indicates that the "typing information" of the package should be distributed.
         'py.typed',
         # Data files that are not in a sub-package.
+        'data/cte/schemas-json/*.schema.json',
         'data/ref/factura_electronica/schemas-xml/*.xsd',
     ],
 }

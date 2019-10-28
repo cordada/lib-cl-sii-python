@@ -4,6 +4,7 @@
 # Required packages:
 cryptography==2.7
 defusedxml==0.6.0
+jsonschema==3.1.1
 lxml==4.3.3
 marshmallow==2.19.5
 pyOpenSSL==18.0.0
@@ -16,6 +17,13 @@ signxml==2.6.0
 #       - cffi:
 #           - pycparser
 #       - six
+#   - jsonschema
+#       - setuptools
+#       - six
+#       - attrs
+#       - importlib-metadata
+#           - zipp
+#       - pyrsistent
 #   - signxml:
 #       - certifi
 #       - cryptography
@@ -26,9 +34,13 @@ signxml==2.6.0
 #       - pyOpenSSL
 #           - six
 asn1crypto==0.24.0
+attrs==19.3.0
 certifi==2019.6.16
 cffi==1.12.3
 eight==0.4.2
 future==0.16.0
+importlib-metadata==0.18
 pycparser==2.19
+pyrsistent==0.15.4
 six==1.12.0
+zipp==0.5.1
