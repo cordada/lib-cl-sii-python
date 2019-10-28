@@ -15,7 +15,11 @@ from .data_models import CteForm29
 
 
 SiiCteF29DatosObjType = Mapping[str, Mapping[str, object]]
-CTE_F29_DATOS_OBJ_SCHEMA = read_json_schema(Path(__file__).parent / 'datos_obj.schema.json')
+_CTE_F29_DATOS_OBJ_SCHEMA_PATH = (
+    Path(__file__).parent.parent.parent
+    / 'data' / 'cte' / 'schemas-json' / 'f29_datos_obj.schema.json'
+)
+CTE_F29_DATOS_OBJ_SCHEMA = read_json_schema(_CTE_F29_DATOS_OBJ_SCHEMA_PATH)
 
 
 def parse_sii_cte_f29_datos_obj(datos_obj: SiiCteF29DatosObjType) -> CteForm29:

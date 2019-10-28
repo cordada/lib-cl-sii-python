@@ -59,6 +59,7 @@ _package_data = {
         # Indicates that the "typing information" of the package should be distributed.
         'py.typed',
         # Data files that are not in a sub-package.
+        'data/cte/schemas-json/*.schema.json',
         'data/ref/factura_electronica/schemas-xml/*.xsd',
     ],
 }
