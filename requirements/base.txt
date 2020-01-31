@@ -5,7 +5,7 @@
 cryptography==2.8
 defusedxml==0.6.0
 jsonschema==3.1.1
-lxml==4.3.3
+lxml==4.5.0
 marshmallow==2.19.5
 pyOpenSSL==18.0.0
 pytz==2019.3
