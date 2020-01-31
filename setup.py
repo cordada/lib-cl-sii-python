@@ -22,7 +22,7 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [
-    'cryptography>=2.7,<3',
+    'cryptography>=2.8,<3',
     'defusedxml>=0.5.0,<1',
     'jsonschema>=3.1.1',
     'lxml>=4.3.3,<5',

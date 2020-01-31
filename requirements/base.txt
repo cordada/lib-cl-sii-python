@@ -2,7 +2,7 @@
 # note: it is mandatory to register all dependencies of the required packages.
 
 # Required packages:
-cryptography==2.7
+cryptography==2.8
 defusedxml==0.6.0
 jsonschema==3.1.1
 lxml==4.3.3
@@ -13,7 +13,6 @@ signxml==2.6.0
 
 # Packages dependencies:
 #   - cryptography:
-#       - asn1crypto
 #       - cffi:
 #           - pycparser
 #       - six
@@ -25,6 +24,7 @@ signxml==2.6.0
 #           - zipp
 #       - pyrsistent
 #   - signxml:
+#       - asn1crypto
 #       - certifi
 #       - cryptography
 #       - defusedxml
