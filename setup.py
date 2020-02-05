@@ -23,7 +23,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [
     'cryptography>=2.8,<3',
-    'defusedxml>=0.5.0,<1',
+    'defusedxml>=0.6.0,<1',
     'jsonschema>=3.1.1',
     'lxml>=4.5.0,<5',
     'marshmallow>=2.19.2,<3',
