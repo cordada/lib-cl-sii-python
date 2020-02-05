@@ -1,5 +1,12 @@
 # note: it is NOT mandatory to register all dependencies of the required packages.
 
 # Required packages:
-Django<2.2
+Django>=2.2.10,<3
 djangorestframework<3.10
+
+# Packages dependencies:
+#   - Django:
+#       - pytz
+#       - sqlparse
+# pytz
+# sqlparse
