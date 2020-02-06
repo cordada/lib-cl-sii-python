@@ -112,14 +112,14 @@ class RcvTipoDocto(enum.IntEnum):
 
     * XML type (enum) ``DoctoType`` ("Tipos de Documentos") in
       official schema ``LibroCV_v10.xsd``.
-      https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/LibroCV_v10.xsd#L1563-L1622
+      https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/LibroCV_v10.xsd#L1563-L1622
 
     * Values returned by SII endpoint
       https://www4.sii.cl/consdcvinternetui/services/data/facadeService/getDatosInicio
 
     * Constant ``cl_sii_api.rcv.AVAILABLE_DOCUMENT_TYPES`` in package
       ``cl-sii-api`` v0.2.2.
-      https://github.com/fynpal/lib-cl-sii-api-python/blob/81b4a43/cl_sii_api/rcv.py
+      https://github.com/fyntex/lib-cl-sii-api-python/blob/81b4a43/cl_sii_api/rcv.py
 
     """
 
