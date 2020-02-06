@@ -3,6 +3,13 @@
 History
 -------
 
+0.8.3 (2020-02-06)
++++++++++++++++++++++++
+
+* (PR #98, 2020-02-05) requirements: several updates (``cryptography``,
+  ``lxml``, ``Django``, ``djangorestframework``)
+* (PR #91, 2019-10-28) extras.mm_fields: add ``RcvPeriodoTributarioField``
+
 0.8.2 (2019-10-28)
 +++++++++++++++++++++++
 
