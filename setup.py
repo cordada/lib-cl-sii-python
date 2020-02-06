@@ -22,20 +22,20 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [
-    'cryptography>=2.7,<3',
-    'defusedxml>=0.5.0,<1',
+    'cryptography>=2.8,<3',
+    'defusedxml>=0.6.0,<1',
     'jsonschema>=3.1.1',
-    'lxml>=4.3.3,<5',
+    'lxml>=4.5.0,<5',
     'marshmallow>=2.19.2,<3',
     # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<19'
     'pyOpenSSL>=18.0.0,<19',
-    'pytz>=2019.1',
+    'pytz>=2019.3',
     'signxml>=2.6.0',
 ]
 
 extras_requirements = {
-    'django': ['Django>=2.1.8'],
-    'djangorestframework': ['djangorestframework>=3.9.2'],
+    'django': ['Django>=2.2.10,<3'],
+    'djangorestframework': ['djangorestframework>=3.10.3,<3.11'],
 }
 
 setup_requirements = [

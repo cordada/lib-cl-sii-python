@@ -1,9 +1,10 @@
-from datetime import date
+from datetime import date, datetime
 import unittest
 
 import marshmallow
 
 from cl_sii.extras.mm_fields import (
+    RcvPeriodoTributario, RcvPeriodoTributarioField,
     RcvTipoDocto, RcvTipoDoctoField,
     Rut, RutField,
     TipoDteEnum, TipoDteField,
@@ -439,3 +440,186 @@ class RcvTipoDoctoFieldTest(unittest.TestCase):
         self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})
         data, errors = schema.dump(obj_invalid_5)
         self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})
+
+
+class RcvPeriodoTributarioFieldTest(unittest.TestCase):
+    def setUp(self) -> None:
+        class MyObj:
+            def __init__(
+                self,
+                periodo_tributario: RcvPeriodoTributario,
+                other_field: int = None,
+            ) -> None:
+                self.periodo_tributario = periodo_tributario
+                self.other_field = other_field
+
+        class MyBadObj:
+            def __init__(self, some_field: int) -> None:
+                self.some_field = some_field
+
+        class MyMmSchema(marshmallow.Schema):
+            class Meta:
+                strict = False
+
+            periodo_tributario = RcvPeriodoTributarioField(
+                required=True,
+                load_from='source field name',
+            )
+            other_field = marshmallow.fields.Integer(
+                required=False,
+            )
+
+        class MyMmSchemaStrict(marshmallow.Schema):
+            class Meta:
+                strict = True
+
+            periodo_tributario = RcvPeriodoTributarioField(
+                required=True,
+                load_from='source field name',
+            )
+            other_field = marshmallow.fields.Integer(
+                required=False,
+            )
+
+        self.MyObj = MyObj
+        self.MyBadObj = MyBadObj
+        self.MyMmSchema = MyMmSchema
+        self.MyMmSchemaStrict = MyMmSchemaStrict
+
+    def test_load_ok_valid(self) -> None:
+        schema = self.MyMmSchema()
+
+        data_valid_1 = {'source field name': '2019-12'}
+        data_valid_2 = {'source field name': RcvPeriodoTributario(year=2019, month=12)}
+        data_valid_3 = {'source field name': '2019-09'}
+        data_valid_4 = {'source field name': '2019-9'}
+
+        result = schema.load(data_valid_1)
+        self.assertEqual(
+            dict(result.data),
+            {'periodo_tributario': RcvPeriodoTributario(year=2019, month=12)},
+        )
+        self.assertEqual(dict(result.errors), {})
+
+        result = schema.load(data_valid_2)
+        self.assertEqual(
+            dict(result.data),
+            {'periodo_tributario': RcvPeriodoTributario(year=2019, month=12)},
+        )
+        self.assertEqual(dict(result.errors), {})
+
+        result = schema.load(data_valid_3)
+        self.assertEqual(
+            dict(result.data),
+            {'periodo_tributario': RcvPeriodoTributario(year=2019, month=9)},
+        )
+        self.assertEqual(dict(result.errors), {})
+
+        result = schema.load(data_valid_4)
+        self.assertEqual(
+            dict(result.data),
+            {'periodo_tributario': RcvPeriodoTributario(year=2019, month=9)},
+        )
+        self.assertEqual(dict(result.errors), {})
+
+    def test_dump_ok_valid(self) -> None:
+        schema = self.MyMmSchema()
+
+        obj_valid_1 = self.MyObj(periodo_tributario=RcvPeriodoTributario(year=2019, month=12))
+        obj_valid_2 = self.MyObj(periodo_tributario=RcvPeriodoTributario(year=2019, month=9))
+        obj_valid_3 = self.MyObj(periodo_tributario=None)
+
+        data, errors = schema.dump(obj_valid_1)
+        self.assertEqual(data, {'periodo_tributario': '2019-12', 'other_field': None})
+        self.assertEqual(errors, {})
+
+        data, errors = schema.dump(obj_valid_2)
+        self.assertEqual(data, {'periodo_tributario': '2019-09', 'other_field': None})
+        self.assertEqual(errors, {})
+
+        data, errors = schema.dump(obj_valid_3)
+        self.assertEqual(data, {'periodo_tributario': None, 'other_field': None})
+        self.assertEqual(errors, {})
+
+    def test_dump_ok_strange(self) -> None:
+        # If the class of the object to be dumped has attributes that do not match at all the
+        #   fields of the schema, there are no errors! Even if the schema has `strict = True` set.
+
+        schema = self.MyMmSchema()
+        schema_strict = self.MyMmSchemaStrict()
+
+        obj_valid_1 = self.MyBadObj(some_field=123)
+        obj_valid_2 = self.MyBadObj(some_field=None)
+
+        data, errors = schema.dump(obj_valid_1)
+        self.assertEqual((data, errors), ({}, {}))
+
+        data, errors = schema_strict.dump(obj_valid_1)
+        self.assertEqual((data, errors), ({}, {}))
+
+        data, errors = schema.dump(obj_valid_2)
+        self.assertEqual((data, errors), ({}, {}))
+
+        data, errors = schema_strict.dump(obj_valid_2)
+        self.assertEqual((data, errors), ({}, {}))
+
+    def test_load_fail(self) -> None:
+        schema = self.MyMmSchema()
+
+        data_invalid_1 = {'source field name': '2019-12-01'}
+        data_invalid_2 = {'source field name': 201912}
+        data_invalid_3 = {'source field name': ''}
+        data_invalid_4 = {'source field name': None}
+        data_invalid_5 = {}
+
+        result = schema.load(data_invalid_1)
+        self.assertEqual(dict(result.data), {})
+        self.assertEqual(
+            dict(result.errors),
+            {'source field name': ["Not a valid RCV Periodo Tributario."]},
+        )
+
+        result = schema.load(data_invalid_2)
+        self.assertEqual(dict(result.data), {})
+        self.assertEqual(dict(result.errors), {'source field name': ['Invalid input type.']})
+
+        result = schema.load(data_invalid_3)
+        self.assertEqual(dict(result.data), {})
+        self.assertEqual(
+            dict(result.errors),
+            {'source field name': ["Not a valid RCV Periodo Tributario."]},
+        )
+
+        result = schema.load(data_invalid_4)
+        self.assertEqual(dict(result.data), {})
+        self.assertEqual(dict(result.errors), {'source field name': ['Field may not be null.']})
+
+        result = schema.load(data_invalid_5)
+        self.assertEqual(dict(result.data), {})
+        self.assertEqual(
+            dict(result.errors),
+            {'source field name': ['Missing data for required field.']},
+        )
+
+    def test_dump_fail(self) -> None:
+        schema = self.MyMmSchema()
+
+        obj_invalid_1 = self.MyObj(periodo_tributario='2019-12-01')
+        obj_invalid_2 = self.MyObj(periodo_tributario=date(2019, 12, 1))
+        obj_invalid_3 = self.MyObj(periodo_tributario=datetime(2019, 12, 1, 22, 33))
+        obj_invalid_4 = self.MyObj(periodo_tributario='')
+        obj_invalid_5 = self.MyObj(periodo_tributario=201912)
+        obj_invalid_6 = self.MyObj(periodo_tributario='  2019-12-01')
+
+        data, errors = schema.dump(obj_invalid_1)
+        self.assertEqual(errors, {'periodo_tributario': ["Not a valid RCV Periodo Tributario."]})
+        data, errors = schema.dump(obj_invalid_2)
+        self.assertEqual(errors, {'periodo_tributario': ['Invalid input type.']})
+        data, errors = schema.dump(obj_invalid_3)
+        self.assertEqual(errors, {'periodo_tributario': ['Invalid input type.']})
+        data, errors = schema.dump(obj_invalid_4)
+        self.assertEqual(errors, {'periodo_tributario': ["Not a valid RCV Periodo Tributario."]})
+        data, errors = schema.dump(obj_invalid_5)
+        self.assertEqual(errors, {'periodo_tributario': ['Invalid input type.']})
+        data, errors = schema.dump(obj_invalid_6)
+        self.assertEqual(errors, {'periodo_tributario': ["Not a valid RCV Periodo Tributario."]})

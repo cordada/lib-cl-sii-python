@@ -4,20 +4,50 @@
 
 # Required packages:
 bumpversion==0.5.3
-setuptools==41.0.1
-twine==1.13.0
-wheel==0.33.4
+setuptools==45.1.0
+twine==3.1.1
+wheel==0.34.2
 
 # Packages dependencies:
 #   - twine:
+#       - importlib-metadata
+#           - zipp
+#       - keyring
+#           - importlib-metadata
+#           - jeepney
+#           - SecretStorage
+#               - cryptography
+#               - jeepney
 #       - pkginfo
-#       - readme-renderer
-#       - requests
+#       - readme-renderer:
+#           - bleach
+#               - webencodings
+#           - docutils
+#           - Pygments
+#       - requests:
+#           - certifi
+#           - chardet
+#           - idna
+#           - urllib3
 #       - requests-toolbelt
 #       - setuptools
 #       - tqdm
+# bleach
+# certifi
+# chardet
+# cryptography
+# docutils
+# idna
+importlib-metadata==0.23
+# jeepney
+keyring==21.1.0
 pkginfo==1.5.0.1
+# Pygments
 readme-renderer==24.0
 requests==2.22.0
 requests-toolbelt==0.9.1
-tqdm==4.32.2
+# SecretStorage
+tqdm==4.42.0
+# urllib3
+# webencodings
+# zipp
