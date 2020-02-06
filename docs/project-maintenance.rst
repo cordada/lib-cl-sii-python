@@ -20,7 +20,7 @@ Make sure main branches are synced with local ones, and tests pass::
     git push
 
 Then wait for the
-`CircleCI tests (develop) <https://circleci.com/gh/fyndata/workflows/lib-cl-sii-python/tree/develop>`_
+`CircleCI tests (develop) <https://circleci.com/gh/fyntex/workflows/lib-cl-sii-python/tree/develop>`_
 and verify they were successful.
 
 1) Update changelog
@@ -59,7 +59,7 @@ Push commit ``abcd1234`` and tag ``vX.Y.Z`` automatically created by ``bumpversi
 (GitHub)
 
 * Create PR for
-  `master...develop <https://github.com/fyndata/lib-cl-sii-python/compare/master...develop>`_.
+  `master...develop <https://github.com/fyntex/lib-cl-sii-python/compare/master...develop>`_.
 
   * Name: "Release".
 
@@ -80,7 +80,7 @@ Push commit ``abcd1234`` and tag ``vX.Y.Z`` automatically created by ``bumpversi
 * Create new release:
 
   * Go to the repo's
-    `"Releases/tags" section <https://github.com/fyndata/lib-cl-sii-python/tags>`_.
+    `"Releases/tags" section <https://github.com/fyntex/lib-cl-sii-python/tags>`_.
 
   * Create release for the new tag just pushed.
 
