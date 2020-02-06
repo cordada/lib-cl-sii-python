@@ -24,16 +24,16 @@ The full documentation is at https://lib-cl-sii-python.readthedocs.io.
 Status
 -------------
 
-.. image:: https://circleci.com/gh/fyndata/lib-cl-sii-python/tree/develop.svg?style=shield
-    :target: https://circleci.com/gh/fyndata/lib-cl-sii-python/tree/develop
+.. image:: https://circleci.com/gh/fyntex/lib-cl-sii-python/tree/develop.svg?style=shield
+    :target: https://circleci.com/gh/fyntex/lib-cl-sii-python/tree/develop
     :alt: CI status
 
-.. image:: https://codecov.io/gh/fyndata/lib-cl-sii-python/branch/develop/graph/badge.svg
-    :target: https://codecov.io/gh/fyndata/lib-cl-sii-python
+.. image:: https://codecov.io/gh/fyntex/lib-cl-sii-python/branch/develop/graph/badge.svg
+    :target: https://codecov.io/gh/fyntex/lib-cl-sii-python
     :alt: Code coverage
 
-.. image:: https://api.codeclimate.com/v1/badges/74408e5f8811f750ff3f/maintainability
-    :target: https://codeclimate.com/github/fyndata/lib-cl-sii-python/maintainability
+.. image:: https://api.codeclimate.com/v1/badges/c4e8a9b023310ff8c276/maintainability
+    :target: https://codeclimate.com/github/fyntex/lib-cl-sii-python/maintainability
     :alt: Code Climate maintainability
 
 .. image:: https://readthedocs.org/projects/lib-cl-sii-python/badge/?version=latest

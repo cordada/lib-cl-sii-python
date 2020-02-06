@@ -65,8 +65,8 @@ _package_data = {
 }
 
 setup(
-    author='Fyndata (Fynpal SpA)',
-    author_email='no-reply@fyndata.com',
+    author='Fyntex TI SpA',
+    author_email='no-reply@fyntex.ai',
     classifiers=[
         # See https://pypi.org/classifiers/
         'Development Status :: 3 - Alpha',
@@ -90,7 +90,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/fyndata/lib-cl-sii-python',
+    url='https://github.com/fyntex/lib-cl-sii-python',
     version=version,
     zip_safe=False,
 )

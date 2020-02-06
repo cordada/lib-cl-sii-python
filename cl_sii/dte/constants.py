@@ -2,7 +2,7 @@
 DTE-related constants.
 
 Sources: official XML schemas 'SiiTypes_v10.xsd' and 'DTE_v10.xsd'.
-https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/
+https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/
 
 """
 import enum
@@ -16,10 +16,10 @@ import enum
 # - description: "Folio del Documento Electronico"
 # - XML type: 'FolioType'
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L52-L56
+#   https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L52-L56
 # XML type 'FolioType' in official schema 'SiiTypes_v10.xsd'.
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L153-L160
+#   https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L153-L160
 
 DTE_FOLIO_FIELD_TYPE = int
 """DTE field 'Folio' type."""
@@ -37,10 +37,10 @@ DTE_FOLIO_FIELD_MAX_VALUE = 10 ** 10
 # - description: "Monto Total del DTE"
 # - XML type: 'MontoType'
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L1160-L1164
+#   https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L1160-L1164
 # XML type 'MontoType' in official schema 'SiiTypes_v10.xsd'
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L563-L570
+#   https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L563-L570
 # Specification for field 'Monto Total'
 # - warning: In certain cases, such as whether negative values are allowed, the SII's specification
 #   document may contradict the XML schema.
@@ -73,7 +73,7 @@ DTE_MONTO_TOTAL_FIELD_MAX_VALUE = 10 ** 18
 # - description: "Tipo de DTE"
 # - XML type: 'DTEType'
 # - source:
-#   https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L47-L51
+#   https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L47-L51
 
 DTE_TIPO_DTE_FIELD_TYPE = int
 """DTE field 'Tipo de DTE' type."""
@@ -92,7 +92,7 @@ class TipoDteEnum(enum.IntEnum):
     Source: from official schema ``SiiTypes_v10.xsd``, the XML types (enums)
     ``DOCType``, ``DocType``, ``DTEType`` and ``DTEFacturasType`` which are
     VERY similar.
-    https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd
+    https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd
 
     Notes:
     * Enums ``DocType`` and ``DTEType`` have exactly the same elements
@@ -149,8 +149,8 @@ class TipoDteEnum(enum.IntEnum):
     #   110 Factura de exportación electrónica
     #   111 Nota de débito de exportación electrónica
     #   112 Nota de crédito de exportación electrónica
-    # https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L58-L60
-    # https://github.com/fyndata/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L708-L717
+    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L58-L60
+    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L708-L717
     #   See 'cl_sii.rcv.constants.RcvTipoDocto'
     #   Should 'is_factura' be true for a "Factura de exportación electrónica" (110) ?
 
