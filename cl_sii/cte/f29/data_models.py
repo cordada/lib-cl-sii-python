@@ -152,6 +152,7 @@ class CteForm29:
         586: None,  # "CANT. VTAS. Y/O SERV. PREST. INT. EXENT."
         587: None,  # Facturas de Compra recibidas c/ret. total y Fact. de Inicio emitida | Monto
         595: None,  # "SUB TOTAL IMP. DETERMINADO ANVERSO"
+        596: None,  # "RETENCION CAMBIO DE SUJETO"
         601: None,  # Fax
         610: 'numero_direccion',  # Nº Dirección
         708: None,  # "CANT. NOTAS CRED. EMIT. VALES MAQ. IVA"
@@ -167,6 +168,7 @@ class CteForm29:
         795: None,  # "MONTO DE CONDONACION SII"
         915: 'fecha_condonacion',  # "Fecha de Vigencia de Condonacion"
         922: 'num_res_condonacion',  # "NUMERO RESOLUCION SII AUTO. CONDONACION"
+        9906: None,  # "FECHA PRESENTACION DECL. PRIMITIVA"
     }
 
     def __post_init__(self) -> None:
