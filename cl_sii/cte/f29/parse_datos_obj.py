@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
-from typing import Mapping, MutableMapping
+from typing import Callable, Mapping, MutableMapping, Optional
 
 import jsonschema
 
@@ -22,27 +22,50 @@ _CTE_F29_DATOS_OBJ_SCHEMA_PATH = (
 CTE_F29_DATOS_OBJ_SCHEMA = read_json_schema(_CTE_F29_DATOS_OBJ_SCHEMA_PATH)
 
 
-def parse_sii_cte_f29_datos_obj(datos_obj: SiiCteF29DatosObjType) -> CteForm29:
+def parse_sii_cte_f29_datos_obj(
+    datos_obj: SiiCteF29DatosObjType,
+    validate_schema: Optional[Callable[[SiiCteF29DatosObjType], None]] = None,
+    deserialize_campo: Optional[Callable[[object, str], object]] = None,
+) -> CteForm29:
     """
     Parse the ``datos`` JavaScript object embedded in the IFrames of the
     HTML version of the CTE's 'Declaraciones de IVA (F29)'.
 
+    :param validate_schema: Schema validator. For the signature of the callable, see the docstring
+        of ``cte_f29_datos_schema_default_validator``.
+    :param deserialize_campo: 'Campo' deserializer. For the signature of the callable, see the
+        docstring of ``cte_f29_datos_obj_campo_default_deserializer``.
     :raises JsonSchemaValidationError: If schema validation fails.
     """
-    obj_params = _parse_sii_cte_f29_datos_obj_to_dict(datos_obj=datos_obj)
+    if validate_schema is None:
+        validate_schema = cte_f29_datos_schema_default_validator
+    if deserialize_campo is None:
+        deserialize_campo = cte_f29_datos_obj_campo_default_deserializer
+
+    obj_params = _parse_sii_cte_f29_datos_obj_to_dict(
+        datos_obj=datos_obj,
+        validate_schema=validate_schema,
+        deserialize_campo=deserialize_campo,
+    )
     obj = CteForm29(**obj_params)
     return obj
 
 
-def _parse_sii_cte_f29_datos_obj_to_dict(datos_obj: SiiCteF29DatosObjType) -> Mapping[str, object]:
+def _parse_sii_cte_f29_datos_obj_to_dict(
+    datos_obj: SiiCteF29DatosObjType,
+    validate_schema: Callable[[SiiCteF29DatosObjType], None],
+    deserialize_campo: Callable[[object, str], object],
+) -> Mapping[str, object]:
     """
     Parse the ``datos`` JavaScript object embedded in the IFrames of the
     HTML version of the CTE's 'Declaraciones de IVA (F29)' and return a
     dictionary.
 
+    :param validate_schema:
+    :param deserialize_campo:
     :raises JsonSchemaValidationError: If schema validation fails.
     """
-    _validate_cte_f29_datos_schema(datos_obj=datos_obj)
+    validate_schema(datos_obj)
 
     datos_obj_campos: Mapping[int, str] = {
         int(code): str(value) for code, value in datos_obj['campos'].items()
@@ -56,7 +79,7 @@ def _parse_sii_cte_f29_datos_obj_to_dict(datos_obj: SiiCteF29DatosObjType) -> Ma
     }
 
     deserialized_datos_obj_campos = {
-        code: _deserialize_cte_f29_datos_obj_campo(campo_value=value, tipo=datos_obj_tipos[code])
+        code: deserialize_campo(value, datos_obj_tipos[code])
         for code, value in datos_obj_campos.items()
     }
 
@@ -82,13 +105,14 @@ def _parse_sii_cte_f29_datos_obj_to_dict(datos_obj: SiiCteF29DatosObjType) -> Ma
     return obj_dict
 
 
-def _deserialize_cte_f29_datos_obj_campo(campo_value: object, tipo: str) -> object:
+def cte_f29_datos_obj_campo_default_deserializer(campo_value: object, tipo: str) -> object:
     """
     Convert raw values from the ``datos`` object to the corresponding Python
     data type.
 
     :param campo_value: Raw value from 'campos'.
     :param tipo: Data type code from 'tipos'.
+    :raises ValueError: If value conversion fails.
     """
     if not isinstance(campo_value, str):
         return campo_value
@@ -111,7 +135,26 @@ def _deserialize_cte_f29_datos_obj_campo(campo_value: object, tipo: str) -> obje
     return deserialized_value
 
 
-def _validate_cte_f29_datos_schema(datos_obj: SiiCteF29DatosObjType) -> None:
+def cte_f29_datos_obj_campo_best_effort_deserializer(campo_value: object, tipo: str) -> object:
+    """
+    Convert raw values from the ``datos`` object to the corresponding Python
+    data type. Values that cannot be converted will be returned without modification.
+
+    :param campo_value: Raw value from 'campos'.
+    :param tipo: Data type code from 'tipos'.
+    """
+    try:
+        deserialized_value = cte_f29_datos_obj_campo_default_deserializer(
+            campo_value=campo_value,
+            tipo=tipo,
+        )
+    except Exception:
+        deserialized_value = campo_value
+
+    return deserialized_value
+
+
+def cte_f29_datos_schema_default_validator(datos_obj: SiiCteF29DatosObjType) -> None:
     """
     Validate the ``datos`` object against the schema.
 
