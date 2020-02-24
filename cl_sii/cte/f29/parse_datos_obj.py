@@ -135,6 +135,25 @@ def cte_f29_datos_obj_campo_default_deserializer(campo_value: object, tipo: str)
     return deserialized_value
 
 
+def cte_f29_datos_obj_campo_best_effort_deserializer(campo_value: object, tipo: str) -> object:
+    """
+    Convert raw values from the ``datos`` object to the corresponding Python
+    data type. Values that cannot be converted will be returned without modification.
+
+    :param campo_value: Raw value from 'campos'.
+    :param tipo: Data type code from 'tipos'.
+    """
+    try:
+        deserialized_value = cte_f29_datos_obj_campo_default_deserializer(
+            campo_value=campo_value,
+            tipo=tipo,
+        )
+    except Exception:
+        deserialized_value = campo_value
+
+    return deserialized_value
+
+
 def cte_f29_datos_schema_default_validator(datos_obj: SiiCteF29DatosObjType) -> None:
     """
     Validate the ``datos`` object against the schema.
