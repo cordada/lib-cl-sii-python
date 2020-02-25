@@ -6,7 +6,7 @@
     "campos": {
       "type": "object",
       "patternProperties": {
-        "^\\d{3}$": {
+        "^\\d{3,4}$": {
           "type": "string"
         }
       },
@@ -108,7 +108,7 @@
     "glosa": {
       "type": "object",
       "patternProperties": {
-        "^\\d{3}$": {
+        "^\\d{3,4}$": {
           "type": "string"
         }
       },
@@ -117,7 +117,7 @@
     "justif": {
       "type": "object",
       "patternProperties": {
-        "^\\d{3}$": {
+        "^\\d{3,4}$": {
           "type": "string",
           "enum": [
             "I",
@@ -131,7 +131,7 @@
     "linea": {
       "type": "object",
       "patternProperties": {
-        "^\\d{3}$": {
+        "^\\d{3,4}$": {
           "type": "string",
           "pattern": "^\\d+$"
         }
@@ -141,7 +141,7 @@
     "tipos": {
       "type": "object",
       "patternProperties": {
-        "^\\d{3}$": {
+        "^\\d{3,4}$": {
           "type": "string",
           "enum": [
             "C",
