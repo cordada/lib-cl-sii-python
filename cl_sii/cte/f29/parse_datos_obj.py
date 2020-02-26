@@ -24,28 +24,28 @@ CTE_F29_DATOS_OBJ_SCHEMA = read_json_schema(_CTE_F29_DATOS_OBJ_SCHEMA_PATH)
 
 def parse_sii_cte_f29_datos_obj(
     datos_obj: SiiCteF29DatosObjType,
-    validate_schema: Optional[Callable[[SiiCteF29DatosObjType], None]] = None,
-    deserialize_campo: Optional[Callable[[object, str], object]] = None,
+    schema_validator: Optional[Callable[[SiiCteF29DatosObjType], None]] = None,
+    campo_deserializer: Optional[Callable[[object, str], object]] = None,
 ) -> CteForm29:
     """
     Parse the ``datos`` JavaScript object embedded in the IFrames of the
     HTML version of the CTE's 'Declaraciones de IVA (F29)'.
 
-    :param validate_schema: Schema validator. For the signature of the callable, see the docstring
+    :param schema_validator: Schema validator. For the signature of the callable, see the docstring
         of ``cte_f29_datos_schema_default_validator``.
-    :param deserialize_campo: 'Campo' deserializer. For the signature of the callable, see the
+    :param campo_deserializer: 'Campo' deserializer. For the signature of the callable, see the
         docstring of ``cte_f29_datos_obj_campo_default_deserializer``.
     :raises JsonSchemaValidationError: If schema validation fails.
     """
-    if validate_schema is None:
-        validate_schema = cte_f29_datos_schema_default_validator
-    if deserialize_campo is None:
-        deserialize_campo = cte_f29_datos_obj_campo_default_deserializer
+    if schema_validator is None:
+        schema_validator = cte_f29_datos_schema_default_validator
+    if campo_deserializer is None:
+        campo_deserializer = cte_f29_datos_obj_campo_default_deserializer
 
     obj_params = _parse_sii_cte_f29_datos_obj_to_dict(
         datos_obj=datos_obj,
-        validate_schema=validate_schema,
-        deserialize_campo=deserialize_campo,
+        schema_validator=schema_validator,
+        campo_deserializer=campo_deserializer,
     )
     obj = CteForm29(**obj_params)
     return obj
@@ -53,19 +53,19 @@ def parse_sii_cte_f29_datos_obj(
 
 def _parse_sii_cte_f29_datos_obj_to_dict(
     datos_obj: SiiCteF29DatosObjType,
-    validate_schema: Callable[[SiiCteF29DatosObjType], None],
-    deserialize_campo: Callable[[object, str], object],
+    schema_validator: Callable[[SiiCteF29DatosObjType], None],
+    campo_deserializer: Callable[[object, str], object],
 ) -> Mapping[str, object]:
     """
     Parse the ``datos`` JavaScript object embedded in the IFrames of the
     HTML version of the CTE's 'Declaraciones de IVA (F29)' and return a
     dictionary.
 
-    :param validate_schema:
-    :param deserialize_campo:
+    :param schema_validator:
+    :param campo_deserializer:
     :raises JsonSchemaValidationError: If schema validation fails.
     """
-    validate_schema(datos_obj)
+    schema_validator(datos_obj)
 
     datos_obj_campos: Mapping[int, str] = {
         int(code): str(value) for code, value in datos_obj['campos'].items()
@@ -79,7 +79,7 @@ def _parse_sii_cte_f29_datos_obj_to_dict(
     }
 
     deserialized_datos_obj_campos = {
-        code: deserialize_campo(value, datos_obj_tipos[code])
+        code: campo_deserializer(value, datos_obj_tipos[code])
         for code, value in datos_obj_campos.items()
     }
 
