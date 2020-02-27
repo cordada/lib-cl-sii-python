@@ -122,7 +122,7 @@ class FunctionsTest(TestCase):
         )
         obj = parse_datos_obj.parse_sii_cte_f29_datos_obj(
             datos_obj=datos_obj,
-            deserialize_campo=parse_datos_obj.cte_f29_datos_obj_campo_best_effort_deserializer,
+            campo_deserializer=parse_datos_obj.cte_f29_datos_obj_campo_best_effort_deserializer,
         )
 
         self.assertIsInstance(obj, data_models.CteForm29)
