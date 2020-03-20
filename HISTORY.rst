@@ -3,6 +3,18 @@
 History
 -------
 
+0.9.1 (2020-03-20)
++++++++++++++++++++++++
+
+* Fix incorrect version used in the previous release's changelog.
+
+0.9.0 (2020-03-20)
++++++++++++++++++++++++
+
+* (PR #104, 2020-02-27) cte.f29.parser: Rename custom validator and deserializer parameters
+* (PR #97, 2020-02-25) cte: Allow four digit Form 29 codes
+* (PR #103, 2020-02-24) cte: Add custom validators and deserializers to parser
+
 0.8.4 (2020-02-06)
 +++++++++++++++++++++++
 
