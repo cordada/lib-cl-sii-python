@@ -3,7 +3,12 @@
 History
 -------
 
-0.8.5 (2020-03-20)
+0.9.1 (2020-03-20)
++++++++++++++++++++++++
+
+* Fix incorrect version used in the previous release's changelog.
+
+0.9.0 (2020-03-20)
 +++++++++++++++++++++++
 
 * (PR #104, 2020-02-27) cte.f29.parser: Rename custom validator and deserializer parameters
