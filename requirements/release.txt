@@ -21,9 +21,11 @@ wheel==0.34.2
 #       - pkginfo
 #       - readme-renderer:
 #           - bleach
+#               - six
 #               - webencodings
 #           - docutils
 #           - Pygments
+#           - six
 #       - requests:
 #           - certifi
 #           - chardet
@@ -40,14 +42,15 @@ wheel==0.34.2
 # idna
 importlib-metadata==0.23
 # jeepney
-keyring==21.1.0
+keyring==21.2.0
 pkginfo==1.5.0.1
 # Pygments
-readme-renderer==24.0
-requests==2.22.0
+readme-renderer==25.0
+requests==2.23.0
 requests-toolbelt==0.9.1
 # SecretStorage
-tqdm==4.42.0
+# six
+tqdm==4.45.0
 # urllib3
 # webencodings
 # zipp

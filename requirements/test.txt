@@ -35,15 +35,19 @@ tox==3.13.1
 #       - py
 #       - toml
 #       - virtualenv
+#           - appdirs
+#           - distlib
+# appdirs
 # certifi
 # chardet
+# distlib
 entrypoints==0.3
 filelock==3.0.12
 # idna
 importlib-metadata==0.23
 mccabe==0.6.1
 mypy-extensions==0.4.3
-packaging==20.1
+packaging==20.3
 pluggy==0.13.1
 py==1.8.1
 pycodestyle==2.5.0
@@ -53,5 +57,5 @@ pyflakes==2.1.1
 toml==0.10.0
 typed-ast==1.4.1
 # urllib3
-virtualenv==16.7.9
+virtualenv==20.0.16
 # zipp
