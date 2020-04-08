@@ -22,14 +22,7 @@ def create_csv_dict_reader(
     :return: a CSV DictReader
 
     """
-    # note: mypy wrongly complains: it does not accept 'fieldnames' to be None but that value
-    #   is completely acceptable, and it even is the default!
-    #   > error: Argument "fieldnames" to "DictReader" has incompatible type "None"; expected
-    #   > "Sequence[str]"
-    # note: mypy wrongly complains:
-    #   > Argument "dialect" to "DictReader" has incompatible type "Type[Dialect]";
-    #   > expected "Union[str, Dialect]"
-    csv_reader = csv.DictReader(  # type: ignore
+    csv_reader = csv.DictReader(
         text_stream,
         fieldnames=None,  # the values of the first row will be used as the fieldnames
         restkey=row_dict_extra_fields_key,
@@ -38,6 +31,10 @@ def create_csv_dict_reader(
 
     if expected_fields_strict:
         if expected_field_names:
+            if csv_reader.fieldnames is None:
+                raise Exception(
+                    "Programming error: when a 'csv.DictReader' instance is created with"
+                    "'fieldnames=None', the attribute will be set to the values of the first row.")
             if tuple(csv_reader.fieldnames) != expected_field_names:
                 raise ValueError(
                     "CSV file field names do not match those expected, or their order.",
