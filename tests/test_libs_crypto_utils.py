@@ -81,11 +81,6 @@ class LoadPemX509CertTest(unittest.TestCase):
 
         self.assertEqual(len(x509_cert.issuer.rdns), 3)
         self.assertEqual(
-            x509_cert.issuer.rfc4514_string(),
-            'C=US,'
-            'O=Google Trust Services,'
-            'CN=Google Internet Authority G3')
-        self.assertEqual(
             x509_cert.issuer.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
             'US')
         self.assertEqual(
@@ -100,13 +95,6 @@ class LoadPemX509CertTest(unittest.TestCase):
         #######################################################################
 
         self.assertEqual(len(x509_cert.subject.rdns), 5)
-        self.assertEqual(
-            x509_cert.subject.rfc4514_string(),
-            'C=US,'
-            'ST=California,'
-            'L=Mountain View,'
-            'O=Google LLC,'
-            'CN=*.google.com')
         self.assertEqual(
             x509_cert.subject.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
             'US')
@@ -258,15 +246,6 @@ class LoadPemX509CertTest(unittest.TestCase):
 
         self.assertEqual(len(x509_cert.issuer.rdns), 7)
         self.assertEqual(
-            x509_cert.issuer.rfc4514_string(),
-            'C=CL,ST=Region Metropolitana,'
-            'L=Santiago,'
-            'O=E-CERTCHILE,'
-            'OU=Autoridad Certificadora,'
-            'CN=E-CERTCHILE CA FIRMA ELECTRONICA SIMPLE,'
-            '1.2.840.113549.1.9.1=sclientes@e-certchile.cl')
-
-        self.assertEqual(
             x509_cert.issuer.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
             'CL')
         self.assertEqual(
@@ -293,15 +272,6 @@ class LoadPemX509CertTest(unittest.TestCase):
         #######################################################################
 
         self.assertEqual(len(x509_cert.subject.rdns), 7)
-        self.assertEqual(
-            x509_cert.subject.rfc4514_string(),
-            'C=CL,'
-            'ST=VALPARAISO\\ ,'
-            'L=Quillota,'
-            'O=Servicios Bonilla y Lopez y Cia. Ltda.,'
-            'OU=Ingeniería y Construcción,'
-            'CN=Ramon humberto Lopez  Jara,'
-            '1.2.840.113549.1.9.1=enaconltda@gmail.com')
         self.assertEqual(
             x509_cert.subject.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
             'CL')
@@ -483,14 +453,6 @@ class LoadPemX509CertTest(unittest.TestCase):
 
         self.assertEqual(len(x509_cert.issuer.rdns), 5)
         self.assertEqual(
-            x509_cert.issuer.rfc4514_string(),
-            'C=CL,'
-            'O=E-Sign S.A.,'
-            'OU=Terms of use at www.esign-la.com/acuerdoterceros,'
-            'CN=E-Sign Class 2 Firma Tributaria CA,'
-            '1.2.840.113549.1.9.1=e-sign@esign-la.com')
-
-        self.assertEqual(
             x509_cert.issuer.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
             'CL')
         self.assertEqual(
@@ -511,13 +473,6 @@ class LoadPemX509CertTest(unittest.TestCase):
         #######################################################################
 
         self.assertEqual(len(x509_cert.subject.rdns), 5)
-        self.assertEqual(
-            x509_cert.subject.rfc4514_string(),
-            'C=CL,'
-            'O=E-Sign S.A.,'
-            'OU=Terms of use at www.esign-la.com/acuerdoterceros,'
-            'CN=Jorge Enrique Cabello Ortiz,'
-            '1.2.840.113549.1.9.1=jcabello@nic.cl')
         self.assertEqual(
             x509_cert.subject.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
             'CL')
@@ -684,14 +639,6 @@ class LoadPemX509CertTest(unittest.TestCase):
 
         self.assertEqual(len(x509_cert.issuer.rdns), 6)
         self.assertEqual(
-            x509_cert.issuer.rfc4514_string(),
-            'ST=Region Metropolitana,'
-            'L=Santiago,'
-            'CN=E-Certchile CA Intermedia,'
-            'OU=Empresa Nacional de Certificacion Electronica,'
-            'O=E-CERTCHILE,'
-            'C=CL')
-        self.assertEqual(
             x509_cert.issuer.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
             'CL')
         self.assertEqual(
@@ -715,15 +662,6 @@ class LoadPemX509CertTest(unittest.TestCase):
         #######################################################################
 
         self.assertEqual(len(x509_cert.subject.rdns), 7)
-        self.assertEqual(
-            x509_cert.subject.rfc4514_string(),
-            'ST=Region Metropolitana,'
-            'OU=Servicio de Impuestos Internos,'
-            'O=Servicio de Impuestos Internos,'
-            'L=Santiago,'
-            '1.2.840.113549.1.9.1=wgonzalez@sii.cl,'
-            'CN=Wilibaldo Gonzalez Cabrera,'
-            'C=CL')
         self.assertEqual(
             x509_cert.subject.get_attributes_for_oid(oid.NameOID.COUNTRY_NAME)[0].value,
             'CL')
