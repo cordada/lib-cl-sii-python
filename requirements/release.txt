@@ -40,7 +40,7 @@ wheel==0.34.2
 # cryptography
 # docutils
 # idna
-importlib-metadata==0.23
+importlib-metadata==1.6.0
 # jeepney
 keyring==21.2.0
 pkginfo==1.5.0.1
