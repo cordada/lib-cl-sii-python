@@ -344,12 +344,12 @@ class DteDataL2(DteDataL1):
     # fields
     ###########################################################################
 
-    emisor_razon_social: str = dc_field()
+    emisor_razon_social: Optional[str] = dc_field()
     """
     "Razón social" (legal name) of the "emisor" of the DTE.
     """
 
-    receptor_razon_social: str = dc_field()
+    receptor_razon_social: Optional[str] = dc_field()
     """
     "Razón social" (legal name) of the "receptor" of the DTE.
     """
@@ -402,13 +402,15 @@ class DteDataL2(DteDataL1):
         """
         super().__post_init__()
 
-        if not isinstance(self.emisor_razon_social, str):
-            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
-        validate_contribuyente_razon_social(self.emisor_razon_social)
+        if self.emisor_razon_social is not None:
+            if not isinstance(self.emisor_razon_social, str):
+                raise TypeError("Inappropriate type of 'emisor_razon_social'.")
+            validate_contribuyente_razon_social(self.emisor_razon_social)
 
-        if not isinstance(self.receptor_razon_social, str):
-            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
-        validate_contribuyente_razon_social(self.receptor_razon_social)
+        if self.receptor_razon_social is not None:
+            if not isinstance(self.receptor_razon_social, str):
+                raise TypeError("Inappropriate type of 'receptor_razon_social'.")
+            validate_contribuyente_razon_social(self.receptor_razon_social)
 
         if self.fecha_vencimiento_date is not None:
             if not isinstance(self.fecha_vencimiento_date, date):
