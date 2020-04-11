@@ -508,6 +508,52 @@ class DteXmlDataTest(unittest.TestCase):
             )
         )
 
+    def test_as_dte_data_l2(self) -> None:
+        self.assertEqual(
+            self.dte_xml_data_1.as_dte_data_l2(),
+            DteDataL2(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=170,
+                fecha_emision_date=date(2019, 4, 1),
+                receptor_rut=Rut('96790240-3'),
+                monto_total=2996301,
+                emisor_razon_social='INGENIERIA ENACON SPA',
+                receptor_razon_social='MINERA LOS PELAMBRES',
+                fecha_vencimiento_date=None,
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 4, 1, 1, 36, 40),
+                    tz=DteXmlData.DATETIME_FIELDS_TZ),
+                signature_value=self.dte_1_xml_signature_value,
+                signature_x509_cert_der=self.dte_1_xml_cert_der,
+                emisor_giro='Ingenieria y Construccion',
+                emisor_email='hello@example.com',
+                receptor_email=None,
+            )
+        )
+        self.assertEqual(
+            self.dte_xml_data_2.as_dte_data_l2(),
+            DteDataL2(
+                emisor_rut=Rut('60910000-1'),
+                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=2336600,
+                fecha_emision_date=date(2019, 8, 8),
+                receptor_rut=Rut('76555835-2'),
+                monto_total=10642,
+                emisor_razon_social='Universidad de Chile',
+                receptor_razon_social='FYNPAL SPA',
+                fecha_vencimiento_date=date(2019, 8, 8),
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 8, 9, 9, 41, 9),
+                    tz=DteXmlData.DATETIME_FIELDS_TZ),
+                signature_value=self.dte_2_xml_signature_value,
+                signature_x509_cert_der=self.dte_2_xml_cert_der,
+                emisor_giro='Corporación Educacional y Servicios                 Profesionales',
+                emisor_email=None,
+                receptor_email=None,
+            )
+        )
+
 
 class FunctionsTest(unittest.TestCase):
 

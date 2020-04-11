@@ -608,3 +608,22 @@ class DteXmlData(DteDataL1):
             fecha_emision_date=self.fecha_emision_date,
             receptor_rut=self.receptor_rut,
             monto_total=self.monto_total)
+
+    def as_dte_data_l2(self) -> DteDataL2:
+        return DteDataL2(
+            emisor_rut=self.emisor_rut,
+            tipo_dte=self.tipo_dte,
+            folio=self.folio,
+            fecha_emision_date=self.fecha_emision_date,
+            receptor_rut=self.receptor_rut,
+            monto_total=self.monto_total,
+            emisor_razon_social=self.emisor_razon_social,
+            receptor_razon_social=self.receptor_razon_social,
+            fecha_vencimiento_date=self.fecha_vencimiento_date,
+            firma_documento_dt=self.firma_documento_dt,
+            signature_value=self.signature_value,
+            signature_x509_cert_der=self.signature_x509_cert_der,
+            emisor_giro=self.emisor_giro,
+            emisor_email=self.emisor_email,
+            receptor_email=self.receptor_email,
+        )
