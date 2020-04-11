@@ -14,7 +14,7 @@ Usage:
 >>> parse.clean_dte_xml(xml_doc)
 True
 >>> parse.validate_dte_xml(xml_doc)
->>> dte_struct = parse.parse_dte_xml(xml_doc)
+>>> dte_xml_data = parse.parse_dte_xml(xml_doc)
 
 """
 import io
@@ -114,8 +114,7 @@ def validate_dte_xml(xml_doc: XmlElement) -> None:
     xml_utils.validate_xml_doc(DTE_XML_SCHEMA_OBJ, xml_doc)
 
 
-# TODO: rename to 'parse_dte_xml_data'
-def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
+def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
     """
     Parse data from a DTE XML doc.
 
@@ -128,7 +127,6 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
     :raises NotImplementedError:
 
     """
-    # TODO: change response type to a dataclass like 'DteXmlData'.
     # TODO: separate the XML parsing stage from the deserialization stage, which could be
     #   performed by XML-agnostic code (perhaps using Marshmallow or data clacases?).
     #   See :class:`cl_sii.rcv.parse_csv.RcvVentaCsvRowSchema`.
@@ -455,14 +453,14 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteDataL2:
 
     tmst_firma_value = tz_utils.convert_naive_dt_to_tz_aware(
         dt=datetime.fromisoformat(_text_strip_or_raise(tmst_firma_em)),
-        tz=data_models.DteDataL2.DATETIME_FIELDS_TZ)
+        tz=data_models.DteXmlData.DATETIME_FIELDS_TZ)
 
     signature_signature_value = encoding_utils.decode_base64_strict(
         _text_strip_or_raise(signature_signature_value_em))
     signature_key_info_x509_cert_der = encoding_utils.decode_base64_strict(
         _text_strip_or_raise(signature_key_info_x509_cert_em))
 
-    return data_models.DteDataL2(
+    return data_models.DteXmlData(
         emisor_rut=emisor_rut_value,
         tipo_dte=tipo_dte_value,
         folio=folio_value,
