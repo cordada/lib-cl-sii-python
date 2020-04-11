@@ -18,7 +18,7 @@ In the domain of a DTE, a:
 import dataclasses
 from dataclasses import field as dc_field
 from datetime import date, datetime
-from typing import Mapping, Optional, Union
+from typing import Mapping, Optional
 
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
@@ -505,7 +505,7 @@ class DteXmlData(DteDataL1):
     "Razón social" (legal name) of the "receptor" of the DTE.
     """
 
-    fecha_vencimiento_date: Union[date, None]
+    fecha_vencimiento_date: Optional[date]
     """
     "Fecha de vencimiento (pago)" of the DTE.
     """
@@ -534,12 +534,12 @@ class DteXmlData(DteDataL1):
     "Giro" of the "emisor" of the DTE.
     """
 
-    emisor_email: Union[str, None]
+    emisor_email: Optional[str]
     """
     Email address of the "emisor" of the DTE.
     """
 
-    receptor_email: Union[str, None]
+    receptor_email: Optional[str]
     """
     Email address of the "receptor" of the DTE.
     """
