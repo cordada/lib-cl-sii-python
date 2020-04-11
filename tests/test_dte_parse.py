@@ -456,9 +456,9 @@ class FunctionParseDteXmlTest(unittest.TestCase):
     def test_parse_dte_xml_ok_1(self) -> None:
         xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_1_xml_bytes)
 
-        parsed_dte = parse_dte_xml(xml_doc)
+        dte_xml_data = parse_dte_xml(xml_doc)
         self.assertDictEqual(
-            dict(parsed_dte.as_dict()),
+            dict(dte_xml_data.as_dict()),
             dict(
                 emisor_rut=Rut('76354771-K'),
                 tipo_dte=cl_sii.dte.constants.TipoDteEnum.FACTURA_ELECTRONICA,
@@ -482,9 +482,9 @@ class FunctionParseDteXmlTest(unittest.TestCase):
     def test_parse_dte_xml_ok_3(self) -> None:
         xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_3_xml_bytes)
 
-        parsed_dte = parse_dte_xml(xml_doc)
+        dte_xml_data = parse_dte_xml(xml_doc)
         self.assertDictEqual(
-            dict(parsed_dte.as_dict()),
+            dict(dte_xml_data.as_dict()),
             dict(
                 emisor_rut=Rut('60910000-1'),
                 tipo_dte=cl_sii.dte.constants.TipoDteEnum.FACTURA_ELECTRONICA,
@@ -508,9 +508,9 @@ class FunctionParseDteXmlTest(unittest.TestCase):
     def test_parse_dte_xml_ok_1b(self) -> None:
         xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_1b_xml_bytes)
 
-        parsed_dte = parse_dte_xml(xml_doc)
+        dte_xml_data = parse_dte_xml(xml_doc)
         self.assertDictEqual(
-            dict(parsed_dte.as_dict()),
+            dict(dte_xml_data.as_dict()),
             dict(
                 emisor_rut=Rut('76354771-K'),
                 tipo_dte=cl_sii.dte.constants.TipoDteEnum.FACTURA_ELECTRONICA,
@@ -534,9 +534,9 @@ class FunctionParseDteXmlTest(unittest.TestCase):
     def test_parse_dte_xml_ok_2(self) -> None:
         xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_2_xml_bytes)
 
-        parsed_dte = parse_dte_xml(xml_doc)
+        dte_xml_data = parse_dte_xml(xml_doc)
         self.assertDictEqual(
-            dict(parsed_dte.as_dict()),
+            dict(dte_xml_data.as_dict()),
             dict(
                 emisor_rut=Rut('76399752-9'),
                 tipo_dte=cl_sii.dte.constants.TipoDteEnum.FACTURA_ELECTRONICA,
