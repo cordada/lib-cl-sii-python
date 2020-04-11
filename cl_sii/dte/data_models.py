@@ -520,7 +520,7 @@ class DteXmlData(DteDataL1):
     DTE's digital signature's value (raw bytes, without base64 encoding).
     """
 
-    signature_x509_cert_der: bytes
+    signature_x509_cert_der: Optional[bytes]
     """
     DTE's digital signature's DER-encoded X.509 cert.
 
@@ -575,11 +575,12 @@ class DteXmlData(DteDataL1):
         #   which in this case it is not.
         validate_non_empty_bytes(self.signature_value)
 
-        if not isinstance(self.signature_x509_cert_der, bytes):
-            raise TypeError("Inappropriate type of 'signature_x509_cert_der'.")
-        # warning: do NOT strip a bytes value because "strip" implies an ASCII-encoded text,
-        #   which in this case it is not.
-        validate_non_empty_bytes(self.signature_x509_cert_der)
+        if self.signature_x509_cert_der is not None:
+            if not isinstance(self.signature_x509_cert_der, bytes):
+                raise TypeError("Inappropriate type of 'signature_x509_cert_der'.")
+            # warning: do NOT strip a bytes value because "strip" implies an ASCII-encoded text,
+            #   which in this case it is not.
+            validate_non_empty_bytes(self.signature_x509_cert_der)
 
         if not isinstance(self.emisor_giro, str):
             raise TypeError("Inappropriate type of 'emisor_giro'.")
