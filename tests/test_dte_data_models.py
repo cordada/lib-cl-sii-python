@@ -224,6 +224,34 @@ class DteDataL2Test(unittest.TestCase):
         # TODO: implement for 'DteDataL2()'
         pass
 
+    def test_init_fail_razon_social_empty(self) -> None:
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                self.dte_l2_1,
+                emisor_razon_social='',
+            )
+        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                self.dte_l2_1,
+                receptor_razon_social='',
+            )
+        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
+
+    def test_init_fail_razon_social_none(self) -> None:
+        with self.assertRaises(TypeError) as cm:
+            dataclasses.replace(
+                self.dte_l2_1,
+                emisor_razon_social=None,
+            )
+        self.assertEqual(cm.exception.args, ("Inappropriate type of 'emisor_razon_social'.", ))
+        with self.assertRaises(TypeError) as cm:
+            dataclasses.replace(
+                self.dte_l2_1,
+                receptor_razon_social=None,
+            )
+        self.assertEqual(cm.exception.args, ("Inappropriate type of 'receptor_razon_social'.", ))
+
     def test_init_fail_regression_signature_value_bytes_with_x20(self) -> None:
         bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
         bytes_value_with_x20 = b'\x20\xdd\xa9\x900q\xa89\xc6\x97\x83\xdf\xbd\xba"'
@@ -399,6 +427,34 @@ class DteXmlDataTest(unittest.TestCase):
     def test_init_fail(self) -> None:
         # TODO: implement for 'DteXmlData()'
         pass
+
+    def test_init_fail_razon_social_empty(self) -> None:
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                emisor_razon_social='',
+            )
+        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                receptor_razon_social='',
+            )
+        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
+
+    def test_init_fail_razon_social_none(self) -> None:
+        with self.assertRaises(TypeError) as cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                emisor_razon_social=None,
+            )
+        self.assertEqual(cm.exception.args, ("Inappropriate type of 'emisor_razon_social'.", ))
+        with self.assertRaises(TypeError) as cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                receptor_razon_social=None,
+            )
+        self.assertEqual(cm.exception.args, ("Inappropriate type of 'receptor_razon_social'.", ))
 
     def test_init_fail_regression_signature_value_bytes_with_x20(self) -> None:
         bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
