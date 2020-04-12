@@ -114,7 +114,6 @@ def validate_dte_xml(xml_doc: XmlElement) -> None:
     xml_utils.validate_xml_doc(DTE_XML_SCHEMA_OBJ, xml_doc)
 
 
-# TODO: rename to 'parse_dte_xml_data'
 def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
     """
     Parse data from a DTE XML doc.
@@ -128,7 +127,6 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
     :raises NotImplementedError:
 
     """
-    # TODO: change response type to a dataclass like 'DteXmlData'.
     # TODO: separate the XML parsing stage from the deserialization stage, which could be
     #   performed by XML-agnostic code (perhaps using Marshmallow or data clacases?).
     #   See :class:`cl_sii.rcv.parse_csv.RcvVentaCsvRowSchema`.

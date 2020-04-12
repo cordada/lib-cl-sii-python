@@ -188,14 +188,8 @@ class RcvDetalleEntry:
         try:
             tipo_dte = self.tipo_docto.as_tipo_dte()
 
-            # note: mypy is unable to figure out that a subclass of 'RcvDetalleEntry' could have
-            #   these attributes that we check just before accessing each one.
-            emisor_razon_social = None
-            if hasattr(self, 'emisor_razon_social'):
-                emisor_razon_social = self.emisor_razon_social  # type: ignore
-            receptor_razon_social = None
-            if hasattr(self, 'receptor_razon_social'):
-                receptor_razon_social = self.receptor_razon_social  # type: ignore
+            emisor_razon_social = getattr(self, 'emisor_razon_social', None)
+            receptor_razon_social = getattr(self, 'receptor_razon_social', None)
 
             dte_data = cl_sii.dte.data_models.DteDataL2(
                 emisor_rut=self.emisor_rut,
