@@ -238,19 +238,12 @@ class DteDataL2Test(unittest.TestCase):
             )
         self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
 
-    def test_init_fail_razon_social_none(self) -> None:
-        with self.assertRaises(TypeError) as cm:
-            dataclasses.replace(
-                self.dte_l2_1,
-                emisor_razon_social=None,
-            )
-        self.assertEqual(cm.exception.args, ("Inappropriate type of 'emisor_razon_social'.", ))
-        with self.assertRaises(TypeError) as cm:
-            dataclasses.replace(
-                self.dte_l2_1,
-                receptor_razon_social=None,
-            )
-        self.assertEqual(cm.exception.args, ("Inappropriate type of 'receptor_razon_social'.", ))
+    def test_init_ok_razon_social_none(self) -> None:
+        _ = dataclasses.replace(
+            self.dte_l2_1,
+            emisor_razon_social=None,
+            receptor_razon_social=None,
+        )
 
     def test_init_fail_regression_signature_value_bytes_with_x20(self) -> None:
         bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
