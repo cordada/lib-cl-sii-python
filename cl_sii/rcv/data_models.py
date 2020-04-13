@@ -131,15 +131,6 @@ class RcvDetalleEntry:
     Total amount of the "documento".
     """
 
-    emisor_razon_social: str = dc_field()
-    """
-    "Razón social" (legal name) of the "emisor" of the "documento".
-    """
-
-    # TODO: docstring
-    # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
-    receptor_razon_social: str = dc_field()
-
     # TODO: docstring
     # note: must be timezone-aware.
     fecha_recepcion_dt: datetime = dc_field()
@@ -181,14 +172,6 @@ class RcvDetalleEntry:
         if not isinstance(self.monto_total, int):
             raise TypeError("Inappropriate type of 'monto_total'.")
 
-        if not isinstance(self.emisor_razon_social, str):
-            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
-
-        if not isinstance(self.receptor_razon_social, str):
-            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
-
         if not isinstance(self.fecha_recepcion_dt, datetime):
             raise TypeError("Inappropriate type of 'fecha_recepcion_dt'.")
         tz_utils.validate_dt_tz(self.fecha_recepcion_dt, SII_OFFICIAL_TZ)
@@ -205,6 +188,9 @@ class RcvDetalleEntry:
         try:
             tipo_dte = self.tipo_docto.as_tipo_dte()
 
+            emisor_razon_social = getattr(self, 'emisor_razon_social', None)
+            receptor_razon_social = getattr(self, 'receptor_razon_social', None)
+
             dte_data = cl_sii.dte.data_models.DteDataL2(
                 emisor_rut=self.emisor_rut,
                 tipo_dte=tipo_dte,
@@ -212,8 +198,8 @@ class RcvDetalleEntry:
                 fecha_emision_date=self.fecha_emision_date,
                 receptor_rut=self.receptor_rut,
                 monto_total=self.monto_total,
-                emisor_razon_social=self.emisor_razon_social,
-                receptor_razon_social=self.receptor_razon_social,
+                emisor_razon_social=emisor_razon_social,
+                receptor_razon_social=receptor_razon_social,
                 # fecha_vencimiento_date='',
                 # firma_documento_dt='',
                 # signature_value='',
@@ -238,6 +224,15 @@ class RvDetalleEntry(RcvDetalleEntry):
     RCV_KIND = RcvKind.VENTAS
     RC_ESTADO_CONTABLE = None
 
+    emisor_razon_social: str = dc_field()
+    """
+    "Razón social" (legal name) of the "emisor" of the "documento".
+    """
+
+    # TODO: docstring
+    # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
+    receptor_razon_social: str = dc_field()
+
     # TODO: docstring
     # note: must be timezone-aware.
     fecha_acuse_dt: Optional[datetime] = dc_field()
@@ -248,6 +243,14 @@ class RvDetalleEntry(RcvDetalleEntry):
 
     def __post_init__(self) -> None:
         super().__post_init__()
+
+        if not isinstance(self.emisor_razon_social, str):
+            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
+        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+
+        if not isinstance(self.receptor_razon_social, str):
+            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
+        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
 
         if self.fecha_acuse_dt is not None:
             if not isinstance(self.fecha_acuse_dt, datetime):
@@ -270,12 +273,29 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
     RCV_KIND = RcvKind.COMPRAS
     RC_ESTADO_CONTABLE = RcEstadoContable.REGISTRO
 
+    emisor_razon_social: str = dc_field()
+    """
+    "Razón social" (legal name) of the "emisor" of the "documento".
+    """
+
+    # TODO: docstring
+    # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
+    receptor_razon_social: str = dc_field()
+
     # TODO: docstring
     # note: must be timezone-aware.
     fecha_acuse_dt: Optional[datetime] = dc_field()
 
     def __post_init__(self) -> None:
         super().__post_init__()
+
+        if not isinstance(self.emisor_razon_social, str):
+            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
+        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+
+        if not isinstance(self.receptor_razon_social, str):
+            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
+        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
 
         if self.fecha_acuse_dt is not None:
             if not isinstance(self.fecha_acuse_dt, datetime):
@@ -304,12 +324,29 @@ class RcReclamadoDetalleEntry(RcvDetalleEntry):
     RCV_KIND = RcvKind.COMPRAS
     RC_ESTADO_CONTABLE = RcEstadoContable.RECLAMADO
 
+    emisor_razon_social: str = dc_field()
+    """
+    "Razón social" (legal name) of the "emisor" of the "documento".
+    """
+
+    # TODO: docstring
+    # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
+    receptor_razon_social: str = dc_field()
+
     # TODO: docstring
     # note: must be timezone-aware.
     fecha_reclamo_dt: Optional[datetime] = dc_field()
 
     def __post_init__(self) -> None:
         super().__post_init__()
+
+        if not isinstance(self.emisor_razon_social, str):
+            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
+        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+
+        if not isinstance(self.receptor_razon_social, str):
+            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
+        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
 
         if self.fecha_reclamo_dt is not None:
             if not isinstance(self.fecha_reclamo_dt, datetime):
@@ -326,3 +363,23 @@ class RcPendienteDetalleEntry(RcvDetalleEntry):
 
     RCV_KIND = RcvKind.COMPRAS
     RC_ESTADO_CONTABLE = RcEstadoContable.PENDIENTE
+
+    emisor_razon_social: str = dc_field()
+    """
+    "Razón social" (legal name) of the "emisor" of the "documento".
+    """
+
+    # TODO: docstring
+    # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
+    receptor_razon_social: str = dc_field()
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        if not isinstance(self.emisor_razon_social, str):
+            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
+        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+
+        if not isinstance(self.receptor_razon_social, str):
+            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
+        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)

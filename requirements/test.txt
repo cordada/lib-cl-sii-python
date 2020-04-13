@@ -3,11 +3,11 @@
 -r extras.txt
 
 # Required packages:
-codecov==2.0.15
+codecov==2.0.22
 coverage==4.5.3
-flake8==3.7.7
-mypy==0.711
-tox==3.13.1
+flake8==3.7.9
+mypy==0.770
+tox==3.14.6
 
 # Packages dependencies:
 #   - codecov:
@@ -25,6 +25,7 @@ tox==3.13.1
 #   - mypy:
 #       - mypy-extensions
 #       - typed-ast
+#       - typing-extensions
 #   - tox:
 #       - filelock
 #       - importlib-metadata
@@ -33,25 +34,35 @@ tox==3.13.1
 #           - pyparsing
 #       - pluggy
 #       - py
+#       - six
 #       - toml
 #       - virtualenv
+#           - appdirs
+#           - distlib
+#           - filelock
+#           - importlib-metadata
+#           - six
+# appdirs
 # certifi
 # chardet
+# distlib
 entrypoints==0.3
 filelock==3.0.12
 # idna
-importlib-metadata==0.23
+importlib-metadata==1.6.0
 mccabe==0.6.1
 mypy-extensions==0.4.3
-packaging==20.1
+packaging==20.3
 pluggy==0.13.1
 py==1.8.1
 pycodestyle==2.5.0
 pyflakes==2.1.1
 # pyparsing
 # requests
+# six
 toml==0.10.0
 typed-ast==1.4.1
+typing-extensions==3.7.4.2
 # urllib3
-virtualenv==16.7.9
+virtualenv==20.0.16
 # zipp
