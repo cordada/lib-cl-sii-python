@@ -324,6 +324,9 @@ class DteDataL2(DteDataL1):
     """
     DTE data level 2.
 
+    Very similar to :class:`DteXmlData` (and a lot of duplicated code,
+    unfortunately).
+
     About fields
     - ``emisor_razon_social``: redundant but required by the DTE XML schema.
     - ``receptor_razon_social``: redundant but required by the DTE XML schema.
@@ -459,3 +462,168 @@ class DteDataL2(DteDataL1):
             fecha_emision_date=self.fecha_emision_date,
             receptor_rut=self.receptor_rut,
             monto_total=self.monto_total)
+
+
+@dataclasses.dataclass(frozen=True)
+class DteXmlData(DteDataL1):
+
+    """
+    DTE XML data.
+
+    Very similar to :class:`DteDataL2` (and a lot of duplicated code,
+    unfortunately).
+
+    About fields
+    - ``emisor_razon_social``: redundant but required by the DTE XML schema.
+    - ``receptor_razon_social``: redundant but required by the DTE XML schema.
+    - ``fecha_vencimiento`` (date): important for some business logic
+      but it is not required by the DTE XML schema.
+
+    The class instances are immutable.
+
+    """
+
+    ###########################################################################
+    # constants
+    ###########################################################################
+
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
+
+    ###########################################################################
+    # fields
+    ###########################################################################
+
+    emisor_razon_social: str = dc_field()
+    """
+    "Razón social" (legal name) of the "emisor" of the DTE.
+    """
+
+    receptor_razon_social: str = dc_field()
+    """
+    "Razón social" (legal name) of the "receptor" of the DTE.
+    """
+
+    fecha_vencimiento_date: Optional[date] = dc_field(default=None)
+    """
+    "Fecha de vencimiento (pago)" of the DTE.
+    """
+
+    firma_documento_dt: Optional[datetime] = dc_field(default=None)
+    """
+    Datetime on which the "documento" was digitally signed.
+    """
+
+    signature_value: Optional[bytes] = dc_field(default=None)
+    """
+    DTE's digital signature's value (raw bytes, without base64 encoding).
+    """
+
+    signature_x509_cert_der: Optional[bytes] = dc_field(default=None)
+    """
+    DTE's digital signature's DER-encoded X.509 cert.
+
+    .. seealso::
+        Functions :func:`cl_sii.libs.crypto_utils.load_der_x509_cert`
+        and :func:`cl_sii.libs.crypto_utils.x509_cert_der_to_pem`.
+    """
+
+    emisor_giro: Optional[str] = dc_field(default=None)
+    """
+    "Giro" of the "emisor" of the DTE.
+    """
+
+    emisor_email: Optional[str] = dc_field(default=None)
+    """
+    Email address of the "emisor" of the DTE.
+    """
+
+    receptor_email: Optional[str] = dc_field(default=None)
+    """
+    Email address of the "receptor" of the DTE.
+    """
+
+    def __post_init__(self) -> None:
+        """
+        Run validation automatically after setting the fields values.
+
+        :raises TypeError, ValueError:
+
+        """
+        super().__post_init__()
+
+        if not isinstance(self.emisor_razon_social, str):
+            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
+        validate_contribuyente_razon_social(self.emisor_razon_social)
+
+        if not isinstance(self.receptor_razon_social, str):
+            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
+        validate_contribuyente_razon_social(self.receptor_razon_social)
+
+        if self.fecha_vencimiento_date is not None:
+            if not isinstance(self.fecha_vencimiento_date, date):
+                raise TypeError("Inappropriate type of 'fecha_vencimiento_date'.")
+
+        if self.firma_documento_dt is not None:
+            if not isinstance(self.firma_documento_dt, datetime):
+                raise TypeError("Inappropriate type of 'firma_documento_dt'.")
+            tz_utils.validate_dt_tz(self.firma_documento_dt, self.DATETIME_FIELDS_TZ)
+
+        if self.signature_value is not None:
+            if not isinstance(self.signature_value, bytes):
+                raise TypeError("Inappropriate type of 'signature_value'.")
+            # warning: do NOT strip a bytes value because "strip" implies an ASCII-encoded text,
+            #   which in this case it is not.
+            validate_non_empty_bytes(self.signature_value)
+
+        if self.signature_x509_cert_der is not None:
+            if not isinstance(self.signature_x509_cert_der, bytes):
+                raise TypeError("Inappropriate type of 'signature_x509_cert_der'.")
+            # warning: do NOT strip a bytes value because "strip" implies an ASCII-encoded text,
+            #   which in this case it is not.
+            validate_non_empty_bytes(self.signature_x509_cert_der)
+
+        if self.emisor_giro is not None:
+            if not isinstance(self.emisor_giro, str):
+                raise TypeError("Inappropriate type of 'emisor_giro'.")
+            validate_clean_str(self.emisor_giro)
+            validate_non_empty_str(self.emisor_giro)
+
+        if self.emisor_email is not None:
+            if not isinstance(self.emisor_email, str):
+                raise TypeError("Inappropriate type of 'emisor_email'.")
+            validate_clean_str(self.emisor_email)
+            validate_non_empty_str(self.emisor_email)
+
+        if self.receptor_email is not None:
+            if not isinstance(self.receptor_email, str):
+                raise TypeError("Inappropriate type of 'receptor_email'.")
+            validate_clean_str(self.receptor_email)
+            validate_non_empty_str(self.receptor_email)
+
+    def as_dte_data_l1(self) -> DteDataL1:
+        return DteDataL1(
+            emisor_rut=self.emisor_rut,
+            tipo_dte=self.tipo_dte,
+            folio=self.folio,
+            fecha_emision_date=self.fecha_emision_date,
+            receptor_rut=self.receptor_rut,
+            monto_total=self.monto_total)
+
+    def as_dte_data_l2(self) -> DteDataL2:
+        return DteDataL2(
+            emisor_rut=self.emisor_rut,
+            tipo_dte=self.tipo_dte,
+            folio=self.folio,
+            fecha_emision_date=self.fecha_emision_date,
+            receptor_rut=self.receptor_rut,
+            monto_total=self.monto_total,
+            emisor_razon_social=self.emisor_razon_social,
+            receptor_razon_social=self.receptor_razon_social,
+            fecha_vencimiento_date=self.fecha_vencimiento_date,
+            firma_documento_dt=self.firma_documento_dt,
+            signature_value=self.signature_value,
+            signature_x509_cert_der=self.signature_x509_cert_der,
+            emisor_giro=self.emisor_giro,
+            emisor_email=self.emisor_email,
+            receptor_email=self.receptor_email,
+        )
