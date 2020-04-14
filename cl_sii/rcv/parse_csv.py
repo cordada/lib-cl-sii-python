@@ -10,10 +10,7 @@ from datetime import date, datetime
 from typing import Callable, Dict, Iterable, Optional, Sequence, Tuple
 
 import marshmallow
-import marshmallow.fields
-import marshmallow.validate
 
-import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.extras import mm_fields
 from cl_sii.libs import csv_utils
@@ -34,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 RcvCsvFileParserType = Callable[
-    [Rut, str, str, int, Optional[int]],
+    [Rut, str, int, Optional[int]],
     Iterable[
         Tuple[
             Optional[RcvDetalleEntry],
@@ -89,7 +86,6 @@ def get_rcv_csv_file_parser(
 
 def parse_rcv_venta_csv_file(
     rut: Rut,
-    razon_social: str,
     input_file_path: str,
     n_rows_offset: int = 0,
     max_n_rows: int = None,
@@ -99,13 +95,9 @@ def parse_rcv_venta_csv_file(
 
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
-    if not isinstance(razon_social, str):
-        raise TypeError("Inappropriate type of 'razon_social'.")
-    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
 
     schema_context = dict(
         emisor_rut=rut,
-        emisor_razon_social=razon_social,
     )
     input_csv_row_schema = RcvVentaCsvRowSchema(context=schema_context)
 
@@ -206,7 +198,6 @@ def parse_rcv_venta_csv_file(
 
 def parse_rcv_compra_registro_csv_file(
     rut: Rut,
-    razon_social: str,
     input_file_path: str,
     n_rows_offset: int = 0,
     max_n_rows: int = None,
@@ -216,13 +207,9 @@ def parse_rcv_compra_registro_csv_file(
 
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
-    if not isinstance(razon_social, str):
-        raise TypeError("Inappropriate type of 'razon_social'.")
-    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
 
     schema_context = dict(
         receptor_rut=rut,
-        receptor_razon_social=razon_social,
     )
     input_csv_row_schema = RcvCompraRegistroCsvRowSchema(context=schema_context)
 
@@ -292,7 +279,6 @@ def parse_rcv_compra_registro_csv_file(
 
 def parse_rcv_compra_no_incluir_csv_file(
     rut: Rut,
-    razon_social: str,
     input_file_path: str,
     n_rows_offset: int = 0,
     max_n_rows: int = None,
@@ -302,13 +288,9 @@ def parse_rcv_compra_no_incluir_csv_file(
 
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
-    if not isinstance(razon_social, str):
-        raise TypeError("Inappropriate type of 'razon_social'.")
-    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
 
     schema_context = dict(
         receptor_rut=rut,
-        receptor_razon_social=razon_social,
     )
     input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema(context=schema_context)
 
@@ -372,7 +354,6 @@ def parse_rcv_compra_no_incluir_csv_file(
 
 def parse_rcv_compra_reclamado_csv_file(
     rut: Rut,
-    razon_social: str,
     input_file_path: str,
     n_rows_offset: int = 0,
     max_n_rows: int = None,
@@ -382,13 +363,9 @@ def parse_rcv_compra_reclamado_csv_file(
 
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
-    if not isinstance(razon_social, str):
-        raise TypeError("Inappropriate type of 'razon_social'.")
-    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
 
     schema_context = dict(
         receptor_rut=rut,
-        receptor_razon_social=razon_social,
     )
     input_csv_row_schema = RcvCompraReclamadoCsvRowSchema(context=schema_context)
 
@@ -452,7 +429,6 @@ def parse_rcv_compra_reclamado_csv_file(
 
 def parse_rcv_compra_pendiente_csv_file(
     rut: Rut,
-    razon_social: str,
     input_file_path: str,
     n_rows_offset: int = 0,
     max_n_rows: int = None,
@@ -462,13 +438,9 @@ def parse_rcv_compra_pendiente_csv_file(
 
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
-    if not isinstance(razon_social, str):
-        raise TypeError("Inappropriate type of 'razon_social'.")
-    cl_sii.dte.data_models.validate_contribuyente_razon_social(razon_social)
 
     schema_context = dict(
         receptor_rut=rut,
-        receptor_razon_social=razon_social,
     )
     input_csv_row_schema = RcvCompraPendienteCsvRowSchema(context=schema_context)
 
@@ -593,9 +565,6 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
     emisor_rut = mm_fields.RutField(
         required=True,
     )
-    emisor_razon_social = marshmallow.fields.String(
-        required=True,
-    )
 
     ###########################################################################
     # extra fields: not included in the returned struct
@@ -626,7 +595,6 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
 
         # Set field value only if it was not in the input data.
         in_data.setdefault('emisor_rut', self.context['emisor_rut'])
-        in_data.setdefault('emisor_razon_social', self.context['emisor_razon_social'])
 
         # Fix missing/default values.
         if 'Fecha Acuse Recibo' in in_data:
@@ -672,7 +640,6 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
             fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
             receptor_rut: Rut = data['receptor_rut']  # type: ignore
             monto_total: int = data['monto_total']  # type: ignore
-            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
             receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
             fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']  # type: ignore
@@ -688,8 +655,9 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
                 fecha_emision_date=fecha_emision_date,
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
-                emisor_razon_social=emisor_razon_social,
                 receptor_razon_social=receptor_razon_social,
+                # FIXME: remove after field 'emisor_razon_social' is removed from the dataclass
+                emisor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_acuse_dt=fecha_acuse_dt,
                 fecha_reclamo_dt=fecha_reclamo_dt,
@@ -745,9 +713,6 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
     receptor_rut = mm_fields.RutField(
         required=True,
     )
-    receptor_razon_social = marshmallow.fields.String(
-        required=True,
-    )
 
     ###########################################################################
     # extra fields: not included in the returned struct
@@ -772,7 +737,6 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
 
         # Set field value only if it was not in the input data.
         in_data.setdefault('receptor_rut', self.context['receptor_rut'])
-        in_data.setdefault('receptor_razon_social', self.context['receptor_razon_social'])
 
         # Fix missing/default values.
         if 'Fecha Acuse' in in_data:
@@ -813,7 +777,6 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
             receptor_rut: Rut = data['receptor_rut']  # type: ignore
             monto_total: int = data['monto_total']  # type: ignore
             emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
-            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
             fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']  # type: ignore
         except KeyError as exc:
@@ -828,7 +791,8 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
-                receptor_razon_social=receptor_razon_social,
+                # FIXME: remove after field 'receptor_razon_social' is removed from the dataclass
+                receptor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_acuse_dt=fecha_acuse_dt,
             )
@@ -849,7 +813,6 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
             receptor_rut: Rut = data['receptor_rut']  # type: ignore
             monto_total: int = data['monto_total']  # type: ignore
             emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
-            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
             fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']  # type: ignore
         except KeyError as exc:
@@ -864,7 +827,8 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
-                receptor_razon_social=receptor_razon_social,
+                # FIXME: remove after field 'receptor_razon_social' is removed from the dataclass
+                receptor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_acuse_dt=fecha_acuse_dt,
             )
@@ -919,9 +883,6 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
     receptor_rut = mm_fields.RutField(
         required=True,
     )
-    receptor_razon_social = marshmallow.fields.String(
-        required=True,
-    )
 
     ###########################################################################
     # extra fields: not included in the returned struct
@@ -949,7 +910,6 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
 
         # Set field value only if it was not in the input data.
         in_data.setdefault('receptor_rut', self.context['receptor_rut'])
-        in_data.setdefault('receptor_razon_social', self.context['receptor_razon_social'])
 
         # Fix missing/default values.
         # note: for some reason the rows with 'tipo_docto' equal to
@@ -993,7 +953,6 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
             receptor_rut: Rut = data['receptor_rut']  # type: ignore
             monto_total: int = data['monto_total']  # type: ignore
             emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
-            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
             fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']  # type: ignore
         except KeyError as exc:
@@ -1008,7 +967,8 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
-                receptor_razon_social=receptor_razon_social,
+                # FIXME: remove after field 'receptor_razon_social' is removed from the dataclass
+                receptor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_reclamo_dt=fecha_reclamo_dt,
             )
@@ -1063,9 +1023,6 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
     receptor_rut = mm_fields.RutField(
         required=True,
     )
-    receptor_razon_social = marshmallow.fields.String(
-        required=True,
-    )
 
     ###########################################################################
     # extra fields: not included in the returned struct
@@ -1084,7 +1041,6 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
 
         # Set field value only if it was not in the input data.
         in_data.setdefault('receptor_rut', self.context['receptor_rut'])
-        in_data.setdefault('receptor_razon_social', self.context['receptor_razon_social'])
 
         # Fix missing/default values.
         if 'Fecha Acuse' in in_data:
@@ -1121,7 +1077,6 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
             receptor_rut: Rut = data['receptor_rut']  # type: ignore
             monto_total: int = data['monto_total']  # type: ignore
             emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
-            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
@@ -1135,7 +1090,8 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
-                receptor_razon_social=receptor_razon_social,
+                # FIXME: remove after field 'receptor_razon_social' is removed from the dataclass
+                receptor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
             )
         except (TypeError, ValueError):
