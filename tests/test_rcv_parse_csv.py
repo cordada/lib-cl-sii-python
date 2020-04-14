@@ -51,23 +51,6 @@ class FunctionsTest(unittest.TestCase):
         # TODO: implement for 'parse_rcv_venta_csv_file'.
         pass
 
-    def test_fail_parse_rcv_venta_csv_file_bad_razon_social(self) -> None:
-        other_kwargs = dict(rut=Rut('1-9'), input_file_path='x')
-
-        with self.assertRaises(TypeError) as cm:
-            next(parse_rcv_venta_csv_file(razon_social=1, **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Inappropriate type of 'razon_social'.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_venta_csv_file(razon_social='', **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_venta_csv_file(razon_social=' a ', **other_kwargs))
-        self.assertEqual(
-            cm.exception.args,
-            ("Value must not have leading or trailing whitespace.", ))
-
     def test_parse_rcv_venta_csv_file_receptor_rz_leading_trailing_whitespace(self) -> None:
         rcv_file_path = get_test_file_path(
             'test_data/sii-rcv/RCV-venta-rz_leading_trailing_whitespace.csv',
@@ -75,7 +58,6 @@ class FunctionsTest(unittest.TestCase):
 
         items = parse_rcv_venta_csv_file(
             rut=Rut('1-9'),
-            razon_social='Whitespace Seller SpA',
             input_file_path=rcv_file_path,
             n_rows_offset=0,
             max_n_rows=None,
@@ -102,7 +84,6 @@ class FunctionsTest(unittest.TestCase):
 
         items = parse_rcv_compra_csv_file_function(
             rut=Rut('1-9'),
-            razon_social='Whitespace Buyer SpA',
             input_file_path=rcv_file_path,
             n_rows_offset=0,
             max_n_rows=None,
@@ -124,23 +105,6 @@ class FunctionsTest(unittest.TestCase):
         # TODO: implement for 'parse_rcv_compra_registro_csv_file'.
         pass
 
-    def test_fail_parse_rcv_compra_registro_csv_file_bad_razon_social(self) -> None:
-        other_kwargs = dict(rut=Rut('1-9'), input_file_path='x')
-
-        with self.assertRaises(TypeError) as cm:
-            next(parse_rcv_compra_registro_csv_file(razon_social=1, **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Inappropriate type of 'razon_social'.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_compra_registro_csv_file(razon_social='', **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_compra_registro_csv_file(razon_social=' a ', **other_kwargs))
-        self.assertEqual(
-            cm.exception.args,
-            ("Value must not have leading or trailing whitespace.", ))
-
     def test_parse_rcv_compra_registro_csv_file_emisor_rz_leading_trailing_whitespace(self) -> None:
         self._test_parse_rcv_compra_csv_file_emisor_rz_leading_trailing_whitespace(
             parse_rcv_compra_csv_file_function=parse_rcv_compra_registro_csv_file,
@@ -152,23 +116,6 @@ class FunctionsTest(unittest.TestCase):
     def test_parse_rcv_compra_no_incluir_csv_file(self) -> None:
         # TODO: implement for 'parse_rcv_compra_no_incluir_csv_file'.
         pass
-
-    def test_fail_parse_rcv_compra_no_incluir_csv_file_bad_razon_social(self) -> None:
-        other_kwargs = dict(rut=Rut('1-9'), input_file_path='x')
-
-        with self.assertRaises(TypeError) as cm:
-            next(parse_rcv_compra_no_incluir_csv_file(razon_social=1, **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Inappropriate type of 'razon_social'.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_compra_no_incluir_csv_file(razon_social='', **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_compra_no_incluir_csv_file(razon_social=' a ', **other_kwargs))
-        self.assertEqual(
-            cm.exception.args,
-            ("Value must not have leading or trailing whitespace.", ))
 
     def test_parse_rcv_compra_no_incluir_csv_file_emisor_rz_leading_trailing_whitespace(
         self,
@@ -184,23 +131,6 @@ class FunctionsTest(unittest.TestCase):
         # TODO: implement for 'parse_rcv_compra_reclamado_csv_file'.
         pass
 
-    def test_fail_parse_rcv_compra_reclamado_csv_file_bad_razon_social(self) -> None:
-        other_kwargs = dict(rut=Rut('1-9'), input_file_path='x')
-
-        with self.assertRaises(TypeError) as cm:
-            next(parse_rcv_compra_reclamado_csv_file(razon_social=1, **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Inappropriate type of 'razon_social'.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_compra_reclamado_csv_file(razon_social='', **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_compra_reclamado_csv_file(razon_social=' a ', **other_kwargs))
-        self.assertEqual(
-            cm.exception.args,
-            ("Value must not have leading or trailing whitespace.", ))
-
     def test_parse_rcv_compra_reclamado_csv_file_emisor_rz_leading_trailing_whitespace(
         self,
     ) -> None:
@@ -214,23 +144,6 @@ class FunctionsTest(unittest.TestCase):
     def test_parse_rcv_compra_pendiente_csv_file(self) -> None:
         # TODO: implement for 'parse_rcv_compra_pendiente_csv_file'.
         pass
-
-    def test_fail_parse_rcv_compra_pendiente_csv_file_bad_razon_social(self) -> None:
-        other_kwargs = dict(rut=Rut('1-9'), input_file_path='x')
-
-        with self.assertRaises(TypeError) as cm:
-            next(parse_rcv_compra_pendiente_csv_file(razon_social=1, **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Inappropriate type of 'razon_social'.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_compra_pendiente_csv_file(razon_social='', **other_kwargs))
-        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
-
-        with self.assertRaises(ValueError) as cm:
-            next(parse_rcv_compra_pendiente_csv_file(razon_social=' a ', **other_kwargs))
-        self.assertEqual(
-            cm.exception.args,
-            ("Value must not have leading or trailing whitespace.", ))
 
     def test_parse_rcv_compra_pendiente_csv_file_emisor_rz_leading_trailing_whitespace(
         self,
