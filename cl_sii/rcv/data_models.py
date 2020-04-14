@@ -224,7 +224,7 @@ class RvDetalleEntry(RcvDetalleEntry):
     RCV_KIND = RcvKind.VENTAS
     RC_ESTADO_CONTABLE = None
 
-    emisor_razon_social: str = dc_field()
+    emisor_razon_social: Optional[str] = dc_field()
     """
     "Razón social" (legal name) of the "emisor" of the "documento".
     """
@@ -244,9 +244,10 @@ class RvDetalleEntry(RcvDetalleEntry):
     def __post_init__(self) -> None:
         super().__post_init__()
 
-        if not isinstance(self.emisor_razon_social, str):
-            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+        if self.emisor_razon_social is not None:
+            if not isinstance(self.emisor_razon_social, str):
+                raise TypeError("Inappropriate type of 'emisor_razon_social'.")
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
 
         if not isinstance(self.receptor_razon_social, str):
             raise TypeError("Inappropriate type of 'receptor_razon_social'.")
@@ -280,7 +281,7 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
 
     # TODO: docstring
     # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
-    receptor_razon_social: str = dc_field()
+    receptor_razon_social: Optional[str] = dc_field()
 
     # TODO: docstring
     # note: must be timezone-aware.
@@ -293,9 +294,10 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
             raise TypeError("Inappropriate type of 'emisor_razon_social'.")
         cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
 
-        if not isinstance(self.receptor_razon_social, str):
-            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
+        if self.receptor_razon_social is not None:
+            if not isinstance(self.receptor_razon_social, str):
+                raise TypeError("Inappropriate type of 'receptor_razon_social'.")
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
 
         if self.fecha_acuse_dt is not None:
             if not isinstance(self.fecha_acuse_dt, datetime):
@@ -331,7 +333,7 @@ class RcReclamadoDetalleEntry(RcvDetalleEntry):
 
     # TODO: docstring
     # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
-    receptor_razon_social: str = dc_field()
+    receptor_razon_social: Optional[str] = dc_field()
 
     # TODO: docstring
     # note: must be timezone-aware.
@@ -344,9 +346,10 @@ class RcReclamadoDetalleEntry(RcvDetalleEntry):
             raise TypeError("Inappropriate type of 'emisor_razon_social'.")
         cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
 
-        if not isinstance(self.receptor_razon_social, str):
-            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
+        if self.receptor_razon_social is not None:
+            if not isinstance(self.receptor_razon_social, str):
+                raise TypeError("Inappropriate type of 'receptor_razon_social'.")
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
 
         if self.fecha_reclamo_dt is not None:
             if not isinstance(self.fecha_reclamo_dt, datetime):
@@ -371,7 +374,7 @@ class RcPendienteDetalleEntry(RcvDetalleEntry):
 
     # TODO: docstring
     # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
-    receptor_razon_social: str = dc_field()
+    receptor_razon_social: Optional[str] = dc_field()
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -380,6 +383,7 @@ class RcPendienteDetalleEntry(RcvDetalleEntry):
             raise TypeError("Inappropriate type of 'emisor_razon_social'.")
         cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
 
-        if not isinstance(self.receptor_razon_social, str):
-            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
+        if self.receptor_razon_social is not None:
+            if not isinstance(self.receptor_razon_social, str):
+                raise TypeError("Inappropriate type of 'receptor_razon_social'.")
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
