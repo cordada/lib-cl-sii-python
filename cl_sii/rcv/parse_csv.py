@@ -656,8 +656,6 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 receptor_razon_social=receptor_razon_social,
-                # FIXME: remove after field 'emisor_razon_social' is removed from the dataclass
-                emisor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_acuse_dt=fecha_acuse_dt,
                 fecha_reclamo_dt=fecha_reclamo_dt,
@@ -791,8 +789,6 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
-                # FIXME: remove after field 'receptor_razon_social' is removed from the dataclass
-                receptor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_acuse_dt=fecha_acuse_dt,
             )
@@ -827,8 +823,6 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
-                # FIXME: remove after field 'receptor_razon_social' is removed from the dataclass
-                receptor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_acuse_dt=fecha_acuse_dt,
             )
@@ -967,8 +961,6 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
-                # FIXME: remove after field 'receptor_razon_social' is removed from the dataclass
-                receptor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_reclamo_dt=fecha_reclamo_dt,
             )
@@ -1090,8 +1082,6 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
-                # FIXME: remove after field 'receptor_razon_social' is removed from the dataclass
-                receptor_razon_social=None,
                 fecha_recepcion_dt=fecha_recepcion_dt,
             )
         except (TypeError, ValueError):

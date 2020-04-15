@@ -3,6 +3,28 @@
 History
 -------
 
+0.10.0 (2020-04-14)
++++++++++++++++++++++++
+
+0.10.0.a3
+~~~~~~~~~~~~~~~~~~~~~~
+
+* (PR #116, 2020-04-14) rcv.data_models: remove unnecessary fields
+* (PR #114, 2020-04-14) rcv.parse_csv: remove param ``razon_social`` from parse functions
+
+0.10.0.a2
+~~~~~~~~~~~~~~~~~~~~~~
+
+* (PR #112, 2020-04-14) data_models: make some fields optional
+
+0.10.0.a1
+~~~~~~~~~~~~~~~~~~~~~~
+
+* (PR #110, 2020-04-13) rcv.data_models: move some fields to subclasses
+* (PR #109, 2020-04-13) rcv.parse_csv: move code from 'fd-cl-data' in here
+* (PR #108, 2020-04-13) dte.data_models: add 'DteXmlData'
+* (PR #107, 2020-04-10) requirements: several updates
+
 0.9.1 (2020-03-20)
 +++++++++++++++++++++++
 
