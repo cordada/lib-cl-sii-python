@@ -43,8 +43,8 @@ Status
 Supported Python versions
 -------------------------
 
-Only Python 3.7. Python 3.6 and below will not work because we use some features introduced in
-Python 3.7.
+Only Python 3.7 and 3.8. Python 3.6 and below will not work because we use some features introduced
+in Python 3.7.
 
 Quickstart
 ----------
