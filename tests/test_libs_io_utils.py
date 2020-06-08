@@ -1,5 +1,6 @@
 import io
 import pathlib
+import sys
 import tempfile
 import unittest
 
@@ -69,8 +70,11 @@ class FunctionsTest(unittest.TestCase):
 
         with tempfile.SpooledTemporaryFile(mode='rt', encoding='utf-8') as f:
             self.assertTrue(isinstance(f, tempfile.SpooledTemporaryFile))
-            # note: this is a strange case.
-            self.assertFalse(with_encoding_utf8(f))
+            if sys.version_info[:3] >= (3, 7, 6):
+                self.assertTrue(with_encoding_utf8(f))
+            else:
+                # note: this is a strange case (Python 3.7).
+                self.assertFalse(with_encoding_utf8(f))
 
         # Text mode - encoding 'latin1'
 
