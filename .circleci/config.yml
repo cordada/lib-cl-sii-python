@@ -9,11 +9,16 @@
 #   - https://circleci.com/docs/2.0/language-python/ for more details
 #   - https://circleci.com/docs/2.0/configuration-reference/
 #
-version: 2
+version: "2.1"
+
 jobs:
-  test-py37:
+  test:
+    parameters:
+      python_version:
+        type: string
+
     docker:
-      - image: python:3.7.2
+      - image: python:<< parameters.python_version >>
 
     working_directory: ~/repo
 
@@ -34,7 +39,14 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
-            tox -e py37
+
+            # Set Tox environment to the installed Python version.
+            TOXENV=$(
+              python -c 'import sys; v = sys.version_info; print("py{}{}".format(v.major, v.minor))'
+            )
+
+            tox -e "$TOXENV"
+
             codecov
             make test-coverage-report-console
             make test-coverage-report-html
@@ -75,5 +87,10 @@ workflows:
   version: 2
   ci:
     jobs:
-      - test-py37
+      - test:
+          matrix:
+            parameters:
+              python_version:
+                - "3.7.2"
+                - "3.8.3"
       - dist
