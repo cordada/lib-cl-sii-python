@@ -1,0 +1,17 @@
+# GitHub Dependabot Configuration
+#
+# Documentation:
+#   https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: daily
+      time: "08:30"
+      timezone: America/Santiago
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
