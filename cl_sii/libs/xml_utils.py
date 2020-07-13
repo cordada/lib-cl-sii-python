@@ -431,8 +431,24 @@ def verify_xml_signature(
     try:
         # note: by passing 'x509_cert' we override any X.509 certificate information supplied
         #   by the signature itself.
+
+        # note: when an X509Data element is present in the signature and used for verification, but
+        #   a KeyValue element is also present, there is an ambiguity and a security hazard because
+        #   the public key used to sign the document is already encoded in the certificate (which is
+        #   in X509Data), so the verifier must either ignore KeyValue or ensure that it matches what
+        #   is in the certificate. SignXML does not perform that validation and throws an
+        #   'InvalidInput' error instead.
+        #
+        #   SII's schema for XML signatures requires both elements to be present, which forces us to
+        #   enable 'ignore_ambiguous_key_info' to bypass the error and validate the signature using
+        #   X509Data only.
+        #
+        #   Source:
+        #   https://github.com/XML-Security/signxml/commit/ef15da8dbb904f1dedfdd210ae3e0df5da535612
         result: signxml.VerifyResult = xml_verifier.verify(
-            data=tmp_bytes, require_x509=True, x509_cert=trusted_x509_cert_open_ssl)
+            data=tmp_bytes, require_x509=True, x509_cert=trusted_x509_cert_open_ssl,
+            ignore_ambiguous_key_info=True,
+        )
 
     except signxml.exceptions.InvalidDigest as exc:
         # warning: catch before 'InvalidSignature' (it is the parent of 'InvalidDigest').
