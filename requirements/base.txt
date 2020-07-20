@@ -9,7 +9,7 @@ lxml==4.5.0
 marshmallow==2.19.5
 pyOpenSSL==18.0.0
 pytz==2019.3
-signxml==2.6.0
+signxml==2.8.0
 
 # Packages dependencies:
 #   - cryptography:
@@ -24,16 +24,13 @@ signxml==2.6.0
 #       - setuptools
 #       - six
 #   - signxml:
-#       - asn1crypto
 #       - certifi
 #       - cryptography
-#       - defusedxml
 #       - eight
 #           - future
 #       - lxml
 #       - pyOpenSSL
 #           - six
-asn1crypto==1.3.0
 attrs==19.3.0
 certifi==2020.4.5.1
 cffi==1.14.0
