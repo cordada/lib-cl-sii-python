@@ -42,7 +42,7 @@ wheel==0.34.2
 # idna
 importlib-metadata==1.6.0
 # jeepney
-keyring==21.2.0
+keyring==21.4.0
 pkginfo==1.5.0.1
 # Pygments
 readme-renderer==25.0
