@@ -95,6 +95,9 @@ Push commit ``abcd1234`` and tag ``vX.Y.Z`` automatically created by ``bumpversi
 4) Publish to PyPI
 +++++++++++++++++++
 
+.. warning::
+  Only perform this step if the CI system failed to upload the package.
+
 (local workstation)
 
 Run::

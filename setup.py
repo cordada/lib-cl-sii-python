@@ -27,10 +27,10 @@ requirements = [
     'jsonschema>=3.1.1',
     'lxml>=4.5.0,<5',
     'marshmallow>=2.19.2,<3',
-    # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<19'
-    'pyOpenSSL>=18.0.0,<19',
+    # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<20'
+    'pyOpenSSL>=18.0.0,<20',
     'pytz>=2019.3',
-    'signxml>=2.6.0',
+    'signxml>=2.8.0',
 ]
 
 extras_requirements = {

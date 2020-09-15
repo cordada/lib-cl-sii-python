@@ -3,6 +3,21 @@
 History
 -------
 
+0.11.0 (2020-09-15)
++++++++++++++++++++++++
+
+* (PR #138, 2020-09-15) config: Add PyPI package uploading to CI
+* (PR #135, 2020-09-15) rtc: Add constants
+* (PR #129, 2020-09-14) build(deps): bump toml from 0.10.0 to 0.10.1
+* (PR #133, 2020-09-14) build(deps): bump codecov from 2.0.22 to 2.1.9
+* (PR #134, 2020-09-10) Add sub-package `rtc`
+* (PR #131, 2020-07-22) requirements: update 'signxml'
+* (PR #123, 2020-07-13) build(deps): bump six from 1.14.0 to 1.15.0
+* (PR #126, 2020-07-10) build(deps): bump virtualenv from 20.0.16 to 20.0.26
+* (PR #127, 2020-07-09) config: Verify Python dependency compatibility in CI
+* (PR #124, 2020-07-07) build(deps): bump tox from 3.14.6 to 3.16.1
+* (PR #122, 2020-07-07) config: Add configuration for GitHub Dependabot
+
 0.10.1 (2020-06-08)
 +++++++++++++++++++++++
 
