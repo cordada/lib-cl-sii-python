@@ -56,7 +56,7 @@ packaging==20.4
 pluggy==0.13.1
 py==1.8.1
 pycodestyle==2.5.0
-pyflakes==2.1.1
+pyflakes==2.2.0
 # pyparsing
 # requests
 # six
