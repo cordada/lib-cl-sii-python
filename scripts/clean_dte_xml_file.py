@@ -91,12 +91,12 @@ def main_dir_files(input_files_dir_path: str) -> None:
             input_file_path=input_file_path,
             output_file_path=output_file_path)
 
-        print(f"Difference between input and output files:")
+        print("Difference between input and output files:")
         diff_line = None
         for diff_line in file_bytes_diff_gen:
             print(diff_line)
         if diff_line is None:
-            print(f"No difference.")
+            print("No difference.")
 
 
 if __name__ == '__main__':
