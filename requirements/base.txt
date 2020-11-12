@@ -9,7 +9,7 @@ lxml==4.5.0
 marshmallow==2.19.5
 pyOpenSSL==18.0.0
 pytz==2019.3
-signxml==2.8.0
+signxml==2.8.1
 
 # Packages dependencies:
 #   - cryptography:
