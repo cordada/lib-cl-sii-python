@@ -148,8 +148,7 @@ workflows:
           matrix:
             parameters:
               python_version:
-                - "3.7.2"
-                - "3.7.6"
+                - "3.7.9"
                 - "3.8.5"
                 - "3.9.1"
       - dist:
