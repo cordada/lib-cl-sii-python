@@ -22,7 +22,7 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [
-    'cryptography>=2.8,<3',
+    'cryptography>=2.8,<4',
     'defusedxml>=0.6.0,<1',
     'jsonschema>=3.1.1',
     'lxml>=4.5.0,<5',
@@ -35,7 +35,7 @@ requirements = [
 
 extras_requirements = {
     'django': ['Django>=2.2.10,<3'],
-    'djangorestframework': ['djangorestframework>=3.10.3,<3.11'],
+    'djangorestframework': ['djangorestframework>=3.10.3,<3.13'],
 }
 
 setup_requirements = [
@@ -76,6 +76,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
     description="""Python library for Servicio de Impuestos Internos (SII) of Chile.""",
     extras_require=extras_requirements,
@@ -87,7 +88,7 @@ setup(
     name='cl-sii',
     package_data=_package_data,
     packages=find_packages(exclude=['docs', 'tests*']),
-    python_requires='>=3.7, <3.9',
+    python_requires='>=3.7, <3.10',
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

@@ -34,7 +34,7 @@ jobs:
         type: string
 
     docker:
-      - image: python:<< parameters.python_version >>
+      - image: docker.io/library/python:<< parameters.python_version >>
 
     working_directory: ~/repo
 
@@ -79,7 +79,7 @@ jobs:
 
   dist:
     docker:
-      - image: python:3.7.2
+      - image: docker.io/library/python:3.8.5
 
     working_directory: ~/repo
 
@@ -119,7 +119,7 @@ jobs:
 
   deploy:
     docker:
-      - image: python:3.7.2
+      - image: docker.io/library/python:3.8.5
         environment:
           <<: *x-deploy-environment
 
@@ -148,10 +148,12 @@ workflows:
           matrix:
             parameters:
               python_version:
-                - "3.7.2"
-                - "3.7.6"
-                - "3.8.3"
-      - dist
+                - "3.7.9"
+                - "3.8.5"
+                - "3.9.1"
+      - dist:
+          requires:
+            - test
       - deploy:
           requires:
             - dist

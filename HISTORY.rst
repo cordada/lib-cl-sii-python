@@ -3,6 +3,29 @@
 History
 -------
 
+0.11.1 (2020-12-15)
++++++++++++++++++++++++
+
+* (PR #140, 2020-09-15) config: Make CI 'dist' job depend on 'test' jobs
+* (PR #141, 2020-09-15) config: Update Python version used in CI jobs to 3.8.5
+* (PR #137, 2020-09-15) build(deps): bump keyring from 21.2.0 to 21.4.0
+* (PR #142, 2020-09-16) build(deps): bump mypy from 0.770 to 0.782
+* (PR #145, 2020-09-21) build(deps): bump setuptools from 46.1.3 to 50.3.0
+* (PR #146, 2020-09-23) build(deps): bump wheel from 0.34.2 to 0.35.1
+* (PR #147, 2020-09-23) requirements: update 'eight' (dependency of 'signxml')
+* (PR #149, 2020-09-24) build(deps): bump packaging from 20.3 to 20.4
+* (PR #150, 2020-09-28) build(deps): bump virtualenv from 20.0.26 to 20.0.31
+* (PR #157, 2020-11-12) requirements: Update 'flake8'
+* (PR #158, 2020-11-12) requirements: Update 'signxml'
+* (PR #161, 2020-12-15) Add support for Python 3.9
+* (PR #160, 2020-12-15) build(deps): bump cryptography from 2.9 to 3.3.1
+* (PR #162, 2020-12-15) config: Update Python 3.7 version to 3.7.9
+* (PR #156, 2020-12-15) build(deps): bump attrs from 19.3.0 to 20.3.0
+* (PR #151, 2020-12-15) build(deps): update djangorestframework requirement
+  from <3.11,>=3.10.3 to >=3.10.3,<3.13
+* (PR #163, 2020-12-15) requirements: update 'mypy' (test)
+* (PR #164, 2020-12-15) requirements: update 'tox' (test)
+
 0.11.0 (2020-09-15)
 +++++++++++++++++++++++
 
