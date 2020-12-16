@@ -846,7 +846,7 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertEqual(
             cm.exception.args,
             ("Unable to load certificate. See "
-             "https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file "
+             "https://cryptography.io/en/latest/faq.html#why-can-t-i-import-my-pem-file "
              "for more details.", ))
 
     def test_x509_cert_der_to_pem_pem_to_der_ok_1(self) -> None:
