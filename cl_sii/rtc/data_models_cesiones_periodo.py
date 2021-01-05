@@ -11,7 +11,7 @@ from cl_sii.dte.constants import TipoDteEnum
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
-from .constants import TIPO_DTE_CEDIBLES
+from .constants import CESION_MONTO_CEDIDO_FIELD_MIN_VALUE, TIPO_DTE_CEDIBLES
 
 
 logger = logging.getLogger(__name__)
@@ -226,9 +226,10 @@ class CesionesPeriodoEntry:
 
         if not isinstance(self.monto_cedido, int):
             raise TypeError("Inappropriate type of 'monto_cedido'.")
-        if not self.monto_cedido >= 0:
+        if not self.monto_cedido >= CESION_MONTO_CEDIDO_FIELD_MIN_VALUE:
             raise ValueError(
-                "Amount 'monto_cedido' must be >= 0.", self.monto_cedido)
+                f"Amount 'monto_cedido' must be >= {CESION_MONTO_CEDIDO_FIELD_MIN_VALUE}.",
+                self.monto_cedido)
         if not self.monto_cedido <= self.dte_monto_total:
             raise ValueError(
                 "Amount 'monto_cedido' must be <= 'dte_monto_total'.",
