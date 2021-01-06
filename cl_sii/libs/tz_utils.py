@@ -166,5 +166,12 @@ def validate_dt_tz(value: datetime, tz: PytzTimezone) -> None:
     """
     if not dt_is_aware(value):
         raise ValueError("Value must be a timezone-aware datetime object.")
+
+    # The 'zone' attribute is not defined in the abstract base class 'datetime.tzinfo'. We need to
+    # check that it is there before using it below to prevent unexpected exceptions when dealing
+    # with Python Standard Library time zones that are instances of class 'datetime.timezone'.
+    assert hasattr(value.tzinfo, 'zone'), f"Object {value.tzinfo!r} must have 'zone' attribute."
+    assert hasattr(tz, 'zone'), f"Object {tz!r} must have 'zone' attribute."
+
     if value.tzinfo.zone != tz.zone:  # type: ignore
         raise ValueError(f"Timezone of datetime value must be '{tz.zone!s}'.", value)
