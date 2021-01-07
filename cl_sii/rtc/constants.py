@@ -1,7 +1,7 @@
 import enum
 from typing import FrozenSet
 
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import DTE_MONTO_TOTAL_FIELD_MAX_VALUE, TipoDteEnum
 
 
 # The collection of "tipo DTE" for which it is possible to "ceder" a "DTE".
@@ -24,6 +24,42 @@ TIPO_DTE_CEDIBLES: FrozenSet[TipoDteEnum] = frozenset({
     TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA,
 })
 
+
+###############################################################################
+# Cesion Fields / "Monto Cedido"
+###############################################################################
+
+# Amount of the "cesión".
+#
+# Ref:
+#   - https://github.com/fyntex/lib-cl-sii-api-python/blob/v0.4.4/cl_sii_api/rtc/data_models.py#L231
+#   - Document "Formato Archivo Electrónico de Cesión 2013-02-11" (retrieved on 2019-08-12)
+#     (https://www.sii.cl/factura_electronica/cesion.pdf)
+CESION_MONTO_CEDIDO_FIELD_MIN_VALUE: int = 0
+CESION_MONTO_CEDIDO_FIELD_MAX_VALUE: int = DTE_MONTO_TOTAL_FIELD_MAX_VALUE
+
+
+###############################################################################
+# Cesion Fields / "Secuencia"
+###############################################################################
+
+# Sequence number of the "cesión"
+#
+# > Campo: Número de Cesión
+# > Descripción: Secuencia de la cesión
+# > Tipo: NUM
+# > Validación: 1 hasta 40
+#
+# Source:
+#   Document "Formato Archivo Electrónico de Cesión 2013-02-11" (retrieved on 2019-08-12)
+#   (https://www.sii.cl/factura_electronica/cesion.pdf)
+CESION_SEQUENCE_NUMBER_MIN_VALUE: int = 1
+CESION_SEQUENCE_NUMBER_MAX_VALUE: int = 40
+
+
+###############################################################################
+# Other
+###############################################################################
 
 @enum.unique
 class RolContribuyenteEnCesion(enum.Enum):
