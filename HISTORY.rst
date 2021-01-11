@@ -3,6 +3,17 @@
 History
 -------
 
+0.11.2 (2021-01-11)
++++++++++++++++++++++++
+
+* (PR #166, 2020-12-15) requirements: Update 'cryptography'
+* (PR #169, 2020-12-16) build(deps): bump coverage from 4.5.3 to 5.3
+* (PR #172, 2020-12-22) rtc: Add data model for "Cesiones Periodo" entries
+* (PR #173, 2021-01-05) requirements: Add 'pydantic'
+* (PR #175, 2021-01-06) libs.tz_utils: Add checks to validate_dt_tz
+* (PR #174, 2021-01-07) rtc: Add constants and "cesión" natural keys
+* (PR #171, 2021-01-07) build(deps): bump codecov from 2.1.9 to 2.1.11
+
 0.11.1 (2020-12-15)
 +++++++++++++++++++++++
 
