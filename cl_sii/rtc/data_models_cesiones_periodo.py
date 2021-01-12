@@ -107,13 +107,17 @@ class CesionesPeriodoEntry:
     Email address of the "deudor".
     """
 
-    # TODO: verify to what we are referring to exactly:
-    #   digitally signed? received by the SII? processed by the SII?
     fecha_cesion_dt: datetime
     """
     Datetime on which the "cesion" happened.
 
     Must be consistent with ``fecha_cesion`` (considering timezone).
+
+    .. note:: This is the timestamp of when the "cesión"'s AEC was digitally
+        signed, but truncated to the minute (AEC's timestamp has seconds,
+        this one only has minutes).
+
+    ..seealso:: Docstring of :attr:`data_models.CesionL0.fecha_cesion_dt`.
     """
 
     fecha_cesion: date
