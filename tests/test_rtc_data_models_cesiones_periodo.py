@@ -68,7 +68,7 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
             CesionesPeriodoEntry(**self.valid_kwargs)
         self.assertEqual(
             cm.exception.args,
-            ("Amount 'monto_cedido' must be <= 'dte_monto_total'.", 256358, 256357))
+            ('Value of "cesión" must be <= value of DTE.', 256358, 256357))
 
     def test_init_error_dte_tipo_dte_1(self) -> None:
         self.valid_kwargs.update(dict(

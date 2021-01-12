@@ -231,10 +231,10 @@ class CesionesPeriodoEntry:
             raise ValueError(
                 f"Amount 'monto_cedido' must be >= {CESION_MONTO_CEDIDO_FIELD_MIN_VALUE}.",
                 self.monto_cedido)
-        if not self.monto_cedido <= self.dte_monto_total:
-            raise ValueError(
-                "Amount 'monto_cedido' must be <= 'dte_monto_total'.",
-                self.monto_cedido, self.dte_monto_total)
+        data_models.validate_cesion_and_dte_montos(
+            cesion_value=self.monto_cedido,
+            dte_value=self.dte_monto_total,
+        )
 
         if not isinstance(self.fecha_ultimo_vencimiento, date):
             raise TypeError("Inappropriate type of 'fecha_ultimo_vencimiento'.")
