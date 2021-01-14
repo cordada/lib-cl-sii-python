@@ -532,8 +532,6 @@ class CesionL1Test(CesionL0Test):
     Tests for :class:`CesionL1`.
     """
 
-    maxDiff = None  # FIXME
-
     def _set_obj_1(self) -> None:
         obj_dte_natural_key = DteNaturalKey(
             emisor_rut=Rut('76354771-K'),
@@ -685,8 +683,6 @@ class CesionL2Test(CesionL1Test):
     """
     Tests for :class:`CesionL2`.
     """
-
-    maxDiff = None  # FIXME
 
     def _set_obj_1(self) -> None:
         obj_dte_natural_key = DteNaturalKey(
