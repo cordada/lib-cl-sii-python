@@ -11,6 +11,7 @@ from cl_sii.dte.constants import TipoDteEnum
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
+from . import data_models
 from .constants import CESION_MONTO_CEDIDO_FIELD_MIN_VALUE, TIPO_DTE_CEDIBLES
 
 
@@ -106,13 +107,17 @@ class CesionesPeriodoEntry:
     Email address of the "deudor".
     """
 
-    # TODO: verify to what we are referring to exactly:
-    #   digitally signed? received by the SII? processed by the SII?
     fecha_cesion_dt: datetime
     """
     Datetime on which the "cesion" happened.
 
     Must be consistent with ``fecha_cesion`` (considering timezone).
+
+    .. note:: This is the timestamp of when the "cesión"'s AEC was digitally
+        signed, but truncated to the minute (AEC's timestamp has seconds,
+        this one only has minutes).
+
+    ..seealso:: Docstring of :attr:`data_models.CesionL0.fecha_cesion_dt`.
     """
 
     fecha_cesion: date
@@ -230,10 +235,10 @@ class CesionesPeriodoEntry:
             raise ValueError(
                 f"Amount 'monto_cedido' must be >= {CESION_MONTO_CEDIDO_FIELD_MIN_VALUE}.",
                 self.monto_cedido)
-        if not self.monto_cedido <= self.dte_monto_total:
-            raise ValueError(
-                "Amount 'monto_cedido' must be <= 'dte_monto_total'.",
-                self.monto_cedido, self.dte_monto_total)
+        data_models.validate_cesion_and_dte_montos(
+            cesion_value=self.monto_cedido,
+            dte_value=self.dte_monto_total,
+        )
 
         if not isinstance(self.fecha_ultimo_vencimiento, date):
             raise TypeError("Inappropriate type of 'fecha_ultimo_vencimiento'.")
@@ -272,3 +277,23 @@ class CesionesPeriodoEntry:
             raise
 
         return dte_data
+
+    def as_cesion_l2(self) -> data_models.CesionL2:
+        dte = self.as_dte_data_l1()
+
+        return data_models.CesionL2(
+            dte_key=dte.natural_key,
+            seq=None,
+            cedente_rut=self.cedente_rut,
+            cesionario_rut=self.cesionario_rut,
+            fecha_cesion_dt=self.fecha_cesion_dt,
+            monto_cedido=self.monto_cedido,
+            dte_receptor_rut=dte.receptor_rut,
+            dte_fecha_emision=dte.fecha_emision_date,
+            dte_monto_total=dte.monto_total,
+            fecha_ultimo_vencimiento=self.fecha_ultimo_vencimiento,
+            cedente_razon_social=self.cedente_razon_social,
+            cedente_email=self.cedente_email,
+            cesionario_razon_social=self.cesionario_razon_social,
+            cesionario_email=self.cesionario_emails,
+        )

@@ -3,6 +3,13 @@
 History
 -------
 
+0.12.0 (2021-01-17)
++++++++++++++++++++++++
+
+* (PR #179, 2021-01-13) rtc: Add data models for "cesión"
+* (PR #181, 2021-01-14) rtc.data_models: Clean up configuration leftovers from tests
+* (PR #180, 2021-01-15) rtc: Add data models and parser for AECs
+
 0.11.2 (2021-01-11)
 +++++++++++++++++++++++
 
