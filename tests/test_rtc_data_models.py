@@ -833,6 +833,31 @@ class CesionL2Test(CesionL1Test):
         )
         self.assertEqual(obj.as_dict(), expected_output)
 
+    def test_as_cesion_l1(self):
+        self._set_obj_1()
+
+        obj = self.obj_1
+        expected_output = CesionL1(
+            dte_key=DteNaturalKey(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=170,
+            ),
+            seq=32,
+            cedente_rut=Rut('76389992-6'),
+            cesionario_rut=Rut('76598556-0'),
+            fecha_cesion_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                dt=datetime(2019, 4, 5, 12, 57, 32),
+                tz=CesionL1.DATETIME_FIELDS_TZ,
+            ),
+            monto_cedido=2996301,
+            fecha_ultimo_vencimiento=date(2019, 5, 1),
+            dte_fecha_emision=date(2019, 4, 1),
+            dte_receptor_rut=Rut('96790240-3'),
+            dte_monto_total=2996301,
+        )
+        self.assertEqual(obj.as_cesion_l1(), expected_output)
+
     def test_as_dte_data_l2(self):
         self._set_obj_1()
 
