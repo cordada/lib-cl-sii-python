@@ -468,6 +468,15 @@ class CesionL1(CesionL0):
     # Custom Methods
     ###########################################################################
 
+    def as_cesion_l0(self) -> CesionL0:
+        return CesionL0(
+            dte_key=self.dte_key,
+            seq=self.seq,
+            cedente_rut=self.cedente_rut,
+            cesionario_rut=self.cesionario_rut,
+            fecha_cesion_dt=self.fecha_cesion_dt,
+        )
+
     def as_dte_data_l1(self) -> dte_data_models.DteDataL1:
         return dte_data_models.DteDataL1(
             emisor_rut=self.dte_key.emisor_rut,
