@@ -269,6 +269,30 @@ class CesionAecXml:
         )
 
     ###########################################################################
+    # Custom Methods
+    ###########################################################################
+
+    def as_cesion_l2(self) -> data_models.CesionL2:
+        return data_models.CesionL2(
+            dte_key=self.dte.natural_key,
+            seq=self.seq,
+            cedente_rut=self.cedente_rut,
+            cesionario_rut=self.cesionario_rut,
+            fecha_cesion_dt=self.fecha_cesion_dt,
+            monto_cedido=self.monto_cesion,
+            dte_receptor_rut=self.dte.receptor_rut,
+            dte_fecha_emision=self.dte.fecha_emision_date,
+            dte_monto_total=self.dte.monto_total,
+            fecha_ultimo_vencimiento=self.fecha_ultimo_vencimiento,
+            cedente_razon_social=self.cedente_razon_social,
+            cedente_email=self.cedente_email,
+            cesionario_razon_social=self.cesionario_razon_social,
+            cesionario_email=self.cesionario_email,
+            dte_deudor_email=self.dte_deudor_email,
+            cedente_declaracion_jurada=self.cedente_declaracion_jurada,
+        )
+
+    ###########################################################################
     # Validators
     ###########################################################################
 

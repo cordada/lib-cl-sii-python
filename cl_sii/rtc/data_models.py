@@ -468,6 +468,15 @@ class CesionL1(CesionL0):
     # Custom Methods
     ###########################################################################
 
+    def as_cesion_l0(self) -> CesionL0:
+        return CesionL0(
+            dte_key=self.dte_key,
+            seq=self.seq,
+            cedente_rut=self.cedente_rut,
+            cesionario_rut=self.cesionario_rut,
+            fecha_cesion_dt=self.fecha_cesion_dt,
+        )
+
     def as_dte_data_l1(self) -> dte_data_models.DteDataL1:
         return dte_data_models.DteDataL1(
             emisor_rut=self.dte_key.emisor_rut,
@@ -631,6 +640,20 @@ class CesionL2(CesionL1):
     ###########################################################################
     # Custom Methods
     ###########################################################################
+
+    def as_cesion_l1(self) -> CesionL1:
+        return CesionL1(
+            dte_key=self.dte_key,
+            seq=self.seq,
+            cedente_rut=self.cedente_rut,
+            cesionario_rut=self.cesionario_rut,
+            fecha_cesion_dt=self.fecha_cesion_dt,
+            monto_cedido=self.monto_cedido,
+            fecha_ultimo_vencimiento=self.fecha_ultimo_vencimiento,
+            dte_fecha_emision=self.dte_fecha_emision,
+            dte_receptor_rut=self.dte_receptor_rut,
+            dte_monto_total=self.dte_monto_total,
+        )
 
     def as_dte_data_l2(self) -> dte_data_models.DteDataL2:
         return dte_data_models.DteDataL2(
