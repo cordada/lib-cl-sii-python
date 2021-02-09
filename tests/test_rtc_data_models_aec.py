@@ -168,6 +168,48 @@ class CesionAecXmlTest(unittest.TestCase):
         )
         self.assertEqual(obj.alt_natural_key, expected_output)
 
+    def test_as_cesion_l2(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+        expected_output = CesionL2(
+            dte_key=DteNaturalKey(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                folio=170,
+            ),
+            seq=1,
+            cedente_rut=Rut('76354771-K'),
+            cesionario_rut=Rut('76389992-6'),
+            fecha_cesion_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                dt=datetime(2019, 4, 1, 10, 22, 2),
+                tz=CesionL2.DATETIME_FIELDS_TZ,
+            ),
+            monto_cedido=2996301,
+            dte_receptor_rut=Rut('96790240-3'),
+            dte_fecha_emision=date(2019, 4, 1),
+            dte_monto_total=2996301,
+            fecha_ultimo_vencimiento=date(2019, 5, 1),
+            cedente_razon_social='SERVICIOS BONILLA Y LOPEZ Y COMPAÑIA LIMITADA',
+            cedente_email='enaconltda@gmail.com',
+            cesionario_razon_social='ST CAPITAL S.A.',
+            cesionario_email='fynpal-app-notif-st-capital@fynpal.com',
+            dte_deudor_email=None,
+            cedente_declaracion_jurada=(
+                'Se declara bajo juramento que SERVICIOS BONILLA Y LOPEZ Y COMPAÑIA '
+                'LIMITADA, RUT 76354771-K ha puesto a disposición del cesionario ST '
+                'CAPITAL S.A., RUT 76389992-6, el o los documentos donde constan los '
+                'recibos de las mercaderías entregadas o servicios prestados, entregados '
+                'por parte del deudor de la factura MINERA LOS PELAMBRES, RUT 96790240-3, '
+                'deacuerdo a lo establecido en la Ley N°19.983.'
+            ),
+        )
+        obj_cesion_l2 = obj.as_cesion_l2()
+        self.assertEqual(obj_cesion_l2, expected_output)
+        self.assertEqual(obj_cesion_l2.natural_key, obj.natural_key)
+        self.assertEqual(obj_cesion_l2.alt_natural_key, obj.alt_natural_key)
+        self.assertEqual(obj_cesion_l2.dte_key, obj.dte.natural_key)
+
 
 class AecXmlTest(unittest.TestCase):
     """
