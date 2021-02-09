@@ -3,6 +3,12 @@
 History
 -------
 
+0.12.1 (2021-02-09)
++++++++++++++++++++++++
+
+* (PR #186, 2021-02-09) rtc: Add methods to build CesionL2, CesionL1, and CesionL0 from other data
+  models
+
 0.12.0 (2021-01-17)
 +++++++++++++++++++++++
 
