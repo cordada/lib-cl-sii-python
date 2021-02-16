@@ -33,7 +33,7 @@ signxml==2.8.1
 #       - pyOpenSSL
 #           - six
 attrs==20.3.0
-certifi==2020.4.5.1
+certifi==2020.12.5
 cffi==1.14.0
 eight==1.0.0
 future==0.18.2
