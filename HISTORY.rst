@@ -3,6 +3,18 @@
 History
 -------
 
+0.12.2 (2021-02-16)
++++++++++++++++++++++++
+
+* (PR #177, 2021-02-16) build(deps): bump lxml from 4.5.0 to 4.6.2
+* (PR #188, 2021-02-16) build(deps): bump cryptography from 3.3.1 to 3.3.2
+* (PR #176, 2021-02-16) build(deps): bump zipp from 3.1.0 to 3.4.0
+* (PR #167, 2021-02-16) build(deps): bump py from 1.8.1 to 1.10.0
+* (PR #189, 2021-02-16) build(deps): bump certifi from 2020.4.5.1 to 2020.12.5
+* (PR #185, 2021-02-16) build(deps): bump pkginfo from 1.5.0.1 to 1.7.0
+* (PR #191, 2021-02-16) build(deps): bump pyrsistent from 0.16.0 to 0.17.3
+* (PR #190, 2021-02-16) build(deps): bump typed-ast from 1.4.1 to 1.4.2
+
 0.12.1 (2021-02-09)
 +++++++++++++++++++++++
 
