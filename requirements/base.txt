@@ -42,4 +42,4 @@ pycparser==2.20
 pyrsistent==0.16.0
 # setuptools
 six==1.15.0
-zipp==3.1.0
+zipp==3.4.0
