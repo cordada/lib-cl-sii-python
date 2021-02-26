@@ -3,6 +3,12 @@
 History
 -------
 
+0.12.3 (2021-02-26)
++++++++++++++++++++++++
+
+* (PR #193, 2021-02-16) requirements: Update dependency graph of base requirements
+* (PR #197, 2021-02-26) extras: add 'RutField' for Django forms
+
 0.12.2 (2021-02-16)
 +++++++++++++++++++++++
 
