@@ -17,21 +17,23 @@ signxml==2.8.1
 #       - cffi:
 #           - pycparser
 #       - six
-#   - jsonschema
+#   - jsonschema:
 #       - attrs
 #       - importlib-metadata (python_version<'3.8')
 #           - zipp
 #       - pyrsistent
 #       - setuptools
 #       - six
+#   - pyOpenSSL:
+#       - cryptography
+#       - six
 #   - signxml:
 #       - certifi
 #       - cryptography
-#       - eight
+#       - eight:
 #           - future
 #       - lxml
 #       - pyOpenSSL
-#           - six
 attrs==20.3.0
 certifi==2020.12.5
 cffi==1.14.0
@@ -42,4 +44,4 @@ pycparser==2.20
 pyrsistent==0.17.3
 # setuptools
 six==1.15.0
-zipp==3.4.0
+zipp==3.4.0 ; python_version < "3.8"
