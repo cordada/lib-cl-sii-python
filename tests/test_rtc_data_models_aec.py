@@ -678,3 +678,74 @@ class AecXmlTest(unittest.TestCase):
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
         for expected_validation_error in expected_validation_errors:
             self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_cedente_rut_matches_emisor_rut_in_cesion_seq_1(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        expected_validation_errors = [
+            {
+                'loc': ('__root__',),
+                'msg':
+                    "'cedente_rut' of 'cesion' must match previous 'cesionario_rut'"
+                    "  or DTE\'s 'emisor_rut' if there is no previuos 'cesion'"
+                    " Rut('76389992-6')"
+                    " !="
+                    " Rut('76354771-K').",  # DTE's emisor RUT
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                cesiones=[
+                    dataclasses.replace(
+                        obj.cesiones[0],
+                        cedente_rut=obj.cesiones[0].cesionario_rut,
+                    ),
+                    obj.cesiones[1],
+                ],
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_cedente_rut_matches_cesionario_rut_in_cesion_seq_2(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        expected_validation_errors = [
+            {
+                'loc': ('__root__',),
+                'msg':
+                    "'cedente_rut' of 'cesion' must match previous 'cesionario_rut'"
+                    "  or DTE\'s 'emisor_rut' if there is no previuos 'cesion'"
+                    " Rut('76598556-0')"
+                    " !="
+                    " Rut('76389992-6').",  # RUT of the 'cesionario' of the 'cesion' sequence 1
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                cedente_rut=obj.cesiones[1].cesionario_rut,  # To skip previous validation
+                cesiones=[
+                    obj.cesiones[0],
+                    dataclasses.replace(
+                        obj.cesiones[1],
+                        cedente_rut=obj.cesiones[1].cesionario_rut,
+                    ),
+                ],
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)

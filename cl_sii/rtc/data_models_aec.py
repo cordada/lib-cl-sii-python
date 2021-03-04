@@ -776,6 +776,28 @@ class AecXml:
 
         return values
 
+    @pydantic.root_validator(skip_on_failure=True)
+    def validate_cesiones_rut_cedente_match_previous_rut_cesionario_or_dte_emisor(
+        cls, values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        dte = values['dte']
+        cesiones = values['cesiones']
+
+        if isinstance(dte, dte_data_models.DteXmlData) and isinstance(cesiones, Sequence):
+            dte_l1 = dte.as_dte_data_l1()
+            valid_cedente_rut = dte_l1.emisor_rut
+            for cesion in cesiones:
+                if cesion.cedente_rut != valid_cedente_rut:
+                    raise ValueError(
+                        f"'cedente_rut' of 'cesion' must match previous 'cesionario_rut'"
+                        f"  or DTE\'s 'emisor_rut' if there is no previuos 'cesion'"
+                        f" {cesion.cedente_rut!r} != {valid_cedente_rut!r}.",
+                    )
+
+                valid_cedente_rut = cesion.cesionario_rut
+
+        return values
+
     # @pydantic.root_validator
     # def validate_signature_value_and_signature_x509_cert_der_may_only_be_none_together(
     #     cls, values: Mapping[str, object],
