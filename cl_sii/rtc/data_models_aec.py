@@ -324,9 +324,9 @@ class CesionAecXml:
         return v
 
     @pydantic.validator('fecha_cesion_dt')
-    def validate_datetime_tz(cls, v: object) -> object:
+    def validate_fecha_cesion_dt(cls, v: object) -> object:
         if isinstance(v, datetime):
-            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+            data_models.validate_cesion_fecha(v, cls.DATETIME_FIELDS_TZ)
         return v
 
     @pydantic.root_validator(skip_on_failure=True)

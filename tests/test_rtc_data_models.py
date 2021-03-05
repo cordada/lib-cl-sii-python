@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import dataclasses
 import unittest
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from unittest.mock import patch
 
 import pydantic
 
@@ -223,7 +224,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
         validation_errors = assert_raises_cm.exception.errors()
         self.assertIn(expected_validation_error, validation_errors)
 
-    def test_validate_datetime_tz(self) -> None:
+    def test_validate_fecha_cesion_dt(self) -> None:
         self._set_obj_1()
 
         obj = self.obj_1
@@ -265,6 +266,37 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
                     tz=tz_utils.TZ_UTC,
                 ),
             )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertIn(expected_validation_error, validation_errors)
+
+        # Test value constraints:
+
+        today_tz_aware = tz_utils.get_now_tz_aware().astimezone(
+            CesionAltNaturalKey.DATETIME_FIELDS_TZ
+        ).replace(microsecond=0)
+
+        tomorrow_tz_aware = today_tz_aware + timedelta(days=1)
+
+        expected_validation_error = {
+            'loc': ('fecha_cesion_dt',),
+            'msg':
+                '('
+                '''\'Value of "fecha_cesion_dt" must be before or equal to the current day.\','''
+                f' {repr(tomorrow_tz_aware)},'
+                f' {repr(today_tz_aware)}'
+                ')',
+            'type': 'value_error',
+        }
+
+        with patch('cl_sii.libs.tz_utils.get_now_tz_aware') as mock_get_now_tz_aware:
+            with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+                mock_get_now_tz_aware.return_value = today_tz_aware
+                dataclasses.replace(
+                    obj,
+                    fecha_cesion_dt=tomorrow_tz_aware,
+                )
+                mock_get_now_tz_aware.get_now_tz_aware.assert_called_once()
 
         validation_errors = assert_raises_cm.exception.errors()
         self.assertIn(expected_validation_error, validation_errors)
