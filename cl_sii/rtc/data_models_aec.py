@@ -367,7 +367,9 @@ class CesionAecXml:
             isinstance(fecha_ultimo_vencimiento, date)
             and isinstance(dte, dte_data_models.DteDataL1)
         ):
-            pass  # TODO: Validate value of 'fecha_ultimo_vencimiento' in relation to the DTE data.
+            data_models.validate_cesion_fecha_ultimo_vencimiento_is_consistent_with_dte(
+                cesion_value=fecha_ultimo_vencimiento, dte_value=dte.fecha_emision_date
+            )
 
         return values
 

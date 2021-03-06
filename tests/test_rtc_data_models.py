@@ -730,6 +730,32 @@ class CesionL1Test(CesionL0Test):
         for expected_validation_error in expected_validation_errors:
             self.assertIn(expected_validation_error, validation_errors)
 
+    def test_validate_fecha_ultimo_vencimiento_is_not_before_dte_fecha_emision(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+        expected_validation_errors = [
+            {
+                'loc': ('__root__',),
+                'msg':
+                    """('Value of "cesión" must be >= value of DTE.',"""
+                    " datetime.date(2019, 5, 1), datetime.date(2019, 5, 2))",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                fecha_ultimo_vencimiento=date(2019, 5, 1),
+                dte_fecha_emision=date(2019, 5, 2),
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
 
 class CesionL2Test(CesionL1Test):
     """

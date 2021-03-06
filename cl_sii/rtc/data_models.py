@@ -99,6 +99,25 @@ def validate_cesion_and_dte_montos(cesion_value: int, dte_value: int) -> None:
         raise ValueError('Value of "cesión" must be <= value of DTE.', cesion_value, dte_value)
 
 
+def validate_cesion_fecha_ultimo_vencimiento_is_consistent_with_dte(
+    cesion_value: date, dte_value: date
+) -> None:
+    """
+    Validate 'fecha_ultimo_vencimiento' of the "cesión" is after or equal
+    to 'fecha_emision' of the DTE.
+
+    > Que la fecha del último vencimiento sea mayor o igual a la fecha
+    > consignada en el documento.
+    Source: https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/docs/rtc/2013-02-11-instructivo-tecnico.pdf
+
+
+
+    :raises ValueError:
+    """  # noqa: E501
+    if not (cesion_value >= dte_value):
+        raise ValueError('Value of "cesión" must be >= value of DTE.', cesion_value, dte_value)
+
+
 @pydantic.dataclasses.dataclass(
     frozen=True,
     config=type('Config', (), dict(
@@ -537,6 +556,20 @@ class CesionL1(CesionL0):
 
         return values
 
+    @pydantic.root_validator(skip_on_failure=True)
+    def validate_fecha_ultimo_vencimiento_is_consistent_with_dte(
+        cls, values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        fecha_ultimo_vencimiento = values['fecha_ultimo_vencimiento']
+        dte_fecha_emision = values['dte_fecha_emision']
+
+        if isinstance(fecha_ultimo_vencimiento, date) and isinstance(dte_fecha_emision, date):
+            validate_cesion_fecha_ultimo_vencimiento_is_consistent_with_dte(
+                cesion_value=fecha_ultimo_vencimiento, dte_value=dte_fecha_emision
+            )
+
+        return values
+
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
@@ -700,8 +733,6 @@ class CesionL2(CesionL1):
 
     # TODO: Validate value of 'fecha_firma_dt' in relation to the DTE data.
 
-    # TODO: Validate value of 'fecha_ultimo_vencimiento' in relation to the DTE data.
-
     @pydantic.validator('fecha_cesion_dt')
     def validate_fecha_cesion_dt(cls, v: object) -> object:
         if isinstance(v, datetime):
@@ -743,5 +774,19 @@ class CesionL2(CesionL1):
             )
         except (TypeError, ValueError):
             raise
+
+        return values
+
+    @pydantic.root_validator(skip_on_failure=True)
+    def validate_fecha_ultimo_vencimiento_is_consistent_with_dte(
+        cls, values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        fecha_ultimo_vencimiento = values['fecha_ultimo_vencimiento']
+        dte_fecha_emision = values['dte_fecha_emision']
+
+        if isinstance(fecha_ultimo_vencimiento, date) and isinstance(dte_fecha_emision, date):
+            validate_cesion_fecha_ultimo_vencimiento_is_consistent_with_dte(
+                cesion_value=fecha_ultimo_vencimiento, dte_value=dte_fecha_emision
+            )
 
         return values
