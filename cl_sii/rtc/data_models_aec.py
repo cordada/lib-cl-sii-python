@@ -421,6 +421,11 @@ class AecXml:
 
     DATETIME_FIELDS_TZ: ClassVar[tz_utils.PytzTimezone] = SII_OFFICIAL_TZ
 
+    FECHA_FIRMA_DT_AFTER_FECHA_CESION_DT_IN_SECONDS: ClassVar[int] = 60
+    """
+    Maximum elapsed time allowed for the `fecha_firma_dt` after the `fecha_cesion_dt`, in seconds.
+    """
+
     ###########################################################################
     # Fields
     ###########################################################################
@@ -741,12 +746,40 @@ class AecXml:
         return values
 
     @pydantic.root_validator(skip_on_failure=True)
+    def validate_fecha_firma_dt_after_fecha_cesion_dt(
+        cls, values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        fecha_firma_dt = values['fecha_firma_dt']
+        cesiones = values['cesiones']
+
+        if isinstance(cesiones, Sequence):
+            if cesiones:
+                last_cesion = cesiones[-1]
+                fecha_cesion_dt = last_cesion.fecha_cesion_dt
+
+                elapsed_time = fecha_firma_dt - fecha_cesion_dt
+                elapsed_time_in_seconds = elapsed_time.total_seconds()
+                max_elapsed_time_in_seconds = cls.FECHA_FIRMA_DT_AFTER_FECHA_CESION_DT_IN_SECONDS
+
+                if not (elapsed_time_in_seconds >= 0
+                        and elapsed_time_in_seconds <= max_elapsed_time_in_seconds
+                        ):
+                    raise ValueError(
+                        f"'fecha_firma_dt' must be after 'fecha_cesion_dt' of last 'cesion'"
+                        f" and no more than {max_elapsed_time_in_seconds!r} seconds:"
+                        f" fecha_firma_dt: {fecha_firma_dt!r},"
+                        f" fecha_cesion_dt: {fecha_cesion_dt!r}.",
+                    )
+
+        return values
+
+    @pydantic.root_validator(skip_on_failure=True)
     def validate_last_cesion_matches_some_fields(
         cls, values: Mapping[str, object],
     ) -> Mapping[str, object]:
         field_validations: Sequence[Tuple[str, str]] = [
             # (AecXml field, CesionAecXml field):
-            ('fecha_firma_dt', 'fecha_cesion_dt'),
+            # ('fecha_firma_dt', 'fecha_cesion_dt'),
             ('cedente_rut', 'cedente_rut'),
             ('cesionario_rut', 'cesionario_rut'),
         ]

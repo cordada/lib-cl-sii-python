@@ -651,7 +651,7 @@ class AecXmlTest(unittest.TestCase):
         for expected_validation_error in expected_validation_errors:
             self.assertIn(expected_validation_error, validation_errors)
 
-    def test_validate_last_cesion_matches_some_fields(self) -> None:
+    def test_validate_fecha_firma_dt_after_fecha_cesion_dt(self) -> None:
         self._set_obj_1()
 
         obj = self.obj_1
@@ -660,14 +660,14 @@ class AecXmlTest(unittest.TestCase):
             {
                 'loc': ('__root__',),
                 'msg':
-                    "'fecha_cesion_dt' of last 'cesion' must match 'fecha_firma_dt':"
-                    " datetime.datetime("
-                    "2019, 4, 5, 12, 57, 32,"
+                    "'fecha_firma_dt' must be after 'fecha_cesion_dt' of last 'cesion'"
+                    " and no more than 60 seconds:"
+                    " fecha_firma_dt: datetime.datetime("
+                    "2019, 4, 5, 12, 57,"
                     " tzinfo=<DstTzInfo 'America/Santiago' -03-1 day, 21:00:00 DST>"
-                    ")"
-                    " !="
-                    " datetime.datetime("
-                    "2019, 4, 5, 12, 0, 32,"
+                    "),"
+                    " fecha_cesion_dt: datetime.datetime("
+                    "2019, 4, 5, 12, 57, 32,"
                     " tzinfo=<DstTzInfo 'America/Santiago' -03-1 day, 21:00:00 DST>"
                     ").",
                 'type': 'value_error',
@@ -677,7 +677,35 @@ class AecXmlTest(unittest.TestCase):
         with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
-                fecha_firma_dt=obj.fecha_firma_dt.replace(minute=0),  # Original minute is 57.
+                fecha_firma_dt=obj.fecha_firma_dt.replace(second=0),  # Original second is 32.
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_last_cesion_matches_some_fields(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        expected_validation_errors = [
+            {
+                'loc': ('__root__',),
+                'msg':
+                    "'cedente_rut' of last 'cesion' must match 'cedente_rut':"
+                    " Rut('76389992-6')"
+                    " !="
+                    " Rut('76598556-0').",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                cedente_rut=obj.cesionario_rut,
             )
 
         validation_errors = assert_raises_cm.exception.errors()
