@@ -746,7 +746,12 @@ class AecXml:
     ) -> Mapping[str, object]:
         field_validations: Sequence[Tuple[str, str]] = [
             # (AecXml field, CesionAecXml field):
-            ('fecha_firma_dt', 'fecha_cesion_dt'),
+            # Even though it seems reasonable to expect that the date in `fecha_firma_dt`
+            # in the AEC is later than the date in `fecha_cesion_dt`, we know of cases of
+            # AEC approved by the SII in which this is not fulfilled, we observe cases
+            # where the date in `fecha_firma_dt` was later or even before the date in
+            # `fecha_cesion_dt` by a difference of up to 6 hours.
+            # ('fecha_firma_dt', 'fecha_cesion_dt'),
             ('cedente_rut', 'cedente_rut'),
             ('cesionario_rut', 'cesionario_rut'),
         ]
