@@ -574,37 +574,37 @@ class AecXmlTest(unittest.TestCase):
         for expected_validation_error in expected_validation_errors:
             self.assertIn(expected_validation_error, validation_errors)
 
-    def test_validate_cesiones_monto_cesion_must_not_increase(self) -> None:
-        self._set_obj_1()
+    # def test_validate_cesiones_monto_cesion_must_not_increase(self) -> None:
+    #     self._set_obj_1()
 
-        obj = self.obj_1
+    #     obj = self.obj_1
 
-        expected_validation_errors = [
-            {
-                'loc': ('cesiones',),
-                'msg':
-                    "items must have a 'monto_cesion'"
-                    " that does not exceed the previous item's 'monto_cesion'.",
-                'type': 'value_error',
-            },
-        ]
+    #     expected_validation_errors = [
+    #         {
+    #             'loc': ('cesiones',),
+    #             'msg':
+    #                 "items must have a 'monto_cesion'"
+    #                 " that does not exceed the previous item's 'monto_cesion'.",
+    #             'type': 'value_error',
+    #         },
+    #     ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
-            dataclasses.replace(
-                obj,
-                cesiones=[
-                    dataclasses.replace(
-                        obj.cesiones[0],
-                        monto_cesion=obj.cesiones[1].monto_cesion - 1,
-                    ),
-                    obj.cesiones[1],
-                ],
-            )
+    #     with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+    #         dataclasses.replace(
+    #             obj,
+    #             cesiones=[
+    #                 dataclasses.replace(
+    #                     obj.cesiones[0],
+    #                     monto_cesion=obj.cesiones[1].monto_cesion - 1,
+    #                 ),
+    #                 obj.cesiones[1],
+    #             ],
+    #         )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+    #     validation_errors = assert_raises_cm.exception.errors()
+    #     self.assertEqual(len(validation_errors), len(expected_validation_errors))
+    #     for expected_validation_error in expected_validation_errors:
+    #         self.assertIn(expected_validation_error, validation_errors)
 
     def test_validate_dte_matches_cesiones_dtes(self) -> None:
         self._set_obj_1()
