@@ -45,19 +45,20 @@ as
 
 #### Cesion (RTC)
 
-Archive [schema_cesion.zip](http://www.sii.cl/factura_electronica/schema_cesion.zip),
+Archive [schema_cesion_201912](https://www.sii.cl/factura_electronica/schema_cesion_201912.zip),
 referenced from official webpage
-[SII](http://www.sii.cl)
-/ [Servicios online](http://www.sii.cl/servicios_online/index.html)
-/ [Factura electrónica](http://www.sii.cl/servicios_online/1039-.html)
-/ [Sistema de facturación de mercado](http://www.sii.cl/servicios_online/1039-1184.html)
+[SII](https://www.sii.cl)
+/ [Servicios online](https://www.sii.cl/servicios_online/index.html)
+/ [Factura electrónica](https://www.sii.cl/servicios_online/1039-.html)
+/ [Sistema de facturación de mercado](https://www.sii.cl/servicios_online/1039-1184.html)
 / [Registro electrónico de cesión de créditos](https://palena.sii.cl/rtc/RTC/RTCMenu.html)
-/ [Formatos de archivos electrónicos](http://www.sii.cl/factura_electronica/form_ele.htm)
+/ [Formatos de archivos electrónicos](https://www.sii.cl/factura_electronica/form_ele.htm)
 as
-"[Formato XML del Archivo Electrónico de Cesión](http://www.sii.cl/factura_electronica/schema_cesion.zip)"
+"[Formato XML del Archivo Electrónico de Cesión](https://www.sii.cl/factura_electronica/schema_cesion_201912.zip)"
 
-- Retrieval date: 2019-04-16
-- MD5 checksum: `82d426fc3bd5f3a29e61a1d07ed4d6dd`.
+- Retrieval date: 2021-03-25
+- MD5 checksum: `33639f61ef3aa0ec785557b1c8778cea`.
+- Source: [cl-sii-extraoficial/archivos-oficiales@c89dec5](https://github.com/cl-sii-extraoficial/archivos-oficiales/tree/c89dec54f664281721dcb77af327c4f6c58ec4ff/src/code/rtc/2019-12-12-schema_cesion)
 
 
 #### IECV
@@ -147,9 +148,12 @@ Schema files will be updated as necessary, indicating the source in the correspo
     - `FonoType`: "Fono".
     - `NombreType`: "Nombre".
     - `FechaType`: "Fecha entre 2000-01-01 y 2050-12-31".
+    - `TipoTransCOMPRA`: "Tipo de Transacción para el comprador".
+    - `TipoTransVENTA`: "Tipo de Transacción para el vendedor".
     - `FechaHoraType`: "FechaType + hora entre 00:00 y 23:59;".
     - `Dec16_2Type`: "Monto con 16 Digitos de Cuerpo y 2 Decimales".
     - `Dec14_4Type`: "Monto con 14 Digitos de Cuerpo y 4 Decimales".
+    - `Dec14_4-0Type`: "Monto con 14 Digitos de Cuerpo y 4 Decimales partiendo de cero".
     - `Dec8_4Type`: "Monto con 8 Digitos de Cuerpo y 4 Decimales".
     - `Dec6_4Type`: "Monto con 6 Digitos de Cuerpo y 4 Decimales".
     - `Dec12_6Type`: "Monto con 12 Digitos de Cuerpo y 6 Decimales".
