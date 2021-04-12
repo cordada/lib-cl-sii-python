@@ -63,6 +63,7 @@ _package_data = {
         'data/cte/schemas-json/*.schema.json',
         'data/ref/factura_electronica/schemas-xml/2013_02_07_sii_official/*.xsd',
         'data/ref/factura_electronica/schemas-xml/2017_10_23_libre_dte/*.xsd',
+        'data/ref/factura_electronica/schemas-xml/2019_12_12_sii_rtc/*.xsd',
     ],
 }
 

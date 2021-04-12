@@ -25,6 +25,16 @@ class XmlSchemasVersionEnum(enum.Enum):
 
     """
 
+    V2019_12_12_SII_RTC = '2019_12_12_sii_rtc'
+    """
+    Incremental update to version V2013_02_07_SII_OFFICIAL from the official
+    XML schemas of AEC (Archivo Electrónico de Cesión).
+    Source:
+    https://github.com/cl-sii-extraoficial/archivos-oficiales/tree/c89dec54f664281721dcb77af327c4f6c58ec4ff/src/code/rtc/2019-12-12-schema_cesion
+
+    Most recent modification timestamp of the XML schemas: 2019-12-12
+    """
+
     V2017_10_23_LIBRE_DTE = '2017_10_23_libre_dte'
     """
     Incremental update to version V2013_02_07_SII_OFFICIAL, from an unofficial
@@ -59,4 +69,4 @@ class XmlSchemasVersionEnum(enum.Enum):
     @classmethod
     def latest(cls) -> XmlSchemasVersionEnum:
         """Reference to the latest version available"""
-        return cls.V2017_10_23_LIBRE_DTE
+        return cls.V2019_12_12_SII_RTC
