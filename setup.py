@@ -61,7 +61,8 @@ _package_data = {
         'py.typed',
         # Data files that are not in a sub-package.
         'data/cte/schemas-json/*.schema.json',
-        'data/ref/factura_electronica/schemas-xml/*.xsd',
+        'data/ref/factura_electronica/schemas-xml/2013_02_07_sii_official/*.xsd',
+        'data/ref/factura_electronica/schemas-xml/2017_10_23_libre_dte/*.xsd',
     ],
 }
 

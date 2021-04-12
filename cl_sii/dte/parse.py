@@ -21,8 +21,10 @@ import io
 import logging
 import os
 from datetime import date, datetime
+from lxml.etree import XMLSchema as XmlSchema
 from typing import Optional, Tuple
 
+from cl_sii.base.constants import XmlSchemasVersionEnum
 from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
 from cl_sii.libs import xml_utils
@@ -52,11 +54,15 @@ DTE_XMLNS_MAP = {
 Mapping from XML namespace prefix to full name, for DTE processing.
 """
 
+_LATEST_DTE_XML_SCHEMA_VERSION = XmlSchemasVersionEnum.latest()
 
+_DTE_XML_SCHEMA_STR_PATH_TEMPLATE = (
+    "data/ref/factura_electronica/schemas-xml/{}/EnvioDTE_v10.xsd"
+)
 _DTE_XML_SCHEMA_PATH = os.path.abspath(
     os.path.join(
         os.path.dirname(os.path.dirname(__file__)),
-        'data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd',
+        _DTE_XML_SCHEMA_STR_PATH_TEMPLATE.format(_LATEST_DTE_XML_SCHEMA_VERSION.value),
     )
 )
 DTE_XML_SCHEMA_OBJ = xml_utils.read_xml_schema(_DTE_XML_SCHEMA_PATH)
@@ -103,15 +109,20 @@ def clean_dte_xml(
     return xml_doc, modified
 
 
-def validate_dte_xml(xml_doc: XmlElement) -> None:
+def validate_dte_xml(
+    xml_doc: XmlElement,
+    dte_xml_schema_version: XmlSchemasVersionEnum = _LATEST_DTE_XML_SCHEMA_VERSION
+) -> None:
     """
     Validate ``xml_doc`` against DTE's XML schema.
 
     :raises xml_utils.XmlSchemaDocValidationError:
 
     """
+
+    dte_xml_schema_obj = _get_dte_xml_schema_obj(dte_xml_schema_version)
     # TODO: add better and more precise exception handling.
-    xml_utils.validate_xml_doc(DTE_XML_SCHEMA_OBJ, xml_doc)
+    xml_utils.validate_xml_doc(dte_xml_schema_obj, xml_doc, dte_xml_schema_version.value)
 
 
 def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
@@ -510,6 +521,23 @@ def _text_strip_or_raise(xml_em: XmlElement) -> str:
         stripped_text: str = xml_em.text.strip()
 
     return stripped_text
+
+
+def _get_dte_xml_schema_obj(dte_xml_schema_version: XmlSchemasVersionEnum) -> XmlSchema:
+
+    if(dte_xml_schema_version is _LATEST_DTE_XML_SCHEMA_VERSION):
+        dte_xml_schema_obj = DTE_XML_SCHEMA_OBJ
+    else:
+        dte_xml_schema_path = os.path.abspath(
+            os.path.join(
+                os.path.dirname(os.path.dirname(__file__)),
+                _DTE_XML_SCHEMA_STR_PATH_TEMPLATE.format(dte_xml_schema_version.value),
+            )
+        )
+
+        dte_xml_schema_obj = xml_utils.read_xml_schema(dte_xml_schema_path)
+
+    return dte_xml_schema_obj
 
 
 ###############################################################################

@@ -14,7 +14,8 @@ from cl_sii.rut import Rut
 from cl_sii.dte.parse import (  # noqa: F401
     clean_dte_xml, parse_dte_xml, validate_dte_xml,
     _remove_dte_xml_doc_personalizado, _set_dte_xml_missing_xmlns,
-    DTE_XML_SCHEMA_OBJ, DTE_XMLNS, DTE_XMLNS_MAP
+    DTE_XML_SCHEMA_OBJ, DTE_XMLNS, DTE_XMLNS_MAP,
+    _LATEST_DTE_XML_SCHEMA_VERSION
 )
 
 from .utils import read_test_file_bytes
@@ -88,7 +89,8 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2. "
+             f"XML schemas version {_LATEST_DTE_XML_SCHEMA_VERSION.value}",)
         )
 
     def test_validate_dte_xml_fail_dte_2(self) -> None:
@@ -104,7 +106,8 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2. "
+             f"XML schemas version {_LATEST_DTE_XML_SCHEMA_VERSION.value}",)
         )
 
     def test_validate_dte_xml_fail_dte_3(self) -> None:
@@ -120,7 +123,8 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2. "
+             f"XML schemas version {_LATEST_DTE_XML_SCHEMA_VERSION.value}",)
         )
 
 
@@ -150,7 +154,8 @@ class FunctionCleanDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2. "
+             f"XML schemas version {_LATEST_DTE_XML_SCHEMA_VERSION.value}",)
         )
 
         xml_doc_cleaned, modified = clean_dte_xml(
@@ -224,7 +229,8 @@ class FunctionCleanDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2. "
+             f"XML schemas version {_LATEST_DTE_XML_SCHEMA_VERSION.value}",)
         )
 
         xml_doc_cleaned, modified = clean_dte_xml(
@@ -298,7 +304,8 @@ class FunctionCleanDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2. "
+             f"XML schemas version {_LATEST_DTE_XML_SCHEMA_VERSION.value}",)
         )
 
         xml_doc_cleaned, modified = clean_dte_xml(
