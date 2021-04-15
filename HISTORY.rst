@@ -3,6 +3,19 @@
 History
 -------
 
+0.12.4 (2021-04-15)
++++++++++++++++++++++++
+
+* (PR #195, 2021-04-15) build(deps): bump requests from 2.23.0 to 2.25.1
+* (PR #212, 2021-04-14) config: Update Python version used in CI jobs to 3.8.9
+* (PR #210, 2021-04-13) rtc.data_models_aec: remove validation for the progression of
+  'monto_cesion' across the 'cesiones'
+* (PR #207, 2021-04-08) build(deps): bump virtualenv from 20.0.31 to 20.4.3
+* (PR #208, 2021-04-08) rtc.data_models_aec: remove match validation for 'fecha_firma_dt' and
+  'fecha_cesion_dt'
+* (PR #205, 2021-03-26) build(deps): bump lxml from 4.6.2 to 4.6.3
+* (PR #204, 2021-03-24) requirements: Upgrade 'Django'
+
 0.12.3 (2021-02-26)
 +++++++++++++++++++++++
 
