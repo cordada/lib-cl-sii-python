@@ -46,7 +46,7 @@ keyring==21.4.0
 pkginfo==1.7.0
 # Pygments
 readme-renderer==25.0
-requests==2.23.0
+requests==2.25.1
 requests-toolbelt==0.9.1
 # SecretStorage
 # six

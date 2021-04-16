@@ -703,21 +703,24 @@ class AecXml:
                     raise ValueError("items must be ordered according to their 'seq'")
         return v
 
-    @pydantic.validator('cesiones')
-    def validate_cesiones_monto_cesion_must_not_increase(cls, v: object) -> object:
-        if isinstance(v, Sequence):
-            if len(v) >= 2:
-                previous_cesion: Optional[CesionAecXml] = None
-                for cesion in v:
-                    if previous_cesion is not None:
-                        if not (cesion.monto_cesion <= previous_cesion.monto_cesion):
-                            raise ValueError(
-                                "items must have a 'monto_cesion'"
-                                " that does not exceed the previous item's 'monto_cesion'.",
-                            )
-                    previous_cesion = cesion
+    # Note: Even though this validation seems to make perfect sense, there are some
+    # real cases of SII-approved AEC where this is not fulfilled.
+    # We will keep this validation in case we need it in the future.
+    # @pydantic.validator('cesiones')
+    # def validate_cesiones_monto_cesion_must_not_increase(cls, v: object) -> object:
+    #     if isinstance(v, Sequence):
+    #         if len(v) >= 2:
+    #             previous_cesion: Optional[CesionAecXml] = None
+    #             for cesion in v:
+    #                 if previous_cesion is not None:
+    #                     if not (cesion.monto_cesion <= previous_cesion.monto_cesion):
+    #                         raise ValueError(
+    #                             "items must have a 'monto_cesion'"
+    #                             " that does not exceed the previous item's 'monto_cesion'.",
+    #                         )
+    #                 previous_cesion = cesion
 
-        return v
+    #     return v
 
     @pydantic.root_validator(skip_on_failure=True)
     def validate_dte_matches_cesiones_dtes(
@@ -746,7 +749,12 @@ class AecXml:
     ) -> Mapping[str, object]:
         field_validations: Sequence[Tuple[str, str]] = [
             # (AecXml field, CesionAecXml field):
-            ('fecha_firma_dt', 'fecha_cesion_dt'),
+            # Even though it seems reasonable to expect that the date in `fecha_firma_dt`
+            # in the AEC is later than the date in `fecha_cesion_dt`, we know of cases of
+            # AEC approved by the SII in which this is not fulfilled, we observe cases
+            # where the date in `fecha_firma_dt` was later or even before the date in
+            # `fecha_cesion_dt` by a difference of up to 6 hours.
+            # ('fecha_firma_dt', 'fecha_cesion_dt'),
             ('cedente_rut', 'cedente_rut'),
             ('cesionario_rut', 'cesionario_rut'),
         ]
