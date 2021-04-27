@@ -18,6 +18,7 @@ from cl_sii.dte.data_models import (  # noqa: F401
     DteDataL2,
     DteNaturalKey,
     DteXmlData,
+    DteXmlReferencia,
     validate_contribuyente_razon_social,
     validate_dte_folio,
     validate_dte_monto_total,

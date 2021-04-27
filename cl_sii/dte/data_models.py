@@ -27,7 +27,7 @@ from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 from . import constants
-from .constants import TipoDte
+from .constants import CodigoReferencia, TipoDte
 
 
 def validate_dte_folio(value: int) -> None:
@@ -460,6 +460,118 @@ class DteDataL2(DteDataL1):
         if isinstance(v, str):
             validate_non_empty_str(v)
         return v
+
+
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
+)
+class DteXmlReferencia:
+    """
+    Data in XML element ``Referencia`` in an DTE XML doc.
+
+    > Identificacion de otros documentos Referenciados por Documento
+
+    DTE doc XML element: 'Documento//Referencia'
+
+    .. note:: An XML DTE document includes none or up to 40 "Referencia" elements.
+
+    .. seealso::
+        XML schema of ``{http://www.sii.cl/SiiDte}/DTE/Documento/Referencia`` in 'DTE_v10.xsd' at
+        https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/dte/README.md
+
+    """
+
+    ###########################################################################
+    # Fields
+    ###########################################################################
+
+    numero_linea_ref: int
+    """
+    Sequential line  number of the "referencia". Must be an integer between 1 and 40 inclusive
+
+    > Numero Secuencial de Linea de Referencia
+
+    DTE doc XML element: '..//Documento//Referencia//NroLinRef'
+    """
+
+    tipo_documento_ref: str
+    """
+    Kind of the document of "Referencia". Length must be >= 1 and <= 3
+
+    > Tipo de Documento de Referencia
+
+    DTE doc XML element: '..//Documento//Referencia//TpoDocRef'
+
+    .. note::
+        This field accepts any of the elements of the class:`TipoDocumento` or
+        an alphanumeric to refer to non-tax documents (in this case, validation does not apply)
+    """
+
+    folio_ref: str
+    """
+    The folio of the document referred to.
+
+    > Identificación del documento de referencia.
+
+    DTE doc XML element: '..//Documento//Referencia//FolioRef'
+    """
+
+    fecha_ref: date
+    """
+    The 'fecha_emision' of the document referred to.
+
+    > Fecha del documento de referencia
+
+    DTE doc XML element: '..//Documento//Referencia//FchRef'
+    """
+
+    ind_global: Optional[int] = None
+    """
+    Whether a set of documents of the same kind is referenced.
+
+    > Documento afecta a un número de más de 20 documentos del mismo `tipo_documento_ref`
+    > Se explicita la razón en `Razón Referencia`
+
+    DTE doc XML element: '..//Documento//Referencia//IndGlobal'
+    """
+
+    rut_otro: Optional[Rut] = None
+    """
+    The RUT of the "emisor" of the document referred to.
+
+    > RUT otro contribuyente
+
+    DTE doc XML element: '..//Documento//Referencia//RUTOtr'
+
+    .. note::
+        > Sólo si el documento de referencia es de tipo tributario y fue emitido
+        > por otro contribuyente
+    """
+
+    codigo_ref: Optional[CodigoReferencia] = None
+    """
+    The type of use for the reference
+
+    > Tipo de Uso de la Referencia
+
+    DTE doc XML element: '..//Documento//Referencia//CodRef'
+    """
+
+    razon_ref: Optional[str] = None
+    """
+    The reason the document is being referenced
+
+    > Razon Explicita por la que se Referencia el Documento
+
+    DTE doc XML element: '..//Documento//Referencia//RazonRef'
+    """
 
 
 @pydantic.dataclasses.dataclass(
