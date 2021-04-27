@@ -12,7 +12,7 @@ from cl_sii.dte.constants import (  # noqa: F401
     TipoDteEnum,
 )
 from cl_sii.dte.data_models import (  # noqa: F401
-    DteDataL0, DteDataL1, DteDataL2, DteNaturalKey, DteXmlData,
+    DteDataL0, DteDataL1, DteDataL2, DteNaturalKey, DteXmlData, DteXmlReferencia,
     validate_contribuyente_razon_social, validate_dte_folio, validate_dte_monto_total,
 )
 
@@ -350,6 +350,168 @@ class DteDataL2Test(unittest.TestCase):
                 fecha_emision_date=date(2019, 8, 8),
                 receptor_rut=Rut('76555835-2'),
                 monto_total=10642,
+            )
+        )
+
+
+class DteXmlReferenciaTest(unittest.TestCase):
+    """
+    Tests for :class:`DteXmlReferencia`.
+    """
+
+    def _set_obj_1(self) -> None:
+        obj = DteXmlReferencia(
+            numero_linea_ref=1,
+            tipo_documento_ref="801",
+            folio_ref="4769807823",
+            fecha_ref=date(2021, 4, 16)
+        )
+        self.assertIsInstance(obj, DteXmlReferencia)
+
+        self.obj_1 = obj
+
+    def _set_obj_2(self) -> None:
+        obj = DteXmlReferencia(
+            numero_linea_ref=2,
+            tipo_documento_ref="HES",
+            folio_ref="1001055906",
+            fecha_ref=date(2021, 4, 16)
+        )
+        self.assertIsInstance(obj, DteXmlReferencia)
+
+        self.obj_2 = obj
+
+    def test_create_new_empty_instance(self) -> None:
+        with self.assertRaises(TypeError):
+            DteXmlReferencia()
+
+    def test_init_fail_numero_linea_ref_out_of_range(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                obj,
+                numero_linea_ref=0,
+            )
+        self.assertEqual(
+            cm.exception.args,
+            ("Value 'numero_linea_ref' must be a value between 1 and 40", 0)
+        )
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                obj,
+                numero_linea_ref=41,
+            )
+        self.assertEqual(
+            cm.exception.args,
+            ("Value 'numero_linea_ref' must be a value between 1 and 40", 41)
+        )
+
+    def test_init_fail_tipo_documento_ref_invalid(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                obj,
+                tipo_documento_ref="8001",
+            )
+        self.assertEqual(
+            cm.exception.args,
+            ("The length of 'tipo_documento_ref' must be a value between 1 and 3", "8001")
+        )
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                obj,
+                tipo_documento_ref="2BAD",
+            )
+        self.assertEqual(
+            cm.exception.args,
+            ("The length of 'tipo_documento_ref' must be a value between 1 and 3", "2BAD")
+        )
+
+    def test_init_fail_ind_global_invalid(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                obj,
+                ind_global=2,
+            )
+        self.assertEqual(
+            cm.exception.args,
+            ("Only the value \"1\" is valid for the field 'ind_global'", 2)
+        )
+
+    def test_init_fail_folio_ref_empty(self) -> None:
+        self._set_obj_2()
+
+        obj = self.obj_2
+
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                obj,
+                folio_ref="",
+            )
+        self.assertEqual(
+            cm.exception.args,
+            ("The length of 'folio_ref' must be a value between 1 and 18", '')
+        )
+
+    def test_init_fail_fecha_ref_out_of_range(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                obj,
+                fecha_ref=date(2002, 7, 31),
+            )
+        self.assertEqual(
+            cm.exception.args,
+            (
+                "The date 'fecha_ref' must be after 2002-08-01 and before 2050-12-31",
+                date(2002, 7, 31)
+            )
+        )
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                obj,
+                fecha_ref=date(2051, 1, 1),
+            )
+        self.assertEqual(
+            cm.exception.args,
+            (
+                "The date 'fecha_ref' must be after 2002-08-01 and before 2050-12-31",
+                date(2051, 1, 1)
+            )
+        )
+
+    def test_init_fail_razon_ref_too_long(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(ValueError) as cm:
+            dataclasses.replace(
+                obj,
+                razon_ref=(
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing '
+                    'elit. Sed metus magna, ultricies sit amet dolor sed'
+                ),
+            )
+        self.assertEqual(
+            cm.exception.args,
+            (
+                "The maximum length allowed for `razon_ref` is 90",
+                'Lorem ipsum dolor sit amet, consectetur adipiscing '
+                'elit. Sed metus magna, ultricies sit amet dolor sed'
             )
         )
 

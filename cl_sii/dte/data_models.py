@@ -20,6 +20,8 @@ from dataclasses import field as dc_field
 from datetime import date, datetime
 from typing import Mapping, Optional
 
+import pydantic
+
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
 from cl_sii.base.constants import SII_OFFICIAL_TZ
@@ -27,7 +29,7 @@ from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
 from . import constants
-from .constants import TipoDteEnum
+from .constants import CodigoReferencia, TipoDteEnum
 
 
 def validate_dte_folio(value: int) -> None:
@@ -464,6 +466,168 @@ class DteDataL2(DteDataL1):
             fecha_emision_date=self.fecha_emision_date,
             receptor_rut=self.receptor_rut,
             monto_total=self.monto_total)
+
+
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
+class DteXmlReferencia:
+    """
+    Data in XML element ``Referencia`` in an DTE XML doc.
+
+    > Identificacion de otros documentos Referenciados por Documento
+
+    DTE doc XML element: 'Documento//Referencia'
+
+    .. note:: An XML DTE document includes none or up to 40 "Referencia" elements.
+
+    .. seealso::
+        XML schema of ``{http://www.sii.cl/SiiDte}/DTE/Documento/Referencia`` in 'DTE_v10.xsd' at
+        https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/dte/README.md
+
+    """
+
+    ###########################################################################
+    # Fields
+    ###########################################################################
+
+    numero_linea_ref: int
+    """
+    Sequential line  number of the "referencia". Must be an integer between 1 and 40 inclusive
+
+    > Numero Secuencial de Linea de Referencia
+
+    DTE doc XML element: '..//Documento//Referencia//NroLinRef'
+    """
+
+    tipo_documento_ref: str
+    """
+    Kind of the document of "Referencia". Length must be >= 1 and <= 3
+
+    > Tipo de Documento de Referencia
+
+    DTE doc XML element: '..//Documento//Referencia//TpoDocRef'
+
+    .. note::
+        This field accepts any of the elements of the class:`TipoDocumentoEnum` or
+        an alphanumeric to refer to non-tax documents (in this case, validation does not apply)
+    """
+
+    folio_ref: str
+    """
+    The folio of the document referred to.
+
+    > Identificación del documento de referencia.
+
+    DTE doc XML element: '..//Documento//Referencia//FolioRef'
+    """
+
+    fecha_ref: date
+    """
+    The 'fecha_emision' of the document referred to.
+
+    > Fecha del documento de referencia
+
+    DTE doc XML element: '..//Documento//Referencia//FchRef'
+    """
+
+    ind_global: Optional[int] = None
+    """
+    Whether a set of documents of the same kind is referenced.
+
+    > Documento afecta a un número de más de 20 documentos del mismo `tipo_documento_ref`
+    > Se explicita la razón en `Razón Referencia`
+
+    DTE doc XML element: '..//Documento//Referencia//IndGlobal'
+    """
+
+    rut_otro: Optional[Rut] = None
+    """
+    The RUT of the "emisor" of the document referred to.
+
+    > RUT otro contribuyente
+
+    DTE doc XML element: '..//Documento//Referencia//RUTOtr'
+
+    .. note::
+        > Sólo si el documento de referencia es de tipo tributario y fue emitido
+        > por otro contribuyente
+    """
+
+    codigo_ref: Optional[CodigoReferencia] = None
+    """
+    The type of use for the reference
+
+    > Tipo de Uso de la Referencia
+
+    DTE doc XML element: '..//Documento//Referencia//CodRef'
+    """
+
+    razon_ref: Optional[str] = None
+    """
+    The reason the document is being referenced
+
+    > Razon Explicita por la que se Referencia el Documento
+
+    DTE doc XML element: '..//Documento//Referencia//RazonRef'
+    """
+
+    def __post_init__(self) -> None:
+        """
+        Run validation automatically after setting the fields values.
+
+        :raises TypeError, ValueError:
+
+        """
+
+        if (
+            self.numero_linea_ref < constants.DTE_REFERENCIA_LINE_NUMBER_MIN_VALUE
+            or self.numero_linea_ref > constants.DTE_REFERENCIA_LINE_NUMBER_MAX_VALUE
+        ):
+            raise ValueError(
+                "Value 'numero_linea_ref' must be a value between "
+                f"{constants.DTE_REFERENCIA_LINE_NUMBER_MIN_VALUE} and "
+                f"{constants.DTE_REFERENCIA_LINE_NUMBER_MAX_VALUE}",
+                self.numero_linea_ref)
+
+        if len(self.tipo_documento_ref) < 1 or len(self.tipo_documento_ref) > 3:
+            raise ValueError(
+                "The length of 'tipo_documento_ref' must be a value between 1 and 3",
+                self.tipo_documento_ref)
+
+        if self.ind_global and self.ind_global != 1:
+            raise ValueError(
+                "Only the value \"1\" is valid for the field 'ind_global'",
+                self.ind_global)
+
+        if (
+                len(self.folio_ref) < constants.DTE_REFERENCIA_FOLIO_MIN_LENGTH
+                or len(self.folio_ref) > constants.DTE_REFERENCIA_FOLIO_MAX_LENGTH
+        ):
+            raise ValueError(
+                "The length of 'folio_ref' must be a value between "
+                f"{constants.DTE_REFERENCIA_FOLIO_MIN_LENGTH} and "
+                f"{constants.DTE_REFERENCIA_FOLIO_MAX_LENGTH}",
+                self.folio_ref)
+
+        if (
+            self.fecha_ref < constants.DTE_REFERENCIA_FECHA_NOT_BEFORE
+            or self.fecha_ref > constants.DTE_REFERENCIA_FECHA_NOT_AFTER
+        ):
+            raise ValueError(
+                "The date 'fecha_ref' must be after "
+                f"{constants.DTE_REFERENCIA_FECHA_NOT_BEFORE} and before "
+                f"{constants.DTE_REFERENCIA_FECHA_NOT_AFTER}",
+                self.fecha_ref)
+
+        if self.razon_ref and len(self.razon_ref) > constants.DTE_REFERENCIA_RAZON_MAX_LENGTH:
+            raise ValueError(
+                "The maximum length allowed for `razon_ref` is "
+                f"{constants.DTE_REFERENCIA_RAZON_MAX_LENGTH}",
+                self.razon_ref)
 
 
 @dataclasses.dataclass(frozen=True)

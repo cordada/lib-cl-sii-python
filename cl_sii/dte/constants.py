@@ -6,6 +6,8 @@ https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura
 
 """
 import enum
+from datetime import date
+from typing import FrozenSet
 
 
 @enum.unique
@@ -388,3 +390,193 @@ class TipoDteEnum(enum.IntEnum):
     @property
     def receptor_is_vendedor(self) -> bool:
         return self.is_factura_compra
+
+
+###############################################################################
+# DTE Fields / "Referencia" / "Número Secuencial de Línea de Referencia"
+###############################################################################
+
+# Sequence number of the "referencia"
+#
+# > Campo: Número de Línea o Número de Secuencia
+# > Descripción: Número de la referencia
+# > Tipo: NUM
+# > Validación: 1 hasta 40
+#
+# Note:
+#   There is a mismatch in the maximum value allowed for this element between
+#   the definition of "Información de Referencia" in the document "FORMATO DOCUMENTOS
+#   TRIBUTARIOS ELECTRÓNICOS (pp. 41 - 43)" and the restriction for this
+#   element in the XML schema. The first mentions a permitted range of 1 - 40 and the
+#   second 1 - 99. Here we will use the definition at "FORMATO DOCUMENTOS TRIBUTARIOS
+#   ELECTRÓNICOS (pp. 41 - 43)".
+#
+# Source:
+#   - Document "FORMATO DOCUMENTOS TRIBUTARIOS ELECTRÓNICOS (2019-11-15)" (retrieved on 2020-01-30)
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/docs/dte/formato-dtes/2019-11-15-formato-dtes-v2.2.y.pdf)
+#   - XML element 'DTEDefType/Documento/Referencia/NroLinRef'
+#     - description: "Numero Secuencial de Linea de Referencia"
+#     - XML type: 'xs:positiveInteger'
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/rtc/2019-12-12-schema_cesion/schema_cesion/DTE_v10.xsd#L1763-L1772)
+DTE_REFERENCIA_LINE_NUMBER_MIN_VALUE: int = 1
+DTE_REFERENCIA_LINE_NUMBER_MAX_VALUE: int = 40
+
+
+###############################################################################
+# DTE Fields / "Referencia" / "Folio de Referencia"
+###############################################################################
+
+# The folio of the document referred to.
+#
+# > Campo: Folio de Referencia
+# > Descripción: Identificación del documento de referencia.
+# > Tipo: ALFA
+# > Validación: Longitud de 1 hasta 18
+#
+#
+# Source:
+#   - Document "FORMATO DOCUMENTOS TRIBUTARIOS ELECTRÓNICOS (2019-11-15)" (retrieved on 2020-01-30)
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/docs/dte/formato-dtes/2019-11-15-formato-dtes-v2.2.y.pdf)
+#   - XML element 'DTEDefType/Documento/Referencia/FolioRef'
+#     - description: "Folio del Documento de Referencia"
+#     - XML type: 'SiiDte:FolioRType'
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/rtc/2019-12-12-schema_cesion/schema_cesion/DTE_v10.xsd#L1799-L1803)
+DTE_REFERENCIA_FOLIO_MIN_LENGTH: int = 1
+DTE_REFERENCIA_FOLIO_MAX_LENGTH: int = 18
+
+
+###############################################################################
+# DTE Fields / "Referencia" / "RUT Otro contribuyente"
+###############################################################################
+
+# The RUT of the "emisor" of the document referred to.
+#
+# > Campo: RUT Otro contribuyente
+# > Descripción: Sólo si el documento de referencia es de tipo tributario y
+#                fue emitido por otro contribuyente
+# > Tipo: ALFA
+# > Validación:
+#       - Distinto del RUT emisor del DTE
+#       - Solo aplica para un subconjunto de los tipos de documentos
+#         en `TipoDocumentoEnum` [46, 56, 61, 110, 111, 112]
+#
+#
+# Source:
+#   - Document "FORMATO DOCUMENTOS TRIBUTARIOS ELECTRÓNICOS (2019-11-15)" (retrieved on 2020-01-30)
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/docs/dte/formato-dtes/2019-11-15-formato-dtes-v2.2.y.pdf)
+#   - XML element 'DTEDefType/Documento/Referencia/RUTOtr'
+#     - description: "RUT Otro Contribuyente"
+#     - XML type: 'SiiDte:RUTType'
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/rtc/2019-12-12-schema_cesion/schema_cesion/DTE_v10.xsd#L1804-L1808)
+# TODO: Use `TipoDocumentoEnum` after deprecate `TipoDteEnum`
+DTE_REFERENCIA_RUTOTR_TIPO_DOC_SET: FrozenSet[TipoDteEnum] = frozenset({
+    TipoDteEnum.NOTA_CREDITO_ELECTRONICA,
+    TipoDteEnum.NOTA_DEBITO_ELECTRONICA,
+    TipoDteEnum.FACTURA_COMPRA_ELECTRONICA,
+})
+
+
+###############################################################################
+# DTE Fields / "Referencia" / "Fecha de la Referencia"
+###############################################################################
+
+# The 'fecha_emision' of the document referred to.
+#
+# > Campo: Fecha de la Referencia
+# > Descripción: Fecha del documento de referencia.
+# > Tipo: ALFA
+# > Validación: Desde 2002-08-01 hasta 2050-12-31
+#
+#
+# Source:
+#   - Document "FORMATO DOCUMENTOS TRIBUTARIOS ELECTRÓNICOS (2019-11-15)" (retrieved on 2020-01-30)
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/docs/dte/formato-dtes/2019-11-15-formato-dtes-v2.2.y.pdf)
+#   - XML element 'DTEDefType/Documento/Referencia/FchRef'
+#     - description: "Fecha de la Referencia."
+#     - XML type: 'SiiDte:FechaType'
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/rtc/2019-12-12-schema_cesion/schema_cesion/DTE_v10.xsd#L1809-L1813)
+DTE_REFERENCIA_FECHA_NOT_BEFORE: date = date(2002, 8, 1)
+DTE_REFERENCIA_FECHA_NOT_AFTER: date = date(2050, 12, 31)
+
+
+###############################################################################
+# DTE Fields / "Referencia" / "Código de referencia"
+###############################################################################
+
+# The 'fecha_emision' of the document referred to.
+#
+# > Campo: Código de referencia
+# > Descripción: Fecha del documento de referencia.
+# > Tipo: NUM
+# > Validación: Requerido para 56, 61, 111, 112
+#
+# Source:
+#   - Document "FORMATO DOCUMENTOS TRIBUTARIOS ELECTRÓNICOS (2019-11-15)" (retrieved on 2020-01-30)
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/docs/dte/formato-dtes/2019-11-15-formato-dtes-v2.2.y.pdf)
+#   - XML element 'DTEDefType/Documento/Referencia/CodRef'
+#     - description: "Tipo de Uso de la Referencia."
+#     - XML type: 'xs:positiveInteger'
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/rtc/2019-12-12-schema_cesion/schema_cesion/DTE_v10.xsd#L1814-L1837)
+# TODO: Use `TipoDocumentoEnum` after deprecate `TipoDteEnum`
+DTE_REFERENCIA_CODREF_TIPO_DOC_MANDATORY_SET: FrozenSet[TipoDteEnum] = frozenset({
+    TipoDteEnum.NOTA_CREDITO_ELECTRONICA,
+    TipoDteEnum.NOTA_DEBITO_ELECTRONICA,
+})
+
+
+@enum.unique
+class CodigoReferencia(enum.IntEnum):
+
+    """
+    Enum of "Código de referencia".
+
+    Source:
+      - from official document "FORMATO DOCUMENTOS TRIBUTARIOS ELECTRÓNICOS (2019-11-15)" (retrieved on 2020-01-30)
+        (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/docs/dte/formato-dtes/2019-11-15-formato-dtes-v2.2.y.pdf)
+      - from official schema ``SiiTypes_v10.xsd``, the XML type (enum) ``CodRef``. (retrieved on 2021-03-25)
+        (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/rtc/2019-12-12-schema_cesion/schema_cesion/SiiTypes_v10.xsd)
+
+    Notes:
+    > Código utilizado para los siguientes casos:
+        a) Nota de Crédito que elimina documento de referencia en forma
+        completa (Factura de venta, Nota de débito, o Factura de compra
+        b) Nota de crédito que corrige un texto del documento de referencia
+        (ver campo Corrección Factura)
+        c) Nota de Débito que elimina una Nota de Crédito en la referencia
+        en forma completa
+        d) Notas de crédito o débito que corrigen montos de otro documento
+
+        CASOS a) b) y c) DEBEN TENER UN ÚNICO DOCUMENTO DE REFERENCIA.
+
+    """  # noqa: E501
+
+    ANULA_DOCUMENTO_REFERENCIA = 1
+    """Anula Documento de Referencia."""
+
+    CORRIGE_TEXTO_DOCUMENTO_REFERENCIA = 2
+    """Corrige Texto del Documento de Referencia."""
+
+    CORRIGE_MONTO_DOCUMENTO_REFERENCIA = 3
+    """Corrige Montos"""
+
+
+###############################################################################
+# DTE Fields / "Referencia" / "Razón referencia"
+###############################################################################
+
+# The reason the document is being referenced.
+#
+# > Campo: Razón referencia
+# > Descripción: Razón explícita por la que se referencia el Documento.
+# > Tipo: ALFA
+# > Validación: Longitud de 0 hasta 90
+#
+#
+# Source:
+#   - Document "FORMATO DOCUMENTOS TRIBUTARIOS ELECTRÓNICOS (2019-11-15)" (retrieved on 2020-01-30)
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/docs/dte/formato-dtes/2019-11-15-formato-dtes-v2.2.y.pdf)
+#   - XML element 'DTEDefType/Documento/Referencia/FolioRef'
+#     - description: "Folio del Documento de Referencia"
+#     - XML type: 'SiiDte:FolioRType'
+#     (https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/rtc/2019-12-12-schema_cesion/schema_cesion/DTE_v10.xsd#L1838-L1847)
+DTE_REFERENCIA_RAZON_MAX_LENGTH: int = 90
