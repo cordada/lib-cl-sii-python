@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 from datetime import date, datetime
 
-from cl_sii.dte.data_models import DteDataL1, DteXmlData
+from cl_sii.dte.data_models import DteDataL1, DteXmlData, DteXmlReferencia
 from cl_sii.dte.constants import TipoDteEnum
 from cl_sii.dte.parse import DTE_XMLNS
 from cl_sii.libs import encoding_utils
@@ -158,6 +158,14 @@ class AecXmlParserTest(unittest.TestCase):
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email='ENACONLTDA@GMAIL.COM',
                 receptor_email=None,
+                referencias=[
+                    DteXmlReferencia(
+                        numero_linea_ref=1,
+                        tipo_documento_ref='801',
+                        folio_ref='4510083633',
+                        fecha_ref=date(2019, 3, 22),
+                    )
+                ],
             ),
             cedente_rut=Rut('76389992-6'),
             cesionario_rut=Rut('76598556-0'),
@@ -274,6 +282,14 @@ class AecXmlParserTest(unittest.TestCase):
                 emisor_giro='COMERCIALIZACION DE PRODUCTOS PARA EL HOGAR',
                 emisor_email='ANGEL.PEZO@APCASESORIAS.CL',
                 receptor_email=None,
+                referencias=[
+                    DteXmlReferencia(
+                        numero_linea_ref=1,
+                        tipo_documento_ref='801',
+                        folio_ref='638370',
+                        fecha_ref=date(2019, 3, 28),
+                    )
+                ],
             ),
             cedente_rut=Rut('76399752-9'),
             cesionario_rut=Rut('76389992-6'),

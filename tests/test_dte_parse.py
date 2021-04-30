@@ -477,6 +477,18 @@ class FunctionParseDteXmlTest(unittest.TestCase):
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email='ENACONLTDA@GMAIL.COM',
                 receptor_email=None,
+                referencias=[
+                    dict(
+                        numero_linea_ref=1,
+                        tipo_documento_ref='801',
+                        ind_global=None,
+                        folio_ref='4510083633',
+                        rut_otro=None,
+                        fecha_ref=date(2019, 3, 22),
+                        codigo_ref=None,
+                        razon_ref=None,
+                    ),
+                ],
             ))
 
     def test_parse_dte_xml_ok_3(self) -> None:
@@ -503,6 +515,7 @@ class FunctionParseDteXmlTest(unittest.TestCase):
                 emisor_giro='Corporación Educacional y Servicios                 Profesionales',
                 emisor_email=None,
                 receptor_email=None,
+                referencias=None,
             ))
 
     def test_parse_dte_xml_ok_1b(self) -> None:
@@ -529,6 +542,18 @@ class FunctionParseDteXmlTest(unittest.TestCase):
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email=None,
                 receptor_email=None,
+                referencias=[
+                    dict(
+                        numero_linea_ref=1,
+                        tipo_documento_ref='801',
+                        ind_global=None,
+                        folio_ref='4510083633',
+                        rut_otro=None,
+                        fecha_ref=date(2019, 3, 22),
+                        codigo_ref=None,
+                        razon_ref=None,
+                    ),
+                ],
             ))
 
     def test_parse_dte_xml_ok_2(self) -> None:
@@ -555,6 +580,18 @@ class FunctionParseDteXmlTest(unittest.TestCase):
                 emisor_giro='COMERCIALIZACION DE PRODUCTOS PARA EL HOGAR',
                 emisor_email='ANGEL.PEZO@APCASESORIAS.CL',
                 receptor_email=None,
+                referencias=[
+                    dict(
+                        numero_linea_ref=1,
+                        tipo_documento_ref='801',
+                        ind_global=None,
+                        folio_ref='638370',
+                        rut_otro=None,
+                        fecha_ref=date(2019, 3, 28),
+                        codigo_ref=None,
+                        razon_ref=None,
+                    ),
+                ],
             ))
 
     def test_parse_dte_xml_fail_x(self) -> None:
