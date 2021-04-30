@@ -731,6 +731,14 @@ class DteXmlDataTest(unittest.TestCase):
         cls.dte_2_xml_cert_der = read_test_file_bytes(
             'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der'
         )
+        cls.dte_3_xml_signature_value = encoding_utils.decode_base64_strict(
+            read_test_file_bytes(
+                'test_data/sii-crypto/DTE--96670340-7--61--110616-signature-value-base64.txt'
+            )
+        )
+        cls.dte_3_xml_cert_der = read_test_file_bytes(
+            'test_data/sii-crypto/DTE--96670340-7--61--110616-cert.der'
+        )
 
     def setUp(self) -> None:
         super().setUp()
@@ -754,6 +762,28 @@ class DteXmlDataTest(unittest.TestCase):
             emisor_giro='Ingenieria y Construccion',
             emisor_email='hello@example.com',
             receptor_email=None,
+            referencias=[
+                DteXmlReferencia(
+                    numero_linea_ref=1,
+                    tipo_documento_ref='801',
+                    folio_ref='638370',
+                    fecha_ref=date(2019, 3, 28),
+                    ind_global=None,
+                    rut_otro=None,
+                    codigo_ref=None,
+                    razon_ref=None,
+                ),
+                DteXmlReferencia(
+                    numero_linea_ref=2,
+                    tipo_documento_ref='HES',
+                    folio_ref='1001055906',
+                    fecha_ref=date(2019, 3, 28),
+                    ind_global=None,
+                    rut_otro=None,
+                    codigo_ref=None,
+                    razon_ref=None,
+                ),
+            ],
         )
         self.dte_xml_data_2 = DteXmlData(
             emisor_rut=Rut('60910000-1'),
@@ -774,6 +804,38 @@ class DteXmlDataTest(unittest.TestCase):
             emisor_giro='Corporación Educacional y Servicios                 Profesionales',
             emisor_email=None,
             receptor_email=None,
+            referencias=None,
+        )
+        self.dte_xml_data_3 = DteXmlData(
+            emisor_rut=Rut('96670340-7'),
+            tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA,
+            folio=110616,
+            fecha_emision_date=date(2019, 8, 2),
+            receptor_rut=Rut('81675600-6'),
+            monto_total=57347078,
+            emisor_razon_social='Bata Chile S.A.',
+            receptor_razon_social='Comercializadora S.A',
+            fecha_vencimiento_date=date(2019, 9, 1),
+            firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                dt=datetime(2019, 8, 5, 15, 20, 6), tz=DteXmlData.DATETIME_FIELDS_TZ
+            ),
+            signature_value=self.dte_3_xml_signature_value,
+            signature_x509_cert_der=self.dte_3_xml_cert_der,
+            emisor_giro='Venta de calzado, accesorios y prendas de vestir',
+            emisor_email=None,
+            receptor_email=None,
+            referencias=[
+                DteXmlReferencia(
+                    numero_linea_ref=1,
+                    tipo_documento_ref='33',
+                    folio_ref='115885',
+                    fecha_ref=date(2019, 8, 2),
+                    ind_global=None,
+                    rut_otro=None,
+                    codigo_ref=3,
+                    razon_ref='Comision venta corner Hites',
+                ),
+            ],
         )
 
     def test_constants_match(self) -> None:
@@ -1147,6 +1209,28 @@ class DteXmlDataTest(unittest.TestCase):
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email='hello@example.com',
                 receptor_email=None,
+                referencias=[
+                    dict(
+                        numero_linea_ref=1,
+                        tipo_documento_ref='801',
+                        ind_global=None,
+                        folio_ref='638370',
+                        rut_otro=None,
+                        fecha_ref=date(2019, 3, 28),
+                        codigo_ref=None,
+                        razon_ref=None,
+                    ),
+                    dict(
+                        numero_linea_ref=2,
+                        tipo_documento_ref='HES',
+                        ind_global=None,
+                        folio_ref='1001055906',
+                        rut_otro=None,
+                        fecha_ref=date(2019, 3, 28),
+                        codigo_ref=None,
+                        razon_ref=None,
+                    ),
+                ],
             ),
         )
         self.assertDictEqual(
@@ -1170,6 +1254,7 @@ class DteXmlDataTest(unittest.TestCase):
                 emisor_giro='Corporación Educacional y Servicios                 Profesionales',
                 emisor_email=None,
                 receptor_email=None,
+                referencias=None,
             ),
         )
 
@@ -1244,6 +1329,128 @@ class DteXmlDataTest(unittest.TestCase):
                 receptor_email=None,
             ),
         )
+
+    def test_validate_referencias_numero_linea_ref_order(self) -> None:
+        obj = self.dte_xml_data_1
+
+        expected_validation_errors = [
+            {
+                'loc': ('referencias',),
+                'msg': "items must be ordered according to their 'numero_linea_ref'",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                referencias=list(reversed(obj.referencias)),
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_referencias_rut_otro_is_consistent_with_tipo_dte(self) -> None:
+        obj = self.dte_xml_data_2
+        obj_referencia = DteXmlReferencia(
+            numero_linea_ref=1,
+            tipo_documento_ref="801",
+            folio_ref="1",
+            fecha_ref=date(2019, 3, 28),
+            ind_global=None,
+            rut_otro=Rut('76354771-K'),
+            codigo_ref=None,
+            razon_ref=None,
+        )
+
+        expected_validation_errors = [
+            {
+                'loc': ('__root__',),
+                'msg': "Setting a 'rut_otro' is not a valid option for this 'tipo_dte':"
+                " 'tipo_dte' == <TipoDte.FACTURA_ELECTRONICA: 33>,"
+                " 'Referencia' number 1.",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                referencias=[obj_referencia],
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_referencias_rut_otro_is_consistent_with_emisor_rut(self) -> None:
+        obj = self.dte_xml_data_2
+        obj = dataclasses.replace(
+            obj,
+            tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
+        )
+        obj_referencia = DteXmlReferencia(
+            numero_linea_ref=1,
+            tipo_documento_ref="801",
+            folio_ref="1",
+            fecha_ref=date(2019, 3, 28),
+            ind_global=None,
+            rut_otro=Rut('60910000-1'),
+            codigo_ref=None,
+            razon_ref=None,
+        )
+
+        expected_validation_errors = [
+            {
+                'loc': ('__root__',),
+                'msg': "'rut_otro' must be different from 'emisor_rut':"
+                " Rut('60910000-1') == Rut('60910000-1'),"
+                " 'Referencia' number 1.",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                referencias=[obj_referencia],
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_referencias_codigo_ref_is_consistent_with_tipo_dte(self) -> None:
+        obj = self.dte_xml_data_3
+        obj_referencia = dataclasses.replace(
+            obj.referencias[0],
+            codigo_ref=None,
+        )
+
+        expected_validation_errors = [
+            {
+                'loc': ('__root__',),
+                'msg': "'codigo_ref' is mandatory for this 'tipo_dte':"
+                " 'tipo_dte' == <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>,"
+                " 'Referencia' number 1.",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                referencias=[obj_referencia],
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
 
 
 class FunctionsTest(unittest.TestCase):
