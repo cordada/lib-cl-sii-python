@@ -3,6 +3,16 @@
 History
 -------
 
+0.12.5 (2021-06-15)
++++++++++++++++++++++++
+
+* (PR #226, 2021-06-15) requirements: Remove Django upper bound constraint
+* (PR #224, 2021-06-15) requirements: Upgrade 'Django'
+* (PR #223, 2021-06-08) requirements: Upgrade 'Django'
+* (PR #221, 2021-05-14) requirements: Upgrade Pydantic
+* (PR #216, 2021-04-22) docs: Add creation of release branch to instructions for new releases
+* (PR #213, 2021-04-21) build(deps): bump toml from 0.10.1 to 0.10.2
+
 0.12.4 (2021-04-15)
 +++++++++++++++++++++++
 
