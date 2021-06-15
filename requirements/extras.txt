@@ -1,7 +1,7 @@
 # note: it is NOT mandatory to register all dependencies of the required packages.
 
 # Required packages:
-Django>=2.2.21,<3
+Django>=2.2.24,<3
 djangorestframework>=3.10.3,<3.13
 
 # Packages dependencies:
