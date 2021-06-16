@@ -53,6 +53,12 @@ Push commit ``abcd1234`` and tag ``vX.Y.Z`` automatically created by ``bumpversi
     git push
     git push --tags
 
+Create branch ``release/vX.Y.Z`` that points to tag ``vX.Y.Z`` and push it::
+
+    git checkout vX.Y.Z
+    git checkout -b release/vX.Y.Z
+    git push origin HEAD
+
 3) Create pull request and new release
 +++++++++++++++++++
 
@@ -60,6 +66,10 @@ Push commit ``abcd1234`` and tag ``vX.Y.Z`` automatically created by ``bumpversi
 
 * Create PR for
   `master...develop <https://github.com/fyntex/lib-cl-sii-python/compare/master...develop>`_.
+
+  * Base branch: ``master``.
+
+  * Head branch: ``release/vX.Y.Z`` (instead of ``develop``).
 
   * Name: "Release".
 

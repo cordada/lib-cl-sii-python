@@ -27,7 +27,7 @@ requirements = [
     'jsonschema>=3.1.1',
     'lxml>=4.5.0,<5',
     'marshmallow>=2.19.2,<3',
-    'pydantic>=1.6.1',
+    'pydantic>=1.6.2',
     # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<20'
     'pyOpenSSL>=18.0.0,<20',
     'pytz>=2019.3',
@@ -35,7 +35,7 @@ requirements = [
 ]
 
 extras_requirements = {
-    'django': ['Django>=2.2.18,<3'],
+    'django': ['Django>=2.2.24'],
     'djangorestframework': ['djangorestframework>=3.10.3,<3.13'],
 }
 
