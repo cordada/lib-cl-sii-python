@@ -3,6 +3,8 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
+import pydantic
+
 from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut  # noqa: F401
@@ -417,77 +419,303 @@ class DteXmlDataTest(unittest.TestCase):
             DteDataL2.DATETIME_FIELDS_TZ,
         )
 
-    def test_init_fail(self) -> None:
-        # TODO: implement for 'DteXmlData()'
-        pass
+    def test_validate_emisor_razon_social_empty(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('emisor_razon_social',),
+                'msg': "Value must not be empty.",
+                'type': 'value_error',
+            },
+        ]
 
-    def test_init_fail_razon_social_empty(self) -> None:
-        with self.assertRaises(ValueError) as cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_razon_social='',
             )
-        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
-        with self.assertRaises(ValueError) as cm:
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_receptor_razon_social_empty(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('receptor_razon_social',),
+                'msg': "Value must not be empty.",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_razon_social='',
             )
-        self.assertEqual(cm.exception.args, ("Value must not be empty.", ))
 
-    def test_init_fail_razon_social_none(self) -> None:
-        with self.assertRaises(TypeError) as cm:
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_emisor_razon_social_none(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('emisor_razon_social',),
+                'msg': "none is not an allowed value",
+                'type': 'type_error.none.not_allowed',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_razon_social=None,
             )
-        self.assertEqual(cm.exception.args, ("Inappropriate type of 'emisor_razon_social'.", ))
-        with self.assertRaises(TypeError) as cm:
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_receptor_razon_social_none(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('receptor_razon_social',),
+                'msg': "none is not an allowed value",
+                'type': 'type_error.none.not_allowed',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_razon_social=None,
             )
-        self.assertEqual(cm.exception.args, ("Inappropriate type of 'receptor_razon_social'.", ))
 
-    def test_init_fail_regression_signature_value_bytes_with_x20(self) -> None:
-        bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
-        bytes_value_with_x20 = b'\x20\xdd\xa9\x900q\xa89\xc6\x97\x83\xdf\xbd\xba"'
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
 
-        self.assertEqual(b'\x20', b' ')
-        self.assertEqual(
-            bytes_value_with_x20,
-            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+    def test_validate_datetime_tz(self) -> None:
+        # Test TZ-awareness:
 
-        init_kwars = self.dte_xml_data_1.as_dict()
-        init_kwars.update(dict(signature_value=bytes_value_with_x20))
+        expected_validation_errors = [
+            {
+                'loc': ('firma_documento_dt',),
+                'msg': 'Value must be a timezone-aware datetime object.',
+                'type': 'value_error',
+            },
+        ]
 
-        # with self.assertRaises(ValueError) as cm:
-        #     _ = DteXmlData(**init_kwars)
-        # self.assertEqual(
-        #     cm.exception.args,
-        #     ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
-        # )
-        _ = DteXmlData(**init_kwars)
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                firma_documento_dt=datetime(2019, 4, 5, 12, 57, 32),
+            )
 
-    def test_init_fail_regression_signature_cert_der_bytes_with_x20(self) -> None:
-        bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
-        bytes_value_with_x20 = b'\x20\xdd\xa9\x900q\xa89\xc6\x97\x83\xdf\xbd\xba"'
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
 
-        self.assertEqual(b'\x20', b' ')
-        self.assertEqual(
-            bytes_value_with_x20,
-            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+        # Test TZ-value:
 
-        init_kwars = self.dte_xml_data_1.as_dict()
-        init_kwars.update(dict(signature_x509_cert_der=bytes_value_with_x20))
+        expected_validation_errors = [
+            {
+                'loc': ('firma_documento_dt',),
+                'msg':
+                    '('
+                    '''"Timezone of datetime value must be 'America/Santiago'.",'''
+                    ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
+                    ')',
+                'type': 'value_error',
+            },
+        ]
 
-        # with self.assertRaises(ValueError) as cm:
-        #     _ = DteXmlData(**init_kwars)
-        # self.assertEqual(
-        #     cm.exception.args,
-        #     ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
-        # )
-        _ = DteXmlData(**init_kwars)
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                    dt=datetime(2019, 4, 5, 12, 57, 32),
+                    tz=tz_utils.TZ_UTC,
+                ),
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_non_empty_bytes_signature_value(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('signature_value',),
+                'msg': 'Bytes value length is 0.',
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                signature_value=b'',
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_non_empty_bytes_signature_x509_cert_der(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('signature_x509_cert_der',),
+                'msg': 'Bytes value length is 0.',
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                signature_x509_cert_der=b'',
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_no_leading_or_trailing_whitespace_characters_emisor_giro(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('emisor_giro',),
+                'msg': "('Value has leading or trailing whitespace characters.', ' NASA ')",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                emisor_giro=' NASA ',
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_no_leading_or_trailing_whitespace_characters_emisor_email(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('emisor_email',),
+                'msg':
+                    "("
+                    "'Value has leading or trailing whitespace characters.', "
+                    "' fake_emisor_email@test.cl '"
+                    ")",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                emisor_email=' fake_emisor_email@test.cl ',
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_no_leading_or_trailing_whitespace_characters_receptor_email(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('receptor_email',),
+                'msg':
+                    "("
+                    "'Value has leading or trailing whitespace characters.', "
+                    "' fake_receptor_email@test.cl '"
+                    ")",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                receptor_email=' fake_receptor_email@test.cl ',
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_non_empty_stripped_str_emisor_giro(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('emisor_giro',),
+                'msg': "String value length (stripped) is 0.",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                emisor_giro='',
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_non_empty_stripped_str_emisor_email(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('emisor_email',),
+                'msg': "String value length (stripped) is 0.",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                emisor_email='',
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_non_empty_stripped_str_receptor_email(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('receptor_email',),
+                'msg': "String value length (stripped) is 0.",
+                'type': 'value_error',
+            },
+        ]
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_xml_data_1,
+                receptor_email='',
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
 
     def test_as_dict(self) -> None:
         self.assertDictEqual(
