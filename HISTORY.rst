@@ -3,6 +3,13 @@
 History
 -------
 
+0.13.0 (2021-07-14)
++++++++++++++++++++++++
+
+* (PR #228, 2021-06-29) config: Update Python version used in CI jobs to 3.8.10
+* (PR #230, 2021-07-09) dte: Convert stdlib dataclass `DteXmlData` into pydantic dataclass
+
+
 0.12.5 (2021-06-15)
 +++++++++++++++++++++++
 
