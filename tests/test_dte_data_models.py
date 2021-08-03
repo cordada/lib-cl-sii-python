@@ -61,10 +61,6 @@ class DteDataL0Test(unittest.TestCase):
             folio=170,
         )
 
-    def test_init_fail(self) -> None:
-        # TODO: implement for 'DteDataL0()'
-        pass
-
     def test_as_dict(self) -> None:
         self.assertDictEqual(
             self.dte_l0_1.as_dict(),

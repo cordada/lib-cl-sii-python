@@ -173,7 +173,12 @@ class DteNaturalKey:
         return f'{self.emisor_rut}--{self.tipo_dte}--{self.folio}'
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class DteDataL0(DteNaturalKey):
 
     """
