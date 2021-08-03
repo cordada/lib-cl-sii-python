@@ -206,7 +206,12 @@ class DteDataL0(DteNaturalKey):
         return DteNaturalKey(emisor_rut=self.emisor_rut, tipo_dte=self.tipo_dte, folio=self.folio)
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class DteDataL1(DteDataL0):
 
     """
@@ -232,7 +237,7 @@ class DteDataL1(DteDataL0):
 
     """
 
-    fecha_emision_date: date = dc_field()
+    fecha_emision_date: date
     """
     Field 'fecha_emision' of the DTE.
 
@@ -241,35 +246,15 @@ class DteDataL1(DteDataL0):
 
     """
 
-    receptor_rut: Rut = dc_field()
+    receptor_rut: Rut
     """
     RUT of the "receptor" of the DTE.
     """
 
-    monto_total: int = dc_field()
+    monto_total: int
     """
     Total amount of the DTE.
     """
-
-    def __post_init__(self) -> None:
-        """
-        Run validation automatically after setting the fields values.
-
-        :raises TypeError, ValueError:
-
-        """
-        super().__post_init__()
-
-        if not isinstance(self.fecha_emision_date, date):
-            raise TypeError("Inappropriate type of 'fecha_emision_date'.")
-
-        if not isinstance(self.receptor_rut, Rut):
-            raise TypeError("Inappropriate type of 'receptor_rut'.")
-
-        if not isinstance(self.monto_total, int):
-            raise TypeError("Inappropriate type of 'monto_total'.")
-
-        validate_dte_monto_total(self.monto_total, self.tipo_dte)
 
     ###########################################################################
     # properties
@@ -318,6 +303,19 @@ class DteDataL1(DteDataL0):
         :raises ValueError:
         """
         return self.comprador_rut
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
+
+    @pydantic.validator('monto_total')
+    def validate_monto_total(cls, v: object, values: Mapping[str, object]) -> object:
+        tipo_dte = values.get('tipo_dte')
+
+        if isinstance(v, int) and isinstance(tipo_dte, TipoDteEnum):
+            validate_dte_monto_total(v, tipo_dte=tipo_dte)
+
+        return v
 
 
 @pydantic.dataclasses.dataclass(

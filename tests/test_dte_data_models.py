@@ -98,9 +98,61 @@ class DteDataL1Test(unittest.TestCase):
             monto_total=2996301,
         )
 
-    def test_init_fail(self) -> None:
-        # TODO: implement for 'DteDataL1()'
-        pass
+    def test_is_ok_negative_monto_total_in_tipo_dte_liquidacion_factura(self) -> None:
+        try:
+            _ = dataclasses.replace(
+                self.dte_l1_1,
+                tipo_dte=TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA,
+                monto_total=-1,
+            )
+        except pydantic.ValidationError as exc:
+            self.fail(f'{exc.__class__.__name__} raised')
+
+    def test_validate_monto_total_range(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('monto_total',),
+                'msg': "Value is out of the valid range for 'monto_total'.",
+                'type': 'value_error',
+            },
+        ]
+
+        # Validate the minimum value of the field monto_total
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_l1_1,
+                monto_total=DTE_MONTO_TOTAL_FIELD_MIN_VALUE - 1,
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+        # Validate the maximum value of the field monto_total
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_l1_1,
+                monto_total=DTE_MONTO_TOTAL_FIELD_MAX_VALUE + 1,
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+        # Validate the minimum value of the field monto_total
+        # for a tipo_dte FACTURA_ELECTRONICA
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_l1_1,
+                monto_total=-1,
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
 
     def test_as_dict(self) -> None:
         self.assertDictEqual(
