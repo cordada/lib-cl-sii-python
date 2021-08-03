@@ -16,7 +16,6 @@ In the domain of a DTE, a:
 
 """
 import dataclasses
-from dataclasses import field as dc_field
 from datetime import date, datetime
 from typing import Mapping, Optional
 
@@ -99,7 +98,12 @@ def validate_non_empty_bytes(value: bytes) -> None:
         raise ValueError("Bytes value length is 0.")
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class DteNaturalKey:
 
     """
@@ -121,39 +125,20 @@ class DteNaturalKey:
 
     """
 
-    emisor_rut: Rut = dc_field()
+    emisor_rut: Rut
     """
     RUT of the "emisor" of the DTE.
     """
 
-    tipo_dte: TipoDteEnum = dc_field()
+    tipo_dte: TipoDteEnum
     """
     The kind of DTE.
     """
 
-    folio: int = dc_field()
+    folio: int
     """
     The sequential number of a DTE of given kind issued by 'emisor_rut'.
     """
-
-    def __post_init__(self) -> None:
-        """
-        Run validation automatically after setting the fields values.
-
-        :raises TypeError, ValueError:
-
-        """
-
-        if not isinstance(self.emisor_rut, Rut):
-            raise TypeError("Inappropriate type of 'emisor_rut'.")
-
-        if not isinstance(self.tipo_dte, TipoDteEnum):
-            raise TypeError("Inappropriate type of 'tipo_dte'.")
-
-        if not isinstance(self.folio, int):
-            raise TypeError("Inappropriate type of 'folio'.")
-
-        validate_dte_folio(self.folio)
 
     def as_dict(self) -> Mapping[str, object]:
         return dataclasses.asdict(self)
@@ -171,6 +156,16 @@ class DteNaturalKey:
         #   f'rut-{self.emisor_rut}-tipo-{self.tipo_dte}-folio-{self.folio}'
 
         return f'{self.emisor_rut}--{self.tipo_dte}--{self.folio}'
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
+
+    @pydantic.validator('folio')
+    def validate_folio(cls, v: object) -> object:
+        if isinstance(v, int):
+            validate_dte_folio(v)
+        return v
 
 
 @pydantic.dataclasses.dataclass(

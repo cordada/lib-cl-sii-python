@@ -10,7 +10,10 @@ from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut  # noqa: F401
 
 from cl_sii.dte.constants import (  # noqa: F401
-    DTE_MONTO_TOTAL_FIELD_MIN_VALUE, DTE_MONTO_TOTAL_FIELD_MAX_VALUE,
+    DTE_FOLIO_FIELD_MAX_VALUE,
+    DTE_FOLIO_FIELD_MIN_VALUE,
+    DTE_MONTO_TOTAL_FIELD_MAX_VALUE,
+    DTE_MONTO_TOTAL_FIELD_MIN_VALUE,
     TipoDteEnum,
 )
 from cl_sii.dte.data_models import (  # noqa: F401
@@ -32,9 +35,38 @@ class DteNaturalKeyTest(unittest.TestCase):
             folio=170,
         )
 
-    def test_init_fail(self) -> None:
-        # TODO: implement for 'DteNaturalKey()'
-        pass
+    def test_validate_folio_range(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('folio',),
+                'msg': "Value is out of the valid range for 'folio'.",
+                'type': 'value_error',
+            },
+        ]
+
+        # Validate the minimum value of the field folio
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_nk_1,
+                folio=DTE_FOLIO_FIELD_MIN_VALUE - 1,
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+        # Validate the maximum value of the field folio
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.dte_nk_1,
+                folio=DTE_FOLIO_FIELD_MAX_VALUE + 1,
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
 
     def test_as_dict(self) -> None:
         self.assertDictEqual(
