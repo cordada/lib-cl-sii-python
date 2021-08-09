@@ -16,7 +16,6 @@ In the domain of a DTE, a:
 
 """
 import dataclasses
-from dataclasses import field as dc_field
 from datetime import date, datetime
 from typing import Mapping, Optional
 
@@ -99,7 +98,12 @@ def validate_non_empty_bytes(value: bytes) -> None:
         raise ValueError("Bytes value length is 0.")
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class DteNaturalKey:
 
     """
@@ -121,39 +125,20 @@ class DteNaturalKey:
 
     """
 
-    emisor_rut: Rut = dc_field()
+    emisor_rut: Rut
     """
     RUT of the "emisor" of the DTE.
     """
 
-    tipo_dte: TipoDteEnum = dc_field()
+    tipo_dte: TipoDteEnum
     """
     The kind of DTE.
     """
 
-    folio: int = dc_field()
+    folio: int
     """
     The sequential number of a DTE of given kind issued by 'emisor_rut'.
     """
-
-    def __post_init__(self) -> None:
-        """
-        Run validation automatically after setting the fields values.
-
-        :raises TypeError, ValueError:
-
-        """
-
-        if not isinstance(self.emisor_rut, Rut):
-            raise TypeError("Inappropriate type of 'emisor_rut'.")
-
-        if not isinstance(self.tipo_dte, TipoDteEnum):
-            raise TypeError("Inappropriate type of 'tipo_dte'.")
-
-        if not isinstance(self.folio, int):
-            raise TypeError("Inappropriate type of 'folio'.")
-
-        validate_dte_folio(self.folio)
 
     def as_dict(self) -> Mapping[str, object]:
         return dataclasses.asdict(self)
@@ -172,8 +157,23 @@ class DteNaturalKey:
 
         return f'{self.emisor_rut}--{self.tipo_dte}--{self.folio}'
 
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-@dataclasses.dataclass(frozen=True)
+    @pydantic.validator('folio')
+    def validate_folio(cls, v: object) -> object:
+        if isinstance(v, int):
+            validate_dte_folio(v)
+        return v
+
+
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class DteDataL0(DteNaturalKey):
 
     """
@@ -206,7 +206,12 @@ class DteDataL0(DteNaturalKey):
         return DteNaturalKey(emisor_rut=self.emisor_rut, tipo_dte=self.tipo_dte, folio=self.folio)
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class DteDataL1(DteDataL0):
 
     """
@@ -232,7 +237,7 @@ class DteDataL1(DteDataL0):
 
     """
 
-    fecha_emision_date: date = dc_field()
+    fecha_emision_date: date
     """
     Field 'fecha_emision' of the DTE.
 
@@ -241,35 +246,15 @@ class DteDataL1(DteDataL0):
 
     """
 
-    receptor_rut: Rut = dc_field()
+    receptor_rut: Rut
     """
     RUT of the "receptor" of the DTE.
     """
 
-    monto_total: int = dc_field()
+    monto_total: int
     """
     Total amount of the DTE.
     """
-
-    def __post_init__(self) -> None:
-        """
-        Run validation automatically after setting the fields values.
-
-        :raises TypeError, ValueError:
-
-        """
-        super().__post_init__()
-
-        if not isinstance(self.fecha_emision_date, date):
-            raise TypeError("Inappropriate type of 'fecha_emision_date'.")
-
-        if not isinstance(self.receptor_rut, Rut):
-            raise TypeError("Inappropriate type of 'receptor_rut'.")
-
-        if not isinstance(self.monto_total, int):
-            raise TypeError("Inappropriate type of 'monto_total'.")
-
-        validate_dte_monto_total(self.monto_total, self.tipo_dte)
 
     ###########################################################################
     # properties
@@ -319,8 +304,26 @@ class DteDataL1(DteDataL0):
         """
         return self.comprador_rut
 
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-@dataclasses.dataclass(frozen=True)
+    @pydantic.validator('monto_total')
+    def validate_monto_total(cls, v: object, values: Mapping[str, object]) -> object:
+        tipo_dte = values.get('tipo_dte')
+
+        if isinstance(v, int) and isinstance(tipo_dte, TipoDteEnum):
+            validate_dte_monto_total(v, tipo_dte=tipo_dte)
+
+        return v
+
+
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class DteDataL2(DteDataL1):
 
     """
@@ -349,32 +352,32 @@ class DteDataL2(DteDataL1):
     # fields
     ###########################################################################
 
-    emisor_razon_social: Optional[str] = dc_field()
+    emisor_razon_social: Optional[str]
     """
     "Razón social" (legal name) of the "emisor" of the DTE.
     """
 
-    receptor_razon_social: Optional[str] = dc_field()
+    receptor_razon_social: Optional[str]
     """
     "Razón social" (legal name) of the "receptor" of the DTE.
     """
 
-    fecha_vencimiento_date: Optional[date] = dc_field(default=None)
+    fecha_vencimiento_date: Optional[date] = None
     """
     "Fecha de vencimiento (pago)" of the DTE.
     """
 
-    firma_documento_dt: Optional[datetime] = dc_field(default=None)
+    firma_documento_dt: Optional[datetime] = None
     """
     Datetime on which the "documento" was digitally signed.
     """
 
-    signature_value: Optional[bytes] = dc_field(default=None)
+    signature_value: Optional[bytes] = None
     """
     DTE's digital signature's value (raw bytes, without base64 encoding).
     """
 
-    signature_x509_cert_der: Optional[bytes] = dc_field(default=None)
+    signature_x509_cert_der: Optional[bytes] = None
     """
     DTE's digital signature's DER-encoded X.509 cert.
 
@@ -383,80 +386,20 @@ class DteDataL2(DteDataL1):
         and :func:`cl_sii.libs.crypto_utils.x509_cert_der_to_pem`.
     """
 
-    emisor_giro: Optional[str] = dc_field(default=None)
+    emisor_giro: Optional[str] = None
     """
     "Giro" of the "emisor" of the DTE.
     """
 
-    emisor_email: Optional[str] = dc_field(default=None)
+    emisor_email: Optional[str] = None
     """
     Email address of the "emisor" of the DTE.
     """
 
-    receptor_email: Optional[str] = dc_field(default=None)
+    receptor_email: Optional[str] = None
     """
     Email address of the "receptor" of the DTE.
     """
-
-    def __post_init__(self) -> None:
-        """
-        Run validation automatically after setting the fields values.
-
-        :raises TypeError, ValueError:
-
-        """
-        super().__post_init__()
-
-        if self.emisor_razon_social is not None:
-            if not isinstance(self.emisor_razon_social, str):
-                raise TypeError("Inappropriate type of 'emisor_razon_social'.")
-            validate_contribuyente_razon_social(self.emisor_razon_social)
-
-        if self.receptor_razon_social is not None:
-            if not isinstance(self.receptor_razon_social, str):
-                raise TypeError("Inappropriate type of 'receptor_razon_social'.")
-            validate_contribuyente_razon_social(self.receptor_razon_social)
-
-        if self.fecha_vencimiento_date is not None:
-            if not isinstance(self.fecha_vencimiento_date, date):
-                raise TypeError("Inappropriate type of 'fecha_vencimiento_date'.")
-
-        if self.firma_documento_dt is not None:
-            if not isinstance(self.firma_documento_dt, datetime):
-                raise TypeError("Inappropriate type of 'firma_documento_dt'.")
-            tz_utils.validate_dt_tz(self.firma_documento_dt, self.DATETIME_FIELDS_TZ)
-
-        if self.signature_value is not None:
-            if not isinstance(self.signature_value, bytes):
-                raise TypeError("Inappropriate type of 'signature_value'.")
-            # warning: do NOT strip a bytes value because "strip" implies an ASCII-encoded text,
-            #   which in this case it is not.
-            validate_non_empty_bytes(self.signature_value)
-
-        if self.signature_x509_cert_der is not None:
-            if not isinstance(self.signature_x509_cert_der, bytes):
-                raise TypeError("Inappropriate type of 'signature_x509_cert_der'.")
-            # warning: do NOT strip a bytes value because "strip" implies an ASCII-encoded text,
-            #   which in this case it is not.
-            validate_non_empty_bytes(self.signature_x509_cert_der)
-
-        if self.emisor_giro is not None:
-            if not isinstance(self.emisor_giro, str):
-                raise TypeError("Inappropriate type of 'emisor_giro'.")
-            validate_clean_str(self.emisor_giro)
-            validate_non_empty_str(self.emisor_giro)
-
-        if self.emisor_email is not None:
-            if not isinstance(self.emisor_email, str):
-                raise TypeError("Inappropriate type of 'emisor_email'.")
-            validate_clean_str(self.emisor_email)
-            validate_non_empty_str(self.emisor_email)
-
-        if self.receptor_email is not None:
-            if not isinstance(self.receptor_email, str):
-                raise TypeError("Inappropriate type of 'receptor_email'.")
-            validate_clean_str(self.receptor_email)
-            validate_non_empty_str(self.receptor_email)
 
     def as_dte_data_l1(self) -> DteDataL1:
         return DteDataL1(
@@ -466,6 +409,40 @@ class DteDataL2(DteDataL1):
             fecha_emision_date=self.fecha_emision_date,
             receptor_rut=self.receptor_rut,
             monto_total=self.monto_total)
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
+
+    @pydantic.validator('emisor_razon_social', 'receptor_razon_social')
+    def validate_contribuyente_razon_social(cls, v: object) -> object:
+        if isinstance(v, str):
+            validate_contribuyente_razon_social(v)
+        return v
+
+    @pydantic.validator('firma_documento_dt')
+    def validate_datetime_tz(cls, v: object) -> object:
+        if isinstance(v, datetime):
+            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+        return v
+
+    @pydantic.validator('signature_value', 'signature_x509_cert_der')
+    def validate_non_empty_bytes(cls, v: object) -> object:
+        if isinstance(v, bytes):
+            validate_non_empty_bytes(v)
+        return v
+
+    @pydantic.validator('emisor_giro', 'emisor_email', 'receptor_email')
+    def validate_no_leading_or_trailing_whitespace_characters(cls, v: object) -> object:
+        if isinstance(v, str):
+            validate_clean_str(v)
+        return v
+
+    @pydantic.validator('emisor_giro', 'emisor_email', 'receptor_email')
+    def validate_non_empty_stripped_str(cls, v: object) -> object:
+        if isinstance(v, str):
+            validate_non_empty_str(v)
+        return v
 
 
 @pydantic.dataclasses.dataclass(
