@@ -872,6 +872,26 @@ class DteXmlDataTest(unittest.TestCase):
         for expected_validation_error in expected_validation_errors:
             self.assertIn(expected_validation_error, validation_errors)
 
+    def test_init_fail_regression_signature_value_bytes_with_x20(self) -> None:
+        bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
+        bytes_value_with_x20 = b'\x20\xdd\xa9\x900q\xa89\xc6\x97\x83\xdf\xbd\xba"'
+
+        self.assertEqual(b'\x20', b' ')
+        self.assertEqual(
+            bytes_value_with_x20,
+            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+
+        init_kwars = self.dte_xml_data_1.as_dict()
+        init_kwars.update(dict(signature_value=bytes_value_with_x20))
+
+        # with self.assertRaises(ValueError) as cm:
+        #     _ = DteXmlData(**init_kwars)
+        # self.assertEqual(
+        #     cm.exception.args,
+        #     ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
+        # )
+        _ = DteXmlData(**init_kwars)
+
     def test_validate_non_empty_bytes_signature_value(self) -> None:
         expected_validation_errors = [
             {
@@ -891,6 +911,26 @@ class DteXmlDataTest(unittest.TestCase):
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
         for expected_validation_error in expected_validation_errors:
             self.assertIn(expected_validation_error, validation_errors)
+
+    def test_init_fail_regression_signature_cert_der_bytes_with_x20(self) -> None:
+        bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
+        bytes_value_with_x20 = b'\x20\xdd\xa9\x900q\xa89\xc6\x97\x83\xdf\xbd\xba"'
+
+        self.assertEqual(b'\x20', b' ')
+        self.assertEqual(
+            bytes_value_with_x20,
+            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+
+        init_kwars = self.dte_xml_data_1.as_dict()
+        init_kwars.update(dict(signature_x509_cert_der=bytes_value_with_x20))
+
+        # with self.assertRaises(ValueError) as cm:
+        #     _ = DteXmlData(**init_kwars)
+        # self.assertEqual(
+        #     cm.exception.args,
+        #     ('Value has leading or trailing whitespace characters.', bytes_value_with_x20)
+        # )
+        _ = DteXmlData(**init_kwars)
 
     def test_validate_non_empty_bytes_signature_x509_cert_der(self) -> None:
         expected_validation_errors = [
