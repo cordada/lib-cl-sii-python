@@ -11,6 +11,7 @@ RUT "canonical format": no dots ('.'), with dash ('-'), uppercase K e.g.
 """
 import itertools
 import random
+import re
 
 from . import constants
 
@@ -144,7 +145,10 @@ class Rut:
     def clean_str(cls, value: str) -> str:
         # note: unfortunately `value.strip('.')` does not remove all the occurrences of '.' in
         #   'value' (only the leading and trailing ones).
-        return value.strip().lstrip('0').replace('.', '').upper()
+        clean_value = value.strip().replace('.', '').upper()
+        # Remove leading zeros except if zero is the only digit, so we can accept the RUT '0-0'.
+        leading_zero_free_value = re.sub(r'^0+(\d+)', r'\1', clean_value)
+        return leading_zero_free_value
 
     @classmethod
     def calc_dv(cls, rut_digits: str) -> str:
