@@ -22,7 +22,7 @@ It is used by various Web technologies such as SOAP, SAML, and others.
 import io
 import logging
 import os
-from typing import IO, Tuple, Union
+from typing import IO, Optional, Tuple, Union
 
 import defusedxml
 import defusedxml.lxml
@@ -275,7 +275,11 @@ def read_xml_schema(filename: str) -> XmlSchema:
     raise ValueError("XML schema file not found.", filename)
 
 
-def validate_xml_doc(xml_schema: XmlSchema, xml_doc: XmlElement) -> None:
+def validate_xml_doc(
+    xml_schema: XmlSchema,
+    xml_doc: XmlElement,
+    xml_schema_version: Optional[str] = None,
+) -> None:
     """
     Validate ``xml_doc`` against XML schema ``xml_schema``.
 
@@ -307,6 +311,9 @@ def validate_xml_doc(xml_schema: XmlSchema, xml_doc: XmlElement) -> None:
         # Error example:
         #   "Element 'DTE': No matching global declaration available for the validation root., line 2"  # noqa: E501
         validation_error_msg = str(exc)
+
+        if (xml_schema_version and xml_schema_version.strip()):
+            validation_error_msg += f". XML schemas version {xml_schema_version}"
 
         raise XmlSchemaDocValidationError(validation_error_msg) from exc
 

@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import logging
 from datetime import date, datetime
+from lxml.etree import XMLSchema as XmlSchema
 from pathlib import Path
 from typing import Mapping, Optional, Sequence
 
@@ -25,6 +26,7 @@ import pydantic
 
 import cl_sii.dte.data_models
 import cl_sii.dte.parse
+from cl_sii.base.constants import XmlSchemasVersionEnum
 from cl_sii.dte.constants import TipoDteEnum
 from cl_sii.dte.data_models import DteXmlData
 from cl_sii.dte.parse import DTE_XMLNS_MAP
@@ -37,10 +39,16 @@ from . import data_models_aec
 
 logger = logging.getLogger(__name__)
 
+_LATEST_AEC_XML_SCHEMA_VERSION = XmlSchemasVersionEnum.latest()
 
+_AEC_XML_SCHEMA_STR_PATH_TEMPLATE = (
+    "data/ref/factura_electronica/schemas-xml/{}/AEC_v10.xsd"
+)
 _AEC_XML_SCHEMA_PATH = Path(
     Path(__file__).parent.parent,
-    Path('data/ref/factura_electronica/schemas-xml/AEC_v10.xsd'),
+    Path(
+        _AEC_XML_SCHEMA_STR_PATH_TEMPLATE.format(_LATEST_AEC_XML_SCHEMA_VERSION.value)
+    ),
 ).resolve()
 
 AEC_XML_SCHEMA_OBJ = xml_utils.read_xml_schema(str(_AEC_XML_SCHEMA_PATH))
@@ -59,14 +67,19 @@ It is read from a file at import time to avoid unnecessary reads afterwards.
 # Main Functions
 ###############################################################################
 
-def validate_aec_xml(xml_doc: XmlElement) -> None:
+def validate_aec_xml(
+    xml_doc: XmlElement,
+    aec_xml_schema_version: XmlSchemasVersionEnum = _LATEST_AEC_XML_SCHEMA_VERSION
+) -> None:
     """
     Validate ``xml_doc`` against AEC's XML schema.
 
     :raises xml_utils.XmlSchemaDocValidationError:
     """
+
+    aec_xml_schema_obj = _get_aec_xml_schema_obj(aec_xml_schema_version)
     # TODO: Add better and more precise exception handling.
-    xml_utils.validate_xml_doc(AEC_XML_SCHEMA_OBJ, xml_doc)
+    xml_utils.validate_xml_doc(aec_xml_schema_obj, xml_doc, aec_xml_schema_version.value)
 
 
 def parse_aec_xml(xml_doc: XmlElement) -> data_models_aec.AecXml:
@@ -83,6 +96,23 @@ def parse_aec_xml(xml_doc: XmlElement) -> data_models_aec.AecXml:
 ###############################################################################
 # Parser Functions and Models
 ###############################################################################
+
+def _get_aec_xml_schema_obj(aec_xml_schema_version: XmlSchemasVersionEnum) -> XmlSchema:
+
+    if(aec_xml_schema_version is _LATEST_AEC_XML_SCHEMA_VERSION):
+        aec_xml_schema_obj = AEC_XML_SCHEMA_OBJ
+    else:
+        aec_xml_schema_path = Path(
+            Path(__file__).parent.parent,
+            Path(
+                _AEC_XML_SCHEMA_STR_PATH_TEMPLATE.format(aec_xml_schema_version.value)
+            ),
+        ).resolve()
+
+        aec_xml_schema_obj = xml_utils.read_xml_schema(str(aec_xml_schema_path))
+
+    return aec_xml_schema_obj
+
 
 def _validate_rut(v: object) -> object:
     """

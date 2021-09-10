@@ -3,5 +3,7 @@ include LICENSE
 include README.rst
 recursive-include cl_sii *py
 recursive-include cl_sii/data/cte/schemas-json *.schema.json
-recursive-include cl_sii/data/ref/factura_electronica/schemas-xml *.xsd
+recursive-include cl_sii/data/ref/factura_electronica/schemas-xml/2013_02_07_sii_official *.xsd
+recursive-include cl_sii/data/ref/factura_electronica/schemas-xml/2017_10_23_libre_dte *.xsd
+recursive-include cl_sii/data/ref/factura_electronica/schemas-xml/2019_12_12_sii_rtc *.xsd
 include cl_sii/py.typed
