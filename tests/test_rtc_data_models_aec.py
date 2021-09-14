@@ -168,6 +168,19 @@ class CesionAecXmlTest(unittest.TestCase):
         )
         self.assertEqual(obj.alt_natural_key, expected_output)
 
+    def test_is_ok_empty_cedente_persona_autorizada_nombre(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        try:
+            dataclasses.replace(
+                obj,
+                cedente_persona_autorizada_nombre='',
+            )
+        except pydantic.ValidationError as exc:
+            self.fail(f'{exc.__class__.__name__} raised')
+
     def test_as_cesion_l2(self) -> None:
         self._set_obj_1()
 

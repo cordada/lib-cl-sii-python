@@ -221,7 +221,6 @@ class _RutAutorizado(pydantic.BaseModel):
         anystr_strip_whitespace = True
         arbitrary_types_allowed = True
         extra = pydantic.Extra.forbid
-        min_anystr_length = 1
 
     ###########################################################################
     # Fields
