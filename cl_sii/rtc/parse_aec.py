@@ -238,7 +238,7 @@ class _RutAutorizado(pydantic.BaseModel):
     ###########################################################################
 
     rut: Rut
-    nombre: str
+    nombre: Optional[str]
 
     ###########################################################################
     # Custom Methods
@@ -258,6 +258,10 @@ class _RutAutorizado(pydantic.BaseModel):
     ###########################################################################
     # Validators
     ###########################################################################
+
+    _empty_str_to_none = pydantic.validator(  # type: ignore[pydantic-field]
+        'nombre', pre=True, allow_reuse=True,
+    )(_empty_str_to_none)
 
     _validate_rut = pydantic.validator(  # type: ignore[pydantic-field]
         'rut', pre=True, allow_reuse=True,
