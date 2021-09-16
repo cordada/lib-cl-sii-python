@@ -84,6 +84,16 @@ def parse_aec_xml(xml_doc: XmlElement) -> data_models_aec.AecXml:
 # Parser Functions and Models
 ###############################################################################
 
+def _empty_str_to_none(v: object) -> object:
+    """
+    Reusable Pydantic validator that converts empty strings to ``None``.
+    """
+    if isinstance(v, str):
+        if not v.strip():
+            v = None
+    return v
+
+
 def _validate_rut(v: object) -> object:
     """
     Reusable Pydantic validator for fields of type :class:`Rut`.
@@ -228,7 +238,7 @@ class _RutAutorizado(pydantic.BaseModel):
     ###########################################################################
 
     rut: Rut
-    nombre: str
+    nombre: Optional[str]
 
     ###########################################################################
     # Custom Methods
@@ -248,6 +258,10 @@ class _RutAutorizado(pydantic.BaseModel):
     ###########################################################################
     # Validators
     ###########################################################################
+
+    _empty_str_to_none = pydantic.validator(  # type: ignore[pydantic-field]
+        'nombre', pre=True, allow_reuse=True,
+    )(_empty_str_to_none)
 
     _validate_rut = pydantic.validator(  # type: ignore[pydantic-field]
         'rut', pre=True, allow_reuse=True,

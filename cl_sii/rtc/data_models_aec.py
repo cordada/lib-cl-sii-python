@@ -174,17 +174,25 @@ class CesionAecXml:
         '..//Cesion//DocumentoCesion//Cedente//RUTAutorizado//RUT'
     """
 
-    cedente_persona_autorizada_nombre: str
+    cedente_persona_autorizada_nombre: Optional[str]
     """
     "Persona Autorizada" by the "cedente" to "Firmar la Transferencia" (name).
 
-    .. note:: It might be the "cedente" itself, a "persona natural", etc.
+    .. note:: It might be the "cedente" itself, a "persona natural", etc. There is a
+    contradiction regarding the element ``Nombre de la persona autorizada`` about what
+    the technical documentation states and how it was implemented in the XML schema.
+    Although the former defines the field as required, the XML schema does not set a
+    minimum required length, so the field can be empty.
 
     First of the
     > Lista de Personas Autorizadas por el Cedente a Firmar la Transferencia
 
     AEC doc XML element (1..3 occurrences of 'RUTAutorizado'):
         '..//Cesion//DocumentoCesion//Cedente//RUTAutorizado//Nombre'
+
+    .. seealso::
+        https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/99b15aff252836e1ac311d243636aa3a9e6b89c6/src/docs/rtc/2013-02-11-formato-archivo-electronico-cesion.pdf
+        https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/99b15aff252836e1ac311d243636aa3a9e6b89c6/src/code/rtc/2019-12-12-schema_cesion/schema_cesion/SiiTypes_v10.xsd#L682-L689
     """
 
     cesionario_razon_social: str
