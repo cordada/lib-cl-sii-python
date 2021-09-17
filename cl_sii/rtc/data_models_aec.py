@@ -332,9 +332,9 @@ class CesionAecXml:
         return v
 
     @pydantic.validator('fecha_cesion_dt')
-    def validate_datetime_tz(cls, v: object) -> object:
+    def validate_fecha_cesion_dt(cls, v: object) -> object:
         if isinstance(v, datetime):
-            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+            data_models.validate_cesion_fecha(v, cls.DATETIME_FIELDS_TZ)
         return v
 
     @pydantic.root_validator(skip_on_failure=True)
@@ -375,7 +375,9 @@ class CesionAecXml:
             isinstance(fecha_ultimo_vencimiento, date)
             and isinstance(dte, dte_data_models.DteDataL1)
         ):
-            pass  # TODO: Validate value of 'fecha_ultimo_vencimiento' in relation to the DTE data.
+            data_models.validate_cesion_fecha_ultimo_vencimiento_is_consistent_with_dte(
+                cesion_value=fecha_ultimo_vencimiento, dte_value=dte.fecha_emision_date
+            )
 
         return values
 
@@ -781,6 +783,28 @@ class AecXml:
                             f"{last_cesion_field!r} of last 'cesion' must match {self_field!r}:"
                             f" {last_cesion_value!r} != {self_value!r}.",
                         )
+
+        return values
+
+    @pydantic.root_validator(skip_on_failure=True)
+    def validate_cesiones_rut_cedente_match_previous_rut_cesionario_or_dte_emisor(
+        cls, values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        dte = values['dte']
+        cesiones = values['cesiones']
+
+        if isinstance(dte, dte_data_models.DteXmlData) and isinstance(cesiones, Sequence):
+            dte_l1 = dte.as_dte_data_l1()
+            valid_cedente_rut = dte_l1.emisor_rut
+            for cesion in cesiones:
+                if cesion.cedente_rut != valid_cedente_rut:
+                    raise ValueError(
+                        f"'cedente_rut' of 'cesion' must match previous 'cesionario_rut'"
+                        f"  or DTE\'s 'emisor_rut' if there is no previuos 'cesion'"
+                        f" {cesion.cedente_rut!r} != {valid_cedente_rut!r}.",
+                    )
+
+                valid_cedente_rut = cesion.cesionario_rut
 
         return values
 
