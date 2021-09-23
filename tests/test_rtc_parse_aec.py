@@ -87,9 +87,15 @@ class AecXmlParserTest(unittest.TestCase):
             'test_data/sii-rtc/AEC--76354771-K--33--170--SEQ-2.xml',
         )
 
-        # aec_signature_value: bytes = encoding_utils.decode_base64_strict('Not Implemented')
+        aec_signature_value: bytes = encoding_utils.decode_base64_strict(
+            read_test_file_bytes(
+                'test_data/sii-crypto/AEC--76354771-K--33--170--SEQ-2-signature-value-base64.txt',
+            ),
+        )
 
-        # aec_1_cert_der_bytes: bytes = read_test_file_bytes('test_data/Not-Implemented.der')
+        aec_cert_der_bytes: bytes = read_test_file_bytes(
+            'test_data/sii-crypto/AEC--76354771-K--33--170--SEQ-2-cert.der',
+        )
 
         aec_dte_cert_der_bytes: bytes = read_test_file_bytes(
             'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der',
@@ -102,8 +108,8 @@ class AecXmlParserTest(unittest.TestCase):
         )
 
         self.aec_1_xml_bytes = aec_xml_bytes
-        # self.aec_1_signature_value = aec_signature_value
-        # self.aec_1_cert_der_bytes = aec_cert_der_bytes
+        self.aec_1_signature_value = aec_signature_value
+        self.aec_1_cert_der_bytes = aec_cert_der_bytes
         self.aec_1_dte_cert_der_bytes = aec_dte_cert_der_bytes
         self.aec_1_dte_signature_value = aec_dte_signature_value
 
@@ -112,9 +118,15 @@ class AecXmlParserTest(unittest.TestCase):
             'test_data/sii-rtc/AEC--76399752-9--33--25568--SEQ-1.xml',
         )
 
-        # aec_signature_value: bytes = encoding_utils.decode_base64_strict('Not Implemented')
+        aec_signature_value: bytes = encoding_utils.decode_base64_strict(
+            read_test_file_bytes(
+                'test_data/sii-crypto/AEC--76399752-9--33--25568--SEQ-1-signature-value-base64.txt',
+            ),
+        )
 
-        # aec_cert_der_bytes: bytes = read_test_file_bytes('test_data/Not-Implemented.der')
+        aec_cert_der_bytes: bytes = read_test_file_bytes(
+            'test_data/sii-crypto/AEC--76399752-9--33--25568--SEQ-1-cert.der',
+        )
 
         aec_dte_cert_der_bytes: bytes = read_test_file_bytes(
             'test_data/sii-crypto/DTE--76399752-9--33--25568-cert.der',
@@ -127,8 +139,8 @@ class AecXmlParserTest(unittest.TestCase):
         )
 
         self.aec_2_xml_bytes = aec_xml_bytes
-        # self.aec_2_signature_value = aec_signature_value
-        # self.aec_2_cert_der_bytes = aec_cert_der_bytes
+        self.aec_2_signature_value = aec_signature_value
+        self.aec_2_cert_der_bytes = aec_cert_der_bytes
         self.aec_2_dte_cert_der_bytes = aec_dte_cert_der_bytes
         self.aec_2_dte_signature_value = aec_dte_signature_value
 
@@ -136,6 +148,8 @@ class AecXmlParserTest(unittest.TestCase):
         self._set_obj_1()
 
         aec_xml_bytes = self.aec_1_xml_bytes
+        aec_signature_value = self.aec_1_signature_value
+        aec_cert_der_bytes = self.aec_1_cert_der_bytes
         aec_dte_signature_value = self.aec_1_dte_signature_value
         aec_dte_cert_der_bytes = self.aec_1_dte_cert_der_bytes
         expected_output = AecXml(
@@ -165,8 +179,8 @@ class AecXmlParserTest(unittest.TestCase):
                 dt=datetime(2019, 4, 5, 12, 57, 32),
                 tz=AecXml.DATETIME_FIELDS_TZ,
             ),
-            # signature_value=None,
-            # signature_x509_cert_der=None,
+            signature_value=aec_signature_value,
+            signature_x509_cert_der=aec_cert_der_bytes,
             cesiones=[
                 CesionAecXml(
                     dte=DteDataL1(
@@ -252,6 +266,8 @@ class AecXmlParserTest(unittest.TestCase):
         self._set_obj_2()
 
         aec_xml_bytes = self.aec_2_xml_bytes
+        aec_signature_value = self.aec_2_signature_value
+        aec_cert_der_bytes = self.aec_2_cert_der_bytes
         aec_dte_signature_value = self.aec_2_dte_signature_value
         aec_dte_cert_der_bytes = self.aec_2_dte_cert_der_bytes
         expected_output = AecXml(
@@ -281,8 +297,8 @@ class AecXmlParserTest(unittest.TestCase):
                 dt=datetime(2019, 4, 4, 9, 9, 52),
                 tz=AecXml.DATETIME_FIELDS_TZ,
             ),
-            # signature_value=None,
-            # signature_x509_cert_der=None,
+            signature_value=aec_signature_value,
+            signature_x509_cert_der=aec_cert_der_bytes,
             cesiones=[
                 CesionAecXml(
                     dte=DteDataL1(
