@@ -298,3 +298,19 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         with self.assertRaises(NotImplementedError) as cm:
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(cm.exception.args, expected_exc_args)
+
+    def test_fail_custom_xml_verifier_invalid_class(self) -> None:
+        xml_doc = parse_untrusted_xml(self.trivial_without_signature)
+        custom_xml_verifier = object()
+
+        expected_exc_args = (
+            "'xml_verifier' must be an instance of 'signxml.XMLVerifier' or of a subclass of it.",
+        )
+
+        with self.assertRaises(TypeError) as assert_raises_cm:
+            verify_xml_signature(
+                xml_doc,
+                xml_verifier=custom_xml_verifier,
+            )
+
+        self.assertEqual(assert_raises_cm.exception.args, expected_exc_args)

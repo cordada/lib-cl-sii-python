@@ -22,7 +22,7 @@ It is used by various Web technologies such as SOAP, SAML, and others.
 import io
 import logging
 import os
-from typing import IO, Tuple, Union
+from typing import IO, Optional, Tuple, Union
 
 import defusedxml
 import defusedxml.lxml
@@ -356,6 +356,7 @@ def write_xml_doc(xml_doc: XmlElement, output: IO[bytes]) -> None:
 def verify_xml_signature(
     xml_doc: XmlElement,
     trusted_x509_cert: Union[crypto_utils.X509Cert, crypto_utils._X509CertOpenSsl] = None,
+    xml_verifier: Optional[signxml.XMLVerifier] = None,
 ) -> Tuple[bytes, XmlElementTree, XmlElementTree]:
     """
     Verify the XML signature in ``xml_doc``.
@@ -382,6 +383,8 @@ def verify_xml_signature(
 
     :param xml_doc:
     :param trusted_x509_cert: a trusted external X.509 certificate, or None
+    :param xml_verifier: Custom XML signature verifier. Use ``None`` for the
+        default verifier.
     :raises :class:`XmlSignatureUnverified`:
         signature did not verify
     :raises :class:`XmlSignatureInvalidCertificate`:
@@ -396,6 +399,8 @@ def verify_xml_signature(
     if not isinstance(xml_doc, XmlElement):
         raise TypeError("'xml_doc' must be an XML document/element.")
 
+    use_default_xml_verifier = xml_verifier is None
+
     n_signatures = (
         len(xml_doc.findall('.//ds:Signature', namespaces=XML_DSIG_NS_MAP))
         + len(xml_doc.findall('.//dsig11:Signature', namespaces=XML_DSIG_NS_MAP))
@@ -404,7 +409,13 @@ def verify_xml_signature(
     if n_signatures > 1:
         raise NotImplementedError("XML document with more than one signature is not supported.")
 
-    xml_verifier = signxml.XMLVerifier()
+    if use_default_xml_verifier:
+        xml_verifier = signxml.XMLVerifier()
+
+    if not isinstance(xml_verifier, signxml.XMLVerifier):
+        raise TypeError(
+            "'xml_verifier' must be an instance of 'signxml.XMLVerifier' or of a subclass of it."
+        )
 
     if isinstance(trusted_x509_cert, crypto_utils._X509CertOpenSsl):
         trusted_x509_cert_open_ssl = trusted_x509_cert
