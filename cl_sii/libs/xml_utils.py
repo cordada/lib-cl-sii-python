@@ -357,6 +357,7 @@ def verify_xml_signature(
     xml_doc: XmlElement,
     trusted_x509_cert: Union[crypto_utils.X509Cert, crypto_utils._X509CertOpenSsl] = None,
     xml_verifier: Optional[signxml.XMLVerifier] = None,
+    xml_verifier_supports_multiple_signatures: bool = False,
 ) -> Tuple[bytes, XmlElementTree, XmlElementTree]:
     """
     Verify the XML signature in ``xml_doc``.
@@ -385,6 +386,9 @@ def verify_xml_signature(
     :param trusted_x509_cert: a trusted external X.509 certificate, or None
     :param xml_verifier: Custom XML signature verifier. Use ``None`` for the
         default verifier.
+    :param xml_verifier_supports_multiple_signatures: Set to ``True`` if
+        ``xml_verifier`` is able to correctly verify XML documents that contain
+        multiple signatures.
     :raises :class:`XmlSignatureUnverified`:
         signature did not verify
     :raises :class:`XmlSignatureInvalidCertificate`:
@@ -401,12 +405,18 @@ def verify_xml_signature(
 
     use_default_xml_verifier = xml_verifier is None
 
+    if use_default_xml_verifier and xml_verifier_supports_multiple_signatures:
+        raise NotImplementedError(
+            "Default XML signature verifier"
+            " does not support XML documents with more than one signature."
+        )
+
     n_signatures = (
         len(xml_doc.findall('.//ds:Signature', namespaces=XML_DSIG_NS_MAP))
         + len(xml_doc.findall('.//dsig11:Signature', namespaces=XML_DSIG_NS_MAP))
         + len(xml_doc.findall('.//dsig2:Signature', namespaces=XML_DSIG_NS_MAP)))
 
-    if n_signatures > 1:
+    if n_signatures > 1 and not xml_verifier_supports_multiple_signatures:
         raise NotImplementedError("XML document with more than one signature is not supported.")
 
     if use_default_xml_verifier:

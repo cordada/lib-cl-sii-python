@@ -299,6 +299,35 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(cm.exception.args, expected_exc_args)
 
+    def test_fail_xml_doc_with_too_many_signatures_force_verification(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_too_many_signatures)
+
+        expected_exc_args = (
+            "Default XML signature verifier"
+            " does not support XML documents with more than one signature.",
+        )
+
+        # Without cert:
+        with self.assertRaises(NotImplementedError) as assert_raises_cm:
+            verify_xml_signature(
+                xml_doc,
+                trusted_x509_cert=None,
+                xml_verifier_supports_multiple_signatures=True,
+            )
+
+        self.assertEqual(assert_raises_cm.exception.args, expected_exc_args)
+
+        # With cert:
+        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+        with self.assertRaises(NotImplementedError) as assert_raises_cm:
+            verify_xml_signature(
+                xml_doc,
+                trusted_x509_cert=cert,
+                xml_verifier_supports_multiple_signatures=True,
+            )
+
+        self.assertEqual(assert_raises_cm.exception.args, expected_exc_args)
+
     def test_fail_custom_xml_verifier_invalid_class(self) -> None:
         xml_doc = parse_untrusted_xml(self.trivial_without_signature)
         custom_xml_verifier = object()
