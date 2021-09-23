@@ -477,7 +477,7 @@ class AecXml:
     RPETC email: attachment / 'Cesion' / 'Fecha de la Cesion'
     """
 
-    # signature_value: Optional[bytes] = dataclasses.field(repr=False)
+    signature_value: Optional[bytes] = dataclasses.field(repr=False)
     """
     AEC's digital signature's value (raw bytes, without base64 encoding).
 
@@ -486,7 +486,7 @@ class AecXml:
     AEC doc XML element: 'Signature/SignatureValue'
     """
 
-    # signature_x509_cert_der: Optional[bytes] = dataclasses.field(repr=False)
+    signature_x509_cert_der: Optional[bytes] = dataclasses.field(repr=False)
     """
     AEC's digital signature's DER-encoded X.509 certificate.
 
@@ -784,20 +784,20 @@ class AecXml:
 
         return values
 
-    # @pydantic.root_validator
-    # def validate_signature_value_and_signature_x509_cert_der_may_only_be_none_together(
-    #     cls, values: Mapping[str, object],
-    # ) -> Mapping[str, object]:
-    #     signature_value = values.get('signature_value')
-    #     signature_x509_cert_der = values.get('signature_x509_cert_der')
-    #
-    #     if not (
-    #         (signature_value is None and signature_x509_cert_der is None)
-    #         or (signature_value is not None and signature_x509_cert_der is not None)
-    #     ):
-    #         raise TypeError(
-    #             "'signature_value' and 'signature_x509_cert_der'"
-    #             " must either both be None or both be not None."
-    #         )
-    #
-    #     return values
+    @pydantic.root_validator
+    def validate_signature_value_and_signature_x509_cert_der_may_only_be_none_together(
+        cls, values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        signature_value = values.get('signature_value')
+        signature_x509_cert_der = values.get('signature_x509_cert_der')
+
+        if not (
+            (signature_value is None and signature_x509_cert_der is None)
+            or (signature_value is not None and signature_x509_cert_der is not None)
+        ):
+            raise TypeError(
+                "'signature_value' and 'signature_x509_cert_der'"
+                " must either both be None or both be not None."
+            )
+
+        return values
