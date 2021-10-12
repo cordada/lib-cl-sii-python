@@ -12,6 +12,8 @@ class RutTest(unittest.TestCase):
     valid_rut_digits_with_dots: str
     valid_rut_verbose: str
     valid_rut_leading_zero: str
+    valid_rut_zero_zero: str
+    valid_rut_zero_zero_dv: str
 
     invalid_rut_canonical: str
     invalid_rut_dv: str
@@ -34,6 +36,8 @@ class RutTest(unittest.TestCase):
         cls.valid_rut_digits_with_dots = '6.824.160'
         cls.valid_rut_verbose = '6.824.160-K'
         cls.valid_rut_leading_zero = '06824160-K'
+        cls.valid_rut_zero_zero = '0-0'
+        cls.valid_rut_zero_zero_dv = '0'
 
         cls.invalid_rut_canonical = '6824160-0'
         cls.invalid_rut_dv = '0'
@@ -290,6 +294,26 @@ class RutTest(unittest.TestCase):
         rut_value = f'00000000{self.valid_rut_canonical}'
         clean_rut = rut.Rut.clean_str(rut_value)
         self.assertEqual(clean_rut, self.valid_rut_canonical)
+
+        # RUT 0-0
+        rut_value = self.valid_rut_zero_zero
+        clean_rut = rut.Rut.clean_str(rut_value)
+        self.assertEqual(clean_rut, self.valid_rut_zero_zero)
+
+        # RUT 0-0 with one extra leading zero
+        rut_value = f'0{self.valid_rut_zero_zero}'
+        clean_rut = rut.Rut.clean_str(rut_value)
+        self.assertEqual(clean_rut, self.valid_rut_zero_zero)
+
+        # RUT 0-0 with two extra leading zero
+        rut_value = f'00{self.valid_rut_zero_zero}'
+        clean_rut = rut.Rut.clean_str(rut_value)
+        self.assertEqual(clean_rut, self.valid_rut_zero_zero)
+
+        # RUT 0-0 with eight extra leading zero
+        rut_value = f'00000000{self.valid_rut_zero_zero}'
+        clean_rut = rut.Rut.clean_str(rut_value)
+        self.assertEqual(clean_rut, self.valid_rut_zero_zero)
 
     def test_calc_dv_ok(self) -> None:
         dv = rut.Rut.calc_dv(self.valid_rut_digits)
