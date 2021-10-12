@@ -3,6 +3,12 @@
 History
 -------
 
+0.14.1 (2021-10-12)
++++++++++++++++++++++++
+
+* (PR #238, 2021-09-08) rut: Fix RUT clean method to accept '0-0' value
+* (PR #241, 2021-09-16) rtc: Make AEC field 'nombre persona autorizada cedente' optional
+
 0.14.0 (2021-08-17)
 +++++++++++++++++++++++
 
