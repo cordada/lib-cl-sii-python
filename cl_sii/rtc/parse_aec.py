@@ -733,6 +733,10 @@ class _Caratula(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
+    _empty_str_to_none = pydantic.validator(  # type: ignore[pydantic-field]
+        'nmb_contacto', 'fono_contacto', 'mail_contacto', pre=True, allow_reuse=True,
+    )(_empty_str_to_none)
+
     _validate_rut_cedente = pydantic.validator(  # type: ignore[pydantic-field]
         'rut_cedente', pre=True, allow_reuse=True,
     )(_validate_rut)
