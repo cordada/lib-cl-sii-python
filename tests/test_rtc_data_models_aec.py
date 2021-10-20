@@ -318,6 +318,15 @@ class AecXmlTest(unittest.TestCase):
             ),
         )
 
+        obj_signature_value = encoding_utils.decode_base64_strict(
+            read_test_file_bytes(
+                'test_data/sii-crypto/AEC--76354771-K--33--170--SEQ-2-signature-value-base64.txt',
+            ),
+        )
+        obj_signature_x509_cert_der = read_test_file_bytes(
+            'test_data/sii-crypto/AEC--76354771-K--33--170--SEQ-2-cert.der',
+        )
+
         obj = AecXml(
             dte=obj_dte,
             cedente_rut=Rut('76389992-6'),
@@ -326,8 +335,8 @@ class AecXmlTest(unittest.TestCase):
                 dt=datetime(2019, 4, 5, 12, 57, 32),
                 tz=AecXml.DATETIME_FIELDS_TZ,
             ),
-            # signature_value=None,
-            # signature_x509_cert_der=None,
+            signature_value=obj_signature_value,
+            signature_x509_cert_der=obj_signature_x509_cert_der,
             cesiones=[
                 obj_cesion_1,
                 obj_cesion_2,

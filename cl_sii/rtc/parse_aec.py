@@ -733,6 +733,10 @@ class _Caratula(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
+    _empty_str_to_none = pydantic.validator(  # type: ignore[pydantic-field]
+        'nmb_contacto', 'fono_contacto', 'mail_contacto', pre=True, allow_reuse=True,
+    )(_empty_str_to_none)
+
     _validate_rut_cedente = pydantic.validator(  # type: ignore[pydantic-field]
         'rut_cedente', pre=True, allow_reuse=True,
     )(_validate_rut)
@@ -842,7 +846,7 @@ class _Aec(pydantic.BaseModel):
     ###########################################################################
 
     documento_aec: _DocumentoAec
-    # signature: _XmlSignature
+    signature: _XmlSignature
 
     ###########################################################################
     # Custom Methods
@@ -855,7 +859,7 @@ class _Aec(pydantic.BaseModel):
 
     def as_aec_xml(self) -> data_models_aec.AecXml:
         doc_aec_struct = self.documento_aec
-        # signature_over_doc_aec_struct = self.signature  # noqa: F841
+        signature_over_doc_aec_struct = self.signature
 
         caratula_struct = doc_aec_struct.caratula
         dte = doc_aec_struct.cesiones_dte_cedido.documento_dte_cedido.dte
@@ -872,8 +876,8 @@ class _Aec(pydantic.BaseModel):
             cedente_rut=caratula_struct.rut_cedente,
             cesionario_rut=caratula_struct.rut_cesionario,
             fecha_firma_dt=caratula_struct.tmst_firmaenvio,
-            # signature_value=signature_over_doc_aec_struct.signature_value,
-            # signature_x509_cert_der=signature_over_doc_aec_struct.key_info_x509_data_x509_cert,
+            signature_value=signature_over_doc_aec_struct.signature_value,
+            signature_x509_cert_der=signature_over_doc_aec_struct.key_info_x509_data_x509_cert,
             cesiones=aec_xml_cesion_list,
             contacto_nombre=caratula_struct.nmb_contacto,
             contacto_telefono=caratula_struct.fono_contacto,
@@ -894,14 +898,14 @@ class _Aec(pydantic.BaseModel):
 
         # Signature over 'DocumentoAEC'
         # XPath: /AEC/Signature
-        # signature_over_doc_aec_em = aec_em.find(
-        #     'ds:Signature',
-        #     namespaces=xml_utils.XML_DSIG_NS_MAP,
-        # )
-        # signature_over_doc_aec_dict = _XmlSignature.parse_xml_to_dict(signature_over_doc_aec_em)
+        signature_over_doc_aec_em = aec_em.find(
+            'ds:Signature',
+            namespaces=xml_utils.XML_DSIG_NS_MAP,
+        )
+        signature_over_doc_aec_dict = _XmlSignature.parse_xml_to_dict(signature_over_doc_aec_em)
 
         # XPath: /AEC
         return dict(
             documento_aec=doc_aec_dict,
-            # signature=signature_over_doc_aec_dict,
+            signature=signature_over_doc_aec_dict,
         )
