@@ -3,6 +3,13 @@
 History
 -------
 
+0.15.0 (2021-10-20)
++++++++++++++++++++++++
+
+* (PR #242, 2021-10-12) rtc: Verify outermost XML signature of SII AECs
+* (PR #247, 2021-10-19) config: Update Python version used in CI jobs to 3.8.12
+* (PR #245, 2021-10-20) rtc.parse_aec: Convert to `None` the empty optional values in the Caratula
+
 0.14.1 (2021-10-12)
 +++++++++++++++++++++++
 
