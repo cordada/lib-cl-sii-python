@@ -12,6 +12,8 @@ from dataclasses import field as dc_field
 from datetime import date, datetime
 from typing import Optional
 
+import pydantic
+
 import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
@@ -329,7 +331,12 @@ class RcReclamadoDetalleEntry(RcvDetalleEntry):
             tz_utils.validate_dt_tz(self.fecha_reclamo_dt, SII_OFFICIAL_TZ)
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RcPendienteDetalleEntry(RcvDetalleEntry):
 
     """
@@ -339,14 +346,17 @@ class RcPendienteDetalleEntry(RcvDetalleEntry):
     RCV_KIND = RcvKind.COMPRAS
     RC_ESTADO_CONTABLE = RcEstadoContable.PENDIENTE
 
-    emisor_razon_social: str = dc_field()
+    emisor_razon_social: str
     """
     "Razón social" (legal name) of the "emisor" of the "documento".
     """
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-        if not isinstance(self.emisor_razon_social, str):
-            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+    @pydantic.validator('emisor_razon_social')
+    def validate_contribuyente_razon_social(cls, v: object) -> object:
+        if isinstance(v, str):
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
+        return v
