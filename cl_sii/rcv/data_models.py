@@ -288,7 +288,12 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
             tz_utils.validate_dt_tz(self.fecha_acuse_dt, SII_OFFICIAL_TZ)
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
 
     """

@@ -7,8 +7,34 @@ import pydantic
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
 from cl_sii.rcv.constants import RcvTipoDocto
-from cl_sii.rcv.data_models import RcPendienteDetalleEntry, RcReclamadoDetalleEntry
+from cl_sii.rcv.data_models import (
+    RcNoIncluirDetalleEntry,
+    RcPendienteDetalleEntry,
+    RcReclamadoDetalleEntry
+)
 from cl_sii.rut import Rut
+
+
+class RcNoIncluirDetalleEntryTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.rc_no_incluir_detalle_entry_1 = RcNoIncluirDetalleEntry(
+            emisor_rut=Rut('76354771-K'),
+            tipo_docto=RcvTipoDocto.FACTURA_ELECTRONICA,
+            folio=170,
+            fecha_emision_date=date(2019, 4, 1),
+            receptor_rut=Rut('96790240-3'),
+            monto_total=2996301,
+            emisor_razon_social='INGENIERIA ENACON SPA',
+            fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                dt=datetime(2019, 4, 1, 1, 36, 40),
+                tz=SII_OFFICIAL_TZ),
+            fecha_acuse_dt=tz_utils.convert_naive_dt_to_tz_aware(
+                dt=datetime(2019, 4, 8, 10, 21, 18),
+                tz=SII_OFFICIAL_TZ),
+        )
 
 
 class RcReclamadoDetalleEntryTest(unittest.TestCase):
