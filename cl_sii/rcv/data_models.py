@@ -299,36 +299,55 @@ class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
     RC_ESTADO_CONTABLE = RcEstadoContable.NO_INCLUIR
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RcReclamadoDetalleEntry(RcvDetalleEntry):
 
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "reclamado".
     """
 
+    ###########################################################################
+    # constants
+    ###########################################################################
+
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
+
+    ###########################################################################
+    # fields
+    ###########################################################################
+
     RCV_KIND = RcvKind.COMPRAS
     RC_ESTADO_CONTABLE = RcEstadoContable.RECLAMADO
 
-    emisor_razon_social: str = dc_field()
+    emisor_razon_social: str
     """
     "Razón social" (legal name) of the "emisor" of the "documento".
     """
 
     # TODO: docstring
     # note: must be timezone-aware.
-    fecha_reclamo_dt: Optional[datetime] = dc_field()
+    fecha_reclamo_dt: Optional[datetime]
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-        if not isinstance(self.emisor_razon_social, str):
-            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+    @pydantic.validator('emisor_razon_social')
+    def validate_contribuyente_razon_social(cls, v: object) -> object:
+        if isinstance(v, str):
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
+        return v
 
-        if self.fecha_reclamo_dt is not None:
-            if not isinstance(self.fecha_reclamo_dt, datetime):
-                raise TypeError("Inappropriate type of 'fecha_reclamo_dt'.")
-            tz_utils.validate_dt_tz(self.fecha_reclamo_dt, SII_OFFICIAL_TZ)
+    @pydantic.validator('fecha_reclamo_dt')
+    def validate_datetime_tz(cls, v: object) -> object:
+        if isinstance(v, datetime):
+            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+        return v
 
 
 @pydantic.dataclasses.dataclass(
