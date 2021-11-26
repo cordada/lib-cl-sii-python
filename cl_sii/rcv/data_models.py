@@ -6,9 +6,7 @@ RCV data models
 """
 from __future__ import annotations
 
-import dataclasses
 import logging
-from dataclasses import field as dc_field
 from datetime import date, datetime
 from typing import ClassVar, Mapping, Optional
 
@@ -25,22 +23,39 @@ from .constants import RcEstadoContable, RcvKind, RcvTipoDocto
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(frozen=True)
 class PeriodoTributario:
 
-    year: int = dc_field()
-    month: int = dc_field()
+    ###########################################################################
+    # constants
+    ###########################################################################
 
-    def __post_init__(self) -> None:
-        if not isinstance(self.year, int):
-            raise TypeError("Inappropriate type of 'year'.")
-        if self.year < 1900:  # arbitrary number but it more useful than checking not < 1.
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
+
+    ###########################################################################
+    # fields
+    ###########################################################################
+
+    year: int
+    month: int
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
+
+    @pydantic.validator('year')
+    def validate_year(cls, v: object) -> object:
+        if isinstance(v, int) and v < 1900:
+            # 1900 si an arbitrary number but it more useful than checking not < 1.
             raise ValueError("Value is out of the valid range for 'year'.")
+        return v
 
-        if not isinstance(self.month, int):
-            raise TypeError("Inappropriate type of 'month'.")
-        if self.month < 1 or self.month > 12:
-            raise ValueError("Value is out of the valid range for 'month'.")
+    @pydantic.validator('month')
+    def validate_month(cls, v: object) -> object:
+        if isinstance(v, int):
+            if v < 1 or v > 12:
+                raise ValueError("Value is out of the valid range for 'month'.")
+        return v
 
     ###########################################################################
     # dunder/magic methods
@@ -70,7 +85,7 @@ class PeriodoTributario:
 
     @classmethod
     def from_datetime(cls, value: datetime) -> PeriodoTributario:
-        value_naive = tz_utils.convert_tz_aware_dt_to_naive(value, SII_OFFICIAL_TZ)
+        value_naive = tz_utils.convert_tz_aware_dt_to_naive(value, cls.DATETIME_FIELDS_TZ)
         return cls.from_date(value_naive.date())
 
     def as_date(self) -> date:
@@ -80,7 +95,7 @@ class PeriodoTributario:
         # note: timezone-aware
         return tz_utils.convert_naive_dt_to_tz_aware(
             datetime(self.year, self.month, day=1, hour=0, minute=0, second=0),
-            SII_OFFICIAL_TZ)
+            self.DATETIME_FIELDS_TZ)
 
 
 @pydantic.dataclasses.dataclass(

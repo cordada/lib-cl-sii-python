@@ -9,6 +9,7 @@ from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
 from cl_sii.rcv.constants import RcvTipoDocto
 from cl_sii.rcv.data_models import (
+    PeriodoTributario,
     RcNoIncluirDetalleEntry,
     RcPendienteDetalleEntry,
     RcReclamadoDetalleEntry,
@@ -17,6 +18,71 @@ from cl_sii.rcv.data_models import (
     RvDetalleEntry
 )
 from cl_sii.rut import Rut
+
+
+class PeriodoTributarioTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.periodo_tributario_1 = PeriodoTributario(
+            year=2019,
+            month=4
+        )
+
+    def test_validate_year_range(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('year',),
+                'msg': "Value is out of the valid range for 'year'.",
+                'type': 'value_error',
+            },
+        ]
+
+        # Validate the minimum value of the field year
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.periodo_tributario_1,
+                year=1899,
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+    def test_validate_month_range(self) -> None:
+        expected_validation_errors = [
+            {
+                'loc': ('month',),
+                'msg': "Value is out of the valid range for 'month'.",
+                'type': 'value_error',
+            },
+        ]
+
+        # Validate the minimum value of the field month
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.periodo_tributario_1,
+                month=0,
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
+
+        # Validate the maximum value of the field month
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                self.periodo_tributario_1,
+                month=13,
+            )
+
+        validation_errors = assert_raises_cm.exception.errors()
+        self.assertEqual(len(validation_errors), len(expected_validation_errors))
+        for expected_validation_error in expected_validation_errors:
+            self.assertIn(expected_validation_error, validation_errors)
 
 
 class RcvDetalleEntryTest(unittest.TestCase):
