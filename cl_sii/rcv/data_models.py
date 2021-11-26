@@ -10,7 +10,7 @@ import dataclasses
 import logging
 from dataclasses import field as dc_field
 from datetime import date, datetime
-from typing import Optional
+from typing import ClassVar, Mapping, Optional
 
 import pydantic
 
@@ -83,7 +83,12 @@ class PeriodoTributario:
             SII_OFFICIAL_TZ)
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RcvDetalleEntry:
 
     """
@@ -94,89 +99,80 @@ class RcvDetalleEntry:
     # constants
     ###########################################################################
 
-    # note: as of Python 3.7.3 we can not do something like `RCV_KIND: Optional[RcvKind] = None`
-    #   because 'dataclasses' gets confused and assumes that that class attribute is a dataclass
-    #   field (it is not), and this error is triggered:
-    #   > TypeError: non-default argument 'my_dc_field' follows default argument
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
 
-    RCV_KIND = None  # type: Optional[RcvKind]
-    RC_ESTADO_CONTABLE = None  # type: Optional[RcEstadoContable]
+    RCV_KIND: ClassVar[Optional[RcvKind]] = None
+    RC_ESTADO_CONTABLE: ClassVar[Optional[RcEstadoContable]] = None
 
     ###########################################################################
     # fields
     ###########################################################################
 
-    emisor_rut: Rut = dc_field()
+    emisor_rut: Rut
     """
     RUT of the "emisor" of the "documento".
     """
 
-    tipo_docto: RcvTipoDocto = dc_field()
+    tipo_docto: RcvTipoDocto
     """
     The kind of "documento".
     """
 
-    folio: int = dc_field()
+    folio: int
     """
     The sequential number of a "documento".
     """
 
     # TODO: docstring
-    fecha_emision_date: date = dc_field()
+    fecha_emision_date: date
 
     # TODO: docstring
     # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
-    receptor_rut: Rut = dc_field()
+    receptor_rut: Rut
 
-    monto_total: int = dc_field()
+    monto_total: int
     """
     Total amount of the "documento".
     """
 
     # TODO: docstring
     # note: must be timezone-aware.
-    fecha_recepcion_dt: datetime = dc_field()
+    fecha_recepcion_dt: datetime
 
-    def __post_init__(self) -> None:
-        """
-        Run validation automatically after setting the fields values.
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-        :raises TypeError, ValueError:
+    @pydantic.validator('folio')
+    def validate_folio(cls, v: object) -> object:
+        if isinstance(v, int):
+            cl_sii.dte.data_models.validate_dte_folio(v)
+        return v
 
-        """
-        if self.RCV_KIND == RcvKind.COMPRAS:
-            if self.RC_ESTADO_CONTABLE is None:
-                raise ValueError(
-                    "'RC_ESTADO_CONTABLE' must not be None when 'RCV_KIND' is 'COMPRAS'.")
-        elif self.RCV_KIND == RcvKind.VENTAS:
-            if self.RC_ESTADO_CONTABLE is not None:
-                raise ValueError(
-                    "'RC_ESTADO_CONTABLE' must be None when 'RCV_KIND' is 'VENTAS'.")
+    @pydantic.validator('fecha_recepcion_dt')
+    def validate_datetime_tz(cls, v: object) -> object:
+        if isinstance(v, datetime):
+            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+        return v
 
-        if not isinstance(self.emisor_rut, Rut):
-            raise TypeError("Inappropriate type of 'emisor_rut'.")
+    @pydantic.root_validator(skip_on_failure=True)
+    def validate_rcv_kind_is_consistent_with_rc_estado_contable(
+        cls, values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        rcv_kind = values.get('RCV_KIND')
+        rc_estado_contable = values.get('RC_ESTADO_CONTABLE')
 
-        if not isinstance(self.tipo_docto, RcvTipoDocto):
-            raise TypeError("Inappropriate type of 'tipo_docto'.")
+        if isinstance(rcv_kind, RcvKind):
+            if rcv_kind == RcvKind.COMPRAS:
+                if rc_estado_contable is None:
+                    raise ValueError(
+                        "'RC_ESTADO_CONTABLE' must not be None when 'RCV_KIND' is 'COMPRAS'.")
+            elif rcv_kind == RcvKind.VENTAS:
+                if rc_estado_contable is not None:
+                    raise ValueError(
+                        "'RC_ESTADO_CONTABLE' must be None when 'RCV_KIND' is 'VENTAS'.")
 
-        if not isinstance(self.folio, int):
-            raise TypeError("Inappropriate type of 'folio'.")
-        if not self.folio > 0:
-            raise ValueError("Inappropriate value of 'folio'.")
-
-        if not isinstance(self.fecha_emision_date, date):
-            raise TypeError("Inappropriate type of 'fecha_emision_date'.")
-
-        if not isinstance(self.receptor_rut, Rut):
-            raise TypeError("Inappropriate type of 'receptor_rut'.")
-
-        # TODO: figure out validation rules of 'monto_total'
-        if not isinstance(self.monto_total, int):
-            raise TypeError("Inappropriate type of 'monto_total'.")
-
-        if not isinstance(self.fecha_recepcion_dt, datetime):
-            raise TypeError("Inappropriate type of 'fecha_recepcion_dt'.")
-        tz_utils.validate_dt_tz(self.fecha_recepcion_dt, SII_OFFICIAL_TZ)
+        return values
 
     @property
     def is_dte(self) -> bool:
