@@ -7,7 +7,7 @@ from datetime import date, datetime
 import pydantic
 
 from cl_sii.dte.data_models import DteNaturalKey, DteDataL1, DteDataL2
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 from cl_sii.libs import tz_utils
 from cl_sii.rtc.data_models import (
     CesionNaturalKey,
@@ -27,7 +27,7 @@ class CesionNaturalKeyTest(unittest.TestCase):
     def _set_obj_1(self) -> None:
         obj_dte_natural_key = DteNaturalKey(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
         )
 
@@ -51,7 +51,7 @@ class CesionNaturalKeyTest(unittest.TestCase):
             "CesionNaturalKey("
             "dte_key=DteNaturalKey("
             "emisor_rut=Rut('76354771-K'),"
-            " tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>,"
+            " tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>,"
             " folio=170"
             "),"
             " seq=32"
@@ -67,7 +67,7 @@ class CesionNaturalKeyTest(unittest.TestCase):
         expected_output = dict(
             dte_key=dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=32,
@@ -87,7 +87,7 @@ class CesionNaturalKeyTest(unittest.TestCase):
         obj = self.obj_1
         expected_validation_error = {
             'loc': ('dte_key',),
-            'msg': """('Value is not "cedible".', <TipoDteEnum.NOTA_CREDITO_ELECTRONICA: 61>)""",
+            'msg': """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
             'type': 'value_error',
         }
 
@@ -96,7 +96,7 @@ class CesionNaturalKeyTest(unittest.TestCase):
                 obj,
                 dte_key=dataclasses.replace(
                     obj.dte_key,
-                    tipo_dte=TipoDteEnum.NOTA_CREDITO_ELECTRONICA,
+                    tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA,
                 ),
             )
 
@@ -134,7 +134,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
     def _set_obj_1(self) -> None:
         obj_dte_natural_key = DteNaturalKey(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
         )
 
@@ -164,7 +164,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
             "CesionAltNaturalKey("
             "dte_key=DteNaturalKey("
             "emisor_rut=Rut('76354771-K'),"
-            " tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>,"
+            " tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>,"
             " folio=170"
             "),"
             " cedente_rut=Rut('76389992-6'),"
@@ -185,7 +185,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
         expected_output = dict(
             dte_key=dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             cedente_rut=Rut('76389992-6'),
@@ -207,7 +207,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
         obj = self.obj_1
         expected_validation_error = {
             'loc': ('dte_key',),
-            'msg': """('Value is not "cedible".', <TipoDteEnum.NOTA_CREDITO_ELECTRONICA: 61>)""",
+            'msg': """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
             'type': 'value_error',
         }
 
@@ -216,7 +216,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
                 obj,
                 dte_key=dataclasses.replace(
                     obj.dte_key,
-                    tipo_dte=TipoDteEnum.NOTA_CREDITO_ELECTRONICA,
+                    tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA,
                 ),
             )
 
@@ -304,7 +304,7 @@ class CesionL0Test(unittest.TestCase):
     def _set_obj_1(self) -> None:
         obj_dte_natural_key = DteNaturalKey(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
         )
 
@@ -335,7 +335,7 @@ class CesionL0Test(unittest.TestCase):
             "CesionL0("
             "dte_key=DteNaturalKey("
             "emisor_rut=Rut('76354771-K'),"
-            " tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>,"
+            " tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>,"
             " folio=170"
             "),"
             " seq=32,"
@@ -357,7 +357,7 @@ class CesionL0Test(unittest.TestCase):
         expected_output = dict(
             dte_key=dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=32,
@@ -381,7 +381,7 @@ class CesionL0Test(unittest.TestCase):
         expected_output = CesionNaturalKey(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=32,
@@ -401,7 +401,7 @@ class CesionL0Test(unittest.TestCase):
         expected_output = CesionAltNaturalKey(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             cedente_rut=Rut('76389992-6'),
@@ -427,7 +427,7 @@ class CesionL0Test(unittest.TestCase):
             {
                 'loc': ('dte_key',),
                 'msg':
-                    """('Value is not "cedible".', <TipoDteEnum.NOTA_CREDITO_ELECTRONICA: 61>)""",
+                    """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
                 'type': 'value_error',
             },
         ]
@@ -437,7 +437,7 @@ class CesionL0Test(unittest.TestCase):
                 obj,
                 dte_key=dataclasses.replace(
                     obj.dte_key,
-                    tipo_dte=TipoDteEnum.NOTA_CREDITO_ELECTRONICA,
+                    tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA,
                 ),
             )
 
@@ -535,7 +535,7 @@ class CesionL1Test(CesionL0Test):
     def _set_obj_1(self) -> None:
         obj_dte_natural_key = DteNaturalKey(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
         )
 
@@ -571,7 +571,7 @@ class CesionL1Test(CesionL0Test):
             "CesionL1("
             "dte_key=DteNaturalKey("
             "emisor_rut=Rut('76354771-K'),"
-            " tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>,"
+            " tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>,"
             " folio=170"
             "),"
             " seq=32,"
@@ -598,7 +598,7 @@ class CesionL1Test(CesionL0Test):
         expected_output = dict(
             dte_key=dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=32,
@@ -620,7 +620,7 @@ class CesionL1Test(CesionL0Test):
         expected_output = CesionL0(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=32,
@@ -639,7 +639,7 @@ class CesionL1Test(CesionL0Test):
         obj = self.obj_1
         expected_output = DteDataL1(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
             fecha_emision_date=date(2019, 4, 1),
             receptor_rut=Rut('96790240-3'),
@@ -707,7 +707,7 @@ class CesionL2Test(CesionL1Test):
     def _set_obj_1(self) -> None:
         obj_dte_natural_key = DteNaturalKey(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
         )
 
@@ -764,7 +764,7 @@ class CesionL2Test(CesionL1Test):
             "CesionL2("
             "dte_key=DteNaturalKey("
             "emisor_rut=Rut('76354771-K'),"
-            " tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>,"
+            " tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>,"
             " folio=170"
             "),"
             " seq=32,"
@@ -797,7 +797,7 @@ class CesionL2Test(CesionL1Test):
         expected_output = dict(
             dte_key=dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=32,
@@ -840,7 +840,7 @@ class CesionL2Test(CesionL1Test):
         expected_output = CesionL1(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=32,
@@ -864,7 +864,7 @@ class CesionL2Test(CesionL1Test):
         obj = self.obj_1
         expected_output = DteDataL2(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
             fecha_emision_date=date(2019, 4, 1),
             receptor_rut=Rut('96790240-3'),

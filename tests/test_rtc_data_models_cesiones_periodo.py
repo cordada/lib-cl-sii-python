@@ -5,7 +5,7 @@ from datetime import date, datetime
 
 import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 from cl_sii.libs import tz_utils
 from cl_sii.libs.tz_utils import convert_naive_dt_to_tz_aware
 from cl_sii.rtc.data_models import CesionL2
@@ -20,7 +20,7 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
         self.valid_kwargs = dict(
             dte_vendedor_rut=Rut('51532520-4'),
             dte_deudor_rut=Rut('75320502-0'),
-            dte_tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            dte_tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             dte_folio=3608460,
             dte_fecha_emision=date(2019, 2, 11),
             dte_monto_total=256357,
@@ -72,20 +72,20 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
 
     def test_init_error_dte_tipo_dte_1(self) -> None:
         self.valid_kwargs.update(dict(
-            dte_tipo_dte=TipoDteEnum.NOTA_CREDITO_ELECTRONICA,
+            dte_tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA,
         ))
         with self.assertRaises(ValueError) as cm:
             CesionesPeriodoEntry(**self.valid_kwargs)
         self.assertEqual(
             cm.exception.args,
             ("The \"tipo DTE\" in 'dte_tipo_dte' is not \"cedible\".",
-             TipoDteEnum.NOTA_CREDITO_ELECTRONICA))
+             TipoDte.NOTA_CREDITO_ELECTRONICA))
 
     def test_as_dte_data_l1_ok_1(self) -> None:
         obj = CesionesPeriodoEntry(**self.valid_kwargs)
         dte_obj = cl_sii.dte.data_models.DteDataL1(
             emisor_rut=Rut('51532520-4'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=3608460,
             receptor_rut=Rut('75320502-0'),
             fecha_emision_date=date(2019, 2, 11),
@@ -100,12 +100,12 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
 
     def test_as_dte_data_l1_ok_2(self) -> None:
         self.valid_kwargs.update(dict(
-            dte_tipo_dte=TipoDteEnum.FACTURA_COMPRA_ELECTRONICA,
+            dte_tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
         ))
         obj = CesionesPeriodoEntry(**self.valid_kwargs)
         dte_obj = cl_sii.dte.data_models.DteDataL1(
             emisor_rut=Rut('75320502-0'),
-            tipo_dte=TipoDteEnum.FACTURA_COMPRA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
             folio=3608460,
             receptor_rut=Rut('51532520-4'),
             fecha_emision_date=date(2019, 2, 11),
@@ -123,7 +123,7 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
         expected_output = CesionL2(
             dte_key=cl_sii.dte.data_models.DteNaturalKey(
                 emisor_rut=Rut('51532520-4'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=3608460,
             ),
             seq=None,
@@ -156,13 +156,13 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
 
     def test_as_cesion_l2_ok_2(self) -> None:
         self.valid_kwargs.update(dict(
-            dte_tipo_dte=TipoDteEnum.FACTURA_COMPRA_ELECTRONICA,
+            dte_tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
         ))
         obj = CesionesPeriodoEntry(**self.valid_kwargs)
         expected_output = CesionL2(
             dte_key=cl_sii.dte.data_models.DteNaturalKey(
                 emisor_rut=Rut('75320502-0'),
-                tipo_dte=TipoDteEnum.FACTURA_COMPRA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
                 folio=3608460,
             ),
             seq=None,

@@ -84,7 +84,7 @@ DTE_TIPO_DTE_FIELD_MIN_VALUE = 1
 
 
 @enum.unique
-class TipoDteEnum(enum.IntEnum):
+class TipoDte(enum.IntEnum):
 
     """
     Enum of "Tipo de DTE".
@@ -156,13 +156,13 @@ class TipoDteEnum(enum.IntEnum):
 
     @property
     def is_factura(self) -> bool:
-        if self is TipoDteEnum.FACTURA_ELECTRONICA:
+        if self is TipoDte.FACTURA_ELECTRONICA:
             result = True
-        elif self is TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA:
+        elif self is TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA:
             result = True
-        elif self is TipoDteEnum.FACTURA_COMPRA_ELECTRONICA:
+        elif self is TipoDte.FACTURA_COMPRA_ELECTRONICA:
             result = True
-        elif self is TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+        elif self is TipoDte.LIQUIDACION_FACTURA_ELECTRONICA:
             result = True
         else:
             result = False
@@ -171,11 +171,11 @@ class TipoDteEnum(enum.IntEnum):
 
     @property
     def is_factura_venta(self) -> bool:
-        if self is TipoDteEnum.FACTURA_ELECTRONICA:
+        if self is TipoDte.FACTURA_ELECTRONICA:
             result = True
-        elif self is TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA:
+        elif self is TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA:
             result = True
-        elif self is TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+        elif self is TipoDte.LIQUIDACION_FACTURA_ELECTRONICA:
             result = True
         else:
             result = False
@@ -184,7 +184,7 @@ class TipoDteEnum(enum.IntEnum):
 
     @property
     def is_factura_compra(self) -> bool:
-        if self is TipoDteEnum.FACTURA_COMPRA_ELECTRONICA:
+        if self is TipoDte.FACTURA_COMPRA_ELECTRONICA:
             result = True
         else:
             result = False
@@ -193,9 +193,9 @@ class TipoDteEnum(enum.IntEnum):
 
     @property
     def is_nota(self) -> bool:
-        if self is TipoDteEnum.NOTA_DEBITO_ELECTRONICA:
+        if self is TipoDte.NOTA_DEBITO_ELECTRONICA:
             result = True
-        elif self is TipoDteEnum.NOTA_CREDITO_ELECTRONICA:
+        elif self is TipoDte.NOTA_CREDITO_ELECTRONICA:
             result = True
         else:
             result = False

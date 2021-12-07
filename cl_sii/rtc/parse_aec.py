@@ -25,7 +25,7 @@ import pydantic
 
 import cl_sii.dte.data_models
 import cl_sii.dte.parse
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 from cl_sii.dte.data_models import DteXmlData
 from cl_sii.dte.parse import DTE_XMLNS_MAP
 from cl_sii.libs import encoding_utils, tz_utils, xml_utils
@@ -361,7 +361,7 @@ class _IdDte(pydantic.BaseModel):
     ###########################################################################
 
     rut_emisor: Rut
-    tipo_dte: TipoDteEnum
+    tipo_dte: TipoDte
     folio: int
     fch_emis: date
     rut_receptor: Rut
@@ -411,7 +411,7 @@ class _IdDte(pydantic.BaseModel):
     @pydantic.validator('tipo_dte', pre=True)
     def validate_tipo_dte(cls, v: object) -> object:
         if isinstance(v, int):
-            v = TipoDteEnum(v)  # Raises ValueError if invalid.
+            v = TipoDte(v)  # Raises ValueError if invalid.
         return v
 
 

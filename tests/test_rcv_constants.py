@@ -1,6 +1,6 @@
 import unittest
 
-from cl_sii.dte.constants import TipoDteEnum  # noqa: F401
+from cl_sii.dte.constants import TipoDte  # noqa: F401
 from cl_sii.rcv import constants  # noqa: F401
 from cl_sii.rcv.constants import RcEstadoContable, RcvKind, RcvTipoDocto  # noqa: F401
 
@@ -129,10 +129,10 @@ class RcvTipoDoctoTest(unittest.TestCase):
     def test_as_tipo_dte(self):
         self.assertEqual(
             RcvTipoDocto.FACTURA_ELECTRONICA.as_tipo_dte(),
-            TipoDteEnum.FACTURA_ELECTRONICA)
+            TipoDte.FACTURA_ELECTRONICA)
 
         with self.assertRaises(ValueError) as cm:
             RcvTipoDocto.FACTURA.as_tipo_dte()
         self.assertEqual(
             cm.exception.args,
-            ("There is no equivalent 'TipoDteEnum' for 'RcvTipoDocto.FACTURA'.", ))
+            ("There is no equivalent 'TipoDte' for 'RcvTipoDocto.FACTURA'.", ))

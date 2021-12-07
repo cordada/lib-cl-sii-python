@@ -461,7 +461,7 @@ class FunctionParseDteXmlTest(unittest.TestCase):
             dict(dte_xml_data.as_dict()),
             dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=cl_sii.dte.constants.TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -487,7 +487,7 @@ class FunctionParseDteXmlTest(unittest.TestCase):
             dict(dte_xml_data.as_dict()),
             dict(
                 emisor_rut=Rut('60910000-1'),
-                tipo_dte=cl_sii.dte.constants.TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
                 folio=2336600,
                 fecha_emision_date=date(2019, 8, 8),
                 receptor_rut=Rut('76555835-2'),
@@ -513,7 +513,7 @@ class FunctionParseDteXmlTest(unittest.TestCase):
             dict(dte_xml_data.as_dict()),
             dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=cl_sii.dte.constants.TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -539,7 +539,7 @@ class FunctionParseDteXmlTest(unittest.TestCase):
             dict(dte_xml_data.as_dict()),
             dict(
                 emisor_rut=Rut('76399752-9'),
-                tipo_dte=cl_sii.dte.constants.TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
                 folio=25568,
                 fecha_emision_date=date(2019, 3, 29),
                 receptor_rut=Rut('96874030-K'),

@@ -3,7 +3,7 @@ from __future__ import annotations
 import enum
 from typing import Optional
 
-from ..dte.constants import TipoDteEnum
+from ..dte.constants import TipoDte
 
 
 @enum.unique
@@ -103,10 +103,10 @@ class RcvTipoDocto(enum.IntEnum):
     """
     Enum of "Tipo de Documento" for the RCV domain.
 
-    Unlike :class:`cl_sii.dte.constants.TipoDteEnum` this collection is not
+    Unlike :class:`cl_sii.dte.constants.TipoDte` this collection is not
     restricted to "documentos electrónicos". However, this is not a superset
     of the latter (e.g. "Guía electrónica de despacho" (52) is in
-    ``TipoDteEnum`` but not in ``RcvTipoDocto``).
+    ``TipoDte`` but not in ``RcvTipoDocto``).
 
     Sources:
 
@@ -197,7 +197,7 @@ class RcvTipoDocto(enum.IntEnum):
     ###########################################################################
 
     # For more info about a "liquidación-factura" see
-    #   'cl_sii.dte.constants.TipoDteEnum'.
+    #   'cl_sii.dte.constants.TipoDte'.
 
     LIQUIDACION_FACTURA = 40
     """Liquidación-Factura."""
@@ -291,7 +291,7 @@ class RcvTipoDocto(enum.IntEnum):
     TIPO_924 = 924
     """Resumen Vtas. Pasajes Inter. sin Fact."""
 
-    def as_tipo_dte(self) -> TipoDteEnum:
+    def as_tipo_dte(self) -> TipoDte:
         """
         Return equivalent "Tipo DTE".
 
@@ -299,9 +299,9 @@ class RcvTipoDocto(enum.IntEnum):
 
         """
         try:
-            value = TipoDteEnum(self.value)
+            value = TipoDte(self.value)
         except ValueError as exc:
             raise ValueError(
-                f"There is no equivalent 'TipoDteEnum' for 'RcvTipoDocto.{self.name}'.") from exc
+                f"There is no equivalent 'TipoDte' for 'RcvTipoDocto.{self.name}'.") from exc
 
         return value
