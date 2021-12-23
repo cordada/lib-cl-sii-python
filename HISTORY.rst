@@ -3,6 +3,12 @@
 History
 -------
 
+0.15.2 (2021-12-23)
++++++++++++++++++++++++
+
+* (PR #258, 2021-12-22) chore: Increase lxml lower bound constraint
+* (PR #259, 2021-12-23) requirements: Update 'signxml'
+
 0.15.1 (2021-12-21)
 +++++++++++++++++++++++
 
