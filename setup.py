@@ -22,14 +22,14 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [
-    'cryptography>=2.8,<4',
+    'cryptography>=2.8',
     'defusedxml>=0.6.0,<1',
     'jsonschema>=3.1.1',
     'lxml>=4.6.5,<5',
     'marshmallow>=2.19.2,<3',
     'pydantic>=1.6.2',
-    # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<20'
-    'pyOpenSSL>=18.0.0,<20',
+    # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<21'
+    'pyOpenSSL>=18.0.0,<21',
     'pytz>=2019.3',
     'signxml>=2.8.0',
 ]
