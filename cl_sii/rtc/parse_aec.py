@@ -25,10 +25,10 @@ import pydantic
 
 import cl_sii.dte.data_models
 import cl_sii.dte.parse
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 from cl_sii.dte.data_models import DteXmlData
 from cl_sii.dte.parse import DTE_XMLNS_MAP
-from cl_sii.libs import crypto_utils, encoding_utils, tz_utils, xml_utils
+from cl_sii.libs import encoding_utils, tz_utils, xml_utils
 from cl_sii.libs.xml_utils import XmlElement
 from cl_sii.rut import Rut
 
@@ -167,11 +167,14 @@ class _XmlSignature(pydantic.BaseModel):
             v = encoding_utils.decode_base64_strict(v)  # Raises ValueError.
         return v
 
-    @pydantic.validator('key_info_x509_data_x509_cert')
-    def validate_certificate_is_loadable(cls, v: object) -> object:
-        if isinstance(v, bytes):
-            _ = crypto_utils.load_der_x509_cert(v)  # Raises ValueError.
-        return v
+    # Note: Even though this validation seems to make perfect sense, there are some
+    # real cases of SII-approved AEC where this is not fulfilled.
+    # We will keep this validation in case we need it in the future.
+    # @pydantic.validator('key_info_x509_data_x509_cert')
+    # def validate_certificate_is_loadable(cls, v: object) -> object:
+    #     if isinstance(v, bytes):
+    #         _ = crypto_utils.load_der_x509_cert(v)  # Raises ValueError.
+    #     return v
 
 
 class _Cesionario(pydantic.BaseModel):
@@ -358,7 +361,7 @@ class _IdDte(pydantic.BaseModel):
     ###########################################################################
 
     rut_emisor: Rut
-    tipo_dte: TipoDteEnum
+    tipo_dte: TipoDte
     folio: int
     fch_emis: date
     rut_receptor: Rut
@@ -408,7 +411,7 @@ class _IdDte(pydantic.BaseModel):
     @pydantic.validator('tipo_dte', pre=True)
     def validate_tipo_dte(cls, v: object) -> object:
         if isinstance(v, int):
-            v = TipoDteEnum(v)  # Raises ValueError if invalid.
+            v = TipoDte(v)  # Raises ValueError if invalid.
         return v
 
 

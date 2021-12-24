@@ -7,7 +7,7 @@ from typing import Optional
 
 import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
@@ -44,7 +44,7 @@ class CesionesPeriodoEntry:
     RUT of the DTE's "deudor".
     """
 
-    dte_tipo_dte: TipoDteEnum
+    dte_tipo_dte: TipoDte
     """
     The DTE's "tipo DTE" (sighs).
     """
@@ -163,7 +163,7 @@ class CesionesPeriodoEntry:
         if not isinstance(self.dte_deudor_rut, Rut):
             raise TypeError("Inappropriate type of 'dte_deudor_rut'.")
 
-        if not isinstance(self.dte_tipo_dte, TipoDteEnum):
+        if not isinstance(self.dte_tipo_dte, TipoDte):
             raise TypeError("Inappropriate type of 'dte_tipo_dte'.")
         if self.dte_tipo_dte not in TIPO_DTE_CEDIBLES:
             raise ValueError(

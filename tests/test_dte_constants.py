@@ -1,27 +1,27 @@
 import unittest
 
 from cl_sii.dte import constants  # noqa: F401
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 
 
-class TipoDteEnumTest(unittest.TestCase):
+class TipoDteTest(unittest.TestCase):
 
     def test_members(self):
         self.assertSetEqual(
-            {x for x in TipoDteEnum},
+            {x for x in TipoDte},
             {
-                TipoDteEnum.FACTURA_ELECTRONICA,
-                TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,
-                TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA,
-                TipoDteEnum.FACTURA_COMPRA_ELECTRONICA,
-                TipoDteEnum.GUIA_DESPACHO_ELECTRONICA,
-                TipoDteEnum.NOTA_DEBITO_ELECTRONICA,
-                TipoDteEnum.NOTA_CREDITO_ELECTRONICA,
+                TipoDte.FACTURA_ELECTRONICA,
+                TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,
+                TipoDte.LIQUIDACION_FACTURA_ELECTRONICA,
+                TipoDte.FACTURA_COMPRA_ELECTRONICA,
+                TipoDte.GUIA_DESPACHO_ELECTRONICA,
+                TipoDte.NOTA_DEBITO_ELECTRONICA,
+                TipoDte.NOTA_CREDITO_ELECTRONICA,
             }
         )
 
     def test_FACTURA_ELECTRONICA(self):
-        value = TipoDteEnum.FACTURA_ELECTRONICA
+        value = TipoDte.FACTURA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_ELECTRONICA')
         self.assertEqual(value.value, 33)
@@ -39,7 +39,7 @@ class TipoDteEnumTest(unittest.TestCase):
             self.assertEqual(result, expected)
 
     def test_FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA(self):
-        value = TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA
+        value = TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA')
         self.assertEqual(value.value, 34)
@@ -57,7 +57,7 @@ class TipoDteEnumTest(unittest.TestCase):
             self.assertTrue(result is expected)
 
     def test_LIQUIDACION_FACTURA_ELECTRONICA(self):
-        value = TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA
+        value = TipoDte.LIQUIDACION_FACTURA_ELECTRONICA
 
         self.assertEqual(value.name, 'LIQUIDACION_FACTURA_ELECTRONICA')
         self.assertEqual(value.value, 43)
@@ -75,7 +75,7 @@ class TipoDteEnumTest(unittest.TestCase):
             self.assertEqual(result, expected)
 
     def test_FACTURA_COMPRA_ELECTRONICA(self):
-        value = TipoDteEnum.FACTURA_COMPRA_ELECTRONICA
+        value = TipoDte.FACTURA_COMPRA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_COMPRA_ELECTRONICA')
         self.assertEqual(value.value, 46)
@@ -93,7 +93,7 @@ class TipoDteEnumTest(unittest.TestCase):
             self.assertTrue(result is expected)
 
     def test_GUIA_DESPACHO_ELECTRONICA(self):
-        value = TipoDteEnum.GUIA_DESPACHO_ELECTRONICA
+        value = TipoDte.GUIA_DESPACHO_ELECTRONICA
 
         self.assertEqual(value.name, 'GUIA_DESPACHO_ELECTRONICA')
         self.assertEqual(value.value, 52)
@@ -111,7 +111,7 @@ class TipoDteEnumTest(unittest.TestCase):
             self.assertTrue(result is expected)
 
     def test_NOTA_DEBITO_ELECTRONICA(self):
-        value = TipoDteEnum.NOTA_DEBITO_ELECTRONICA
+        value = TipoDte.NOTA_DEBITO_ELECTRONICA
 
         self.assertEqual(value.name, 'NOTA_DEBITO_ELECTRONICA')
         self.assertEqual(value.value, 56)
@@ -129,7 +129,7 @@ class TipoDteEnumTest(unittest.TestCase):
             self.assertTrue(result is expected)
 
     def test_NOTA_CREDITO_ELECTRONICA(self):
-        value = TipoDteEnum.NOTA_CREDITO_ELECTRONICA
+        value = TipoDte.NOTA_CREDITO_ELECTRONICA
 
         self.assertEqual(value.name, 'NOTA_CREDITO_ELECTRONICA')
         self.assertEqual(value.value, 61)

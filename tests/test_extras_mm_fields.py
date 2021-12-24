@@ -7,7 +7,7 @@ from cl_sii.extras.mm_fields import (
     RcvPeriodoTributario, RcvPeriodoTributarioField,
     RcvTipoDocto, RcvTipoDoctoField,
     Rut, RutField,
-    TipoDteEnum, TipoDteField,
+    TipoDte, TipoDteField,
 )
 
 
@@ -157,7 +157,7 @@ class TipoDteFieldTest(unittest.TestCase):
     def setUp(self) -> None:
 
         class MyObj:
-            def __init__(self, tipo_dte: TipoDteEnum, other_field: int = None) -> None:
+            def __init__(self, tipo_dte: TipoDte, other_field: int = None) -> None:
                 self.tipo_dte = tipo_dte
                 self.other_field = other_field
 
@@ -200,25 +200,25 @@ class TipoDteFieldTest(unittest.TestCase):
         schema = self.MyMmSchema()
 
         data_valid_1 = {'source field name': 33}
-        data_valid_2 = {'source field name': TipoDteEnum(33)}
+        data_valid_2 = {'source field name': TipoDte(33)}
         data_valid_3 = {'source field name': '  33 \t '}
 
         result = schema.load(data_valid_1)
-        self.assertDictEqual(dict(result.data), {'tipo_dte': TipoDteEnum(33)})
+        self.assertDictEqual(dict(result.data), {'tipo_dte': TipoDte(33)})
         self.assertDictEqual(dict(result.errors), {})
 
         result = schema.load(data_valid_2)
-        self.assertDictEqual(dict(result.data), {'tipo_dte': TipoDteEnum(33)})
+        self.assertDictEqual(dict(result.data), {'tipo_dte': TipoDte(33)})
         self.assertDictEqual(dict(result.errors), {})
 
         result = schema.load(data_valid_3)
-        self.assertDictEqual(dict(result.data), {'tipo_dte': TipoDteEnum(33)})
+        self.assertDictEqual(dict(result.data), {'tipo_dte': TipoDte(33)})
         self.assertDictEqual(dict(result.errors), {})
 
     def test_dump_ok_valid(self) -> None:
         schema = self.MyMmSchema()
 
-        obj_valid_1 = self.MyObj(tipo_dte=TipoDteEnum(33))
+        obj_valid_1 = self.MyObj(tipo_dte=TipoDte(33))
         obj_valid_2 = self.MyObj(tipo_dte=None)
 
         data, errors = schema.dump(obj_valid_1)

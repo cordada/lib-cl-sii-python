@@ -6,7 +6,7 @@ from datetime import date, datetime
 
 import pydantic
 
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 from cl_sii.dte.data_models import DteDataL1, DteNaturalKey, DteXmlData
 from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
@@ -26,7 +26,7 @@ class CesionAecXmlTest(unittest.TestCase):
         obj = CesionAecXml(
             dte=DteDataL1(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -67,7 +67,7 @@ class CesionAecXmlTest(unittest.TestCase):
         obj = CesionAecXml(
             dte=DteDataL1(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -114,7 +114,7 @@ class CesionAecXmlTest(unittest.TestCase):
         expected_output = CesionNaturalKey(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=1,
@@ -125,7 +125,7 @@ class CesionAecXmlTest(unittest.TestCase):
         expected_output = CesionNaturalKey(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=2,
@@ -140,7 +140,7 @@ class CesionAecXmlTest(unittest.TestCase):
         expected_output = CesionAltNaturalKey(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             cedente_rut=Rut('76354771-K'),
@@ -156,7 +156,7 @@ class CesionAecXmlTest(unittest.TestCase):
         expected_output = CesionAltNaturalKey(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             cedente_rut=Rut('76389992-6'),
@@ -175,7 +175,7 @@ class CesionAecXmlTest(unittest.TestCase):
         expected_output = CesionL2(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=1,
@@ -227,7 +227,7 @@ class AecXmlTest(unittest.TestCase):
         )
         obj_dte = DteXmlData(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
             fecha_emision_date=date(2019, 4, 1),
             receptor_rut=Rut('96790240-3'),
@@ -249,7 +249,7 @@ class AecXmlTest(unittest.TestCase):
         obj_cesion_1 = CesionAecXml(
             dte=DteDataL1(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -286,7 +286,7 @@ class AecXmlTest(unittest.TestCase):
         obj_cesion_2 = CesionAecXml(
             dte=DteDataL1(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -363,7 +363,7 @@ class AecXmlTest(unittest.TestCase):
         expected_output = CesionNaturalKey(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=2,
@@ -377,7 +377,7 @@ class AecXmlTest(unittest.TestCase):
         expected_output = CesionAltNaturalKey(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             cedente_rut=Rut('76389992-6'),
@@ -411,7 +411,7 @@ class AecXmlTest(unittest.TestCase):
         expected_output = CesionL2(
             dte_key=DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ),
             seq=2,
@@ -462,7 +462,7 @@ class AecXmlTest(unittest.TestCase):
             {
                 'loc': ('dte',),
                 'msg':
-                    """('Value is not "cedible".', <TipoDteEnum.NOTA_CREDITO_ELECTRONICA: 61>)""",
+                    """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
                 'type': 'value_error',
             },
         ]
@@ -472,7 +472,7 @@ class AecXmlTest(unittest.TestCase):
                 obj,
                 dte=dataclasses.replace(
                     obj.dte,
-                    tipo_dte=TipoDteEnum.NOTA_CREDITO_ELECTRONICA,
+                    tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA,
                 ),
             )
 
@@ -627,13 +627,13 @@ class AecXmlTest(unittest.TestCase):
                     "'dte' of CesionAecXml with CesionNaturalKey("
                     "dte_key=DteNaturalKey("
                     "emisor_rut=Rut('76354771-K'),"
-                    " tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>,"
+                    " tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>,"
                     " folio=171),"
                     " seq=1"
                     ")"
                     " must match DteDataL1 with DteNaturalKey("
                     "emisor_rut=Rut('76354771-K'),"
-                    " tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>,"
+                    " tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>,"
                     " folio=170"
                     ").",
                 'type': 'value_error',

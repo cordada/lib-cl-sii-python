@@ -14,7 +14,7 @@ from cl_sii.dte.constants import (  # noqa: F401
     DTE_FOLIO_FIELD_MIN_VALUE,
     DTE_MONTO_TOTAL_FIELD_MAX_VALUE,
     DTE_MONTO_TOTAL_FIELD_MIN_VALUE,
-    TipoDteEnum,
+    TipoDte,
 )
 from cl_sii.dte.data_models import (  # noqa: F401
     DteDataL0, DteDataL1, DteDataL2, DteNaturalKey, DteXmlData,
@@ -31,7 +31,7 @@ class DteNaturalKeyTest(unittest.TestCase):
 
         self.dte_nk_1 = DteNaturalKey(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
         )
 
@@ -73,7 +73,7 @@ class DteNaturalKeyTest(unittest.TestCase):
             self.dte_nk_1.as_dict(),
             dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             )
         )
@@ -89,7 +89,7 @@ class DteDataL0Test(unittest.TestCase):
 
         self.dte_l0_1 = DteDataL0(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
         )
 
@@ -98,7 +98,7 @@ class DteDataL0Test(unittest.TestCase):
             self.dte_l0_1.as_dict(),
             dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ))
 
@@ -107,7 +107,7 @@ class DteDataL0Test(unittest.TestCase):
             self.dte_l0_1.natural_key,
             DteNaturalKey(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
             ))
 
@@ -119,7 +119,7 @@ class DteDataL1Test(unittest.TestCase):
 
         self.dte_l1_1 = DteDataL1(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
             fecha_emision_date=date(2019, 4, 1),
             receptor_rut=Rut('96790240-3'),
@@ -130,7 +130,7 @@ class DteDataL1Test(unittest.TestCase):
         try:
             _ = dataclasses.replace(
                 self.dte_l1_1,
-                tipo_dte=TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.LIQUIDACION_FACTURA_ELECTRONICA,
                 monto_total=-1,
             )
         except pydantic.ValidationError as exc:
@@ -187,7 +187,7 @@ class DteDataL1Test(unittest.TestCase):
             self.dte_l1_1.as_dict(),
             dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -198,13 +198,13 @@ class DteDataL1Test(unittest.TestCase):
         emisor_rut = self.dte_l1_1.emisor_rut
         receptor_rut = self.dte_l1_1.receptor_rut
         dte_factura_venta = dataclasses.replace(
-            self.dte_l1_1, tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA)
+            self.dte_l1_1, tipo_dte=TipoDte.FACTURA_ELECTRONICA)
         dte_factura_venta_exenta = dataclasses.replace(
-            self.dte_l1_1, tipo_dte=TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA)
+            self.dte_l1_1, tipo_dte=TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA)
         dte_factura_compra = dataclasses.replace(
-            self.dte_l1_1, tipo_dte=TipoDteEnum.FACTURA_COMPRA_ELECTRONICA)
+            self.dte_l1_1, tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA)
         dte_nota_credito = dataclasses.replace(
-            self.dte_l1_1, tipo_dte=TipoDteEnum.NOTA_CREDITO_ELECTRONICA)
+            self.dte_l1_1, tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA)
 
         # 'vendedor_rut'
         self.assertEqual(dte_factura_venta.vendedor_rut, emisor_rut)
@@ -259,7 +259,7 @@ class DteDataL2Test(unittest.TestCase):
 
         self.dte_l2_1 = DteDataL2(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
             fecha_emision_date=date(2019, 4, 1),
             receptor_rut=Rut('96790240-3'),
@@ -278,7 +278,7 @@ class DteDataL2Test(unittest.TestCase):
         )
         self.dte_l2_2 = DteDataL2(
             emisor_rut=Rut('60910000-1'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=2336600,
             fecha_emision_date=date(2019, 8, 8),
             receptor_rut=Rut('76555835-2'),
@@ -615,7 +615,7 @@ class DteDataL2Test(unittest.TestCase):
             self.dte_l2_1.as_dict(),
             dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -636,7 +636,7 @@ class DteDataL2Test(unittest.TestCase):
             self.dte_l2_2.as_dict(),
             dict(
                 emisor_rut=Rut('60910000-1'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=2336600,
                 fecha_emision_date=date(2019, 8, 8),
                 receptor_rut=Rut('76555835-2'),
@@ -659,7 +659,7 @@ class DteDataL2Test(unittest.TestCase):
             self.dte_l2_1.as_dte_data_l1(),
             DteDataL1(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -670,7 +670,7 @@ class DteDataL2Test(unittest.TestCase):
             self.dte_l2_2.as_dte_data_l1(),
             DteDataL1(
                 emisor_rut=Rut('60910000-1'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=2336600,
                 fecha_emision_date=date(2019, 8, 8),
                 receptor_rut=Rut('76555835-2'),
@@ -699,7 +699,7 @@ class DteXmlDataTest(unittest.TestCase):
 
         self.dte_xml_data_1 = DteXmlData(
             emisor_rut=Rut('76354771-K'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=170,
             fecha_emision_date=date(2019, 4, 1),
             receptor_rut=Rut('96790240-3'),
@@ -718,7 +718,7 @@ class DteXmlDataTest(unittest.TestCase):
         )
         self.dte_xml_data_2 = DteXmlData(
             emisor_rut=Rut('60910000-1'),
-            tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+            tipo_dte=TipoDte.FACTURA_ELECTRONICA,
             folio=2336600,
             fecha_emision_date=date(2019, 8, 8),
             receptor_rut=Rut('76555835-2'),
@@ -1085,7 +1085,7 @@ class DteXmlDataTest(unittest.TestCase):
             self.dte_xml_data_1.as_dict(),
             dict(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -1106,7 +1106,7 @@ class DteXmlDataTest(unittest.TestCase):
             self.dte_xml_data_2.as_dict(),
             dict(
                 emisor_rut=Rut('60910000-1'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=2336600,
                 fecha_emision_date=date(2019, 8, 8),
                 receptor_rut=Rut('76555835-2'),
@@ -1129,7 +1129,7 @@ class DteXmlDataTest(unittest.TestCase):
             self.dte_xml_data_1.as_dte_data_l1(),
             DteDataL1(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -1140,7 +1140,7 @@ class DteXmlDataTest(unittest.TestCase):
             self.dte_xml_data_2.as_dte_data_l1(),
             DteDataL1(
                 emisor_rut=Rut('60910000-1'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=2336600,
                 fecha_emision_date=date(2019, 8, 8),
                 receptor_rut=Rut('76555835-2'),
@@ -1153,7 +1153,7 @@ class DteXmlDataTest(unittest.TestCase):
             self.dte_xml_data_1.as_dte_data_l2(),
             DteDataL2(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -1175,7 +1175,7 @@ class DteXmlDataTest(unittest.TestCase):
             self.dte_xml_data_2.as_dte_data_l2(),
             DteDataL2(
                 emisor_rut=Rut('60910000-1'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=2336600,
                 fecha_emision_date=date(2019, 8, 8),
                 receptor_rut=Rut('76555835-2'),
@@ -1207,37 +1207,37 @@ class FunctionsTest(unittest.TestCase):
 
     def test_validate_dte_monto_total_with_valid_values(self) -> None:
         # Test value '0':
-        for tipo_dte in TipoDteEnum:
+        for tipo_dte in TipoDte:
             try:
                 validate_dte_monto_total(0, tipo_dte)
             except ValueError as e:
                 self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
 
         # Test value '1':
-        for tipo_dte in TipoDteEnum:
+        for tipo_dte in TipoDte:
             try:
                 validate_dte_monto_total(1, tipo_dte)
             except ValueError as e:
                 self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
 
         # Test value '-1':
-        for tipo_dte in TipoDteEnum:
-            if tipo_dte == TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+        for tipo_dte in TipoDte:
+            if tipo_dte == TipoDte.LIQUIDACION_FACTURA_ELECTRONICA:
                 try:
                     validate_dte_monto_total(-1, tipo_dte)
                 except ValueError as e:
                     self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
 
         # Test maximum value:
-        for tipo_dte in TipoDteEnum:
+        for tipo_dte in TipoDte:
             try:
                 validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MAX_VALUE, tipo_dte)
             except ValueError as e:
                 self.fail('{exc_name} raised'.format(exc_name=type(e).__name__))
 
         # Test minimum value:
-        for tipo_dte in TipoDteEnum:
-            if tipo_dte == TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+        for tipo_dte in TipoDte:
+            if tipo_dte == TipoDte.LIQUIDACION_FACTURA_ELECTRONICA:
                 dte_monto_total_field_min_value = DTE_MONTO_TOTAL_FIELD_MIN_VALUE
             else:
                 dte_monto_total_field_min_value = 0
@@ -1251,20 +1251,20 @@ class FunctionsTest(unittest.TestCase):
         expected_exc_msg = "Value is out of the valid range for 'monto_total'."
 
         # Test value that is too large:
-        for tipo_dte in TipoDteEnum:
+        for tipo_dte in TipoDte:
             with self.assertRaises(ValueError) as assert_raises_cm:
                 validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MAX_VALUE + 1, tipo_dte)
             self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
 
         # Test value that is too small:
-        for tipo_dte in TipoDteEnum:
+        for tipo_dte in TipoDte:
             with self.assertRaises(ValueError) as assert_raises_cm:
                 validate_dte_monto_total(DTE_MONTO_TOTAL_FIELD_MIN_VALUE - 1, tipo_dte)
             self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)
 
         # Test value that is negative:
-        for tipo_dte in TipoDteEnum:
-            if tipo_dte != TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+        for tipo_dte in TipoDte:
+            if tipo_dte != TipoDte.LIQUIDACION_FACTURA_ELECTRONICA:
                 with self.assertRaises(ValueError) as assert_raises_cm:
                     validate_dte_monto_total(-1, tipo_dte)
                 self.assertEqual(str(assert_raises_cm.exception), expected_exc_msg)

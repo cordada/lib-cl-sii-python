@@ -3,6 +3,12 @@
 History
 -------
 
+0.16.0 (2021-12-24)
++++++++++++++++++++++++
+
+* (PR #261, 2021-12-24) chore(rtc.parse): Disable validation that AEC signature cert is loadable
+* (PR #253, 2021-12-24) Rename of the enum class for `TipoDte` object
+
 0.15.2 (2021-12-23)
 +++++++++++++++++++++++
 

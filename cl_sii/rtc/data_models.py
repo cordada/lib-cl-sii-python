@@ -27,7 +27,7 @@ import pydantic
 
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.dte import data_models as dte_data_models
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
@@ -60,7 +60,7 @@ def validate_cesion_monto(value: int) -> None:
         raise ValueError("Value is out of the valid range.", value)
 
 
-def validate_cesion_dte_tipo_dte(value: TipoDteEnum) -> None:
+def validate_cesion_dte_tipo_dte(value: TipoDte) -> None:
     """
     Validate "tipo DTE" of the "cesión".
 
@@ -98,7 +98,7 @@ class CesionNaturalKey:
 
     >>> instance = CesionNaturalKey(
     ...     dte_data_models.DteNaturalKey(
-    ...         Rut('60910000-1'), TipoDteEnum.FACTURA_ELECTRONICA, 2093465,
+    ...         Rut('60910000-1'), TipoDte.FACTURA_ELECTRONICA, 2093465,
     ...     ),
     ...     1,
     ... )
@@ -172,7 +172,7 @@ class CesionAltNaturalKey:
 
     >>> instance = CesionAltNaturalKey(
     ...     dte_data_models.DteNaturalKey(
-    ...         Rut('60910000-1'), TipoDteEnum.FACTURA_ELECTRONICA, 2093465,
+    ...         Rut('60910000-1'), TipoDte.FACTURA_ELECTRONICA, 2093465,
     ...     ),
     ...     Rut('76389992-6'),
     ...     Rut('76598556-0'),
@@ -361,7 +361,7 @@ class CesionL0:
         return self.dte_key.emisor_rut
 
     @property
-    def dte_tipo_dte(self) -> TipoDteEnum:
+    def dte_tipo_dte(self) -> TipoDte:
         return self.dte_key.tipo_dte
 
     @property
