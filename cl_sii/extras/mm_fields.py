@@ -14,7 +14,7 @@ from typing import Optional
 
 import marshmallow.fields
 
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 from cl_sii.rcv.constants import RcvTipoDocto
 from cl_sii.rcv.data_models import PeriodoTributario as RcvPeriodoTributario
 from cl_sii.rut import Rut
@@ -74,13 +74,13 @@ class TipoDteField(marshmallow.fields.Field):
     Marshmallow field for a DTE's "tipo DTE".
 
     Data types:
-    * native/primitive/internal/deserialized: :class:`TipoDteEnum`
+    * native/primitive/internal/deserialized: :class:`TipoDte`
     * representation/serialized: int, same as for Marshmallow field
       :class:`marshmallow.fields.Integer`
 
     The field performs some input value cleaning when it is an str;
     for example ``'  33 \t '`` is allowed and the resulting value
-    is ``TipoDteEnum(33)``.
+    is ``TipoDte(33)``.
 
     Implementation almost identical to
     :class:`cl_sii.extras.mm_fields.RutField`.
@@ -92,14 +92,14 @@ class TipoDteField(marshmallow.fields.Field):
     }
 
     def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[int]:
-        validated: Optional[TipoDteEnum] = self._validated(value)
+        validated: Optional[TipoDte] = self._validated(value)
         return validated.value if validated is not None else None
 
-    def _deserialize(self, value: object, attr: str, data: dict) -> Optional[TipoDteEnum]:
+    def _deserialize(self, value: object, attr: str, data: dict) -> Optional[TipoDte]:
         return self._validated(value)
 
-    def _validated(self, value: Optional[object]) -> Optional[TipoDteEnum]:
-        if value is None or isinstance(value, TipoDteEnum):
+    def _validated(self, value: Optional[object]) -> Optional[TipoDte]:
+        if value is None or isinstance(value, TipoDte):
             validated = value
         else:
             if isinstance(value, bool):
@@ -115,9 +115,9 @@ class TipoDteField(marshmallow.fields.Field):
                 self.fail('type')
 
             try:
-                validated = TipoDteEnum(value)  # type: ignore
+                validated = TipoDte(value)  # type: ignore
             except ValueError:
-                # TipoDteEnum('x') raises 'ValueError', not 'TypeError'
+                # TipoDte('x') raises 'ValueError', not 'TypeError'
                 self.fail('invalid')
         return validated
 

@@ -1,7 +1,7 @@
 import enum
 from typing import FrozenSet
 
-from cl_sii.dte.constants import DTE_MONTO_TOTAL_FIELD_MAX_VALUE, TipoDteEnum
+from cl_sii.dte.constants import DTE_MONTO_TOTAL_FIELD_MAX_VALUE, TipoDte
 
 
 # The collection of "tipo DTE" for which it is possible to "ceder" a "DTE".
@@ -17,11 +17,11 @@ from cl_sii.dte.constants import DTE_MONTO_TOTAL_FIELD_MAX_VALUE, TipoDteEnum
 #   - XML type 'SiiDte:DTEFacturasType' in official schema 'SiiTypes_v10.xsd'
 #     - source:
 #       https://github.com/fyntex/lib-cl-sii-python/blob/7e1c4b52/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L100-L126
-TIPO_DTE_CEDIBLES: FrozenSet[TipoDteEnum] = frozenset({
-    TipoDteEnum.FACTURA_ELECTRONICA,
-    TipoDteEnum.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,
-    TipoDteEnum.FACTURA_COMPRA_ELECTRONICA,
-    TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA,
+TIPO_DTE_CEDIBLES: FrozenSet[TipoDte] = frozenset({
+    TipoDte.FACTURA_ELECTRONICA,
+    TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,
+    TipoDte.FACTURA_COMPRA_ELECTRONICA,
+    TipoDte.LIQUIDACION_FACTURA_ELECTRONICA,
 })
 
 

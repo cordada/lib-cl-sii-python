@@ -28,7 +28,7 @@ from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 
 from . import constants
-from .constants import TipoDteEnum
+from .constants import TipoDte
 
 
 def validate_dte_folio(value: int) -> None:
@@ -45,7 +45,7 @@ def validate_dte_folio(value: int) -> None:
         raise ValueError("Value is out of the valid range for 'folio'.")
 
 
-def validate_dte_monto_total(value: int, tipo_dte: TipoDteEnum) -> None:
+def validate_dte_monto_total(value: int, tipo_dte: TipoDte) -> None:
     """
     Validate value for DTE field ``monto_total``.
 
@@ -58,7 +58,7 @@ def validate_dte_monto_total(value: int, tipo_dte: TipoDteEnum) -> None:
             or value > constants.DTE_MONTO_TOTAL_FIELD_MAX_VALUE):  # type: ignore
         raise ValueError("Value is out of the valid range for 'monto_total'.")
 
-    if value < 0 and tipo_dte != TipoDteEnum.LIQUIDACION_FACTURA_ELECTRONICA:
+    if value < 0 and tipo_dte != TipoDte.LIQUIDACION_FACTURA_ELECTRONICA:
         raise ValueError("Value is out of the valid range for 'monto_total'.")
 
 
@@ -113,11 +113,11 @@ class DteNaturalKey:
 
     This group of fields uniquely identifies a DTE.
 
-    >>> instance = DteNaturalKey(Rut('60910000-1'), TipoDteEnum.FACTURA_ELECTRONICA, 2093465)
+    >>> instance = DteNaturalKey(Rut('60910000-1'), TipoDte.FACTURA_ELECTRONICA, 2093465)
 
     >>> str(instance)
     "DteNaturalKey(" \
-    "emisor_rut=Rut('60910000-1'), tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>, folio=2093465)"
+    "emisor_rut=Rut('60910000-1'), tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>, folio=2093465)"
     >>> str(instance) == repr(instance)
     True
     >>> instance.slug
@@ -130,7 +130,7 @@ class DteNaturalKey:
     RUT of the "emisor" of the DTE.
     """
 
-    tipo_dte: TipoDteEnum
+    tipo_dte: TipoDte
     """
     The kind of DTE.
     """
@@ -184,12 +184,12 @@ class DteDataL0(DteNaturalKey):
     The class instances are immutable.
 
     >>> instance = DteDataL0(
-    ...     Rut('60910000-1'), TipoDteEnum.FACTURA_ELECTRONICA, 2093465, date(2018, 5, 7),
+    ...     Rut('60910000-1'), TipoDte.FACTURA_ELECTRONICA, 2093465, date(2018, 5, 7),
     ...     Rut('60910000-1'), 10403)
 
     >>> str(instance)
     "DteDataL0(" \
-    "emisor_rut=Rut('60910000-1'), tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>, " \
+    "emisor_rut=Rut('60910000-1'), tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>, " \
     "folio=2093465)"
     >>> str(instance) == repr(instance)
     True
@@ -197,7 +197,7 @@ class DteDataL0(DteNaturalKey):
     '60910000-1--33--2093465'
     >>> instance.natural_key
     "DteNaturalKey(" \
-    "emisor_rut=Rut('60910000-1'), tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>, folio=2093465)"
+    "emisor_rut=Rut('60910000-1'), tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>, folio=2093465)"
 
     """
 
@@ -224,12 +224,12 @@ class DteDataL1(DteDataL0):
     The class instances are immutable.
 
     >>> instance = DteDataL1(
-    ...     Rut('60910000-1'), TipoDteEnum.FACTURA_ELECTRONICA, 2093465, date(2018, 5, 7),
+    ...     Rut('60910000-1'), TipoDte.FACTURA_ELECTRONICA, 2093465, date(2018, 5, 7),
     ...     Rut('60910000-1'), 10403)
 
     >>> str(instance)
     "DteDataL1(" \
-    "emisor_rut=Rut('60910000-1'), tipo_dte=<TipoDteEnum.FACTURA_ELECTRONICA: 33>, " \
+    "emisor_rut=Rut('60910000-1'), tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>, " \
     "folio=2093465, fecha_emision_date=datetime.date(2018, 5, 7), " \
     "receptor_rut=Rut('60910000-1'), monto_total=10403)"
     >>> str(instance) == repr(instance)
@@ -312,7 +312,7 @@ class DteDataL1(DteDataL0):
     def validate_monto_total(cls, v: object, values: Mapping[str, object]) -> object:
         tipo_dte = values.get('tipo_dte')
 
-        if isinstance(v, int) and isinstance(tipo_dte, TipoDteEnum):
+        if isinstance(v, int) and isinstance(tipo_dte, TipoDte):
             validate_dte_monto_total(v, tipo_dte=tipo_dte)
 
         return v

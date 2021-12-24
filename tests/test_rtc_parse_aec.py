@@ -4,7 +4,7 @@ import unittest
 from datetime import date, datetime
 
 from cl_sii.dte.data_models import DteDataL1, DteXmlData
-from cl_sii.dte.constants import TipoDteEnum
+from cl_sii.dte.constants import TipoDte
 from cl_sii.dte.parse import DTE_XMLNS
 from cl_sii.libs import encoding_utils
 from cl_sii.libs import tz_utils
@@ -155,7 +155,7 @@ class AecXmlParserTest(unittest.TestCase):
         expected_output = AecXml(
             dte=DteXmlData(
                 emisor_rut=Rut('76354771-K'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
@@ -185,7 +185,7 @@ class AecXmlParserTest(unittest.TestCase):
                 CesionAecXml(
                     dte=DteDataL1(
                         emisor_rut=Rut('76354771-K'),
-                        tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                        tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                         folio=170,
                         fecha_emision_date=date(2019, 4, 1),
                         receptor_rut=Rut('96790240-3'),
@@ -221,7 +221,7 @@ class AecXmlParserTest(unittest.TestCase):
                 CesionAecXml(
                     dte=DteDataL1(
                         emisor_rut=Rut('76354771-K'),
-                        tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                        tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                         folio=170,
                         fecha_emision_date=date(2019, 4, 1),
                         receptor_rut=Rut('96790240-3'),
@@ -273,7 +273,7 @@ class AecXmlParserTest(unittest.TestCase):
         expected_output = AecXml(
             dte=DteXmlData(
                 emisor_rut=Rut('76399752-9'),
-                tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=25568,
                 fecha_emision_date=date(2019, 3, 29),
                 receptor_rut=Rut('96874030-K'),
@@ -303,7 +303,7 @@ class AecXmlParserTest(unittest.TestCase):
                 CesionAecXml(
                     dte=DteDataL1(
                         emisor_rut=Rut('76399752-9'),
-                        tipo_dte=TipoDteEnum.FACTURA_ELECTRONICA,
+                        tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                         folio=25568,
                         fecha_emision_date=date(2019, 3, 29),
                         receptor_rut=Rut('96874030-K'),

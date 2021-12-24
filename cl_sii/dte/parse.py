@@ -428,7 +428,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
     # values parsing
     ###########################################################################
 
-    tipo_dte_value = constants.TipoDteEnum(int(_text_strip_or_raise(tipo_dte_em)))
+    tipo_dte_value = constants.TipoDte(int(_text_strip_or_raise(tipo_dte_em)))
     folio_value = int(_text_strip_or_raise(folio_em))
     fecha_emision_value = date.fromisoformat(_text_strip_or_raise(fecha_emision_em))
     fecha_vencimiento_value = None
