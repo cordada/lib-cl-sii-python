@@ -3,6 +3,11 @@
 History
 -------
 
+0.16.1 (2022-01-13)
++++++++++++++++++++++++
+
+* (PR #264, 2022-01-13) rtc.xml_utils: Add method to verify signature of AEC XML document
+
 0.16.0 (2021-12-24)
 +++++++++++++++++++++++
 
