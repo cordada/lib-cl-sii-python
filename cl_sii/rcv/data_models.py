@@ -6,11 +6,11 @@ RCV data models
 """
 from __future__ import annotations
 
-import dataclasses
 import logging
-from dataclasses import field as dc_field
 from datetime import date, datetime
-from typing import Optional
+from typing import ClassVar, Mapping, Optional
+
+import pydantic
 
 import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
@@ -23,22 +23,39 @@ from .constants import RcEstadoContable, RcvKind, RcvTipoDocto
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(frozen=True)
 class PeriodoTributario:
 
-    year: int = dc_field()
-    month: int = dc_field()
+    ###########################################################################
+    # constants
+    ###########################################################################
 
-    def __post_init__(self) -> None:
-        if not isinstance(self.year, int):
-            raise TypeError("Inappropriate type of 'year'.")
-        if self.year < 1900:  # arbitrary number but it more useful than checking not < 1.
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
+
+    ###########################################################################
+    # fields
+    ###########################################################################
+
+    year: int
+    month: int
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
+
+    @pydantic.validator('year')
+    def validate_year(cls, v: object) -> object:
+        if isinstance(v, int) and v < 1900:
+            # 1900 si an arbitrary number but it more useful than checking not < 1.
             raise ValueError("Value is out of the valid range for 'year'.")
+        return v
 
-        if not isinstance(self.month, int):
-            raise TypeError("Inappropriate type of 'month'.")
-        if self.month < 1 or self.month > 12:
-            raise ValueError("Value is out of the valid range for 'month'.")
+    @pydantic.validator('month')
+    def validate_month(cls, v: object) -> object:
+        if isinstance(v, int):
+            if v < 1 or v > 12:
+                raise ValueError("Value is out of the valid range for 'month'.")
+        return v
 
     ###########################################################################
     # dunder/magic methods
@@ -68,7 +85,7 @@ class PeriodoTributario:
 
     @classmethod
     def from_datetime(cls, value: datetime) -> PeriodoTributario:
-        value_naive = tz_utils.convert_tz_aware_dt_to_naive(value, SII_OFFICIAL_TZ)
+        value_naive = tz_utils.convert_tz_aware_dt_to_naive(value, cls.DATETIME_FIELDS_TZ)
         return cls.from_date(value_naive.date())
 
     def as_date(self) -> date:
@@ -78,10 +95,15 @@ class PeriodoTributario:
         # note: timezone-aware
         return tz_utils.convert_naive_dt_to_tz_aware(
             datetime(self.year, self.month, day=1, hour=0, minute=0, second=0),
-            SII_OFFICIAL_TZ)
+            self.DATETIME_FIELDS_TZ)
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RcvDetalleEntry:
 
     """
@@ -92,89 +114,80 @@ class RcvDetalleEntry:
     # constants
     ###########################################################################
 
-    # note: as of Python 3.7.3 we can not do something like `RCV_KIND: Optional[RcvKind] = None`
-    #   because 'dataclasses' gets confused and assumes that that class attribute is a dataclass
-    #   field (it is not), and this error is triggered:
-    #   > TypeError: non-default argument 'my_dc_field' follows default argument
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
 
-    RCV_KIND = None  # type: Optional[RcvKind]
-    RC_ESTADO_CONTABLE = None  # type: Optional[RcEstadoContable]
+    RCV_KIND: ClassVar[Optional[RcvKind]] = None
+    RC_ESTADO_CONTABLE: ClassVar[Optional[RcEstadoContable]] = None
 
     ###########################################################################
     # fields
     ###########################################################################
 
-    emisor_rut: Rut = dc_field()
+    emisor_rut: Rut
     """
     RUT of the "emisor" of the "documento".
     """
 
-    tipo_docto: RcvTipoDocto = dc_field()
+    tipo_docto: RcvTipoDocto
     """
     The kind of "documento".
     """
 
-    folio: int = dc_field()
+    folio: int
     """
     The sequential number of a "documento".
     """
 
     # TODO: docstring
-    fecha_emision_date: date = dc_field()
+    fecha_emision_date: date
 
     # TODO: docstring
     # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
-    receptor_rut: Rut = dc_field()
+    receptor_rut: Rut
 
-    monto_total: int = dc_field()
+    monto_total: int
     """
     Total amount of the "documento".
     """
 
     # TODO: docstring
     # note: must be timezone-aware.
-    fecha_recepcion_dt: datetime = dc_field()
+    fecha_recepcion_dt: datetime
 
-    def __post_init__(self) -> None:
-        """
-        Run validation automatically after setting the fields values.
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-        :raises TypeError, ValueError:
+    @pydantic.validator('folio')
+    def validate_folio(cls, v: object) -> object:
+        if isinstance(v, int):
+            cl_sii.dte.data_models.validate_dte_folio(v)
+        return v
 
-        """
-        if self.RCV_KIND == RcvKind.COMPRAS:
-            if self.RC_ESTADO_CONTABLE is None:
-                raise ValueError(
-                    "'RC_ESTADO_CONTABLE' must not be None when 'RCV_KIND' is 'COMPRAS'.")
-        elif self.RCV_KIND == RcvKind.VENTAS:
-            if self.RC_ESTADO_CONTABLE is not None:
-                raise ValueError(
-                    "'RC_ESTADO_CONTABLE' must be None when 'RCV_KIND' is 'VENTAS'.")
+    @pydantic.validator('fecha_recepcion_dt')
+    def validate_datetime_tz(cls, v: object) -> object:
+        if isinstance(v, datetime):
+            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+        return v
 
-        if not isinstance(self.emisor_rut, Rut):
-            raise TypeError("Inappropriate type of 'emisor_rut'.")
+    @pydantic.root_validator(skip_on_failure=True)
+    def validate_rcv_kind_is_consistent_with_rc_estado_contable(
+        cls, values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        rcv_kind = values.get('RCV_KIND')
+        rc_estado_contable = values.get('RC_ESTADO_CONTABLE')
 
-        if not isinstance(self.tipo_docto, RcvTipoDocto):
-            raise TypeError("Inappropriate type of 'tipo_docto'.")
+        if isinstance(rcv_kind, RcvKind):
+            if rcv_kind == RcvKind.COMPRAS:
+                if rc_estado_contable is None:
+                    raise ValueError(
+                        "'RC_ESTADO_CONTABLE' must not be None when 'RCV_KIND' is 'COMPRAS'.")
+            elif rcv_kind == RcvKind.VENTAS:
+                if rc_estado_contable is not None:
+                    raise ValueError(
+                        "'RC_ESTADO_CONTABLE' must be None when 'RCV_KIND' is 'VENTAS'.")
 
-        if not isinstance(self.folio, int):
-            raise TypeError("Inappropriate type of 'folio'.")
-        if not self.folio > 0:
-            raise ValueError("Inappropriate value of 'folio'.")
-
-        if not isinstance(self.fecha_emision_date, date):
-            raise TypeError("Inappropriate type of 'fecha_emision_date'.")
-
-        if not isinstance(self.receptor_rut, Rut):
-            raise TypeError("Inappropriate type of 'receptor_rut'.")
-
-        # TODO: figure out validation rules of 'monto_total'
-        if not isinstance(self.monto_total, int):
-            raise TypeError("Inappropriate type of 'monto_total'.")
-
-        if not isinstance(self.fecha_recepcion_dt, datetime):
-            raise TypeError("Inappropriate type of 'fecha_recepcion_dt'.")
-        tz_utils.validate_dt_tz(self.fecha_recepcion_dt, SII_OFFICIAL_TZ)
+        return values
 
     @property
     def is_dte(self) -> bool:
@@ -214,79 +227,109 @@ class RcvDetalleEntry:
         return dte_data
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RvDetalleEntry(RcvDetalleEntry):
 
     """
     Entry of the "detalle" of an RV ("Registro de Ventas").
     """
 
+    ###########################################################################
+    # constants
+    ###########################################################################
+
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
+
     RCV_KIND = RcvKind.VENTAS
     RC_ESTADO_CONTABLE = None
 
     # TODO: docstring
     # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
-    receptor_razon_social: str = dc_field()
+    receptor_razon_social: str
 
     # TODO: docstring
     # note: must be timezone-aware.
-    fecha_acuse_dt: Optional[datetime] = dc_field()
+    fecha_acuse_dt: Optional[datetime]
 
     # TODO: docstring
     # note: must be timezone-aware.
-    fecha_reclamo_dt: Optional[datetime] = dc_field()
+    fecha_reclamo_dt: Optional[datetime]
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-        if not isinstance(self.receptor_razon_social, str):
-            raise TypeError("Inappropriate type of 'receptor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.receptor_razon_social)
+    @pydantic.validator('receptor_razon_social')
+    def validate_contribuyente_razon_social(cls, v: object) -> object:
+        if isinstance(v, str):
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
+        return v
 
-        if self.fecha_acuse_dt is not None:
-            if not isinstance(self.fecha_acuse_dt, datetime):
-                raise TypeError("Inappropriate type of 'fecha_acuse_dt'.")
-            tz_utils.validate_dt_tz(self.fecha_acuse_dt, SII_OFFICIAL_TZ)
-
-        if self.fecha_reclamo_dt is not None:
-            if not isinstance(self.fecha_reclamo_dt, datetime):
-                raise TypeError("Inappropriate type of 'fecha_reclamo_dt'.")
-            tz_utils.validate_dt_tz(self.fecha_reclamo_dt, SII_OFFICIAL_TZ)
+    @pydantic.validator('fecha_acuse_dt', 'fecha_reclamo_dt')
+    def validate_datetime_tz(cls, v: object) -> object:
+        if isinstance(v, datetime):
+            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+        return v
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RcRegistroDetalleEntry(RcvDetalleEntry):
 
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "registro".
     """
 
+    ###########################################################################
+    # constants
+    ###########################################################################
+
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
+
     RCV_KIND = RcvKind.COMPRAS
     RC_ESTADO_CONTABLE = RcEstadoContable.REGISTRO
 
-    emisor_razon_social: str = dc_field()
+    emisor_razon_social: str
     """
     "Razón social" (legal name) of the "emisor" of the "documento".
     """
 
     # TODO: docstring
     # note: must be timezone-aware.
-    fecha_acuse_dt: Optional[datetime] = dc_field()
+    fecha_acuse_dt: Optional[datetime]
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-        if not isinstance(self.emisor_razon_social, str):
-            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+    @pydantic.validator('emisor_razon_social')
+    def validate_contribuyente_razon_social(cls, v: object) -> object:
+        if isinstance(v, str):
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
+        return v
 
-        if self.fecha_acuse_dt is not None:
-            if not isinstance(self.fecha_acuse_dt, datetime):
-                raise TypeError("Inappropriate type of 'fecha_acuse_dt'.")
-            tz_utils.validate_dt_tz(self.fecha_acuse_dt, SII_OFFICIAL_TZ)
+    @pydantic.validator('fecha_acuse_dt')
+    def validate_datetime_tz(cls, v: object) -> object:
+        if isinstance(v, datetime):
+            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+        return v
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
 
     """
@@ -297,39 +340,63 @@ class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
     RC_ESTADO_CONTABLE = RcEstadoContable.NO_INCLUIR
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RcReclamadoDetalleEntry(RcvDetalleEntry):
 
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "reclamado".
     """
 
+    ###########################################################################
+    # constants
+    ###########################################################################
+
+    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
+
+    ###########################################################################
+    # fields
+    ###########################################################################
+
     RCV_KIND = RcvKind.COMPRAS
     RC_ESTADO_CONTABLE = RcEstadoContable.RECLAMADO
 
-    emisor_razon_social: str = dc_field()
+    emisor_razon_social: str
     """
     "Razón social" (legal name) of the "emisor" of the "documento".
     """
 
     # TODO: docstring
     # note: must be timezone-aware.
-    fecha_reclamo_dt: Optional[datetime] = dc_field()
+    fecha_reclamo_dt: Optional[datetime]
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-        if not isinstance(self.emisor_razon_social, str):
-            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+    @pydantic.validator('emisor_razon_social')
+    def validate_contribuyente_razon_social(cls, v: object) -> object:
+        if isinstance(v, str):
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
+        return v
 
-        if self.fecha_reclamo_dt is not None:
-            if not isinstance(self.fecha_reclamo_dt, datetime):
-                raise TypeError("Inappropriate type of 'fecha_reclamo_dt'.")
-            tz_utils.validate_dt_tz(self.fecha_reclamo_dt, SII_OFFICIAL_TZ)
+    @pydantic.validator('fecha_reclamo_dt')
+    def validate_datetime_tz(cls, v: object) -> object:
+        if isinstance(v, datetime):
+            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+        return v
 
 
-@dataclasses.dataclass(frozen=True)
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type('Config', (), dict(
+        arbitrary_types_allowed=True,
+    ))
+)
 class RcPendienteDetalleEntry(RcvDetalleEntry):
 
     """
@@ -339,14 +406,17 @@ class RcPendienteDetalleEntry(RcvDetalleEntry):
     RCV_KIND = RcvKind.COMPRAS
     RC_ESTADO_CONTABLE = RcEstadoContable.PENDIENTE
 
-    emisor_razon_social: str = dc_field()
+    emisor_razon_social: str
     """
     "Razón social" (legal name) of the "emisor" of the "documento".
     """
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
-        if not isinstance(self.emisor_razon_social, str):
-            raise TypeError("Inappropriate type of 'emisor_razon_social'.")
-        cl_sii.dte.data_models.validate_contribuyente_razon_social(self.emisor_razon_social)
+    @pydantic.validator('emisor_razon_social')
+    def validate_contribuyente_razon_social(cls, v: object) -> object:
+        if isinstance(v, str):
+            cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
+        return v
