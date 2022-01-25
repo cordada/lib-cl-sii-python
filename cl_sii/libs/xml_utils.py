@@ -31,6 +31,7 @@ import signxml
 import signxml.exceptions
 import xml.parsers.expat
 import xml.parsers.expat.errors
+from cl_sii import __version__
 from lxml.etree import ElementBase as XmlElement  # noqa: F401
 # note: 'lxml.etree.ElementTree' is a **function**, not a class.
 from lxml.etree import _ElementTree as XmlElementTree  # noqa: F401
@@ -306,7 +307,7 @@ def validate_xml_doc(xml_schema: XmlSchema, xml_doc: XmlElement) -> None:
         # Simplest and safest way to get the error message.
         # Error example:
         #   "Element 'DTE': No matching global declaration available for the validation root., line 2"  # noqa: E501
-        validation_error_msg = str(exc)
+        validation_error_msg = str(exc) + f". cl-sii Python lib version {__version__}"
 
         raise XmlSchemaDocValidationError(validation_error_msg) from exc
 

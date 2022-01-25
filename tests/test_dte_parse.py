@@ -4,6 +4,7 @@ import unittest
 from datetime import date, datetime
 
 import cl_sii.dte.constants
+from cl_sii import __version__
 from cl_sii.dte.data_models import DteDataL2
 from cl_sii.libs import crypto_utils
 from cl_sii.libs import encoding_utils
@@ -88,7 +89,8 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2."
+             f" cl-sii Python lib version {__version__}", )
         )
 
     def test_validate_dte_xml_fail_dte_2(self) -> None:
@@ -104,7 +106,8 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2."
+             f" cl-sii Python lib version {__version__}", )
         )
 
     def test_validate_dte_xml_fail_dte_3(self) -> None:
@@ -120,7 +123,8 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2."
+             f" cl-sii Python lib version {__version__}", )
         )
 
 
@@ -150,7 +154,8 @@ class FunctionCleanDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2."
+             f" cl-sii Python lib version {__version__}", )
         )
 
         xml_doc_cleaned, modified = clean_dte_xml(
@@ -224,7 +229,8 @@ class FunctionCleanDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2."
+             f" cl-sii Python lib version {__version__}", )
         )
 
         xml_doc_cleaned, modified = clean_dte_xml(
@@ -298,7 +304,8 @@ class FunctionCleanDteXmlTest(unittest.TestCase):
         self.assertSequenceEqual(
             cm.exception.args,
             ("Element 'DTE': No matching global declaration available for the validation root., "
-             "line 2", )
+             "line 2."
+             f" cl-sii Python lib version {__version__}", )
         )
 
         xml_doc_cleaned, modified = clean_dte_xml(
