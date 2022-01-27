@@ -3,6 +3,12 @@
 History
 -------
 
+0.17.0 (2022-01-27)
++++++++++++++++++++++++
+
+* (PR #251, 2022-01-14) rcv: Convert stdlib dataclasses into pydantic dataclasses
+* (PR #267, 2022-01-27) cl_sii.rut: Add method to get the RUT of the certificate holder
+
 0.16.1 (2022-01-13)
 +++++++++++++++++++++++
 
