@@ -11,6 +11,7 @@ from cl_sii.libs.crypto_utils import (  # noqa: F401
     remove_pem_cert_header_footer,
     x509_cert_der_to_pem, x509_cert_pem_to_der,
 )
+from cl_sii.rut.constants import SII_CERT_TITULAR_RUT_OID
 
 from . import utils
 
@@ -24,10 +25,8 @@ from . import utils
 #   Y LA CERTIFICACION DE DICHA FIRMA"
 # - ref: https://www.leychile.cl/Consulta/m/norma_plana?org=&idNorma=201668
 # dice:
-# > RUT del titular del certificado : 1.3.6.1.4.1.8321.1
 # > RUT de la certificadora emisora : 1.3.6.1.4.1.8321.2
 _SII_CERT_CERTIFICADORA_EMISORA_RUT_OID = oid.ObjectIdentifier("1.3.6.1.4.1.8321.2")
-_SII_CERT_TITULAR_RUT_OID = oid.ObjectIdentifier("1.3.6.1.4.1.8321.1")
 
 
 class FunctionsTest(unittest.TestCase):
@@ -332,7 +331,7 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertEqual(len(subject_alt_name_ext.value._general_names._general_names), 1)
         self.assertEqual(
             subject_alt_name_ext.value._general_names._general_names[0].type_id,
-            _SII_CERT_TITULAR_RUT_OID)
+            SII_CERT_TITULAR_RUT_OID)
         self.assertEqual(
             subject_alt_name_ext.value._general_names._general_names[0].value,
             b'\x16\n13185095-6')
@@ -527,7 +526,7 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertEqual(len(subject_alt_name_ext.value._general_names._general_names), 1)
         self.assertEqual(
             subject_alt_name_ext.value._general_names._general_names[0].type_id,
-            _SII_CERT_TITULAR_RUT_OID)
+            SII_CERT_TITULAR_RUT_OID)
         self.assertEqual(
             subject_alt_name_ext.value._general_names._general_names[0].value,
             b'\x16\t8480437-1')
@@ -721,7 +720,7 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertEqual(subject_alt_name_ext.critical, False)
         self.assertEqual(len(subject_alt_name_ext.value._general_names._general_names), 1)
         # TODO: find out where did OID '1.3.6.1.4.1.8658.1' come from.
-        #   Shouldn't it have been equal to '_SII_CERT_TITULAR_RUT_OID'?
+        #   Shouldn't it have been equal to 'cl_sii.rut.constants.SII_CERT_TITULAR_RUT_OID'?
         self.assertEqual(
             subject_alt_name_ext.value._general_names._general_names[0].type_id,
             oid.ObjectIdentifier("1.3.6.1.4.1.8658.1"))
