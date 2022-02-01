@@ -22,6 +22,7 @@ import pathlib
 import sys
 from typing import Iterable
 
+
 try:
     import cl_sii  # noqa: F401
 except ImportError:
