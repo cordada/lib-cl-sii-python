@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import dataclasses
 from datetime import date, datetime
-from typing import ClassVar, Mapping, Tuple, Optional, Sequence
+from typing import ClassVar, Mapping, Optional, Sequence, Tuple
 
 import pydantic
 
@@ -15,7 +15,6 @@ from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.dte import data_models as dte_data_models
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
-
 from . import data_models
 
 

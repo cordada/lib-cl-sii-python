@@ -31,7 +31,6 @@ from cl_sii.dte.parse import DTE_XMLNS_MAP
 from cl_sii.libs import encoding_utils, tz_utils, xml_utils
 from cl_sii.libs.xml_utils import XmlElement
 from cl_sii.rut import Rut
-
 from . import data_models_aec
 
 

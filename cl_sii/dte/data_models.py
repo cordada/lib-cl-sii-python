@@ -26,7 +26,6 @@ import cl_sii.rut.constants
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
-
 from . import constants
 from .constants import TipoDte
 

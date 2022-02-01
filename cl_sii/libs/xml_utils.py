@@ -22,6 +22,8 @@ It is used by various Web technologies such as SOAP, SAML, and others.
 import io
 import logging
 import os
+import xml.parsers.expat
+import xml.parsers.expat.errors
 from typing import IO, Optional, Tuple, Union
 
 import defusedxml
@@ -29,12 +31,11 @@ import defusedxml.lxml
 import lxml.etree
 import signxml
 import signxml.exceptions
-import xml.parsers.expat
-import xml.parsers.expat.errors
-from lxml.etree import ElementBase as XmlElement  # noqa: F401
-# note: 'lxml.etree.ElementTree' is a **function**, not a class.
-from lxml.etree import _ElementTree as XmlElementTree  # noqa: F401
-from lxml.etree import XMLSchema as XmlSchema  # noqa: F401
+from lxml.etree import ElementBase as XmlElement
+from lxml.etree import XMLSchema as XmlSchema
+from lxml.etree import (  # note: 'lxml.etree.ElementTree' is a **function**, not a class.  # noqa: E501
+    _ElementTree as XmlElementTree,
+)
 
 from . import crypto_utils
 

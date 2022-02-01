@@ -10,7 +10,6 @@ from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.dte.constants import TipoDte
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
-
 from . import data_models
 from .constants import CESION_MONTO_CEDIDO_FIELD_MIN_VALUE, TIPO_DTE_CEDIBLES
 

@@ -1,6 +1,5 @@
 import csv
 import logging
-
 from typing import Dict, Iterable, Sequence, Tuple
 
 import marshmallow

@@ -13,15 +13,17 @@ from typing import (
     Any,
     ClassVar,
     Iterator,
-    Mapping, MutableMapping,
+    Mapping,
+    MutableMapping,
     Optional,
     Set,
-    Type, Tuple,
+    Tuple,
+    Type,
     Union,
 )
 
-from cl_sii.rut import Rut
 from cl_sii.rcv.data_models import PeriodoTributario
+from cl_sii.rut import Rut
 
 
 logger = logging.getLogger(__name__)
