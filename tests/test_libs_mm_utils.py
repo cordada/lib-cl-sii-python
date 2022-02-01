@@ -1,7 +1,8 @@
 import unittest
 
 from cl_sii.libs.mm_utils import (  # noqa: F401
-    CustomMarshmallowDateField, validate_no_unexpected_input_fields,
+    CustomMarshmallowDateField,
+    validate_no_unexpected_input_fields,
 )
 
 

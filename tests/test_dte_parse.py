@@ -5,18 +5,18 @@ from datetime import date, datetime
 
 import cl_sii.dte.constants
 from cl_sii.dte.data_models import DteDataL2
-from cl_sii.libs import crypto_utils
-from cl_sii.libs import encoding_utils
-from cl_sii.libs import tz_utils
-from cl_sii.libs import xml_utils
-from cl_sii.rut import Rut
-
 from cl_sii.dte.parse import (  # noqa: F401
-    clean_dte_xml, parse_dte_xml, validate_dte_xml,
-    _remove_dte_xml_doc_personalizado, _set_dte_xml_missing_xmlns,
-    DTE_XML_SCHEMA_OBJ, DTE_XMLNS, DTE_XMLNS_MAP
+    DTE_XML_SCHEMA_OBJ,
+    DTE_XMLNS,
+    DTE_XMLNS_MAP,
+    _remove_dte_xml_doc_personalizado,
+    _set_dte_xml_missing_xmlns,
+    clean_dte_xml,
+    parse_dte_xml,
+    validate_dte_xml,
 )
-
+from cl_sii.libs import crypto_utils, encoding_utils, tz_utils, xml_utils
+from cl_sii.rut import Rut
 from .utils import read_test_file_bytes
 
 

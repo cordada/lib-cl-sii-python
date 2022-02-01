@@ -6,15 +6,15 @@ from datetime import date, datetime
 
 import pydantic
 
-from cl_sii.dte.data_models import DteNaturalKey, DteDataL1, DteDataL2
 from cl_sii.dte.constants import TipoDte
+from cl_sii.dte.data_models import DteDataL1, DteDataL2, DteNaturalKey
 from cl_sii.libs import tz_utils
 from cl_sii.rtc.data_models import (
-    CesionNaturalKey,
     CesionAltNaturalKey,
     CesionL0,
     CesionL1,
     CesionL2,
+    CesionNaturalKey,
 )
 from cl_sii.rut import Rut
 

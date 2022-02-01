@@ -5,11 +5,7 @@ from datetime import date, datetime
 
 import pydantic
 
-from cl_sii.libs import encoding_utils
-from cl_sii.libs import tz_utils
-from cl_sii.rut import Rut  # noqa: F401
-
-from cl_sii.dte.constants import (  # noqa: F401
+from cl_sii.dte.constants import (
     DTE_FOLIO_FIELD_MAX_VALUE,
     DTE_FOLIO_FIELD_MIN_VALUE,
     DTE_MONTO_TOTAL_FIELD_MAX_VALUE,
@@ -17,10 +13,17 @@ from cl_sii.dte.constants import (  # noqa: F401
     TipoDte,
 )
 from cl_sii.dte.data_models import (  # noqa: F401
-    DteDataL0, DteDataL1, DteDataL2, DteNaturalKey, DteXmlData,
-    validate_contribuyente_razon_social, validate_dte_folio, validate_dte_monto_total,
+    DteDataL0,
+    DteDataL1,
+    DteDataL2,
+    DteNaturalKey,
+    DteXmlData,
+    validate_contribuyente_razon_social,
+    validate_dte_folio,
+    validate_dte_monto_total,
 )
-
+from cl_sii.libs import encoding_utils, tz_utils
+from cl_sii.rut import Rut
 from .utils import read_test_file_bytes
 
 

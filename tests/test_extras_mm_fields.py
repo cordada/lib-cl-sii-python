@@ -1,13 +1,17 @@
-from datetime import date, datetime
 import unittest
+from datetime import date, datetime
 
 import marshmallow
 
 from cl_sii.extras.mm_fields import (
-    RcvPeriodoTributario, RcvPeriodoTributarioField,
-    RcvTipoDocto, RcvTipoDoctoField,
-    Rut, RutField,
-    TipoDte, TipoDteField,
+    RcvPeriodoTributario,
+    RcvPeriodoTributarioField,
+    RcvTipoDocto,
+    RcvTipoDoctoField,
+    Rut,
+    RutField,
+    TipoDte,
+    TipoDteField,
 )
 
 

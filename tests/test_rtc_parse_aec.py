@@ -3,17 +3,13 @@ from __future__ import annotations
 import unittest
 from datetime import date, datetime
 
-from cl_sii.dte.data_models import DteDataL1, DteXmlData
 from cl_sii.dte.constants import TipoDte
+from cl_sii.dte.data_models import DteDataL1, DteXmlData
 from cl_sii.dte.parse import DTE_XMLNS
-from cl_sii.libs import encoding_utils
-from cl_sii.libs import tz_utils
-from cl_sii.libs import xml_utils
-from cl_sii.rut import Rut
-
-from cl_sii.rtc.data_models_aec import CesionAecXml, AecXml
+from cl_sii.libs import encoding_utils, tz_utils, xml_utils
+from cl_sii.rtc.data_models_aec import AecXml, CesionAecXml
 from cl_sii.rtc.parse_aec import AEC_XML_SCHEMA_OBJ, parse_aec_xml, validate_aec_xml
-
+from cl_sii.rut import Rut
 from .utils import read_test_file_bytes
 
 

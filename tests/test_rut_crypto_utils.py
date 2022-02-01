@@ -6,7 +6,6 @@ from cryptography.hazmat.backends.openssl import backend as crypto_x509_backend
 from cl_sii import rut
 from cl_sii.libs.crypto_utils import load_der_x509_cert
 from cl_sii.rut.crypto_utils import get_subject_rut_from_certificate_pfx
-
 from . import utils
 
 

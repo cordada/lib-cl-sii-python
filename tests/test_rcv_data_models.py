@@ -15,7 +15,7 @@ from cl_sii.rcv.data_models import (
     RcReclamadoDetalleEntry,
     RcRegistroDetalleEntry,
     RcvDetalleEntry,
-    RvDetalleEntry
+    RvDetalleEntry,
 )
 from cl_sii.rut import Rut
 

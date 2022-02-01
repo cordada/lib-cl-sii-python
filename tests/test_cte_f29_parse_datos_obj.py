@@ -5,11 +5,9 @@ from decimal import Decimal
 from typing import Any, Mapping
 from unittest import TestCase
 
-from cl_sii.cte.f29 import data_models
-from cl_sii.cte.f29 import parse_datos_obj
+from cl_sii.cte.f29 import data_models, parse_datos_obj
 from cl_sii.rcv.data_models import PeriodoTributario
 from cl_sii.rut import Rut
-
 from .utils import read_test_file_json_dict
 
 
