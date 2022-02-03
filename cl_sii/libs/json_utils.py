@@ -7,6 +7,7 @@ from typing import Mapping
 # exceptions
 ###############################################################################
 
+
 class JsonSchemaValidationError(Exception):
     """
     JSON data failed validation against a schema.
@@ -20,6 +21,7 @@ class JsonSchemaValidationError(Exception):
 ###############################################################################
 # functions
 ###############################################################################
+
 
 def read_json_schema(file_path: Path) -> Mapping[str, object]:
     """

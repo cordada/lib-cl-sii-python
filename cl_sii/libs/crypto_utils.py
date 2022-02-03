@@ -63,7 +63,8 @@ def load_der_x509_cert(der_value: bytes) -> X509Cert:
     try:
         x509_cert = cryptography.x509.load_der_x509_certificate(
             data=der_value,
-            backend=_crypto_x509_backend)
+            backend=_crypto_x509_backend,
+        )
     except ValueError:
         # e.g.
         #   "Unable to load certificate"
@@ -94,7 +95,8 @@ def load_pem_x509_cert(pem_value: Union[str, bytes]) -> X509Cert:
     try:
         x509_cert = cryptography.x509.load_pem_x509_certificate(
             data=mod_pem_value_bytes,
-            backend=_crypto_x509_backend)
+            backend=_crypto_x509_backend,
+        )
     except ValueError:
         # e.g.
         #   "Unable to load certificate. See
