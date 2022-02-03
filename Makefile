@@ -1,5 +1,8 @@
 SHELL = /usr/bin/env bash
 
+# Black
+BLACK = black --config .black.cfg.toml
+
 .DEFAULT_GOAL := help
 .PHONY: help
 .PHONY: clean clean-build clean-pyc clean-test
@@ -36,8 +39,10 @@ lint: ## run tools for code style analysis, static type check, etc
 	flake8 --config=setup.cfg  cl_sii  scripts  tests
 	mypy --config-file setup.cfg  cl_sii  scripts
 	isort --check-only .
+	$(BLACK) --check .
 
 lint-fix: ## Fix lint errors
+	$(BLACK) .
 	isort .
 
 test: ## run tests quickly with the default Python
