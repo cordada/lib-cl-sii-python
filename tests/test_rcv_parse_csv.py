@@ -2,16 +2,19 @@ import unittest
 from typing import Callable
 
 from cl_sii.rcv.parse_csv import (  # noqa: F401
-    RcvCompraNoIncluirCsvRowSchema, RcvCompraPendienteCsvRowSchema,
-    RcvCompraReclamadoCsvRowSchema, RcvCompraRegistroCsvRowSchema,
+    RcvCompraNoIncluirCsvRowSchema,
+    RcvCompraPendienteCsvRowSchema,
+    RcvCompraReclamadoCsvRowSchema,
+    RcvCompraRegistroCsvRowSchema,
     RcvVentaCsvRowSchema,
-    parse_rcv_compra_no_incluir_csv_file, parse_rcv_compra_pendiente_csv_file,
-    parse_rcv_compra_reclamado_csv_file, parse_rcv_compra_registro_csv_file,
-    parse_rcv_venta_csv_file,
     _parse_rcv_csv_file,
+    parse_rcv_compra_no_incluir_csv_file,
+    parse_rcv_compra_pendiente_csv_file,
+    parse_rcv_compra_reclamado_csv_file,
+    parse_rcv_compra_registro_csv_file,
+    parse_rcv_venta_csv_file,
 )
 from cl_sii.rut import Rut
-
 from .utils import get_test_file_path
 
 

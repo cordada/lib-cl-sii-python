@@ -7,13 +7,17 @@ import cryptography.x509
 from cryptography.x509 import oid
 
 from cl_sii.libs.crypto_utils import (  # noqa: F401
-    X509Cert, add_pem_cert_header_footer, load_der_x509_cert, load_pem_x509_cert,
+    X509Cert,
+    add_pem_cert_header_footer,
+    load_der_x509_cert,
+    load_pem_x509_cert,
     remove_pem_cert_header_footer,
-    x509_cert_der_to_pem, x509_cert_pem_to_der,
+    x509_cert_der_to_pem,
+    x509_cert_pem_to_der,
 )
 from cl_sii.rut.constants import SII_CERT_TITULAR_RUT_OID
-
 from . import utils
+
 
 # TODO: get fake certificates, keys, and all the variations from
 #   https://github.com/urllib3/urllib3/tree/1.24.2/dummyserver/certs

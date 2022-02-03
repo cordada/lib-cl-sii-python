@@ -4,14 +4,20 @@ import unittest
 import lxml.etree
 
 from cl_sii.libs.crypto_utils import load_pem_x509_cert
-
-from cl_sii.libs.xml_utils import XmlElement
 from cl_sii.libs.xml_utils import (  # noqa: F401
-    XmlSyntaxError, XmlFeatureForbidden, XmlSchemaDocValidationError,
-    XmlSignatureInvalid, XmlSignatureInvalidCertificate, XmlSignatureUnverified,
-    parse_untrusted_xml, read_xml_schema, validate_xml_doc, verify_xml_signature, write_xml_doc,
+    XmlElement,
+    XmlFeatureForbidden,
+    XmlSchemaDocValidationError,
+    XmlSignatureInvalid,
+    XmlSignatureInvalidCertificate,
+    XmlSignatureUnverified,
+    XmlSyntaxError,
+    parse_untrusted_xml,
+    read_xml_schema,
+    validate_xml_doc,
+    verify_xml_signature,
+    write_xml_doc,
 )
-
 from .utils import read_test_file_bytes
 
 

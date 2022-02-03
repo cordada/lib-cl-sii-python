@@ -3,7 +3,7 @@ SHELL = /usr/bin/env bash
 .DEFAULT_GOAL := help
 .PHONY: help
 .PHONY: clean clean-build clean-pyc clean-test
-.PHONY: lint test test-all test-coverage test-coverage-report-console test-coverage-report-html
+.PHONY: lint lint-fix test test-all test-coverage test-coverage-report-console test-coverage-report-html
 .PHONY: dist upload-release
 
 help:
@@ -35,6 +35,10 @@ clean-test: ## remove test, lint and coverage artifacts
 lint: ## run tools for code style analysis, static type check, etc
 	flake8 --config=setup.cfg  cl_sii  scripts  tests
 	mypy --config-file setup.cfg  cl_sii  scripts
+	isort --check-only .
+
+lint-fix: ## Fix lint errors
+	isort .
 
 test: ## run tests quickly with the default Python
 	python setup.py test

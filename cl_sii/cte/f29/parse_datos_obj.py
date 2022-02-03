@@ -8,9 +8,8 @@ from typing import Callable, Mapping, MutableMapping, Optional
 import jsonschema
 
 from cl_sii.libs.json_utils import JsonSchemaValidationError, read_json_schema
-from cl_sii.rut import Rut
 from cl_sii.rcv.data_models import PeriodoTributario
-
+from cl_sii.rut import Rut
 from .data_models import CteForm29
 
 

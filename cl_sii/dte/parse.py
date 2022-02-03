@@ -23,13 +23,10 @@ import os
 from datetime import date, datetime
 from typing import Optional, Tuple
 
-from cl_sii.libs import encoding_utils
-from cl_sii.libs import tz_utils
-from cl_sii.libs import xml_utils
+from cl_sii.libs import encoding_utils, tz_utils, xml_utils
 from cl_sii.libs.xml_utils import XmlElement, XmlElementTree
 from cl_sii.rut import Rut
-from . import constants
-from . import data_models
+from . import constants, data_models
 
 
 logger = logging.getLogger(__name__)

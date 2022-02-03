@@ -1,7 +1,8 @@
 import unittest
 
 from cl_sii.libs.rows_processing import (  # noqa: F401
-    csv_rows_mm_deserialization_iterator, rows_mm_deserialization_iterator,
+    csv_rows_mm_deserialization_iterator,
+    rows_mm_deserialization_iterator,
 )
 
 

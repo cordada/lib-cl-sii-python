@@ -27,6 +27,7 @@ import sys
 import xml.etree.ElementTree
 from typing import BinaryIO, Iterable, TextIO, Union
 
+
 try:
     import cl_sii  # noqa: F401
 except ImportError:

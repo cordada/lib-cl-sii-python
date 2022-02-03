@@ -16,7 +16,6 @@ import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
-
 from .constants import RcEstadoContable, RcvKind, RcvTipoDocto
 
 

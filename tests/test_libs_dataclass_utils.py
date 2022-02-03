@@ -3,7 +3,10 @@ import unittest
 from typing import Dict
 
 from cl_sii.libs.dataclass_utils import (
-    DcDeepCompareMixin, DcDeepComparison, dc_deep_compare, _dc_deep_compare_to,
+    DcDeepCompareMixin,
+    DcDeepComparison,
+    _dc_deep_compare_to,
+    dc_deep_compare,
 )
 
 

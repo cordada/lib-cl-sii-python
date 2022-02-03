@@ -5,8 +5,7 @@ import cryptography
 import cryptography.x509
 from cryptography.hazmat.backends.openssl import backend as crypto_x509_backend
 
-from . import constants
-from . import Rut
+from . import Rut, constants
 
 
 def get_subject_rut_from_certificate_pfx(pfx_file_bytes: bytes, password: Optional[str]) -> Rut:

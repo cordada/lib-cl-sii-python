@@ -30,7 +30,6 @@ from cl_sii.dte import data_models as dte_data_models
 from cl_sii.dte.constants import TipoDte
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
-
 from . import constants
 
 
