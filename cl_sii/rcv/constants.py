@@ -302,6 +302,7 @@ class RcvTipoDocto(enum.IntEnum):
             value = TipoDte(self.value)
         except ValueError as exc:
             raise ValueError(
-                f"There is no equivalent 'TipoDte' for 'RcvTipoDocto.{self.name}'.") from exc
+                f"There is no equivalent 'TipoDte' for 'RcvTipoDocto.{self.name}'."
+            ) from exc
 
         return value
