@@ -12,6 +12,6 @@ updates:
       interval: daily
       time: "08:30"
       timezone: America/Santiago
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 20
     labels:
       - dependencies
