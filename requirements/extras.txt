@@ -2,7 +2,7 @@
 
 # Required packages:
 Django>=2.2.24
-djangorestframework>=3.10.3,<3.13
+djangorestframework>=3.10.3,<3.14
 
 # Packages dependencies:
 #   - Django:
