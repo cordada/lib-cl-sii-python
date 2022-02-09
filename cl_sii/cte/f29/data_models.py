@@ -224,7 +224,9 @@ class CteForm29:
                     "%s(contribuyente_rut=%r, periodo_tributario=%r, folio=%r)"
                     " contains invalid or unknown SII Form 29 codes: %s.",
                     self.__class__.__name__,
-                    self.contribuyente_rut, self.periodo_tributario, self.folio,
+                    self.contribuyente_rut,
+                    self.periodo_tributario,
+                    self.folio,
                     ', '.join(str(code) for code in sorted(unknown_codes)),
                 )
 
