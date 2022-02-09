@@ -20,11 +20,15 @@ from . import data_models
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        anystr_strip_whitespace=True,
-        arbitrary_types_allowed=True,
-        min_anystr_length=1,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            anystr_strip_whitespace=True,
+            arbitrary_types_allowed=True,
+            min_anystr_length=1,
+        ),
+    ),
 )
 class CesionAecXml:
     """
@@ -338,7 +342,8 @@ class CesionAecXml:
 
     @pydantic.root_validator(skip_on_failure=True)
     def validate_fecha_cesion_dt_is_consistent_with_dte(
-        cls, values: Mapping[str, object],
+        cls,
+        values: Mapping[str, object],
     ) -> Mapping[str, object]:
         fecha_cesion_dt = values['fecha_cesion_dt']
         dte = values['dte']
@@ -350,7 +355,8 @@ class CesionAecXml:
 
     @pydantic.root_validator(skip_on_failure=True)
     def validate_monto_cesion_does_not_exceed_dte_monto_total(
-        cls, values: Mapping[str, object],
+        cls,
+        values: Mapping[str, object],
     ) -> Mapping[str, object]:
         monto_cesion = values['monto_cesion']
         dte = values['dte']
@@ -365,14 +371,14 @@ class CesionAecXml:
 
     @pydantic.root_validator(skip_on_failure=True)
     def validate_fecha_ultimo_vencimiento_is_consistent_with_dte(
-        cls, values: Mapping[str, object],
+        cls,
+        values: Mapping[str, object],
     ) -> Mapping[str, object]:
         fecha_ultimo_vencimiento = values['fecha_ultimo_vencimiento']
         dte = values['dte']
 
-        if (
-            isinstance(fecha_ultimo_vencimiento, date)
-            and isinstance(dte, dte_data_models.DteDataL1)
+        if isinstance(fecha_ultimo_vencimiento, date) and isinstance(
+            dte, dte_data_models.DteDataL1
         ):
             pass  # TODO: Validate value of 'fecha_ultimo_vencimiento' in relation to the DTE data.
 
@@ -381,11 +387,15 @@ class CesionAecXml:
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        anystr_strip_whitespace=True,
-        arbitrary_types_allowed=True,
-        min_anystr_length=1,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            anystr_strip_whitespace=True,
+            arbitrary_types_allowed=True,
+            min_anystr_length=1,
+        ),
+    ),
 )
 class AecXml:
     """
@@ -731,7 +741,8 @@ class AecXml:
 
     @pydantic.root_validator(skip_on_failure=True)
     def validate_dte_matches_cesiones_dtes(
-        cls, values: Mapping[str, object],
+        cls,
+        values: Mapping[str, object],
     ) -> Mapping[str, object]:
         dte = values['dte']
         cesiones = values['cesiones']
@@ -752,7 +763,8 @@ class AecXml:
 
     @pydantic.root_validator(skip_on_failure=True)
     def validate_last_cesion_matches_some_fields(
-        cls, values: Mapping[str, object],
+        cls,
+        values: Mapping[str, object],
     ) -> Mapping[str, object]:
         field_validations: Sequence[Tuple[str, str]] = [
             # (AecXml field, CesionAecXml field):
@@ -785,7 +797,8 @@ class AecXml:
 
     @pydantic.root_validator
     def validate_signature_value_and_signature_x509_cert_der_may_only_be_none_together(
-        cls, values: Mapping[str, object],
+        cls,
+        values: Mapping[str, object],
     ) -> Mapping[str, object]:
         signature_value = values.get('signature_value')
         signature_x509_cert_der = values.get('signature_x509_cert_der')
