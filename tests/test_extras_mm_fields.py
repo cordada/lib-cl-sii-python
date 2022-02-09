@@ -16,9 +16,7 @@ from cl_sii.extras.mm_fields import (
 
 
 class RutFieldTest(unittest.TestCase):
-
     def setUp(self) -> None:
-
         class MyObj:
             def __init__(self, emisor_rut: Rut, other_field: int = None) -> None:
                 self.emisor_rut = emisor_rut
@@ -29,7 +27,6 @@ class RutFieldTest(unittest.TestCase):
                 self.some_field = some_field
 
         class MyMmSchema(marshmallow.Schema):
-
             class Meta:
                 strict = False
 
@@ -42,7 +39,6 @@ class RutFieldTest(unittest.TestCase):
             )
 
         class MyMmSchemaStrict(marshmallow.Schema):
-
             class Meta:
                 strict = True
 
@@ -125,7 +121,9 @@ class RutFieldTest(unittest.TestCase):
 
         result = schema.load(data_invalid_1)
         self.assertDictEqual(dict(result.data), {})
-        self.assertDictEqual(dict(result.errors), {'RUT of Emisor': ['Not a syntactically valid RUT.']})  # noqa: E501
+        self.assertDictEqual(
+            dict(result.errors), {'RUT of Emisor': ['Not a syntactically valid RUT.']}
+        )
 
         result = schema.load(data_invalid_2)
         self.assertDictEqual(dict(result.data), {})
@@ -137,7 +135,9 @@ class RutFieldTest(unittest.TestCase):
 
         result = schema.load(data_invalid_4)
         self.assertDictEqual(dict(result.data), {})
-        self.assertDictEqual(dict(result.errors), {'RUT of Emisor': ['Missing data for required field.']})  # noqa: E501
+        self.assertDictEqual(
+            dict(result.errors), {'RUT of Emisor': ['Missing data for required field.']}
+        )
 
     def test_dump_fail(self) -> None:
         schema = self.MyMmSchema()
@@ -157,9 +157,7 @@ class RutFieldTest(unittest.TestCase):
 
 
 class TipoDteFieldTest(unittest.TestCase):
-
     def setUp(self) -> None:
-
         class MyObj:
             def __init__(self, tipo_dte: TipoDte, other_field: int = None) -> None:
                 self.tipo_dte = tipo_dte
@@ -170,7 +168,6 @@ class TipoDteFieldTest(unittest.TestCase):
                 self.some_field = some_field
 
         class MyMmSchema(marshmallow.Schema):
-
             class Meta:
                 strict = False
 
@@ -183,7 +180,6 @@ class TipoDteFieldTest(unittest.TestCase):
             )
 
         class MyMmSchemaStrict(marshmallow.Schema):
-
             class Meta:
                 strict = True
 
@@ -278,7 +274,9 @@ class TipoDteFieldTest(unittest.TestCase):
 
         result = schema.load(data_invalid_4)
         self.assertDictEqual(dict(result.data), {})
-        self.assertDictEqual(dict(result.errors), {'source field name': ['Missing data for required field.']})  # noqa: E501
+        self.assertDictEqual(
+            dict(result.errors), {'source field name': ['Missing data for required field.']}
+        )
 
     def test_dump_fail(self) -> None:
         schema = self.MyMmSchema()
@@ -302,9 +300,7 @@ class TipoDteFieldTest(unittest.TestCase):
 
 
 class RcvTipoDoctoFieldTest(unittest.TestCase):
-
     def setUp(self) -> None:
-
         class MyObj:
             def __init__(self, tipo_docto: RcvTipoDocto, other_field: int = None) -> None:
                 self.tipo_docto = tipo_docto
@@ -315,7 +311,6 @@ class RcvTipoDoctoFieldTest(unittest.TestCase):
                 self.some_field = some_field
 
         class MyMmSchema(marshmallow.Schema):
-
             class Meta:
                 strict = False
 
@@ -328,7 +323,6 @@ class RcvTipoDoctoFieldTest(unittest.TestCase):
             )
 
         class MyMmSchemaStrict(marshmallow.Schema):
-
             class Meta:
                 strict = True
 
@@ -411,7 +405,9 @@ class RcvTipoDoctoFieldTest(unittest.TestCase):
 
         result = schema.load(data_invalid_1)
         self.assertDictEqual(dict(result.data), {})
-        self.assertDictEqual(dict(result.errors), {'source field name': ["Not a valid RCV's Tipo de Documento."]})  # noqa: E501
+        self.assertDictEqual(
+            dict(result.errors), {'source field name': ["Not a valid RCV's Tipo de Documento."]}
+        )
 
         result = schema.load(data_invalid_2)
         self.assertDictEqual(dict(result.data), {})
@@ -423,7 +419,9 @@ class RcvTipoDoctoFieldTest(unittest.TestCase):
 
         result = schema.load(data_invalid_4)
         self.assertDictEqual(dict(result.data), {})
-        self.assertDictEqual(dict(result.errors), {'source field name': ['Missing data for required field.']})  # noqa: E501
+        self.assertDictEqual(
+            dict(result.errors), {'source field name': ['Missing data for required field.']}
+        )
 
     def test_dump_fail(self) -> None:
         schema = self.MyMmSchema()

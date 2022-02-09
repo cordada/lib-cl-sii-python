@@ -6,21 +6,17 @@ from cl_sii.rcv.constants import RcEstadoContable, RcvKind, RcvTipoDocto  # noqa
 
 
 class RcvKindTest(unittest.TestCase):
-
     def test_members(self):
         self.assertSetEqual(
             {x for x in RcvKind},
             {
                 RcvKind.COMPRAS,
                 RcvKind.VENTAS,
-            }
+            },
         )
 
     def test_values_type(self):
-        self.assertSetEqual(
-            {type(x.value) for x in RcvKind},
-            {str}
-        )
+        self.assertSetEqual({type(x.value) for x in RcvKind}, {str})
 
     def test_is_estado_contable_compatible(self):
         self.assertTrue(RcvKind.VENTAS.is_estado_contable_compatible(None))
@@ -37,7 +33,6 @@ class RcvKindTest(unittest.TestCase):
 
 
 class RcEstadoContableTest(unittest.TestCase):
-
     def test_members(self):
         self.assertSetEqual(
             {x for x in RcEstadoContable},
@@ -46,18 +41,14 @@ class RcEstadoContableTest(unittest.TestCase):
                 RcEstadoContable.NO_INCLUIR,
                 RcEstadoContable.RECLAMADO,
                 RcEstadoContable.PENDIENTE,
-            }
+            },
         )
 
     def test_values_type(self):
-        self.assertSetEqual(
-            {type(x.value) for x in RcEstadoContable},
-            {str}
-        )
+        self.assertSetEqual({type(x.value) for x in RcEstadoContable}, {str})
 
 
 class RcvTipoDoctoTest(unittest.TestCase):
-
     def test_members(self):
         self.assertSetEqual(
             {x for x in RcvTipoDocto},
@@ -71,7 +62,7 @@ class RcvTipoDoctoTest(unittest.TestCase):
                 RcvTipoDocto.FACTURA_COMPRA_ELECTRONICA,
                 RcvTipoDocto.FACTURA_EXPORTACION,
                 RcvTipoDocto.FACTURA_EXPORTACION_ELECTRONICA,
-
+                #
                 RcvTipoDocto.NOTA_DEBITO,
                 RcvTipoDocto.NOTA_DEBITO_ELECTRONICA,
                 RcvTipoDocto.NOTA_CREDITO,
@@ -80,15 +71,15 @@ class RcvTipoDoctoTest(unittest.TestCase):
                 RcvTipoDocto.NOTA_DEBITO_EXPORTACION_ELECTRONICA,
                 RcvTipoDocto.NOTA_CREDITO_EXPORTACION,
                 RcvTipoDocto.NOTA_CREDITO_EXPORTACION_ELECTRONICA,
-
+                #
                 RcvTipoDocto.LIQUIDACION_FACTURA,
                 RcvTipoDocto.LIQUIDACION_FACTURA_ELECTRONICA,
-
+                #
                 RcvTipoDocto.TOTAL_OP_DEL_MES_BOLETA_AFECTA,
                 RcvTipoDocto.TOTAL_OP_DEL_MES_BOLETA_EXENTA,
                 RcvTipoDocto.TOTAL_OP_DEL_MES_BOLETA_EXENTA_ELECTR,
                 RcvTipoDocto.TOTAL_OP_DEL_MES_BOLETA_ELECTR,
-
+                #
                 RcvTipoDocto.TIPO_47,
                 RcvTipoDocto.TIPO_48,
                 RcvTipoDocto.TIPO_102,
@@ -111,14 +102,11 @@ class RcvTipoDoctoTest(unittest.TestCase):
                 RcvTipoDocto.TIPO_920,
                 RcvTipoDocto.TIPO_922,
                 RcvTipoDocto.TIPO_924,
-            }
+            },
         )
 
     def test_values_type(self):
-        self.assertSetEqual(
-            {type(x.value) for x in RcvTipoDocto},
-            {int}
-        )
+        self.assertSetEqual({type(x.value) for x in RcvTipoDocto}, {int})
 
     def test_of_some_member(self):
         value = RcvTipoDocto.FACTURA_ELECTRONICA
@@ -129,10 +117,11 @@ class RcvTipoDoctoTest(unittest.TestCase):
     def test_as_tipo_dte(self):
         self.assertEqual(
             RcvTipoDocto.FACTURA_ELECTRONICA.as_tipo_dte(),
-            TipoDte.FACTURA_ELECTRONICA)
+            TipoDte.FACTURA_ELECTRONICA,
+        )
 
         with self.assertRaises(ValueError) as cm:
             RcvTipoDocto.FACTURA.as_tipo_dte()
         self.assertEqual(
-            cm.exception.args,
-            ("There is no equivalent 'TipoDte' for 'RcvTipoDocto.FACTURA'.", ))
+            cm.exception.args, ("There is no equivalent 'TipoDte' for 'RcvTipoDocto.FACTURA'.",)
+        )

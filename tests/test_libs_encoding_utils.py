@@ -8,7 +8,6 @@ from cl_sii.libs.encoding_utils import (  # noqa: F401
 
 
 class FunctionsTest(unittest.TestCase):
-
     def test_clean_base64(self):
         # TODO: implement for function 'clean_base64'.
         pass

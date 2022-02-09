@@ -32,7 +32,8 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
             cesionario_emails='un-poco@pobres.cl,super.ejecutivo@pobres.cl',
             deudor_email=None,
             fecha_cesion_dt=convert_naive_dt_to_tz_aware(
-                datetime(2019, 3, 7, 13, 32), tz=SII_OFFICIAL_TZ),
+                datetime(2019, 3, 7, 13, 32), tz=SII_OFFICIAL_TZ
+            ),
             fecha_cesion=date(2019, 3, 7),
             monto_cedido=256357,
             fecha_ultimo_vencimiento=date(2019, 4, 12),
@@ -44,42 +45,52 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
         self.assertTrue(obj.monto_cedido_eq_dte_monto_total)
 
     def test_init_ok_2(self) -> None:
-        self.valid_kwargs.update(dict(
-            monto_cedido=self.valid_kwargs['dte_monto_total'] - 1,
-        ))
+        self.valid_kwargs.update(
+            dict(
+                monto_cedido=self.valid_kwargs['dte_monto_total'] - 1,
+            )
+        )
         obj = CesionesPeriodoEntry(**self.valid_kwargs)
         self.assertFalse(obj.monto_cedido_eq_dte_monto_total)
 
     def test_init_error_monto_cedido_1(self) -> None:
-        self.valid_kwargs.update(dict(
-            monto_cedido=-1,
-        ))
+        self.valid_kwargs.update(
+            dict(
+                monto_cedido=-1,
+            )
+        )
         with self.assertRaises(ValueError) as cm:
             CesionesPeriodoEntry(**self.valid_kwargs)
-        self.assertEqual(
-            cm.exception.args,
-            ("Amount 'monto_cedido' must be >= 0.", -1))
+        self.assertEqual(cm.exception.args, ("Amount 'monto_cedido' must be >= 0.", -1))
 
     def test_init_error_monto_cedido_2(self) -> None:
-        self.valid_kwargs.update(dict(
-            monto_cedido=self.valid_kwargs['dte_monto_total'] + 1,
-        ))
+        self.valid_kwargs.update(
+            dict(
+                monto_cedido=self.valid_kwargs['dte_monto_total'] + 1,
+            )
+        )
         with self.assertRaises(ValueError) as cm:
             CesionesPeriodoEntry(**self.valid_kwargs)
         self.assertEqual(
             cm.exception.args,
-            ('Value of "cesión" must be <= value of DTE.', 256358, 256357))
+            ('Value of "cesión" must be <= value of DTE.', 256358, 256357),
+        )
 
     def test_init_error_dte_tipo_dte_1(self) -> None:
-        self.valid_kwargs.update(dict(
-            dte_tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA,
-        ))
+        self.valid_kwargs.update(
+            dict(
+                dte_tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA,
+            )
+        )
         with self.assertRaises(ValueError) as cm:
             CesionesPeriodoEntry(**self.valid_kwargs)
         self.assertEqual(
             cm.exception.args,
-            ("The \"tipo DTE\" in 'dte_tipo_dte' is not \"cedible\".",
-             TipoDte.NOTA_CREDITO_ELECTRONICA))
+            (
+                "The \"tipo DTE\" in 'dte_tipo_dte' is not \"cedible\".",
+                TipoDte.NOTA_CREDITO_ELECTRONICA,
+            ),
+        )
 
     def test_as_dte_data_l1_ok_1(self) -> None:
         obj = CesionesPeriodoEntry(**self.valid_kwargs)
@@ -99,9 +110,11 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
         self.assertEqual(dte_obj.comprador_rut, obj.dte_deudor_rut)
 
     def test_as_dte_data_l1_ok_2(self) -> None:
-        self.valid_kwargs.update(dict(
-            dte_tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
-        ))
+        self.valid_kwargs.update(
+            dict(
+                dte_tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
+            )
+        )
         obj = CesionesPeriodoEntry(**self.valid_kwargs)
         dte_obj = cl_sii.dte.data_models.DteDataL1(
             emisor_rut=Rut('75320502-0'),
@@ -155,9 +168,11 @@ class CesionesPeriodoEntryTest(unittest.TestCase):
         self.assertEqual(obj_cesion_l2.dte_receptor_rut, obj.dte_deudor_rut)
 
     def test_as_cesion_l2_ok_2(self) -> None:
-        self.valid_kwargs.update(dict(
-            dte_tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
-        ))
+        self.valid_kwargs.update(
+            dict(
+                dte_tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
+            )
+        )
         obj = CesionesPeriodoEntry(**self.valid_kwargs)
         expected_output = CesionL2(
             dte_key=cl_sii.dte.data_models.DteNaturalKey(
