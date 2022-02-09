@@ -1,14 +1,22 @@
+# Python Dependency Manifest
+#
+# Deployment environment: development, testing, release
+
+-c requirements.txt
+
 # note: it is mandatory to register all dependencies of the required packages.
--r base.txt
--r extras.txt
 
 # Required packages:
+bumpversion==0.5.3
 codecov==2.1.11
 coverage==5.3
 flake8==4.0.1
 isort==5.10.1
 mypy==0.790
+setuptools==50.3.0
 tox==3.20.1
+twine==3.1.1
+wheel==0.35.1
 
 # Packages dependencies:
 #   - codecov:
@@ -42,26 +50,63 @@ tox==3.20.1
 #           - filelock
 #           - importlib-metadata
 #           - six
+#   - twine:
+#       - importlib-metadata
+#           - zipp
+#       - keyring
+#           - importlib-metadata
+#           - jeepney
+#           - SecretStorage
+#               - cryptography
+#               - jeepney
+#       - pkginfo
+#       - readme-renderer:
+#           - bleach
+#               - six
+#               - webencodings
+#           - docutils
+#           - Pygments
+#           - six
+#       - requests:
+#           - certifi
+#           - chardet
+#           - idna
+#           - urllib3
+#       - requests-toolbelt
+#       - setuptools
+#       - tqdm
 # appdirs
+# bleach
 # certifi
 # chardet
+# cryptography
 # distlib
+# docutils
 filelock==3.0.12
 # idna
 importlib-metadata==1.6.0
+# jeepney
+keyring==21.4.0
 mccabe==0.6.1
 mypy-extensions==0.4.3
 packaging==20.4
+pkginfo==1.7.0
 pluggy==0.13.1
 py==1.10.0
 pycodestyle==2.8.0
 pyflakes==2.4.0
+# Pygments
 # pyparsing
-# requests
+readme-renderer==25.0
+requests-toolbelt==0.9.1
+requests==2.25.1
+# SecretStorage
 # six
 toml==0.10.2
+tqdm==4.45.0
 typed-ast==1.4.2
 typing-extensions==3.7.4.3
 # urllib3
 virtualenv==20.4.3
+# webencodings
 # zipp
