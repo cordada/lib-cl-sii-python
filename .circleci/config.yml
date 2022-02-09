@@ -48,7 +48,8 @@ jobs:
             . venv/bin/activate
             pip install --upgrade pip
             pip install --upgrade setuptools wheel
-            pip install -r requirements/test.txt
+            pip install -r requirements.txt
+            pip install -r requirements-dev.txt
 
       - run:
           name: Check Dependencies
@@ -93,7 +94,8 @@ jobs:
             . venv/bin/activate
             pip install --upgrade pip
             pip install --upgrade setuptools wheel
-            pip install -r requirements/release.txt
+            pip install -r requirements.txt
+            pip install -r requirements-dev.txt
 
       - run:
           name: Check Dependencies

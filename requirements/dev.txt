@@ -1,8 +1,0 @@
-# note: it is mandatory to register all dependencies of the required packages.
--r base.txt
-
-# Required packages:
-#none
-
-# Packages dependencies:
-#none
