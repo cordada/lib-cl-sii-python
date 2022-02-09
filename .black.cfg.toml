@@ -11,5 +11,5 @@ line-length = 100
 skip-string-normalization = true
 target-version = ['py38', 'py39']
 extend-exclude = '''
-^/cl_sii/(extras|libs|rcv|rtc|rut)/|tests/
+^/cl_sii/(libs|rcv|rtc|rut)/|tests/
 '''
