@@ -1,0 +1,12 @@
+# Black Configuration
+#
+# Black is a Python source code formatter.
+#
+# - Web site: https://github.com/psf/black/
+# - Documentation: https://black.readthedocs.io/
+
+[tool.black]
+include = '\.pyi?$'
+line-length = 100
+skip-string-normalization = true
+target-version = ['py38', 'py39']

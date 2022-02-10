@@ -28,7 +28,6 @@ from .utils import read_test_file_bytes
 
 
 class DteNaturalKeyTest(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -78,7 +77,7 @@ class DteNaturalKeyTest(unittest.TestCase):
                 emisor_rut=Rut('76354771-K'),
                 tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
-            )
+            ),
         )
 
     def test_slug(self) -> None:
@@ -86,7 +85,6 @@ class DteNaturalKeyTest(unittest.TestCase):
 
 
 class DteDataL0Test(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -103,7 +101,8 @@ class DteDataL0Test(unittest.TestCase):
                 emisor_rut=Rut('76354771-K'),
                 tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
-            ))
+            ),
+        )
 
     def test_natural_key(self) -> None:
         self.assertEqual(
@@ -112,11 +111,11 @@ class DteDataL0Test(unittest.TestCase):
                 emisor_rut=Rut('76354771-K'),
                 tipo_dte=TipoDte.FACTURA_ELECTRONICA,
                 folio=170,
-            ))
+            ),
+        )
 
 
 class DteDataL1Test(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -195,19 +194,22 @@ class DteDataL1Test(unittest.TestCase):
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
                 monto_total=2996301,
-            ))
+            ),
+        )
 
     def test_vendedor_rut_comprador_rut(self) -> None:
         emisor_rut = self.dte_l1_1.emisor_rut
         receptor_rut = self.dte_l1_1.receptor_rut
-        dte_factura_venta = dataclasses.replace(
-            self.dte_l1_1, tipo_dte=TipoDte.FACTURA_ELECTRONICA)
+        dte_factura_venta = dataclasses.replace(self.dte_l1_1, tipo_dte=TipoDte.FACTURA_ELECTRONICA)
         dte_factura_venta_exenta = dataclasses.replace(
-            self.dte_l1_1, tipo_dte=TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA)
+            self.dte_l1_1, tipo_dte=TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA
+        )
         dte_factura_compra = dataclasses.replace(
-            self.dte_l1_1, tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA)
+            self.dte_l1_1, tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA
+        )
         dte_nota_credito = dataclasses.replace(
-            self.dte_l1_1, tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA)
+            self.dte_l1_1, tipo_dte=TipoDte.NOTA_CREDITO_ELECTRONICA
+        )
 
         # 'vendedor_rut'
         self.assertEqual(dte_factura_venta.vendedor_rut, emisor_rut)
@@ -217,7 +219,8 @@ class DteDataL1Test(unittest.TestCase):
             self.assertIsNone(dte_nota_credito.vendedor_rut)
         self.assertEqual(
             cm.exception.args,
-            ("Concept \"vendedor\" does not apply for this 'tipo_dte'.", dte_nota_credito.tipo_dte))
+            ("Concept \"vendedor\" does not apply for this 'tipo_dte'.", dte_nota_credito.tipo_dte),
+        )
 
         # 'comprador_rut'
         self.assertEqual(dte_factura_venta.comprador_rut, receptor_rut)
@@ -227,8 +230,11 @@ class DteDataL1Test(unittest.TestCase):
             self.assertIsNone(dte_nota_credito.comprador_rut)
         self.assertEqual(
             cm.exception.args,
-            ("Concepts \"comprador\" and \"deudor\" do not apply for this 'tipo_dte'.",
-             dte_nota_credito.tipo_dte))
+            (
+                "Concepts \"comprador\" and \"deudor\" do not apply for this 'tipo_dte'.",
+                dte_nota_credito.tipo_dte,
+            ),
+        )
 
         # 'deudor_rut'
         self.assertEqual(dte_factura_venta.deudor_rut, receptor_rut)
@@ -238,24 +244,34 @@ class DteDataL1Test(unittest.TestCase):
             self.assertIsNone(dte_nota_credito.deudor_rut)
         self.assertEqual(
             cm.exception.args,
-            ("Concepts \"comprador\" and \"deudor\" do not apply for this 'tipo_dte'.",
-             dte_nota_credito.tipo_dte))
+            (
+                "Concepts \"comprador\" and \"deudor\" do not apply for this 'tipo_dte'.",
+                dte_nota_credito.tipo_dte,
+            ),
+        )
 
 
 class DteDataL2Test(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-        cls.dte_1_xml_signature_value = encoding_utils.decode_base64_strict(read_test_file_bytes(
-            'test_data/sii-crypto/DTE--76354771-K--33--170-signature-value-base64.txt'))
+        cls.dte_1_xml_signature_value = encoding_utils.decode_base64_strict(
+            read_test_file_bytes(
+                'test_data/sii-crypto/DTE--76354771-K--33--170-signature-value-base64.txt'
+            )
+        )
         cls.dte_1_xml_cert_der = read_test_file_bytes(
-            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
-        cls.dte_2_xml_signature_value = encoding_utils.decode_base64_strict(read_test_file_bytes(
-            'test_data/sii-crypto/DTE--60910000-1--33--2336600-signature-value-base64.txt'))
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der'
+        )
+        cls.dte_2_xml_signature_value = encoding_utils.decode_base64_strict(
+            read_test_file_bytes(
+                'test_data/sii-crypto/DTE--60910000-1--33--2336600-signature-value-base64.txt'
+            )
+        )
         cls.dte_2_xml_cert_der = read_test_file_bytes(
-            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der')
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der'
+        )
 
     def setUp(self) -> None:
         super().setUp()
@@ -272,7 +288,8 @@ class DteDataL2Test(unittest.TestCase):
             fecha_vencimiento_date=None,
             firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
-                tz=DteDataL2.DATETIME_FIELDS_TZ),
+                tz=DteDataL2.DATETIME_FIELDS_TZ,
+            ),
             signature_value=self.dte_1_xml_signature_value,
             signature_x509_cert_der=self.dte_1_xml_cert_der,
             emisor_giro='Ingenieria y Construccion',
@@ -291,7 +308,8 @@ class DteDataL2Test(unittest.TestCase):
             fecha_vencimiento_date=date(2019, 8, 8),
             firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 8, 9, 9, 41, 9),
-                tz=DteDataL2.DATETIME_FIELDS_TZ),
+                tz=DteDataL2.DATETIME_FIELDS_TZ,
+            ),
             signature_value=self.dte_2_xml_signature_value,
             signature_x509_cert_der=self.dte_2_xml_cert_der,
             emisor_giro='Corporación Educacional y Servicios                 Profesionales',
@@ -382,11 +400,12 @@ class DteDataL2Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('firma_documento_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
@@ -412,7 +431,8 @@ class DteDataL2Test(unittest.TestCase):
         self.assertEqual(b'\x20', b' ')
         self.assertEqual(
             bytes_value_with_x20,
-            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+            base64.b64decode(bytes_value_with_x20_as_base64, validate=True),
+        )
 
         init_kwars = self.dte_l2_1.as_dict()
         init_kwars.update(dict(signature_value=bytes_value_with_x20))
@@ -452,7 +472,8 @@ class DteDataL2Test(unittest.TestCase):
         self.assertEqual(b'\x20', b' ')
         self.assertEqual(
             bytes_value_with_x20,
-            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+            base64.b64decode(bytes_value_with_x20_as_base64, validate=True),
+        )
 
         init_kwars = self.dte_l2_1.as_dict()
         init_kwars.update(dict(signature_x509_cert_der=bytes_value_with_x20))
@@ -509,11 +530,12 @@ class DteDataL2Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('emisor_email',),
-                'msg':
+                'msg': (
                     "("
                     "'Value has leading or trailing whitespace characters.', "
                     "' fake_emisor_email@test.cl '"
-                    ")",
+                    ")"
+                ),
                 'type': 'value_error',
             },
         ]
@@ -533,11 +555,12 @@ class DteDataL2Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('receptor_email',),
-                'msg':
+                'msg': (
                     "("
                     "'Value has leading or trailing whitespace characters.', "
                     "' fake_receptor_email@test.cl '"
-                    ")",
+                    ")"
+                ),
                 'type': 'value_error',
             },
         ]
@@ -628,13 +651,15 @@ class DteDataL2Test(unittest.TestCase):
                 fecha_vencimiento_date=None,
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                     dt=datetime(2019, 4, 1, 1, 36, 40),
-                    tz=DteDataL2.DATETIME_FIELDS_TZ),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ,
+                ),
                 signature_value=self.dte_1_xml_signature_value,
                 signature_x509_cert_der=self.dte_1_xml_cert_der,
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email='hello@example.com',
                 receptor_email=None,
-            ))
+            ),
+        )
         self.assertDictEqual(
             self.dte_l2_2.as_dict(),
             dict(
@@ -649,13 +674,15 @@ class DteDataL2Test(unittest.TestCase):
                 fecha_vencimiento_date=date(2019, 8, 8),
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                     dt=datetime(2019, 8, 9, 9, 41, 9),
-                    tz=DteDataL2.DATETIME_FIELDS_TZ),
+                    tz=DteDataL2.DATETIME_FIELDS_TZ,
+                ),
                 signature_value=self.dte_2_xml_signature_value,
                 signature_x509_cert_der=self.dte_2_xml_cert_der,
                 emisor_giro='Corporación Educacional y Servicios                 Profesionales',
                 emisor_email=None,
                 receptor_email=None,
-            ))
+            ),
+        )
 
     def test_as_dte_data_l1(self) -> None:
         self.assertEqual(
@@ -667,7 +694,7 @@ class DteDataL2Test(unittest.TestCase):
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
                 monto_total=2996301,
-            )
+            ),
         )
         self.assertEqual(
             self.dte_l2_2.as_dte_data_l1(),
@@ -678,24 +705,31 @@ class DteDataL2Test(unittest.TestCase):
                 fecha_emision_date=date(2019, 8, 8),
                 receptor_rut=Rut('76555835-2'),
                 monto_total=10642,
-            )
+            ),
         )
 
 
 class DteXmlDataTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-        cls.dte_1_xml_signature_value = encoding_utils.decode_base64_strict(read_test_file_bytes(
-            'test_data/sii-crypto/DTE--76354771-K--33--170-signature-value-base64.txt'))
+        cls.dte_1_xml_signature_value = encoding_utils.decode_base64_strict(
+            read_test_file_bytes(
+                'test_data/sii-crypto/DTE--76354771-K--33--170-signature-value-base64.txt'
+            )
+        )
         cls.dte_1_xml_cert_der = read_test_file_bytes(
-            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der')
-        cls.dte_2_xml_signature_value = encoding_utils.decode_base64_strict(read_test_file_bytes(
-            'test_data/sii-crypto/DTE--60910000-1--33--2336600-signature-value-base64.txt'))
+            'test_data/sii-crypto/DTE--76354771-K--33--170-cert.der'
+        )
+        cls.dte_2_xml_signature_value = encoding_utils.decode_base64_strict(
+            read_test_file_bytes(
+                'test_data/sii-crypto/DTE--60910000-1--33--2336600-signature-value-base64.txt'
+            )
+        )
         cls.dte_2_xml_cert_der = read_test_file_bytes(
-            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der')
+            'test_data/sii-crypto/DTE--60910000-1--33--2336600-cert.der'
+        )
 
     def setUp(self) -> None:
         super().setUp()
@@ -712,7 +746,8 @@ class DteXmlDataTest(unittest.TestCase):
             fecha_vencimiento_date=None,
             firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
-                tz=DteXmlData.DATETIME_FIELDS_TZ),
+                tz=DteXmlData.DATETIME_FIELDS_TZ,
+            ),
             signature_value=self.dte_1_xml_signature_value,
             signature_x509_cert_der=self.dte_1_xml_cert_der,
             emisor_giro='Ingenieria y Construccion',
@@ -731,7 +766,8 @@ class DteXmlDataTest(unittest.TestCase):
             fecha_vencimiento_date=date(2019, 8, 8),
             firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 8, 9, 9, 41, 9),
-                tz=DteXmlData.DATETIME_FIELDS_TZ),
+                tz=DteXmlData.DATETIME_FIELDS_TZ,
+            ),
             signature_value=self.dte_2_xml_signature_value,
             signature_x509_cert_der=self.dte_2_xml_cert_der,
             emisor_giro='Corporación Educacional y Servicios                 Profesionales',
@@ -852,11 +888,12 @@ class DteXmlDataTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('firma_documento_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
@@ -882,7 +919,8 @@ class DteXmlDataTest(unittest.TestCase):
         self.assertEqual(b'\x20', b' ')
         self.assertEqual(
             bytes_value_with_x20,
-            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+            base64.b64decode(bytes_value_with_x20_as_base64, validate=True),
+        )
 
         init_kwars = self.dte_xml_data_1.as_dict()
         init_kwars.update(dict(signature_value=bytes_value_with_x20))
@@ -922,7 +960,8 @@ class DteXmlDataTest(unittest.TestCase):
         self.assertEqual(b'\x20', b' ')
         self.assertEqual(
             bytes_value_with_x20,
-            base64.b64decode(bytes_value_with_x20_as_base64, validate=True))
+            base64.b64decode(bytes_value_with_x20_as_base64, validate=True),
+        )
 
         init_kwars = self.dte_xml_data_1.as_dict()
         init_kwars.update(dict(signature_x509_cert_der=bytes_value_with_x20))
@@ -979,11 +1018,12 @@ class DteXmlDataTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('emisor_email',),
-                'msg':
+                'msg': (
                     "("
                     "'Value has leading or trailing whitespace characters.', "
                     "' fake_emisor_email@test.cl '"
-                    ")",
+                    ")"
+                ),
                 'type': 'value_error',
             },
         ]
@@ -1003,11 +1043,12 @@ class DteXmlDataTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('receptor_email',),
-                'msg':
+                'msg': (
                     "("
                     "'Value has leading or trailing whitespace characters.', "
                     "' fake_receptor_email@test.cl '"
-                    ")",
+                    ")"
+                ),
                 'type': 'value_error',
             },
         ]
@@ -1098,13 +1139,15 @@ class DteXmlDataTest(unittest.TestCase):
                 fecha_vencimiento_date=None,
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                     dt=datetime(2019, 4, 1, 1, 36, 40),
-                    tz=DteXmlData.DATETIME_FIELDS_TZ),
+                    tz=DteXmlData.DATETIME_FIELDS_TZ,
+                ),
                 signature_value=self.dte_1_xml_signature_value,
                 signature_x509_cert_der=self.dte_1_xml_cert_der,
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email='hello@example.com',
                 receptor_email=None,
-            ))
+            ),
+        )
         self.assertDictEqual(
             self.dte_xml_data_2.as_dict(),
             dict(
@@ -1119,13 +1162,15 @@ class DteXmlDataTest(unittest.TestCase):
                 fecha_vencimiento_date=date(2019, 8, 8),
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                     dt=datetime(2019, 8, 9, 9, 41, 9),
-                    tz=DteXmlData.DATETIME_FIELDS_TZ),
+                    tz=DteXmlData.DATETIME_FIELDS_TZ,
+                ),
                 signature_value=self.dte_2_xml_signature_value,
                 signature_x509_cert_der=self.dte_2_xml_cert_der,
                 emisor_giro='Corporación Educacional y Servicios                 Profesionales',
                 emisor_email=None,
                 receptor_email=None,
-            ))
+            ),
+        )
 
     def test_as_dte_data_l1(self) -> None:
         self.assertEqual(
@@ -1137,7 +1182,7 @@ class DteXmlDataTest(unittest.TestCase):
                 fecha_emision_date=date(2019, 4, 1),
                 receptor_rut=Rut('96790240-3'),
                 monto_total=2996301,
-            )
+            ),
         )
         self.assertEqual(
             self.dte_xml_data_2.as_dte_data_l1(),
@@ -1148,7 +1193,7 @@ class DteXmlDataTest(unittest.TestCase):
                 fecha_emision_date=date(2019, 8, 8),
                 receptor_rut=Rut('76555835-2'),
                 monto_total=10642,
-            )
+            ),
         )
 
     def test_as_dte_data_l2(self) -> None:
@@ -1166,13 +1211,14 @@ class DteXmlDataTest(unittest.TestCase):
                 fecha_vencimiento_date=None,
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                     dt=datetime(2019, 4, 1, 1, 36, 40),
-                    tz=DteXmlData.DATETIME_FIELDS_TZ),
+                    tz=DteXmlData.DATETIME_FIELDS_TZ,
+                ),
                 signature_value=self.dte_1_xml_signature_value,
                 signature_x509_cert_der=self.dte_1_xml_cert_der,
                 emisor_giro='Ingenieria y Construccion',
                 emisor_email='hello@example.com',
                 receptor_email=None,
-            )
+            ),
         )
         self.assertEqual(
             self.dte_xml_data_2.as_dte_data_l2(),
@@ -1188,18 +1234,18 @@ class DteXmlDataTest(unittest.TestCase):
                 fecha_vencimiento_date=date(2019, 8, 8),
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
                     dt=datetime(2019, 8, 9, 9, 41, 9),
-                    tz=DteXmlData.DATETIME_FIELDS_TZ),
+                    tz=DteXmlData.DATETIME_FIELDS_TZ,
+                ),
                 signature_value=self.dte_2_xml_signature_value,
                 signature_x509_cert_der=self.dte_2_xml_cert_der,
                 emisor_giro='Corporación Educacional y Servicios                 Profesionales',
                 emisor_email=None,
                 receptor_email=None,
-            )
+            ),
         )
 
 
 class FunctionsTest(unittest.TestCase):
-
     def test_validate_contribuyente_razon_social(self) -> None:
         # TODO: implement for 'validate_contribuyente_razon_social'
         pass

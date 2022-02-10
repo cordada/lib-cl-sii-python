@@ -58,6 +58,7 @@ It is read from a file at import time to avoid unnecessary reads afterwards.
 # Main Functions
 ###############################################################################
 
+
 def validate_aec_xml(xml_doc: XmlElement) -> None:
     """
     Validate ``xml_doc`` against AEC's XML schema.
@@ -82,6 +83,7 @@ def parse_aec_xml(xml_doc: XmlElement) -> data_models_aec.AecXml:
 ###############################################################################
 # Parser Functions and Models
 ###############################################################################
+
 
 def _empty_str_to_none(v: object) -> object:
     """
@@ -133,8 +135,8 @@ class _XmlSignature(pydantic.BaseModel):
         key_info_em = xml_em.find('ds:KeyInfo', namespaces=xml_utils.XML_DSIG_NS_MAP)
 
         # XPath: //Signature/KeyInfo/X509Data
-        key_info_x509_data_em = (
-            key_info_em.find('ds:X509Data', namespaces=xml_utils.XML_DSIG_NS_MAP)
+        key_info_x509_data_em = key_info_em.find(
+            'ds:X509Data', namespaces=xml_utils.XML_DSIG_NS_MAP
         )
 
         # XPath: //Signature
@@ -144,7 +146,7 @@ class _XmlSignature(pydantic.BaseModel):
                 'ds:SignatureValue',
                 namespaces=xml_utils.XML_DSIG_NS_MAP,
             ),
-
+            #
             # XPath: //Signature/KeyInfo/X509Data/X509Certificate
             key_info_x509_data_x509_cert=key_info_x509_data_em.findtext(
                 'ds:X509Certificate',
@@ -219,7 +221,9 @@ class _Cesionario(pydantic.BaseModel):
     ###########################################################################
 
     _validate_rut = pydantic.validator(  # type: ignore[pydantic-field]
-        'rut', pre=True, allow_reuse=True,
+        'rut',
+        pre=True,
+        allow_reuse=True,
     )(_validate_rut)
 
 
@@ -262,11 +266,15 @@ class _RutAutorizado(pydantic.BaseModel):
     ###########################################################################
 
     _empty_str_to_none = pydantic.validator(  # type: ignore[pydantic-field]
-        'nombre', pre=True, allow_reuse=True,
+        'nombre',
+        pre=True,
+        allow_reuse=True,
     )(_empty_str_to_none)
 
     _validate_rut = pydantic.validator(  # type: ignore[pydantic-field]
-        'rut', pre=True, allow_reuse=True,
+        'rut',
+        pre=True,
+        allow_reuse=True,
     )(_validate_rut)
 
 
@@ -321,7 +329,8 @@ class _Cedente(pydantic.BaseModel):
             declaracion_jurada=xml_em.findtext(
                 'sii-dte:DeclaracionJurada',
                 namespaces=DTE_XMLNS_MAP,
-            ) or None,
+            )
+            or None,
             ruts_autorizados=cedente_persona_autorizada_dict_list,
         )
 
@@ -400,11 +409,15 @@ class _IdDte(pydantic.BaseModel):
     ###########################################################################
 
     _validate_rut_emisor = pydantic.validator(  # type: ignore[pydantic-field]
-        'rut_emisor', pre=True, allow_reuse=True,
+        'rut_emisor',
+        pre=True,
+        allow_reuse=True,
     )(_validate_rut)
 
     _validate_rut_receptor = pydantic.validator(  # type: ignore[pydantic-field]
-        'rut_receptor', pre=True, allow_reuse=True,
+        'rut_receptor',
+        pre=True,
+        allow_reuse=True,
     )(_validate_rut)
 
     @pydantic.validator('tipo_dte', pre=True)
@@ -736,15 +749,23 @@ class _Caratula(pydantic.BaseModel):
     ###########################################################################
 
     _empty_str_to_none = pydantic.validator(  # type: ignore[pydantic-field]
-        'nmb_contacto', 'fono_contacto', 'mail_contacto', pre=True, allow_reuse=True,
+        'nmb_contacto',
+        'fono_contacto',
+        'mail_contacto',
+        pre=True,
+        allow_reuse=True,
     )(_empty_str_to_none)
 
     _validate_rut_cedente = pydantic.validator(  # type: ignore[pydantic-field]
-        'rut_cedente', pre=True, allow_reuse=True,
+        'rut_cedente',
+        pre=True,
+        allow_reuse=True,
     )(_validate_rut)
 
     _validate_rut_cesionario = pydantic.validator(  # type: ignore[pydantic-field]
-        'rut_cesionario', pre=True, allow_reuse=True,
+        'rut_cesionario',
+        pre=True,
+        allow_reuse=True,
     )(_validate_rut)
 
     @pydantic.validator('tmst_firmaenvio')
@@ -809,10 +830,7 @@ class _DocumentoAec(pydantic.BaseModel):
             namespaces=DTE_XMLNS_MAP,
         )
         cesion_dict_list: Sequence[Mapping[str, object]]
-        cesion_dict_list = [
-            _Cesion.parse_xml_to_dict(cesion_em)
-            for cesion_em in cesion_em_list
-        ]
+        cesion_dict_list = [_Cesion.parse_xml_to_dict(cesion_em) for cesion_em in cesion_em_list]
 
         # XPath: /AEC/DocumentoAEC
         return dict(
@@ -869,8 +887,7 @@ class _Aec(pydantic.BaseModel):
 
         aec_xml_cesion_list: Sequence[data_models_aec.CesionAecXml]
         aec_xml_cesion_list = [
-            cesion_struct.as_cesion_aec_xml()
-            for cesion_struct in cesion_struct_list
+            cesion_struct.as_cesion_aec_xml() for cesion_struct in cesion_struct_list
         ]
 
         return data_models_aec.AecXml(

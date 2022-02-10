@@ -45,7 +45,7 @@ class RutField(marshmallow.fields.Field):
     """
 
     default_error_messages = {
-        'invalid': 'Not a syntactically valid RUT.'
+        'invalid': 'Not a syntactically valid RUT.',
     }
 
     def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[str]:
@@ -88,7 +88,7 @@ class TipoDteField(marshmallow.fields.Field):
     """
 
     default_error_messages = {
-        'invalid': 'Not a valid Tipo DTE.'
+        'invalid': 'Not a valid Tipo DTE.',
     }
 
     def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[int]:
@@ -141,7 +141,7 @@ class RcvTipoDoctoField(marshmallow.fields.Field):
     """
 
     default_error_messages = {
-        'invalid': "Not a valid RCV's Tipo de Documento."
+        'invalid': "Not a valid RCV's Tipo de Documento.",
     }
 
     def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[int]:

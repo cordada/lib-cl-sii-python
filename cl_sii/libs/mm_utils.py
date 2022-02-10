@@ -10,6 +10,7 @@ import marshmallow.utils
 # validators
 ###############################################################################
 
+
 def validate_no_unexpected_input_fields(
     schema: marshmallow.Schema,
     data: dict,
@@ -41,12 +42,14 @@ def validate_no_unexpected_input_fields(
     unexpected_input_fields = set(original_data) - fields_name_or_load_from
     if unexpected_input_fields:
         raise marshmallow.ValidationError(
-            "Unexpected input field.", field_names=list(unexpected_input_fields))
+            "Unexpected input field.", field_names=list(unexpected_input_fields)
+        )
 
 
 ###############################################################################
 # fields
 ###############################################################################
+
 
 class CustomMarshmallowDateField(marshmallow.fields.Field):
     """

@@ -19,6 +19,7 @@ class MaxRowsExceeded(RuntimeError):
 # iterators
 ###############################################################################
 
+
 def csv_rows_mm_deserialization_iterator(
     csv_reader: csv.DictReader,
     row_schema: marshmallow.Schema,
@@ -61,7 +62,8 @@ def csv_rows_mm_deserialization_iterator(
     #   > "Iterable[Dict[str, object]]")
     rows_iterator: Iterable[Dict[str, object]] = csv_reader  # type: ignore
     iterator = rows_mm_deserialization_iterator(
-        rows_iterator, row_schema, n_rows_offset, max_n_rows, fields_to_remove_names)
+        rows_iterator, row_schema, n_rows_offset, max_n_rows, fields_to_remove_names
+    )
 
     try:
         # note: we chose not to use 'yield from' to be explicit about what we are yielding.
@@ -139,13 +141,16 @@ def rows_mm_deserialization_iterator(
                     "Marshmallow schema is 'strict' but validation errors were returned by "
                     "method 'load' ('UnmarshalResult.errors') instead of being raised. "
                     "Errors: %s",
-                    repr(returned_validation_errors))
+                    repr(returned_validation_errors),
+                )
             if raised_validation_errors:
                 logger.fatal(
                     "Programming error: either returned or raised validation errors "
                     "(depending on 'strict') but never both. "
                     "Returned errors: %s. Raised errors: %s",
-                    repr(returned_validation_errors), repr(raised_validation_errors))
+                    repr(returned_validation_errors),
+                    repr(raised_validation_errors),
+                )
 
             validation_errors.update(returned_validation_errors)
 

@@ -174,11 +174,7 @@ class Rut:
 
         # Based on:
         #   https://gist.github.com/rbonvall/464824/4b07668b83ee45121345e4634ebce10dc6412ba3
-        s = sum(
-            d * f
-            for d, f
-            in zip(map(int, reversed(rut_digits)), itertools.cycle(range(2, 8)))
-        )
+        s = sum(d * f for d, f in zip(map(int, reversed(rut_digits)), itertools.cycle(range(2, 8))))
         result_alg = 11 - (s % 11)
         return {10: 'K', 11: '0'}.get(result_alg, str(result_alg))
 
@@ -191,8 +187,11 @@ class Rut:
         will be calculated appropriately i.e. it is not random.
 
         """
-        rut_digits = str(random.randint(
-            constants.RUT_DIGITS_MIN_VALUE,
-            constants.RUT_DIGITS_MAX_VALUE))
+        rut_digits = str(
+            random.randint(
+                constants.RUT_DIGITS_MIN_VALUE,
+                constants.RUT_DIGITS_MAX_VALUE,
+            )
+        )
         rut_dv = Rut.calc_dv(rut_digits)
         return Rut(f'{rut_digits}-{rut_dv}')

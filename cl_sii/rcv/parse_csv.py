@@ -504,8 +504,8 @@ def parse_rcv_compra_pendiente_csv_file(
 # schemas
 ###############################################################################
 
-class _RcvCsvRowSchemaBase(marshmallow.Schema):
 
+class _RcvCsvRowSchemaBase(marshmallow.Schema):
     @marshmallow.validates_schema(pass_original=True)
     def validate_schema(self, data: dict, original_data: dict) -> None:
         mm_utils.validate_no_unexpected_input_fields(self, data, original_data)
@@ -610,7 +610,8 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13'
         data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
-            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ
+        )
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13-03:00'
         # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
@@ -621,10 +622,12 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
 
         if 'fecha_acuse_dt' in data and data['fecha_acuse_dt']:
             data['fecha_acuse_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
-                dt=data['fecha_acuse_dt'], tz=self.FIELD_FECHA_ACUSE_DT_TZ)
+                dt=data['fecha_acuse_dt'], tz=self.FIELD_FECHA_ACUSE_DT_TZ
+            )
         if 'fecha_reclamo_dt' in data and data['fecha_reclamo_dt']:
             data['fecha_reclamo_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
-                dt=data['fecha_reclamo_dt'], tz=self.FIELD_FECHA_RECLAMO_DT_TZ)
+                dt=data['fecha_reclamo_dt'], tz=self.FIELD_FECHA_RECLAMO_DT_TZ
+            )
 
         # Remove leading and trailing whitespace.
         data['receptor_razon_social'] = data['receptor_razon_social'].strip()
@@ -747,7 +750,8 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13'
         data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
-            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ
+        )
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13-03:00'
         # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
@@ -755,7 +759,8 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
 
         if data['fecha_acuse_dt']:
             data['fecha_acuse_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
-                dt=data['fecha_acuse_dt'], tz=self.FIELD_FECHA_ACUSE_DT_TZ)
+                dt=data['fecha_acuse_dt'], tz=self.FIELD_FECHA_ACUSE_DT_TZ
+            )
 
         # note: to express this value in another timezone (but the value does not change), do
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
@@ -798,7 +803,6 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
 
 
 class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
-
     def to_detalle_entry(self, data: dict) -> RcNoIncluirDetalleEntry:
         try:
             emisor_rut: Rut = data['emisor_rut']  # type: ignore
@@ -919,7 +923,8 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13'
         data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
-            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ
+        )
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13-03:00'
         # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
@@ -927,7 +932,8 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
 
         if data['fecha_reclamo_dt']:
             data['fecha_reclamo_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
-                dt=data['fecha_reclamo_dt'], tz=self.FIELD_FECHA_RECLAMO_DT_TZ)
+                dt=data['fecha_reclamo_dt'], tz=self.FIELD_FECHA_RECLAMO_DT_TZ
+            )
 
         # note: to express this value in another timezone (but the value does not change), do
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
@@ -1045,7 +1051,8 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13'
         data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
-            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ)
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ
+        )
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13-03:00'
         # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
@@ -1093,6 +1100,7 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
 # helpers
 ###############################################################################
 
+
 class _RcvCsvDialect(csv.Dialect):
 
     """
@@ -1136,11 +1144,12 @@ def _parse_rcv_csv_file(
         if field_to_remove_name not in expected_input_field_names:
             raise Exception(
                 "Programming error: field to remove is not one of the expected ones.",
-                field_to_remove_name)
+                field_to_remove_name,
+            )
 
     _CSV_ROW_DICT_EXTRA_FIELDS_KEY = '_extra_csv_fields_data'
 
-    fields_to_remove_names += (_CSV_ROW_DICT_EXTRA_FIELDS_KEY, )  # type: ignore
+    fields_to_remove_names += (_CSV_ROW_DICT_EXTRA_FIELDS_KEY,)  # type: ignore
 
     input_data_enc = 'utf-8'
     # note:
@@ -1176,7 +1185,8 @@ def _parse_rcv_csv_file(
                     conversion_error = str(exc)
                     logger.exception(
                         "Deserialized data to data model instance conversion failed "
-                        "(probably a programming error).")
+                        "(probably a programming error)."
+                    )
 
             # Instead of empty dicts, lists, str, etc, we want to have None.
             if validation_errors:

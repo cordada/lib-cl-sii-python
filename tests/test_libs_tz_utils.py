@@ -16,7 +16,6 @@ from cl_sii.libs.tz_utils import (  # noqa: F401
 
 
 class FunctionsTest(unittest.TestCase):
-
     def test_get_now_tz_aware(self) -> None:
         # TODO: implement for 'get_now_tz_aware'
         # Reuse doctests/examples in function docstring.

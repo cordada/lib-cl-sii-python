@@ -63,7 +63,8 @@ class DcDeepCompareMixin:
         if not dataclasses.is_dataclass(self):
             # TODO: would it be possible to run this check when the **class** is created?
             raise Exception(
-                "Programming error. Only dataclasses may subclass 'DcDeepCompareMixin'.")
+                "Programming error. Only dataclasses may subclass 'DcDeepCompareMixin'."
+            )
         # note: 'is_dataclass' returns True if obj is a dataclass or an instance of a dataclass.
         if not dataclasses.is_dataclass(value):
             raise TypeError("Value must be a dataclass instance.")

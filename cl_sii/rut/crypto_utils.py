@@ -17,7 +17,11 @@ def get_subject_rut_from_certificate_pfx(pfx_file_bytes: bytes, password: Option
     :param pfx_file_bytes: Digital certificate in PKCS12 format
     :param password: (Optional) The password to use to decrypt the PKCS12 file
     """
-    private_key, x509_cert, additional_certs = crypto_x509_backend.load_key_and_certificates_from_pkcs12(  # noqa: E501
+    (
+        private_key,
+        x509_cert,
+        additional_certs,
+    ) = crypto_x509_backend.load_key_and_certificates_from_pkcs12(
         data=pfx_file_bytes,
         password=password.encode() if password is not None else None,
     )

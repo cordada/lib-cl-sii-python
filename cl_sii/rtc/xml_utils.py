@@ -39,9 +39,10 @@ class AecXMLVerifier(signxml.XMLVerifier):
 # functions
 ###############################################################################
 
+
 def verify_aec_signature(
     aec_xml_doc: xml_utils.XmlElement,
-    aec_xml: AecXml
+    aec_xml: AecXml,
 ) -> Optional[bool]:
     """
     Verify signature of AEC XML document ``aec_xml_doc``.

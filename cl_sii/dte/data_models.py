@@ -38,9 +38,7 @@ def validate_dte_folio(value: int) -> None:
     :raises TypeError:
 
     """
-    # note: mypy gets confused and complains about "Unsupported operand types for >/<".
-    if (value < constants.DTE_FOLIO_FIELD_MIN_VALUE  # type: ignore
-            or value > constants.DTE_FOLIO_FIELD_MAX_VALUE):  # type: ignore
+    if value < constants.DTE_FOLIO_FIELD_MIN_VALUE or value > constants.DTE_FOLIO_FIELD_MAX_VALUE:
         raise ValueError("Value is out of the valid range for 'folio'.")
 
 
@@ -52,9 +50,10 @@ def validate_dte_monto_total(value: int, tipo_dte: TipoDte) -> None:
     :raises TypeError:
 
     """
-    # note: mypy gets confused and complains about "Unsupported operand types for >/<".
-    if (value < constants.DTE_MONTO_TOTAL_FIELD_MIN_VALUE  # type: ignore
-            or value > constants.DTE_MONTO_TOTAL_FIELD_MAX_VALUE):  # type: ignore
+    if (
+        value < constants.DTE_MONTO_TOTAL_FIELD_MIN_VALUE
+        or value > constants.DTE_MONTO_TOTAL_FIELD_MAX_VALUE
+    ):
         raise ValueError("Value is out of the valid range for 'monto_total'.")
 
     if value < 0 and tipo_dte != TipoDte.LIQUIDACION_FACTURA_ELECTRONICA:
@@ -99,9 +98,13 @@ def validate_non_empty_bytes(value: bytes) -> None:
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class DteNaturalKey:
 
@@ -169,9 +172,13 @@ class DteNaturalKey:
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class DteDataL0(DteNaturalKey):
 
@@ -207,9 +214,13 @@ class DteDataL0(DteNaturalKey):
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class DteDataL1(DteDataL0):
 
@@ -272,7 +283,8 @@ class DteDataL1(DteDataL0):
             result = self.receptor_rut
         else:
             raise ValueError(
-                "Concept \"vendedor\" does not apply for this 'tipo_dte'.", self.tipo_dte)
+                "Concept \"vendedor\" does not apply for this 'tipo_dte'.", self.tipo_dte
+            )
 
         return result
 
@@ -290,7 +302,8 @@ class DteDataL1(DteDataL0):
         else:
             raise ValueError(
                 "Concepts \"comprador\" and \"deudor\" do not apply for this 'tipo_dte'.",
-                self.tipo_dte)
+                self.tipo_dte,
+            )
 
         return result
 
@@ -319,9 +332,13 @@ class DteDataL1(DteDataL0):
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class DteDataL2(DteDataL1):
 
@@ -407,7 +424,8 @@ class DteDataL2(DteDataL1):
             folio=self.folio,
             fecha_emision_date=self.fecha_emision_date,
             receptor_rut=self.receptor_rut,
-            monto_total=self.monto_total)
+            monto_total=self.monto_total,
+        )
 
     ###########################################################################
     # Validators
@@ -446,9 +464,13 @@ class DteDataL2(DteDataL1):
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class DteXmlData(DteDataL1):
 
@@ -534,7 +556,8 @@ class DteXmlData(DteDataL1):
             folio=self.folio,
             fecha_emision_date=self.fecha_emision_date,
             receptor_rut=self.receptor_rut,
-            monto_total=self.monto_total)
+            monto_total=self.monto_total,
+        )
 
     def as_dte_data_l2(self) -> DteDataL2:
         return DteDataL2(

@@ -63,7 +63,6 @@ class AecXmlValidatorTest(unittest.TestCase):
 
 
 class FunctionVerifyAecSignatureTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()

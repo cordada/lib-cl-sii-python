@@ -7,6 +7,7 @@
 # note: it is mandatory to register all dependencies of the required packages.
 
 # Required packages:
+black==22.1.0
 bumpversion==0.5.3
 codecov==2.1.11
 coverage==5.3
@@ -19,6 +20,13 @@ twine==3.1.1
 wheel==0.35.1
 
 # Packages dependencies:
+#   - black:
+#       - click
+#       - mypy-extensions
+#       - pathspec
+#       - platformdirs
+#       - tomli
+#       - typing-extensions
 #   - codecov:
 #       - coverage
 #       - requests:
@@ -82,6 +90,7 @@ wheel==0.35.1
 # cryptography
 # distlib
 # docutils
+click==8.0.3
 filelock==3.0.12
 # idna
 importlib-metadata==1.6.0
@@ -90,7 +99,9 @@ keyring==21.4.0
 mccabe==0.6.1
 mypy-extensions==0.4.3
 packaging==20.4
+pathspec==0.9.0
 pkginfo==1.7.0
+platformdirs==2.4.1
 pluggy==0.13.1
 py==1.10.0
 pycodestyle==2.8.0
@@ -103,9 +114,10 @@ requests==2.25.1
 # SecretStorage
 # six
 toml==0.10.2
+tomli==2.0.0
 tqdm==4.45.0
 typed-ast==1.4.2
-typing-extensions==3.7.4.3
+typing-extensions==4.0.1
 # urllib3
 virtualenv==20.4.3
 # webencodings

@@ -49,7 +49,6 @@ class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
 
 
 class FunctionsTest(unittest.TestCase):
-
     def test_parse_rcv_venta_csv_file(self) -> None:
         # TODO: implement for 'parse_rcv_venta_csv_file'.
         pass

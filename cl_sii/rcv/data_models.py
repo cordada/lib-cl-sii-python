@@ -94,14 +94,19 @@ class PeriodoTributario:
         # note: timezone-aware
         return tz_utils.convert_naive_dt_to_tz_aware(
             datetime(self.year, self.month, day=1, hour=0, minute=0, second=0),
-            self.DATETIME_FIELDS_TZ)
+            self.DATETIME_FIELDS_TZ,
+        )
 
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class RcvDetalleEntry:
 
@@ -171,7 +176,8 @@ class RcvDetalleEntry:
 
     @pydantic.root_validator(skip_on_failure=True)
     def validate_rcv_kind_is_consistent_with_rc_estado_contable(
-        cls, values: Mapping[str, object],
+        cls,
+        values: Mapping[str, object],
     ) -> Mapping[str, object]:
         rcv_kind = values.get('RCV_KIND')
         rc_estado_contable = values.get('RC_ESTADO_CONTABLE')
@@ -180,11 +186,13 @@ class RcvDetalleEntry:
             if rcv_kind == RcvKind.COMPRAS:
                 if rc_estado_contable is None:
                     raise ValueError(
-                        "'RC_ESTADO_CONTABLE' must not be None when 'RCV_KIND' is 'COMPRAS'.")
+                        "'RC_ESTADO_CONTABLE' must not be None when 'RCV_KIND' is 'COMPRAS'."
+                    )
             elif rcv_kind == RcvKind.VENTAS:
                 if rc_estado_contable is not None:
                     raise ValueError(
-                        "'RC_ESTADO_CONTABLE' must be None when 'RCV_KIND' is 'VENTAS'.")
+                        "'RC_ESTADO_CONTABLE' must be None when 'RCV_KIND' is 'VENTAS'."
+                    )
 
         return values
 
@@ -228,9 +236,13 @@ class RcvDetalleEntry:
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class RvDetalleEntry(RcvDetalleEntry):
 
@@ -278,9 +290,13 @@ class RvDetalleEntry(RcvDetalleEntry):
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class RcRegistroDetalleEntry(RcvDetalleEntry):
 
@@ -325,9 +341,13 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
 
@@ -341,9 +361,13 @@ class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class RcReclamadoDetalleEntry(RcvDetalleEntry):
 
@@ -392,9 +416,13 @@ class RcReclamadoDetalleEntry(RcvDetalleEntry):
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class RcPendienteDetalleEntry(RcvDetalleEntry):
 
