@@ -93,7 +93,7 @@ wheel==0.35.1
 click==8.0.3
 filelock==3.0.12
 # idna
-importlib-metadata==1.6.0
+importlib-metadata==4.11.1
 # jeepney
 keyring==21.4.0
 mccabe==0.6.1
