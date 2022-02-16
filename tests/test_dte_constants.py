@@ -5,7 +5,6 @@ from cl_sii.dte.constants import TipoDte
 
 
 class TipoDteTest(unittest.TestCase):
-
     def test_members(self):
         self.assertSetEqual(
             {x for x in TipoDte},
@@ -17,7 +16,7 @@ class TipoDteTest(unittest.TestCase):
                 TipoDte.GUIA_DESPACHO_ELECTRONICA,
                 TipoDte.NOTA_DEBITO_ELECTRONICA,
                 TipoDte.NOTA_CREDITO_ELECTRONICA,
-            }
+            },
         )
 
     def test_FACTURA_ELECTRONICA(self):

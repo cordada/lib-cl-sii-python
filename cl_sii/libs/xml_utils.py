@@ -22,6 +22,8 @@ It is used by various Web technologies such as SOAP, SAML, and others.
 import io
 import logging
 import os
+import xml.parsers.expat
+import xml.parsers.expat.errors
 from typing import IO, Optional, Tuple, Union
 
 import defusedxml
@@ -29,12 +31,11 @@ import defusedxml.lxml
 import lxml.etree
 import signxml
 import signxml.exceptions
-import xml.parsers.expat
-import xml.parsers.expat.errors
-from lxml.etree import ElementBase as XmlElement  # noqa: F401
-# note: 'lxml.etree.ElementTree' is a **function**, not a class.
-from lxml.etree import _ElementTree as XmlElementTree  # noqa: F401
-from lxml.etree import XMLSchema as XmlSchema  # noqa: F401
+from lxml.etree import ElementBase as XmlElement
+from lxml.etree import XMLSchema as XmlSchema
+from lxml.etree import (  # note: 'lxml.etree.ElementTree' is a **function**, not a class.  # noqa: E501
+    _ElementTree as XmlElementTree,
+)
 
 from . import crypto_utils
 
@@ -63,6 +64,7 @@ https://github.com/XML-Security/signxml/blob/16503242/signxml/__init__.py#L23-L3
 ###############################################################################
 # exceptions
 ###############################################################################
+
 
 class BaseXmlParsingError(Exception):
 
@@ -143,6 +145,7 @@ class XmlSignatureInvalidCertificate(XmlSignatureInvalid):
 # functions
 ###############################################################################
 
+
 def parse_untrusted_xml(value: bytes) -> XmlElement:
     """
     Parse XML-encoded content in value.
@@ -182,15 +185,17 @@ def parse_untrusted_xml(value: bytes) -> XmlElement:
 
         xml_root_em = defusedxml.lxml.fromstring(
             text=value,
-            parser=None,           # default: None (a custom one will be created)
-            base_url=None,         # default: None
-            forbid_dtd=False,      # default: False (allow Document Type Definition)
+            parser=None,  # default: None (a custom one will be created)
+            base_url=None,  # default: None
+            forbid_dtd=False,  # default: False (allow Document Type Definition)
             forbid_entities=True,  # default: True (forbid Entity definitions/declarations)
         )  # type: XmlElement
 
-    except (defusedxml.DTDForbidden,
-            defusedxml.EntitiesForbidden,
-            defusedxml.ExternalReferenceForbidden) as exc:
+    except (
+        defusedxml.DTDForbidden,
+        defusedxml.EntitiesForbidden,
+        defusedxml.ExternalReferenceForbidden,
+    ) as exc:
         # note: we'd rather use 'defusedxml.DefusedXmlException' but that would catch
         #   'defusedxml.NotSupportedError' as well
 
@@ -229,11 +234,13 @@ def parse_untrusted_xml(value: bytes) -> XmlElement:
 
         # For sanity crop the XML-encoded content to max 1 KiB (arbitrary value).
         log_msg = "Unexpected XML 'ExpatError' at line {} offset {}: {}. Content: %s".format(
-            exc.lineno, exc.offset, xml.parsers.expat.errors.messages[exc.code])
+            exc.lineno, exc.offset, xml.parsers.expat.errors.messages[exc.code]
+        )
         logger.exception(log_msg, str(value[:1024]))
 
         exc_msg = "Unexpected error while parsing value as XML. Line {}, offset {}.".format(
-            exc.lineno, exc.offset)
+            exc.lineno, exc.offset
+        )
         raise UnknownXmlParsingError(exc_msg) from exc
 
     except lxml.etree.LxmlError as exc:
@@ -414,7 +421,8 @@ def verify_xml_signature(
     n_signatures = (
         len(xml_doc.findall('.//ds:Signature', namespaces=XML_DSIG_NS_MAP))
         + len(xml_doc.findall('.//dsig11:Signature', namespaces=XML_DSIG_NS_MAP))
-        + len(xml_doc.findall('.//dsig2:Signature', namespaces=XML_DSIG_NS_MAP)))
+        + len(xml_doc.findall('.//dsig2:Signature', namespaces=XML_DSIG_NS_MAP))
+    )
 
     if n_signatures > 1 and not xml_verifier_supports_multiple_signatures:
         raise NotImplementedError("XML document with more than one signature is not supported.")
@@ -431,7 +439,8 @@ def verify_xml_signature(
         trusted_x509_cert_open_ssl = trusted_x509_cert
     elif isinstance(trusted_x509_cert, crypto_utils.X509Cert):
         trusted_x509_cert_open_ssl = crypto_utils._X509CertOpenSsl.from_cryptography(
-            trusted_x509_cert)
+            trusted_x509_cert
+        )
     elif trusted_x509_cert is None:
         trusted_x509_cert_open_ssl = None
     else:
@@ -467,7 +476,9 @@ def verify_xml_signature(
         #   Source:
         #   https://github.com/XML-Security/signxml/commit/ef15da8dbb904f1dedfdd210ae3e0df5da535612
         result: signxml.VerifyResult = xml_verifier.verify(
-            data=tmp_bytes, require_x509=True, x509_cert=trusted_x509_cert_open_ssl,
+            data=tmp_bytes,
+            require_x509=True,
+            x509_cert=trusted_x509_cert_open_ssl,
             ignore_ambiguous_key_info=True,
         )
 

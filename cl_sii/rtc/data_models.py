@@ -30,7 +30,6 @@ from cl_sii.dte import data_models as dte_data_models
 from cl_sii.dte.constants import TipoDte
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
-
 from . import constants
 
 
@@ -82,9 +81,13 @@ def validate_cesion_and_dte_montos(cesion_value: int, dte_value: int) -> None:
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class CesionNaturalKey:
     """
@@ -152,9 +155,13 @@ class CesionNaturalKey:
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class CesionAltNaturalKey:
     """
@@ -262,9 +269,13 @@ class CesionAltNaturalKey:
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class CesionL0:
     """
@@ -400,9 +411,13 @@ class CesionL0:
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        arbitrary_types_allowed=True,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
 )
 class CesionL1(CesionL0):
     """
@@ -501,7 +516,8 @@ class CesionL1(CesionL0):
 
     @pydantic.root_validator(skip_on_failure=True)
     def validate_monto_cedido_does_not_exceed_dte_monto_total(
-        cls, values: Mapping[str, object],
+        cls,
+        values: Mapping[str, object],
     ) -> Mapping[str, object]:
         monto_cedido = values['monto_cedido']
         dte_monto_total = values['dte_monto_total']
@@ -514,11 +530,15 @@ class CesionL1(CesionL0):
 
 @pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type('Config', (), dict(
-        anystr_strip_whitespace=True,
-        arbitrary_types_allowed=True,
-        min_anystr_length=1,
-    ))
+    config=type(
+        'Config',
+        (),
+        dict(
+            anystr_strip_whitespace=True,
+            arbitrary_types_allowed=True,
+            min_anystr_length=1,
+        ),
+    ),
 )
 class CesionL2(CesionL1):
     """

@@ -34,13 +34,16 @@ def create_csv_dict_reader(
             if csv_reader.fieldnames is None:
                 raise Exception(
                     "Programming error: when a 'csv.DictReader' instance is created with"
-                    "'fieldnames=None', the attribute will be set to the values of the first row.")
+                    "'fieldnames=None', the attribute will be set to the values of the first row."
+                )
             if tuple(csv_reader.fieldnames) != expected_field_names:
                 raise ValueError(
                     "CSV file field names do not match those expected, or their order.",
-                    csv_reader.fieldnames)
+                    csv_reader.fieldnames,
+                )
         else:
             raise ValueError(
-                "Param 'expected_field_names' is required if 'expected_fields_strict' is True.")
+                "Param 'expected_field_names' is required if 'expected_fields_strict' is True."
+            )
 
     return csv_reader

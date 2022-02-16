@@ -8,7 +8,6 @@ from cl_sii.libs.io_utils import with_encoding_utf8, with_mode_binary, with_mode
 
 
 class FunctionsTest(unittest.TestCase):
-
     def test_with_encoding_utf8(self):
         filename = pathlib.Path(__file__).with_name('test_libs_io_utils-test-file-1.tmp')
         filename.touch()

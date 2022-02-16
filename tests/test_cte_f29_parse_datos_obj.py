@@ -5,11 +5,9 @@ from decimal import Decimal
 from typing import Any, Mapping
 from unittest import TestCase
 
-from cl_sii.cte.f29 import data_models
-from cl_sii.cte.f29 import parse_datos_obj
+from cl_sii.cte.f29 import data_models, parse_datos_obj
 from cl_sii.rcv.data_models import PeriodoTributario
 from cl_sii.rut import Rut
-
 from .utils import read_test_file_json_dict
 
 
@@ -61,7 +59,7 @@ class FunctionsTest(TestCase):
             762: 12443,
             795: 157080,
             915: datetime.date(2017, 10, 31),
-            922: "013-2015"
+            922: "013-2015",
         }
         self.assertEqual(obj.as_codes_dict(include_none=False), expected_codes_dict)
 
@@ -102,7 +100,7 @@ class FunctionsTest(TestCase):
                 595: 1536269,
                 761: 1,
                 762: 12443,
-                795: 157080
+                795: 157080,
             },
             "total_a_pagar_en_plazo_legal": 1536269,
             "total_a_pagar_con_recargo": 1603589,

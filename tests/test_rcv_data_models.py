@@ -15,19 +15,18 @@ from cl_sii.rcv.data_models import (
     RcReclamadoDetalleEntry,
     RcRegistroDetalleEntry,
     RcvDetalleEntry,
-    RvDetalleEntry
+    RvDetalleEntry,
 )
 from cl_sii.rut import Rut
 
 
 class PeriodoTributarioTest(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
         self.periodo_tributario_1 = PeriodoTributario(
             year=2019,
-            month=4
+            month=4,
         )
 
     def test_validate_year_range(self) -> None:
@@ -86,7 +85,6 @@ class PeriodoTributarioTest(unittest.TestCase):
 
 
 class RcvDetalleEntryTest(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -99,7 +97,8 @@ class RcvDetalleEntryTest(unittest.TestCase):
             monto_total=2996301,
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
-                tz=RcvDetalleEntry.DATETIME_FIELDS_TZ),
+                tz=RcvDetalleEntry.DATETIME_FIELDS_TZ,
+            ),
         )
 
     def test_validate_folio_range(self) -> None:
@@ -162,11 +161,12 @@ class RcvDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_recepcion_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
@@ -187,7 +187,6 @@ class RcvDetalleEntryTest(unittest.TestCase):
 
 
 class RvDetalleEntryTest(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -201,13 +200,16 @@ class RvDetalleEntryTest(unittest.TestCase):
             receptor_razon_social='MINERA LOS PELAMBRES',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
-                tz=RvDetalleEntry.DATETIME_FIELDS_TZ),
+                tz=RvDetalleEntry.DATETIME_FIELDS_TZ,
+            ),
             fecha_acuse_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 8, 10, 21, 18),
-                tz=RvDetalleEntry.DATETIME_FIELDS_TZ),
+                tz=RvDetalleEntry.DATETIME_FIELDS_TZ,
+            ),
             fecha_reclamo_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 8, 10, 21, 18),
-                tz=RvDetalleEntry.DATETIME_FIELDS_TZ),
+                tz=RvDetalleEntry.DATETIME_FIELDS_TZ,
+            ),
         )
 
     def test_constants_match(self):
@@ -264,11 +266,12 @@ class RvDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_acuse_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
@@ -314,11 +317,12 @@ class RvDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_reclamo_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
@@ -339,7 +343,6 @@ class RvDetalleEntryTest(unittest.TestCase):
 
 
 class RcRegistroDetalleEntryTest(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -353,10 +356,12 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             emisor_razon_social='INGENIERIA ENACON SPA',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
-                tz=RcRegistroDetalleEntry.DATETIME_FIELDS_TZ),
+                tz=RcRegistroDetalleEntry.DATETIME_FIELDS_TZ,
+            ),
             fecha_acuse_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 8, 10, 21, 18),
-                tz=RcRegistroDetalleEntry.DATETIME_FIELDS_TZ),
+                tz=RcRegistroDetalleEntry.DATETIME_FIELDS_TZ,
+            ),
         )
 
     def test_constants_match(self):
@@ -412,11 +417,12 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_acuse_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
@@ -437,7 +443,6 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
 
 
 class RcNoIncluirDetalleEntryTest(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -451,15 +456,16 @@ class RcNoIncluirDetalleEntryTest(unittest.TestCase):
             emisor_razon_social='INGENIERIA ENACON SPA',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
-                tz=SII_OFFICIAL_TZ),
+                tz=SII_OFFICIAL_TZ,
+            ),
             fecha_acuse_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 8, 10, 21, 18),
-                tz=SII_OFFICIAL_TZ),
+                tz=SII_OFFICIAL_TZ,
+            ),
         )
 
 
 class RcReclamadoDetalleEntryTest(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -473,10 +479,12 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
             emisor_razon_social='INGENIERIA ENACON SPA',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
-                tz=RcReclamadoDetalleEntry.DATETIME_FIELDS_TZ),
+                tz=RcReclamadoDetalleEntry.DATETIME_FIELDS_TZ,
+            ),
             fecha_reclamo_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 8, 10, 21, 18),
-                tz=RcReclamadoDetalleEntry.DATETIME_FIELDS_TZ),
+                tz=RcReclamadoDetalleEntry.DATETIME_FIELDS_TZ,
+            ),
         )
 
     def test_constants_match(self):
@@ -532,11 +540,12 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_reclamo_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
@@ -557,7 +566,6 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
 
 
 class RcPendienteDetalleEntryTest(unittest.TestCase):
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -571,7 +579,8 @@ class RcPendienteDetalleEntryTest(unittest.TestCase):
             emisor_razon_social='INGENIERIA ENACON SPA',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
-                tz=SII_OFFICIAL_TZ),
+                tz=SII_OFFICIAL_TZ,
+            ),
         )
 
     def test_validate_emisor_razon_social_empty(self) -> None:

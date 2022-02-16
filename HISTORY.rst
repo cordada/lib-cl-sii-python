@@ -3,6 +3,16 @@
 History
 -------
 
+0.17.1 (2022-02-16)
++++++++++++++++++++++++
+
+* (PR #269, 2022-02-03) chore: Add tool to automatically sort Python imports
+* (PR #274, 2022-02-08) chore: Increase Dependabot's open pull request limit for `pip`
+* (PR #273, 2022-02-08) requirements: Update 'Flake8'
+* (PR #292, 2022-02-08) chore: Increase Django REST Framework required maximum version to 3.13.x
+* (PR #294, 2022-02-09) chore: Simplify organization of Python dependency manifests
+* (PR #272, 2022-02-10) Add 'Black' Python code formatter
+
 0.17.0 (2022-01-27)
 +++++++++++++++++++++++
 

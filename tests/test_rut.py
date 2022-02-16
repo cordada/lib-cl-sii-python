@@ -67,7 +67,8 @@ class RutTest(unittest.TestCase):
     def test_ok_same_type(self) -> None:
         self.assertEqual(
             rut.Rut(rut.Rut('1-1')),
-            rut.Rut('1-1'))
+            rut.Rut('1-1'),
+        )
 
     def test_instance_empty_string(self) -> None:
         rut_value = ''
@@ -326,7 +327,7 @@ class RutTest(unittest.TestCase):
 
         self.assertListEqual(
             list(context_manager.exception.args),
-            ["Must be a sequence of digits."]
+            ["Must be a sequence of digits."],
         )
 
     def test_calc_dv_string_lowercase(self) -> None:
@@ -336,7 +337,7 @@ class RutTest(unittest.TestCase):
 
         self.assertListEqual(
             list(context_manager.exception.args),
-            ["Must be a sequence of digits."]
+            ["Must be a sequence of digits."],
         )
 
     def test_random(self) -> None:

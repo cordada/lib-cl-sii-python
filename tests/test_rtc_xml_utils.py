@@ -8,7 +8,6 @@ from cl_sii.libs.crypto_utils import load_pem_x509_cert
 from cl_sii.libs.xml_utils import parse_untrusted_xml, verify_xml_signature, write_xml_doc
 from cl_sii.rtc.parse_aec import parse_aec_xml
 from cl_sii.rtc.xml_utils import AecXMLVerifier, verify_aec_signature
-
 from .utils import read_test_file_bytes
 
 
@@ -64,7 +63,6 @@ class AecXmlValidatorTest(unittest.TestCase):
 
 
 class FunctionVerifyAecSignatureTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()

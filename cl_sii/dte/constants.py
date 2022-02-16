@@ -25,7 +25,7 @@ DTE_FOLIO_FIELD_TYPE = int
 """DTE field 'Folio' type."""
 DTE_FOLIO_FIELD_MIN_VALUE = 1
 """DTE field 'Folio' min value."""
-DTE_FOLIO_FIELD_MAX_VALUE = 10 ** 10
+DTE_FOLIO_FIELD_MAX_VALUE = 10**10
 """DTE field 'Folio' max value."""
 
 
@@ -59,9 +59,9 @@ DTE_FOLIO_FIELD_MAX_VALUE = 10 ** 10
 
 DTE_MONTO_TOTAL_FIELD_TYPE = int
 """DTE field 'Monto Total' type."""
-DTE_MONTO_TOTAL_FIELD_MIN_VALUE = -10 ** 18
+DTE_MONTO_TOTAL_FIELD_MIN_VALUE = -(10**18)
 """DTE field 'Monto Total' min value."""
-DTE_MONTO_TOTAL_FIELD_MAX_VALUE = 10 ** 18
+DTE_MONTO_TOTAL_FIELD_MAX_VALUE = 10**18
 """DTE field 'Monto Total' max value."""
 
 

@@ -17,12 +17,14 @@ from cl_sii.dte.constants import DTE_MONTO_TOTAL_FIELD_MAX_VALUE, TipoDte
 #   - XML type 'SiiDte:DTEFacturasType' in official schema 'SiiTypes_v10.xsd'
 #     - source:
 #       https://github.com/fyntex/lib-cl-sii-python/blob/7e1c4b52/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L100-L126
-TIPO_DTE_CEDIBLES: FrozenSet[TipoDte] = frozenset({
-    TipoDte.FACTURA_ELECTRONICA,
-    TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,
-    TipoDte.FACTURA_COMPRA_ELECTRONICA,
-    TipoDte.LIQUIDACION_FACTURA_ELECTRONICA,
-})
+TIPO_DTE_CEDIBLES: FrozenSet[TipoDte] = frozenset(
+    {
+        TipoDte.FACTURA_ELECTRONICA,
+        TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,
+        TipoDte.FACTURA_COMPRA_ELECTRONICA,
+        TipoDte.LIQUIDACION_FACTURA_ELECTRONICA,
+    }
+)
 
 
 ###############################################################################
@@ -60,6 +62,7 @@ CESION_SEQUENCE_NUMBER_MAX_VALUE: int = 40
 ###############################################################################
 # Other
 ###############################################################################
+
 
 @enum.unique
 class RolContribuyenteEnCesion(enum.Enum):

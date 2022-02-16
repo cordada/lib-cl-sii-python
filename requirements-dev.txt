@@ -1,0 +1,124 @@
+# Python Dependency Manifest
+#
+# Deployment environment: development, testing, release
+
+-c requirements.txt
+
+# note: it is mandatory to register all dependencies of the required packages.
+
+# Required packages:
+black==22.1.0
+bumpversion==0.5.3
+codecov==2.1.11
+coverage==5.3
+flake8==4.0.1
+isort==5.10.1
+mypy==0.790
+setuptools==50.3.0
+tox==3.20.1
+twine==3.1.1
+wheel==0.35.1
+
+# Packages dependencies:
+#   - black:
+#       - click
+#       - mypy-extensions
+#       - pathspec
+#       - platformdirs
+#       - tomli
+#       - typing-extensions
+#   - codecov:
+#       - coverage
+#       - requests:
+#           - certifi
+#           - chardet
+#           - idna
+#           - urllib3
+#   - flake8:
+#       - mccabe
+#       - pycodestyle
+#       - pyflakes
+#   - mypy:
+#       - mypy-extensions
+#       - typed-ast
+#       - typing-extensions
+#   - tox:
+#       - filelock
+#       - importlib-metadata
+#           - zipp
+#       - packaging
+#           - pyparsing
+#       - pluggy
+#       - py
+#       - six
+#       - toml
+#       - virtualenv
+#           - appdirs
+#           - distlib
+#           - filelock
+#           - importlib-metadata
+#           - six
+#   - twine:
+#       - importlib-metadata
+#           - zipp
+#       - keyring
+#           - importlib-metadata
+#           - jeepney
+#           - SecretStorage
+#               - cryptography
+#               - jeepney
+#       - pkginfo
+#       - readme-renderer:
+#           - bleach
+#               - six
+#               - webencodings
+#           - docutils
+#           - Pygments
+#           - six
+#       - requests:
+#           - certifi
+#           - chardet
+#           - idna
+#           - urllib3
+#       - requests-toolbelt
+#       - setuptools
+#       - tqdm
+# appdirs
+# bleach
+# certifi
+# chardet
+# cryptography
+# distlib
+# docutils
+click==8.0.3
+filelock==3.0.12
+# idna
+importlib-metadata==1.6.0
+# jeepney
+keyring==21.4.0
+mccabe==0.6.1
+mypy-extensions==0.4.3
+packaging==20.4
+pathspec==0.9.0
+pkginfo==1.7.0
+platformdirs==2.4.1
+pluggy==0.13.1
+py==1.10.0
+pycodestyle==2.8.0
+pyflakes==2.4.0
+# Pygments
+# pyparsing
+readme-renderer==25.0
+requests-toolbelt==0.9.1
+requests==2.25.1
+# SecretStorage
+# six
+toml==0.10.2
+tomli==2.0.0
+tqdm==4.45.0
+typed-ast==1.4.2
+typing-extensions==4.0.1
+# urllib3
+virtualenv==20.4.3
+# webencodings
+# zipp

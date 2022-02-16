@@ -8,16 +8,18 @@ from typing import Callable, Mapping, MutableMapping, Optional
 import jsonschema
 
 from cl_sii.libs.json_utils import JsonSchemaValidationError, read_json_schema
-from cl_sii.rut import Rut
 from cl_sii.rcv.data_models import PeriodoTributario
-
+from cl_sii.rut import Rut
 from .data_models import CteForm29
 
 
 SiiCteF29DatosObjType = Mapping[str, Mapping[str, object]]
 _CTE_F29_DATOS_OBJ_SCHEMA_PATH = (
     Path(__file__).parent.parent.parent
-    / 'data' / 'cte' / 'schemas-json' / 'f29_datos_obj.schema.json'
+    / 'data'
+    / 'cte'
+    / 'schemas-json'
+    / 'f29_datos_obj.schema.json'
 )
 CTE_F29_DATOS_OBJ_SCHEMA = read_json_schema(_CTE_F29_DATOS_OBJ_SCHEMA_PATH)
 
@@ -95,11 +97,11 @@ def _parse_sii_cte_f29_datos_obj_to_dict(
         folio=obj_extra[7],
         contribuyente_rut=obj_extra[3],
         periodo_tributario=periodo_tributario,
-
+        #
         tipo_declaracion=datos_obj_extras.get('CLASE'),
         banco=datos_obj_extras.get('BANCO'),
         medio_pago=datos_obj_extras.get('MEDIO_PAGO'),
-
+        #
         extra=obj_extra,
     )
     return obj_dict

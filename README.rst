@@ -65,7 +65,8 @@ Tests
 
 Requirements::
 
-    pip install -r requirements/test.txt
+    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
 
 Run test suite for all supported Python versions and run tools for
 code style analysis, static type check, etc::

@@ -19,6 +19,7 @@ import sys
 from datetime import datetime
 from typing import Sequence
 
+
 try:
     import cl_sii  # noqa: F401
 except ImportError:

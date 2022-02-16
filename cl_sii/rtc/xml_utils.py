@@ -7,7 +7,6 @@ import signxml
 
 from cl_sii.dte.parse import DTE_XMLNS_MAP
 from cl_sii.libs import crypto_utils, xml_utils
-
 from .data_models_aec import AecXml
 
 
@@ -40,9 +39,10 @@ class AecXMLVerifier(signxml.XMLVerifier):
 # functions
 ###############################################################################
 
+
 def verify_aec_signature(
     aec_xml_doc: xml_utils.XmlElement,
-    aec_xml: AecXml
+    aec_xml: AecXml,
 ) -> Optional[bool]:
     """
     Verify signature of AEC XML document ``aec_xml_doc``.

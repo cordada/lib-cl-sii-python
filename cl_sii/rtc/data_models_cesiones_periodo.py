@@ -10,7 +10,6 @@ from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.dte.constants import TipoDte
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
-
 from . import data_models
 from .constants import CESION_MONTO_CEDIDO_FIELD_MIN_VALUE, TIPO_DTE_CEDIBLES
 
@@ -168,7 +167,8 @@ class CesionesPeriodoEntry:
         if self.dte_tipo_dte not in TIPO_DTE_CEDIBLES:
             raise ValueError(
                 "The \"tipo DTE\" in 'dte_tipo_dte' is not \"cedible\".",
-                self.dte_tipo_dte)
+                self.dte_tipo_dte,
+            )
 
         if not isinstance(self.dte_folio, int):
             raise TypeError("Inappropriate type of 'dte_folio'.")
@@ -227,14 +227,17 @@ class CesionesPeriodoEntry:
         if self.fecha_cesion_dt.date() != self.fecha_cesion:
             raise ValueError(
                 "Date of 'fecha_cesion_dt' (considering timezone) does not match 'fecha_cesion'.",
-                self.fecha_cesion_dt, self.fecha_cesion)
+                self.fecha_cesion_dt,
+                self.fecha_cesion,
+            )
 
         if not isinstance(self.monto_cedido, int):
             raise TypeError("Inappropriate type of 'monto_cedido'.")
         if not self.monto_cedido >= CESION_MONTO_CEDIDO_FIELD_MIN_VALUE:
             raise ValueError(
                 f"Amount 'monto_cedido' must be >= {CESION_MONTO_CEDIDO_FIELD_MIN_VALUE}.",
-                self.monto_cedido)
+                self.monto_cedido,
+            )
         data_models.validate_cesion_and_dte_montos(
             cesion_value=self.monto_cedido,
             dte_value=self.dte_monto_total,
@@ -262,7 +265,8 @@ class CesionesPeriodoEntry:
         else:
             raise ValueError(
                 'Programming error: the "vendedor" is neither the "emisor" nor the "vendedor".',
-                self)
+                self,
+            )
 
         try:
             dte_data = cl_sii.dte.data_models.DteDataL1(

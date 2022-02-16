@@ -8,12 +8,10 @@ import pydantic
 
 from cl_sii.dte.constants import TipoDte
 from cl_sii.dte.data_models import DteDataL1, DteNaturalKey, DteXmlData
-from cl_sii.libs import encoding_utils
-from cl_sii.libs import tz_utils
-from cl_sii.rtc.data_models import CesionL2, CesionNaturalKey, CesionAltNaturalKey
-from cl_sii.rtc.data_models_aec import CesionAecXml, AecXml
+from cl_sii.libs import encoding_utils, tz_utils
+from cl_sii.rtc.data_models import CesionAltNaturalKey, CesionL2, CesionNaturalKey
+from cl_sii.rtc.data_models_aec import AecXml, CesionAecXml
 from cl_sii.rut import Rut
-
 from .utils import read_test_file_bytes
 
 
@@ -461,8 +459,7 @@ class AecXmlTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('dte',),
-                'msg':
-                    """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
+                'msg': """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
                 'type': 'value_error',
             },
         ]
@@ -512,11 +509,12 @@ class AecXmlTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_firma_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
@@ -623,7 +621,7 @@ class AecXmlTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('__root__',),
-                'msg':
+                'msg': (
                     "'dte' of CesionAecXml with CesionNaturalKey("
                     "dte_key=DteNaturalKey("
                     "emisor_rut=Rut('76354771-K'),"
@@ -635,7 +633,8 @@ class AecXmlTest(unittest.TestCase):
                     "emisor_rut=Rut('76354771-K'),"
                     " tipo_dte=<TipoDte.FACTURA_ELECTRONICA: 33>,"
                     " folio=170"
-                    ").",
+                    ")."
+                ),
                 'type': 'value_error',
             },
         ]
@@ -668,11 +667,12 @@ class AecXmlTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('__root__',),
-                'msg':
+                'msg': (
                     "'cedente_rut' of last 'cesion' must match 'cedente_rut':"
                     " Rut('76389992-6')"
                     " !="
-                    " Rut('76598556-0').",
+                    " Rut('76598556-0')."
+                ),
                 'type': 'value_error',
             },
         ]

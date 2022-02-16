@@ -6,7 +6,6 @@ from cryptography.hazmat.backends.openssl import backend as crypto_x509_backend
 from cl_sii import rut
 from cl_sii.libs.crypto_utils import load_der_x509_cert
 from cl_sii.rut.crypto_utils import get_subject_rut_from_certificate_pfx
-
 from . import utils
 
 
@@ -34,7 +33,7 @@ class FunctionsTest(unittest.TestCase):
 
     def test_get_subject_rut_from_certificate_pfx_fails_if_rut_info_is_missing(self) -> None:
         cert_der_bytes = utils.read_test_file_bytes(
-            'test_data/crypto/wildcard-google-com-cert.der'
+            'test_data/crypto/wildcard-google-com-cert.der',
         )
 
         x509_cert = load_der_x509_cert(cert_der_bytes)

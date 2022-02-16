@@ -61,9 +61,7 @@ class CteForm29Test(TestCase):
         obj = cte_f29_factories.create_CteForm29()
 
         code_field_names: Sequence[str] = [
-            field_name
-            for field_name in obj.CODE_FIELD_MAPPING.values()
-            if field_name is not None
+            field_name for field_name in obj.CODE_FIELD_MAPPING.values() if field_name is not None
         ]
         unique_code_field_names = set(code_field_names)
 

@@ -6,15 +6,15 @@ from datetime import date, datetime
 
 import pydantic
 
-from cl_sii.dte.data_models import DteNaturalKey, DteDataL1, DteDataL2
 from cl_sii.dte.constants import TipoDte
+from cl_sii.dte.data_models import DteDataL1, DteDataL2, DteNaturalKey
 from cl_sii.libs import tz_utils
 from cl_sii.rtc.data_models import (
-    CesionNaturalKey,
     CesionAltNaturalKey,
     CesionL0,
     CesionL1,
     CesionL2,
+    CesionNaturalKey,
 )
 from cl_sii.rut import Rut
 
@@ -249,11 +249,12 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
 
         expected_validation_error = {
             'loc': ('fecha_cesion_dt',),
-            'msg':
+            'msg': (
                 '('
                 '''"Timezone of datetime value must be 'America/Santiago'.",'''
                 ' datetime.datetime(2019, 4, 5, 12, 57, tzinfo=<UTC>)'
-                ')',
+                ')'
+            ),
             'type': 'value_error',
         }
 
@@ -426,8 +427,7 @@ class CesionL0Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('dte_key',),
-                'msg':
-                    """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
+                'msg': """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
                 'type': 'value_error',
             },
         ]
@@ -503,11 +503,12 @@ class CesionL0Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_cesion_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
@@ -651,7 +652,7 @@ class CesionL1Test(CesionL0Test):
         self._set_obj_1()
 
         obj = self.obj_1
-        test_values = [-1, 10 ** 18 + 1]
+        test_values = [-1, 10**18 + 1]
 
         for test_value in test_values:
             expected_validation_errors = [
@@ -680,8 +681,7 @@ class CesionL1Test(CesionL0Test):
         expected_validation_errors = [
             {
                 'loc': ('__root__',),
-                'msg':
-                    """('Value of "cesión" must be <= value of DTE.', 1000, 999)""",
+                'msg': """('Value of "cesión" must be <= value of DTE.', 1000, 999)""",
                 'type': 'value_error',
             },
         ]
@@ -912,20 +912,22 @@ class CesionL2Test(CesionL1Test):
         expected_validation_errors = [
             {
                 'loc': ('fecha_cesion_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
             {
                 'loc': ('fecha_firma_dt',),
-                'msg':
+                'msg': (
                     '('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
-                    ')',
+                    ')'
+                ),
                 'type': 'value_error',
             },
         ]
