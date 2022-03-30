@@ -36,7 +36,7 @@ def get_subject_rut_from_certificate_pfx(pfx_file_bytes: bytes, password: Option
         results = [
             x.value
             for x in subject_alt_name_ext.value._general_names
-            if x.type_id == constants.SII_CERT_TITULAR_RUT_OID
+            if hasattr(x, 'type_id') and x.type_id == constants.SII_CERT_TITULAR_RUT_OID
         ]
     except AttributeError:
         raise Exception('Certificate has no RUT information')
