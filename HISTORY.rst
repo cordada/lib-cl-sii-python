@@ -3,6 +3,11 @@
 History
 -------
 
+0.17.2 (2022-03-31)
++++++++++++++++++++++++
+
+* (PR #309, 2022-03-31) fix(rut): `AttributeError` for `GeneralName` object without `type_id`
+
 0.17.1 (2022-02-16)
 +++++++++++++++++++++++
 
