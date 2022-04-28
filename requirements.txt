@@ -8,7 +8,7 @@
 # note: it is mandatory to register all dependencies of the required packages.
 
 # Required packages:
-cryptography==3.3.2
+cryptography==37.0.1
 defusedxml==0.6.0
 Django>=2.2.24
 djangorestframework>=3.10.3,<3.14
