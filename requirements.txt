@@ -46,7 +46,7 @@ signxml==2.9.0
 #       - lxml
 #       - pyOpenSSL
 attrs==20.3.0
-certifi==2020.12.5
+certifi==2022.5.18
 cffi==1.14.0
 eight==1.0.0
 future==0.18.2
