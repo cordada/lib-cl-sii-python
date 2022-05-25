@@ -13,7 +13,7 @@ defusedxml==0.6.0
 Django>=2.2.24
 djangorestframework>=3.10.3,<3.14
 jsonschema==3.2.0
-lxml==4.6.5
+lxml==4.8.0
 marshmallow==2.19.5
 pydantic==1.6.2
 pyOpenSSL==18.0.0
