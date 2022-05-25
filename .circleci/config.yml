@@ -80,7 +80,7 @@ jobs:
 
   dist:
     docker:
-      - image: docker.io/library/python:3.8.12
+      - image: docker.io/library/python:3.8.13
 
     working_directory: ~/repo
 
@@ -121,7 +121,7 @@ jobs:
 
   deploy:
     docker:
-      - image: docker.io/library/python:3.8.12
+      - image: docker.io/library/python:3.8.13
         environment:
           <<: *x-deploy-environment
 
@@ -151,7 +151,7 @@ workflows:
             parameters:
               python_version:
                 - "3.7.9"
-                - "3.8.12"
+                - "3.8.13"
                 - "3.9.1"
       - dist:
           requires:
