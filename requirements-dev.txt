@@ -108,7 +108,7 @@ pycodestyle==2.8.0
 pyflakes==2.4.0
 # Pygments
 # pyparsing
-readme-renderer==25.0
+readme-renderer==35.0
 requests-toolbelt==0.9.1
 requests==2.25.1
 # SecretStorage
