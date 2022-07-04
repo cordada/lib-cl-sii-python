@@ -3,6 +3,12 @@
 History
 -------
 
+0.17.3 (2022-07-04)
++++++++++++++++++++++++
+
+* (PR #326, 2022-05-25) chore(requirements-dev): Update package `readme-renderer` to 35.0
+* (PR #325, 2022-05-25) chore: Update Python to version 3.8.13
+
 0.17.2 (2022-03-31)
 +++++++++++++++++++++++
 
