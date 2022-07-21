@@ -54,6 +54,6 @@ importlib-metadata==1.6.0; python_version<'3.8'
 pycparser==2.20
 pyrsistent==0.17.3
 # setuptools
-six==1.15.0
+six==1.16.0
 # sqlparse
 zipp==3.4.0 ; python_version < "3.8"
