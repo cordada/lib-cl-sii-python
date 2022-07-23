@@ -15,7 +15,7 @@ djangorestframework>=3.10.3,<3.14
 jsonschema==3.2.0
 lxml==4.9.1
 marshmallow==2.19.5
-pydantic==1.6.2
+pydantic==1.9.1
 pyOpenSSL==18.0.0
 pytz==2019.3
 signxml==2.9.0
