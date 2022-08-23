@@ -250,7 +250,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(
             cm.exception.args,
-            ("Signature verification failed: header too long",),
+            ("Signature verification failed: []",),
         )
 
     def test_fail_included_cert_not_from_a_known_ca(self) -> None:

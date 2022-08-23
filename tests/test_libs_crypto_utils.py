@@ -915,7 +915,9 @@ class LoadPemX509CertTest(unittest.TestCase):
     def test_load_der_x509_cert_fail_value_error(self) -> None:
         with self.assertRaises(ValueError) as cm:
             load_der_x509_cert(b'hello')
-        self.assertEqual(cm.exception.args, ("Unable to load certificate",))
+        self.assertEqual(
+            cm.exception.args, ("error parsing asn1 value: ParseError { kind: ShortData }",)
+        )
 
     def test_load_pem_x509_cert_ok(self) -> None:
         cert_der_bytes = utils.read_test_file_bytes(
@@ -1000,9 +1002,9 @@ class LoadPemX509CertTest(unittest.TestCase):
         self.assertEqual(
             cm.exception.args,
             (
-                "Unable to load certificate. See "
-                "https://cryptography.io/en/latest/faq.html#why-can-t-i-import-my-pem-file "
-                "for more details.",
+                "Unable to load PEM file. See "
+                "https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file "
+                "for more details. InvalidData(InvalidLength)",
             ),
         )
 
