@@ -6,6 +6,7 @@ BLACK = black --config .black.cfg.toml
 .DEFAULT_GOAL := help
 .PHONY: help
 .PHONY: clean clean-build clean-pyc clean-test
+.PHONY: install-dev install-deps-dev
 .PHONY: lint lint-fix test test-all test-coverage test-coverage-report-console test-coverage-report-html
 .PHONY: dist upload-release
 
@@ -34,6 +35,18 @@ clean-test: ## remove test, lint and coverage artifacts
 	rm -rf htmlcov/
 	rm -rf test-reports/
 	rm -rf .mypy_cache/
+
+install-dev: install-deps-dev
+install-dev: ## Install for development
+	python -m pip install --editable .
+	python -m pip check
+
+install-deps-dev: ## Install dependencies for development
+	python -m pip install -r requirements.txt
+	python -m pip check
+
+	python -m pip install -r requirements-dev.txt
+	python -m pip check
 
 lint: ## run tools for code style analysis, static type check, etc
 	flake8 --config=setup.cfg  cl_sii  scripts  tests
