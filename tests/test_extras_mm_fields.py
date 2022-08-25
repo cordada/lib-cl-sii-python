@@ -127,7 +127,7 @@ class RutFieldTest(unittest.TestCase):
 
         result = schema.load(data_invalid_2)
         self.assertDictEqual(dict(result.data), {})
-        self.assertDictEqual(dict(result.errors), {'RUT of Emisor': ['Invalid input type.']})
+        self.assertDictEqual(dict(result.errors), {'RUT of Emisor': ['Invalid type.']})
 
         result = schema.load(data_invalid_3)
         self.assertDictEqual(dict(result.data), {})
@@ -147,7 +147,7 @@ class RutFieldTest(unittest.TestCase):
         obj_invalid_3 = self.MyObj(emisor_rut='')
 
         data, errors = schema.dump(obj_invalid_1)
-        self.assertDictEqual(errors, {'emisor_rut': ['Invalid input type.']})
+        self.assertDictEqual(errors, {'emisor_rut': ['Invalid type.']})
 
         data, errors = schema.dump(obj_invalid_2)
         self.assertDictEqual(errors, {'emisor_rut': ['Not a syntactically valid RUT.']})
@@ -266,7 +266,7 @@ class TipoDteFieldTest(unittest.TestCase):
 
         result = schema.load(data_invalid_2)
         self.assertDictEqual(dict(result.data), {})
-        self.assertDictEqual(dict(result.errors), {'source field name': ['Invalid input type.']})
+        self.assertDictEqual(dict(result.errors), {'source field name': ['Invalid type.']})
 
         result = schema.load(data_invalid_3)
         self.assertDictEqual(dict(result.data), {})
@@ -290,13 +290,13 @@ class TipoDteFieldTest(unittest.TestCase):
         data, errors = schema.dump(obj_invalid_1)
         self.assertDictEqual(errors, {'tipo_dte': ['Not a valid Tipo DTE.']})
         data, errors = schema.dump(obj_invalid_2)
-        self.assertDictEqual(errors, {'tipo_dte': ['Invalid input type.']})
+        self.assertDictEqual(errors, {'tipo_dte': ['Invalid type.']})
         data, errors = schema.dump(obj_invalid_3)
-        self.assertDictEqual(errors, {'tipo_dte': ['Invalid input type.']})
+        self.assertDictEqual(errors, {'tipo_dte': ['Invalid type.']})
         data, errors = schema.dump(obj_invalid_4)
-        self.assertDictEqual(errors, {'tipo_dte': ['Invalid input type.']})
+        self.assertDictEqual(errors, {'tipo_dte': ['Invalid type.']})
         data, errors = schema.dump(obj_invalid_5)
-        self.assertDictEqual(errors, {'tipo_dte': ['Invalid input type.']})
+        self.assertDictEqual(errors, {'tipo_dte': ['Invalid type.']})
 
 
 class RcvTipoDoctoFieldTest(unittest.TestCase):
@@ -411,7 +411,7 @@ class RcvTipoDoctoFieldTest(unittest.TestCase):
 
         result = schema.load(data_invalid_2)
         self.assertDictEqual(dict(result.data), {})
-        self.assertDictEqual(dict(result.errors), {'source field name': ['Invalid input type.']})
+        self.assertDictEqual(dict(result.errors), {'source field name': ['Invalid type.']})
 
         result = schema.load(data_invalid_3)
         self.assertDictEqual(dict(result.data), {})
@@ -435,13 +435,13 @@ class RcvTipoDoctoFieldTest(unittest.TestCase):
         data, errors = schema.dump(obj_invalid_1)
         self.assertDictEqual(errors, {'tipo_docto': ["Not a valid RCV's Tipo de Documento."]})
         data, errors = schema.dump(obj_invalid_2)
-        self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})
+        self.assertDictEqual(errors, {'tipo_docto': ['Invalid type.']})
         data, errors = schema.dump(obj_invalid_3)
-        self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})
+        self.assertDictEqual(errors, {'tipo_docto': ['Invalid type.']})
         data, errors = schema.dump(obj_invalid_4)
-        self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})
+        self.assertDictEqual(errors, {'tipo_docto': ['Invalid type.']})
         data, errors = schema.dump(obj_invalid_5)
-        self.assertDictEqual(errors, {'tipo_docto': ['Invalid input type.']})
+        self.assertDictEqual(errors, {'tipo_docto': ['Invalid type.']})
 
 
 class RcvPeriodoTributarioFieldTest(unittest.TestCase):
@@ -583,7 +583,7 @@ class RcvPeriodoTributarioFieldTest(unittest.TestCase):
 
         result = schema.load(data_invalid_2)
         self.assertEqual(dict(result.data), {})
-        self.assertEqual(dict(result.errors), {'source field name': ['Invalid input type.']})
+        self.assertEqual(dict(result.errors), {'source field name': ['Invalid type.']})
 
         result = schema.load(data_invalid_3)
         self.assertEqual(dict(result.data), {})
@@ -616,12 +616,12 @@ class RcvPeriodoTributarioFieldTest(unittest.TestCase):
         data, errors = schema.dump(obj_invalid_1)
         self.assertEqual(errors, {'periodo_tributario': ["Not a valid RCV Periodo Tributario."]})
         data, errors = schema.dump(obj_invalid_2)
-        self.assertEqual(errors, {'periodo_tributario': ['Invalid input type.']})
+        self.assertEqual(errors, {'periodo_tributario': ['Invalid type.']})
         data, errors = schema.dump(obj_invalid_3)
-        self.assertEqual(errors, {'periodo_tributario': ['Invalid input type.']})
+        self.assertEqual(errors, {'periodo_tributario': ['Invalid type.']})
         data, errors = schema.dump(obj_invalid_4)
         self.assertEqual(errors, {'periodo_tributario': ["Not a valid RCV Periodo Tributario."]})
         data, errors = schema.dump(obj_invalid_5)
-        self.assertEqual(errors, {'periodo_tributario': ['Invalid input type.']})
+        self.assertEqual(errors, {'periodo_tributario': ['Invalid type.']})
         data, errors = schema.dump(obj_invalid_6)
         self.assertEqual(errors, {'periodo_tributario': ["Not a valid RCV Periodo Tributario."]})
