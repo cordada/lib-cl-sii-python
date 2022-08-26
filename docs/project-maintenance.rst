@@ -36,7 +36,7 @@ Add new entry to changelog including the changes summary (remember to format as 
 
     nano 'HISTORY.rst'
     git add 'HISTORY.rst'
-    git commit -m "HISTORY: update for new version"
+    git commit -m "chore: Update history for new version"
 
 2) Bump package version
 +++++++++++++++++++
