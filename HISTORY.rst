@@ -3,6 +3,28 @@
 History
 -------
 
+0.18.0 (2022-08-26)
++++++++++++++++++++++++
+
+* (PR #343, 2022-07-08) chore: Update Dependabot configuration
+* (PR #281, 2022-07-21) build(deps): bump six from 1.15.0 to 1.16.0
+* (PR #340, 2022-07-21) build(deps): bump lxml from 4.6.5 to 4.9.1
+* (PR #334, 2022-07-22) build(deps): bump certifi from 2020.12.5 to 2022.6.15
+* (PR #350, 2022-08-11) chore: Add code owners
+* (PR #352, 2022-08-18) chore: Change Dependabot schedule interval from `weekly` to `monthly`
+* (PR #338, 2022-08-22) build(deps-dev): bump tox from 3.20.1 to 3.25.1
+* (PR #342, 2022-08-22) chore(deps): Bump cryptography from 3.3.2 to 37.0.4
+* (PR #286, 2022-08-24) build(deps): bump eight from 1.0.0 to 1.0.1
+* (PR #355, 2022-08-24) chore: Add Make tasks for installation
+* (PR #332, 2022-08-24) build(deps-dev): bump pkginfo from 1.7.0 to 1.8.3
+* (PR #288, 2022-08-24) build(deps): bump pluggy from 0.13.1 to 1.0.0
+* (PR #287, 2022-08-25) build(deps): bump wheel from 0.35.1 to 0.37.1
+* (PR #356, 2022-08-25) chore(deps): bump marshmallow from 2.19.5 to 2.21.0
+* (PR #339, 2022-08-25) build(deps): bump cffi from 1.14.0 to 1.15.1
+* (PR #312, 2022-08-25) build(deps-dev): bump tqdm from 4.45.0 to 4.64.0
+* (PR #359, 2022-08-25) chore: Add Git commit linter
+* (PR #360, 2022-08-26) Update files for Git commit linter
+
 0.17.3 (2022-07-04)
 +++++++++++++++++++++++
 
