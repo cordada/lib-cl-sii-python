@@ -1,8 +1,8 @@
 # cl-sii Python lib
 
-[![PyPI package version](https://img.shields.io/pypi/v/cl-sii.svg)](https://pypi.python.org/pypi/cl-sii)
-[![Python versions](https://img.shields.io/pypi/pyversions/cl-sii.svg)](https://pypi.python.org/pypi/cl-sii)
-[![License](https://img.shields.io/pypi/l/cl-sii.svg)](https://pypi.python.org/pypi/cl-sii)
+[![PyPI Package Version](https://img.shields.io/pypi/v/cl-sii)](https://pypi.org/project/cl-sii/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/cl-sii)](https://pypi.org/project/cl-sii/)
+[![License](https://img.shields.io/pypi/l/cl-sii)](https://pypi.org/project/cl-sii/)
 
 Python library for Servicio de Impuestos Internos (SII) of Chile.
 
@@ -10,12 +10,24 @@ Python library for Servicio de Impuestos Internos (SII) of Chile.
 
 The full documentation is at https://lib-cl-sii-python.readthedocs.io.
 
-## Status
+## Dashboard
 
-[![CI status](https://circleci.com/gh/fyntex/lib-cl-sii-python/tree/develop.svg?style=shield)](https://circleci.com/gh/fyntex/lib-cl-sii-python/tree/develop)
-[![Code coverage](https://codecov.io/gh/fyntex/lib-cl-sii-python/branch/develop/graph/badge.svg)](https://codecov.io/gh/fyntex/lib-cl-sii-python)
-[![Code Climate maintainability](https://api.codeclimate.com/v1/badges/c4e8a9b023310ff8c276/maintainability)](https://codeclimate.com/github/fyntex/lib-cl-sii-python/maintainability)
-[![Documentation](https://readthedocs.org/projects/lib-cl-sii-python/badge/?version=latest)](https://lib-cl-sii-python.readthedocs.io/en/latest/?badge=latest)
+### Development
+
+| VCS Branch | Deployment Environment | VCS Repository | CI Status |
+| ---------- | ---------------------- | -------------- | --------- |
+| `develop` | Staging | [GitHub](https://github.com/fyntex/lib-cl-sii-python/tree/develop) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/fyntex/lib-cl-sii-python/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/fyntex/lib-cl-sii-python/tree/develop) |
+| `master` | Production | [GitHub](https://github.com/fyntex/lib-cl-sii-python/tree/master) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/fyntex/lib-cl-sii-python/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/fyntex/lib-cl-sii-python/tree/master) |
+
+| Code Coverage | Code Climate | Documentation | Project Analysis |
+| ------------- | ------------ | ------------- | ---------------- |
+| [![Codecov](https://codecov.io/gh/fyntex/lib-cl-sii-python/branch/develop/graph/badge.svg?token=VdwPUEUzzQ)](https://codecov.io/gh/fyntex/lib-cl-sii-python) | [![Maintainability](https://api.codeclimate.com/v1/badges/c4e8a9b023310ff8c276/maintainability)](https://codeclimate.com/github/fyntex/lib-cl-sii-python/maintainability) | [![Read the Docs](https://readthedocs.org/projects/lib-cl-sii-python/badge/)](https://readthedocs.org/projects/lib-cl-sii-python/) | [Open Source Insights](https://deps.dev/pypi/cl-sii) |
+
+### Hosting
+
+| Deployment Environment | Python Package Registry |
+| ---------------------- | ----------------------- |
+| Production | [PyPI](https://pypi.org/project/cl-sii/) |
 
 ## Supported Python versions
 
