@@ -8,13 +8,13 @@
 # note: it is mandatory to register all dependencies of the required packages.
 
 # Required packages:
-cryptography==3.3.2
+cryptography==37.0.4
 defusedxml==0.6.0
 Django>=2.2.24
 djangorestframework>=3.10.3,<3.14
 jsonschema==3.2.0
-lxml==4.6.5
-marshmallow==2.19.5
+lxml==4.9.1
+marshmallow==2.21.0
 pydantic==1.6.2
 pyOpenSSL==18.0.0
 pytz==2019.3
@@ -24,7 +24,6 @@ signxml==2.9.0
 #   - cryptography:
 #       - cffi:
 #           - pycparser
-#       - six
 #   - Django:
 #       - pytz
 #       - sqlparse
@@ -46,14 +45,14 @@ signxml==2.9.0
 #       - lxml
 #       - pyOpenSSL
 attrs==20.3.0
-certifi==2020.12.5
-cffi==1.14.0
-eight==1.0.0
+certifi==2022.6.15
+cffi==1.15.1
+eight==1.0.1
 future==0.18.2
 importlib-metadata==1.6.0; python_version<'3.8'
 pycparser==2.20
 pyrsistent==0.17.3
 # setuptools
-six==1.15.0
+six==1.16.0
 # sqlparse
 zipp==3.4.0 ; python_version < "3.8"

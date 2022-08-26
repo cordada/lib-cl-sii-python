@@ -27,6 +27,8 @@ def get_subject_rut_from_certificate_pfx(pfx_file_bytes: bytes, password: Option
     )
     # https://cryptography.io/en/latest/hazmat/primitives/asymmetric/serialization/#cryptography.hazmat.primitives.serialization.pkcs12.load_key_and_certificates  # noqa: E501
 
+    assert x509_cert is not None
+
     subject_alt_name_ext = x509_cert.extensions.get_extension_for_class(
         cryptography.x509.extensions.SubjectAlternativeName,
     )
