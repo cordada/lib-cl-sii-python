@@ -17,7 +17,7 @@ def get_version(*file_paths: Sequence[str]) -> str:
 
 version = get_version('cl_sii', '__init__.py')
 
-readme = open('README.rst').read()
+readme = open('README.md').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [

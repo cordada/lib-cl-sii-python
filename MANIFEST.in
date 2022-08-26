@@ -1,6 +1,6 @@
 include HISTORY.rst
 include LICENSE
-include README.rst
+include README.md
 recursive-include cl_sii *py
 recursive-include cl_sii/data/cte/schemas-json *.schema.json
 recursive-include cl_sii/data/ref/factura_electronica/schemas-xml *.xsd
