@@ -17,7 +17,7 @@ lxml==4.9.1
 marshmallow==2.21.0
 pydantic==1.6.2
 pyOpenSSL==18.0.0
-pytz==2019.3
+pytz==2022.2.1
 signxml==2.9.0
 
 # Packages dependencies:
