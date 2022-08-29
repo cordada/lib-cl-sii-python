@@ -32,10 +32,10 @@ Generate summary::
 
     git lg-github-pr-summary master..develop
 
-Add new entry to changelog including the changes summary (remember to format as reST)::
+Add new entry to changelog including the changes summary::
 
-    nano 'HISTORY.rst'
-    git add 'HISTORY.rst'
+    nano 'HISTORY.md'
+    git add 'HISTORY.md'
     git commit -m "chore: Update history for new version"
 
 2) Bump package version

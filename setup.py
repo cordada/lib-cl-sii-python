@@ -17,8 +17,8 @@ def get_version(*file_paths: Sequence[str]) -> str:
 
 version = get_version('cl_sii', '__init__.py')
 
-readme = open('README.rst').read()
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
+readme = open('README.md').read()
+history = open('HISTORY.md').read()
 
 requirements = [
     'cryptography>=37.0.1',
@@ -82,7 +82,7 @@ setup(
     install_requires=requirements,
     license="MIT",
     long_description=readme + '\n\n' + history,
-    long_description_content_type='text/x-rst',  # for Markdown: 'text/markdown'
+    long_description_content_type='text/markdown',  # for reStructuredText: 'text/x-rst'
     include_package_data=True,
     name='cl-sii',
     package_data=_package_data,
