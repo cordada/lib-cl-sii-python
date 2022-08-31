@@ -15,7 +15,7 @@ djangorestframework>=3.10.3,<3.14
 jsonschema==3.2.0
 lxml==4.9.1
 marshmallow==2.21.0
-pydantic==1.6.2
+pydantic==1.10.1
 pyOpenSSL==18.0.0
 pytz==2022.2.1
 signxml==2.9.0
@@ -34,6 +34,8 @@ signxml==2.9.0
 #       - pyrsistent
 #       - setuptools
 #       - six
+#   - pydantic:
+#       - typing-extensions
 #   - pyOpenSSL:
 #       - cryptography
 #       - six
@@ -55,4 +57,5 @@ pyrsistent==0.17.3
 # setuptools
 six==1.16.0
 # sqlparse
+typing-extensions==4.3.0
 zipp==3.4.0 ; python_version < "3.8"
