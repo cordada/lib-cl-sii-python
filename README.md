@@ -8,7 +8,7 @@ Python library for Servicio de Impuestos Internos (SII) of Chile.
 
 ## Documentation
 
-The full documentation is at https://lib-cl-sii-python.readthedocs.io.
+The full documentation is at <https://lib-cl-sii-python.readthedocs.io>.
 
 ## Dashboard
 

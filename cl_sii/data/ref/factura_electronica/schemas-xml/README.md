@@ -4,6 +4,7 @@ This directory contains all the files of `schema_dte.zip` and `schema_iecv.zip`,
 plus this text file.
 
 The most significant structures are:
+
 - common:
   - XML element `Signature`: "Firma Digital sobre Documento".
   - XML data type `SignatureType`: "Firma Digital con Restricciones".
@@ -16,6 +17,7 @@ The most significant structures are:
   - XML element `LibroCompraVenta`: "Informacion Electronica de Libros de Compra y Venta".
 
 Note:
+
 - DTE means "Documento Tributario Electrónico".
 - RTC: "Registro Transferencia de Crédito" aka RPETC; "Registro Electrónico de Cesión de Créditos".
 - RPETC: "Registro Público Electrónico de Transferencia de Crédito" aka RTC.
@@ -40,7 +42,8 @@ referenced from official webpage
 / [Factura electrónica](http://www.sii.cl/servicios_online/1039-.html)
 / [FORMATO XML DE DOCUMENTOS ELECTRÓNICOS](http://www.sii.cl/factura_electronica/formato_xml.htm)
 as
-"[Bajar schema XML de Documentos Tributarios Electrónicos](http://www.sii.cl/factura_electronica/schema_dte.zip) (Incluye Documentos de exportación)"
+"[Bajar schema XML de Documentos Tributarios Electrónicos](http://www.sii.cl/factura_electronica/schema_dte.zip)
+(Incluye Documentos de exportación)"
 
 
 #### Cesion (RTC)
