@@ -1,5 +1,13 @@
 # History
 
+## 0.18.1 (2022-09-01)
+
+- (PR #362, 2022-08-29) Add information dashboard to readme
+- (PR #358, 2022-08-29) chore(deps): bump pytz from 2019.3 to 2022.2.1
+- (PR #364, 2022-08-31) chore(deps): bump typing-extensions from 4.0.1 to 4.3.0
+- (PR #367, 2022-08-31) chore(deps): Update 'pydantic' from version 1.6.2 to 1.10.1
+- (PR #368, 2022-09-01) Add Super-Linter
+
 ## 0.18.0 (2022-08-26)
 
 - (PR #343, 2022-07-08) chore: Update Dependabot configuration
