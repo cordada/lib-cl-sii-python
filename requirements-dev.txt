@@ -119,6 +119,6 @@ tqdm==4.64.0
 typed-ast==1.4.2
 typing-extensions==4.3.0
 # urllib3
-virtualenv==20.4.3
+virtualenv==20.16.4
 # webencodings
 # zipp
