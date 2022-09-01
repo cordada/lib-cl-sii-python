@@ -1,0 +1,23 @@
+# Markdownlint Configuration
+#
+# Markdownlint is a style checker and lint tool for Markdown/CommonMark files.
+#
+# - Web site: https://github.com/DavidAnson/markdownlint/
+# - Documentation: https://github.com/DavidAnson/markdownlint#readme
+
+default: true
+
+heading-style:
+  style: atx
+
+line-length:
+  line_length: 100
+
+no-duplicate-heading:
+  allow_different_nesting: true
+
+no-multiple-blanks:
+  maximum: 2
+
+ul-indent:
+  indent: 2
