@@ -1,0 +1,26 @@
+# GitHub Actions Workflow for Super-Linter
+#
+# Super-Linter is a simple combination of various linters, written in bash, to help validate your
+# source code.
+#
+# - Web site: https://github.com/github/super-linter/
+# - Documentation: https://github.com/github/super-linter#readme
+
+name: Super-Linter
+
+on:
+  push:
+
+permissions:
+  contents: read
+  statuses: write
+  checks: write
+
+jobs:
+  super-linter:
+    name: Super-Linter
+    uses: cordada/github-actions-utils/.github/workflows/super-linter.yaml@master
+    with:
+      default_git_branch: develop
+
+      validate_markdown: true
