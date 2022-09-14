@@ -30,25 +30,27 @@ eight==1.0.1
 future==0.18.2
     # via eight
 importlib-metadata==1.6.0
-    # via
-    #   -r requirements.in
-    #   jsonschema
+    # via -r requirements.in
 jsonschema==3.2.0
     # via -r requirements.in
 lxml==4.9.1
     # via
     #   -r requirements.in
     #   signxml
-marshmallow==2.21.0
+marshmallow==3.17.1
     # via -r requirements.in
+packaging==21.3
+    # via marshmallow
 pycparser==2.20
     # via cffi
-pydantic==1.10.1
+pydantic==1.10.2
     # via -r requirements.in
 pyopenssl==20.0.1
     # via
     #   -r requirements.in
     #   signxml
+pyparsing==3.0.9
+    # via packaging
 pyrsistent==0.17.3
     # via jsonschema
 pytz==2022.2.1
@@ -65,9 +67,7 @@ six==1.16.0
 sqlparse==0.4.2
     # via django
 typing-extensions==4.3.0
-    # via
-    #   asgiref
-    #   pydantic
+    # via pydantic
 zipp==3.8.1
     # via importlib-metadata
 

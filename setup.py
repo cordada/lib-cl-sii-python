@@ -25,7 +25,7 @@ requirements = [
     'defusedxml>=0.6.0,<1',
     'jsonschema>=3.1.1',
     'lxml>=4.6.5,<5',
-    'marshmallow>=2.19.2,<3',
+    'marshmallow>=2.19.2,<4',
     'pydantic>=1.6.2,!=1.7.*,!=1.8.*,!=1.9.*',
     # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<21'
     'pyOpenSSL>=18.0.0,<21',
