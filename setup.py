@@ -28,7 +28,7 @@ requirements = [
     'marshmallow>=2.19.2,<3',
     'pydantic>=1.6.2,!=1.7.*,!=1.8.*,!=1.9.*',
     # TODO: remove upper-bound after a new release of 'signxml' drops the requirement 'pyOpenSSL<21'
-    'pyOpenSSL>=18.0.0,<21',
+    'pyOpenSSL>=18.0.0,<23',
     'pytz>=2019.3',
     'signxml>=2.8.0',
 ]
