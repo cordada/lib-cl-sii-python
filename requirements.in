@@ -6,7 +6,7 @@
 #   git+https://github.com/example/example.git@example-vcs-ref#egg=example-pkg[foo,bar]==1.42.3
 
 cryptography==37.0.4
-defusedxml==0.6.0
+defusedxml==0.7.1
 Django>=2.2.24
 djangorestframework>=3.10.3,<3.14
 importlib-metadata==1.6.0
