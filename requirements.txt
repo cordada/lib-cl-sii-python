@@ -17,7 +17,7 @@ cryptography==37.0.4
     #   -r requirements.in
     #   pyopenssl
     #   signxml
-defusedxml==0.6.0
+defusedxml==0.7.1
     # via -r requirements.in
 django==3.2.15
     # via
