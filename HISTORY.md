@@ -1,5 +1,18 @@
 # History
 
+## 0.18.2 (2022-09-26)
+
+- (PR #370, 2022-09-14) chore(deps): Bump pyopenssl from 18.0.0 to 20.0.1
+- (PR #373, 2022-09-14) Manage Python dependencies with Pip Tools
+- (PR #381, 2022-09-14) fix(deps): Remove Python version constraint for `importlib-metadata`
+- (PR #382, 2022-09-14) fix(deps): Workaround for CI issues related to `python-deps-sync-check`
+- (PR #380, 2022-09-14) chore(deps): Bump pydantic from 1.10.1 to 1.10.2
+- (PR #371, 2022-09-23) chore(deps): Bump jsonschema from 3.2.0 to 4.16.0
+- (PR #374, 2022-09-23) chore(deps): Bump defusedxml from 0.6.0 to 0.7.1
+- (PR #377, 2022-09-23) chore(deps-dev): Bump codecov from 2.1.11 to 2.1.12
+- (PR #378, 2022-09-23) chore(deps-dev): Bump black from 22.1.0 to 22.8.0
+- (PR #379, 2022-09-23) chore(deps-dev): Bump coverage from 5.3 to 6.4.4
+
 ## 0.18.1 (2022-09-01)
 
 - (PR #362, 2022-08-29) Add information dashboard to readme

@@ -1,5 +1,11 @@
 SHELL = /usr/bin/env bash
 
+# Python
+PYTHON = python3
+PYTHON_PIP = $(PYTHON) -m pip
+PYTHON_PIP_TOOLS_VERSION_SPECIFIER = ~=6.8.0
+PYTHON_PIP_TOOLS_SRC_FILES = requirements.in requirements-dev.in
+
 # Black
 BLACK = black --config .black.cfg.toml
 
@@ -9,6 +15,7 @@ BLACK = black --config .black.cfg.toml
 .PHONY: install-dev install-deps-dev
 .PHONY: lint lint-fix test test-all test-coverage test-coverage-report-console test-coverage-report-html
 .PHONY: dist upload-release
+.PHONY: python-deps-compile python-deps-sync-check python-pip-tools-install
 
 help:
 	@grep '^[a-zA-Z]' $(MAKEFILE_LIST) | sort | awk -F ':.*?## ' 'NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
@@ -41,6 +48,7 @@ install-dev: ## Install for development
 	python -m pip install --editable .
 	python -m pip check
 
+install-deps-dev: python-pip-tools-install
 install-deps-dev: ## Install dependencies for development
 	python -m pip install -r requirements.txt
 	python -m pip check
@@ -81,3 +89,20 @@ dist: clean ## builds source and wheel package
 
 upload-release: ## upload dist packages
 	python -m twine upload 'dist/*'
+
+python-deps-compile: $(patsubst %,python-deps-compile-%,$(PYTHON_PIP_TOOLS_SRC_FILES))
+python-deps-compile: ## Compile Python dependency manifests
+
+python-deps-compile-%:
+	pip-compile --quiet "$(*)"
+
+python-deps-sync-check: $(patsubst %,python-deps-sync-check-%,$(PYTHON_PIP_TOOLS_SRC_FILES))
+python-deps-sync-check: ## Check that compiled Python dependency manifests are up-to-date with their sources
+
+python-deps-sync-check-%: python-deps-compile-%
+	@# Replace file extension of source Python dependency manifest (.in)
+	@# with file extension of compiled Python dependency manifest (.txt).
+	git diff --exit-code -- "$(*:.in=.txt)"
+
+python-pip-tools-install: ## Install Pip Tools
+	$(PYTHON_PIP) install 'pip-tools$(PYTHON_PIP_TOOLS_VERSION_SPECIFIER)'
