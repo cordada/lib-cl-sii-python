@@ -46,6 +46,16 @@ flake8==4.0.1
     # via -r requirements-dev.in
 idna==2.10
     # via requests
+importlib-metadata==1.6.0
+    # via
+    #   -c requirements.txt
+    #   click
+    #   flake8
+    #   keyring
+    #   pluggy
+    #   tox
+    #   twine
+    #   virtualenv
 isort==5.10.1
     # via -r requirements-dev.in
 jeepney==0.8.0
@@ -56,7 +66,7 @@ keyring==21.4.0
     # via twine
 mccabe==0.6.1
     # via flake8
-mypy==0.790
+mypy==0.971
     # via -r requirements-dev.in
 mypy-extensions==0.4.3
     # via
@@ -107,15 +117,19 @@ six==1.16.0
 toml==0.10.2
     # via tox
 tomli==2.0.0
-    # via black
+    # via
+    #   black
+    #   mypy
 tox==3.25.1
     # via -r requirements-dev.in
 tqdm==4.64.0
     # via twine
 twine==3.1.1
     # via -r requirements-dev.in
-typed-ast==1.4.2
-    # via mypy
+typed-ast==1.5.4
+    # via
+    #   black
+    #   mypy
 typing-extensions==4.3.0
     # via
     #   -c requirements.txt
@@ -129,6 +143,10 @@ webencodings==0.5.1
     # via bleach
 wheel==0.37.1
     # via -r requirements-dev.in
+zipp==3.8.1
+    # via
+    #   -c requirements.txt
+    #   importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
