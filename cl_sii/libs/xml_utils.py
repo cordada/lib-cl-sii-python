@@ -430,6 +430,10 @@ def verify_xml_signature(
     if use_default_xml_verifier:
         xml_verifier = signxml.XMLVerifier()
 
+        # Workaround for breaking change in signxml 2.10.0 and 2.10.1:
+        # (See https://github.com/XML-Security/signxml/blob/v2.10.1/Changes.rst)
+        xml_verifier.excise_empty_xmlns_declarations = True
+
     if not isinstance(xml_verifier, signxml.XMLVerifier):
         raise TypeError(
             "'xml_verifier' must be an instance of 'signxml.XMLVerifier' or of a subclass of it."

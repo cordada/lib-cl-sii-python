@@ -73,6 +73,11 @@ def verify_aec_signature(
 
     try:
         aec_xml_verifier = AecXMLVerifier()
+
+        # Workaround for breaking change in signxml 2.10.0 and 2.10.1:
+        # (See https://github.com/XML-Security/signxml/blob/v2.10.1/Changes.rst)
+        aec_xml_verifier.excise_empty_xmlns_declarations = True
+
         xml_utils.verify_xml_signature(
             aec_xml_doc,
             trusted_x509_cert=signature_x509_cert,
