@@ -1,5 +1,18 @@
 # History
 
+## 0.18.3 (2022-11-07)
+
+- (PR #346, 2022-09-28) chore(deps-dev): bump mypy from 0.790 to 0.971
+- (PR #385, 2022-10-14) chore(deps-dev): Bump mypy from 0.971 to 0.981
+- (PR #389, 2022-10-14) chore(deps-dev): Bump coverage from 6.4.4 to 6.5.0
+- (PR #386, 2022-10-19) chore(deps): Bump djangorestframework from 3.13.1 to 3.14.0
+- (PR #391, 2022-10-19) chore(deps): Bump django from 3.2.15 to 3.2.16
+- (PR #394, 2022-11-03) chore(deps-dev): Bump mypy from 0.981 to 0.982
+- (PR #395, 2022-11-07) chore(deps): Bump pytz from 2022.2.1 to 2022.6
+- (PR #396, 2022-11-07) chore(deps-dev): Bump black from 22.8.0 to 22.10.0
+- (PR #375, 2022-11-07) chore(deps): Bump signxml from 2.9.0 to 2.10.1
+- (PR #376, 2022-11-07) chore(deps): Bump cryptography from 37.0.4 to 38.0.1
+
 ## 0.18.2 (2022-09-26)
 
 - (PR #370, 2022-09-14) chore(deps): Bump pyopenssl from 18.0.0 to 20.0.1
