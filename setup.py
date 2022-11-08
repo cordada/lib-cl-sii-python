@@ -21,13 +21,13 @@ readme = open('README.md').read()
 history = open('HISTORY.md').read()
 
 requirements = [
-    'cryptography>=37.0.1',
+    'cryptography>=38.0.0',
     'defusedxml>=0.6.0,<1',
     'jsonschema>=3.1.1',
     'lxml>=4.6.5,<5',
     'marshmallow>=2.19.2,<3',
     'pydantic>=1.6.2,!=1.7.*,!=1.8.*,!=1.9.*',
-    'pyOpenSSL>=18.0.0',
+    'pyOpenSSL>=22.0.0',
     'pytz>=2019.3',
     'signxml>=2.10.1',
 ]

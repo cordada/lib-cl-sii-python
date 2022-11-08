@@ -30,7 +30,7 @@ coverage==6.5.0
     # via
     #   -r requirements-dev.in
     #   codecov
-cryptography==37.0.4
+cryptography==38.0.1
     # via
     #   -c requirements.txt
     #   secretstorage
@@ -109,7 +109,6 @@ secretstorage==3.3.3
     # via keyring
 six==1.16.0
     # via
-    #   -c requirements.txt
     #   bleach
     #   packaging
     #   tox
