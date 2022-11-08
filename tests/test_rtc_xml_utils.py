@@ -42,6 +42,10 @@ class AecXmlValidatorTest(unittest.TestCase):
         cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
         aec_xml_verifier = AecXMLVerifier()
 
+        # Workaround for breaking change in signxml 2.10.0 and 2.10.1:
+        # (See https://github.com/XML-Security/signxml/blob/v2.10.1/Changes.rst)
+        aec_xml_verifier.excise_empty_xmlns_declarations = True
+
         signed_data, signed_xml, signature_xml = verify_xml_signature(
             xml_doc,
             trusted_x509_cert=cert,

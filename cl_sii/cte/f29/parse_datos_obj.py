@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
-from typing import Callable, Mapping, MutableMapping, Optional
+from typing import Any, Callable, Mapping, MutableMapping, Optional
 
 import jsonschema
 
@@ -44,7 +44,7 @@ def parse_sii_cte_f29_datos_obj(
     if campo_deserializer is None:
         campo_deserializer = cte_f29_datos_obj_campo_default_deserializer
 
-    obj_params = _parse_sii_cte_f29_datos_obj_to_dict(
+    obj_params: Mapping[str, Any] = _parse_sii_cte_f29_datos_obj_to_dict(
         datos_obj=datos_obj,
         schema_validator=schema_validator,
         campo_deserializer=campo_deserializer,
