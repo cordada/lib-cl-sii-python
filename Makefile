@@ -94,7 +94,7 @@ python-deps-compile: $(patsubst %,python-deps-compile-%,$(PYTHON_PIP_TOOLS_SRC_F
 python-deps-compile: ## Compile Python dependency manifests
 
 python-deps-compile-%:
-	pip-compile --quiet "$(*)"
+	pip-compile --strip-extras --quiet "$(*)"
 
 python-deps-sync-check: $(patsubst %,python-deps-sync-check-%,$(PYTHON_PIP_TOOLS_SRC_FILES))
 python-deps-sync-check: ## Check that compiled Python dependency manifests are up-to-date with their sources
