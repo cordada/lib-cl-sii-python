@@ -9,7 +9,7 @@ cryptography==38.0.3
 defusedxml==0.7.1
 Django>=2.2.24
 djangorestframework>=3.10.3,<3.15
-importlib-metadata==1.6.0
+importlib-metadata==5.0.0
 jsonschema==4.16.0
 lxml==4.9.1
 marshmallow==2.21.0
