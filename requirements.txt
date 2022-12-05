@@ -50,7 +50,7 @@ pytz==2022.6
     #   -r requirements.in
     #   django
     #   djangorestframework
-signxml==2.10.1
+signxml==3.0.2
     # via -r requirements.in
 sqlparse==0.4.2
     # via django
