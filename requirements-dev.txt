@@ -126,7 +126,7 @@ virtualenv==20.4.3
     # via tox
 webencodings==0.5.1
     # via bleach
-wheel==0.37.1
+wheel==0.38.4
     # via -r requirements-dev.in
 
 # The following packages are considered to be unsafe in a requirements file:
