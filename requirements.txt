@@ -33,8 +33,10 @@ lxml==4.9.1
     # via
     #   -r requirements.in
     #   signxml
-marshmallow==2.21.0
+marshmallow==3.19.0
     # via -r requirements.in
+packaging==21.3
+    # via marshmallow
 pycparser==2.20
     # via cffi
 pydantic==1.10.2
@@ -43,6 +45,8 @@ pyopenssl==22.0.0
     # via
     #   -r requirements.in
     #   signxml
+pyparsing==3.0.9
+    # via packaging
 pyrsistent==0.17.3
     # via jsonschema
 pytz==2022.6
