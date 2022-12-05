@@ -45,7 +45,7 @@ pycparser==2.20
     # via cffi
 pydantic==1.10.2
     # via -r requirements.in
-pyopenssl==22.0.0
+pyopenssl==22.1.0
     # via
     #   -r requirements.in
     #   signxml
