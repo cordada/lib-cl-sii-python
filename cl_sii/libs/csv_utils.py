@@ -1,5 +1,5 @@
 import csv
-from typing import IO, Sequence, Type, Union
+from typing import IO, Optional, Sequence, Type, Union
 
 
 def create_csv_dict_reader(
@@ -7,7 +7,7 @@ def create_csv_dict_reader(
     csv_dialect: Type[csv.Dialect],
     row_dict_extra_fields_key: Union[str, None] = None,
     expected_fields_strict: bool = True,
-    expected_field_names: Sequence[str] = None,
+    expected_field_names: Optional[Sequence[str]] = None,
 ) -> csv.DictReader:
     """
     Create a CSV dict reader with custom options.

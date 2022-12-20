@@ -1,6 +1,6 @@
 import csv
 import logging
-from typing import Dict, Iterable, Sequence, Tuple
+from typing import Dict, Iterable, Optional, Sequence, Tuple
 
 import marshmallow
 
@@ -24,8 +24,8 @@ def csv_rows_mm_deserialization_iterator(
     csv_reader: csv.DictReader,
     row_schema: marshmallow.Schema,
     n_rows_offset: int = 0,
-    max_n_rows: int = None,
-    fields_to_remove_names: Sequence[str] = None,
+    max_n_rows: Optional[int] = None,
+    fields_to_remove_names: Optional[Sequence[str]] = None,
 ) -> Iterable[Tuple[int, Dict[str, object], Dict[str, object], dict]]:
     """
     Marshmallow deserialization iterator over CSV rows.
@@ -78,8 +78,8 @@ def rows_mm_deserialization_iterator(
     rows_iterator: Iterable[Dict[str, object]],
     row_schema: marshmallow.Schema,
     n_rows_offset: int = 0,
-    max_n_rows: int = None,
-    fields_to_remove_names: Sequence[str] = None,
+    max_n_rows: Optional[int] = None,
+    fields_to_remove_names: Optional[Sequence[str]] = None,
 ) -> Iterable[Tuple[int, Dict[str, object], Dict[str, object], dict]]:
     """
     Marshmallow deserialization iterator.
