@@ -9,4 +9,4 @@
 include = '\.pyi?$'
 line-length = 100
 skip-string-normalization = true
-target-version = ['py38', 'py39']
+target-version = ['py38', 'py39', 'py310']
