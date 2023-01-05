@@ -31,7 +31,7 @@ The full documentation is at <https://lib-cl-sii-python.readthedocs.io>.
 
 ## Supported Python versions
 
-Only Python 3.7, 3.8 and 3.9. Python 3.6 and below will not work because we use some features
+Only Python 3.7, 3.8, 3.9 and 3.10. Python 3.6 and below will not work because we use some features
 introduced in Python 3.7.
 
 ## Quickstart

@@ -67,16 +67,16 @@ jobs:
             make test-coverage-report-console
             make test-coverage-report-html
 
-      # - when:
-      #     condition:
-      #       matches: { pattern: "^3\\.7\\.\\d+$", value: << parameters.python_version >> }
-      #     steps:
-      - run:
-          name: Check that compiled Python dependency manifests are up-to-date with their sources
-          command: |
-            . venv/bin/activate
-            make --ignore-errors python-deps-sync-check
-            # FIXME: Ignore errors because of issues related to testing with Python versions.
+      - when:
+          condition:
+            # FIXME: There are issues related to testing with multiple Python versions.
+            matches: { pattern: "^3\\.7\\.\\d+$", value: << parameters.python_version >> }
+          steps:
+            - run:
+                name: Check that compiled Python dependency manifests are up-to-date with their sources
+                command: |
+                  . venv/bin/activate
+                  make python-deps-sync-check
 
       - store_artifacts:
           path: test-reports
@@ -84,7 +84,7 @@ jobs:
 
   dist:
     docker:
-      - image: docker.io/library/python:3.8.13
+      - image: docker.io/library/python:3.10.9
 
     working_directory: ~/repo
 
@@ -118,7 +118,7 @@ jobs:
 
   deploy:
     docker:
-      - image: docker.io/library/python:3.8.13
+      - image: docker.io/library/python:3.10.9
         environment:
           <<: *x-deploy-environment
 
@@ -150,6 +150,7 @@ workflows:
                 - "3.7.9"
                 - "3.8.13"
                 - "3.9.1"
+                - "3.10.9"
       - dist:
           requires:
             - test

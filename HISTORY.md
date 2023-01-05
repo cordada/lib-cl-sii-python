@@ -1,5 +1,14 @@
 # History
 
+## 0.19.0 (2023-01-05)
+
+- (PR #398, 2022-11-23) fix: Fix Dependabot error pip.….Error: Constraints cannot have extras
+- (PR #399, 2022-11-23) chore(deps): Bump cryptography from 38.0.1 to 38.0.3
+- (PR #400, 2022-12-05) chore(deps-dev): Bump wheel from 0.37.1 to 0.38.4
+- (PR #407, 2022-12-05) chore(deps): Bump cryptography from 38.0.3 to 38.0.4
+- (PR #408, 2022-12-06) Enable Python dependency sync check for Python 3.7
+- (PR #409, 2022-12-29) chore: Add support for Python 3.10
+
 ## 0.18.3 (2022-11-07)
 
 - (PR #346, 2022-09-28) chore(deps-dev): bump mypy from 0.790 to 0.971
