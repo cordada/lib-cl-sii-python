@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 import marshmallow
 import marshmallow.fields
@@ -83,7 +83,7 @@ class CustomMarshmallowDateField(marshmallow.fields.Field):
         'format': '"{input}" cannot be formatted as a date.',
     }
 
-    def __init__(self, format: str = None, **kwargs: Any) -> None:
+    def __init__(self, format: Optional[str] = None, **kwargs: Any) -> None:
         """Constructor.
 
         :param format: Either ``"iso"`` (for ISO-8601) or a date format str.

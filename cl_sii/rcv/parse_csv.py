@@ -87,7 +87,7 @@ def parse_rcv_venta_csv_file(
     rut: Rut,
     input_file_path: str,
     n_rows_offset: int = 0,
-    max_n_rows: int = None,
+    max_n_rows: Optional[int] = None,
 ) -> Iterable[Tuple[Optional[RvDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
     """
     Parse entries from an RV ("Registro de Ventas") (CSV file).
@@ -199,7 +199,7 @@ def parse_rcv_compra_registro_csv_file(
     rut: Rut,
     input_file_path: str,
     n_rows_offset: int = 0,
-    max_n_rows: int = None,
+    max_n_rows: Optional[int] = None,
 ) -> Iterable[Tuple[Optional[RcRegistroDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
     """
     Parse entries from an RC ("Registro de Compras") / "registro" (CSV file).
@@ -280,7 +280,7 @@ def parse_rcv_compra_no_incluir_csv_file(
     rut: Rut,
     input_file_path: str,
     n_rows_offset: int = 0,
-    max_n_rows: int = None,
+    max_n_rows: Optional[int] = None,
 ) -> Iterable[Tuple[Optional[RcNoIncluirDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
     """
     Parse entries from an RC ("Registro de Compras") / "no incluir" (CSV file).
@@ -355,7 +355,7 @@ def parse_rcv_compra_reclamado_csv_file(
     rut: Rut,
     input_file_path: str,
     n_rows_offset: int = 0,
-    max_n_rows: int = None,
+    max_n_rows: Optional[int] = None,
 ) -> Iterable[Tuple[Optional[RcReclamadoDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
     """
     Parse entries from an RC ("Registro de Compras") / "reclamado" (CSV file).
@@ -430,7 +430,7 @@ def parse_rcv_compra_pendiente_csv_file(
     rut: Rut,
     input_file_path: str,
     n_rows_offset: int = 0,
-    max_n_rows: int = None,
+    max_n_rows: Optional[int] = None,
 ) -> Iterable[Tuple[Optional[RcPendienteDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
     """
     Parse entries from an RC ("Registro de Compras") / "pendiente" (CSV file).
@@ -1131,7 +1131,7 @@ def _parse_rcv_csv_file(
     fields_to_remove_names: Sequence[str],
     input_file_path: str,
     n_rows_offset: int,
-    max_n_rows: int = None,
+    max_n_rows: Optional[int] = None,
 ) -> Iterable[Tuple[Optional[RcvDetalleEntry], int, Dict[str, object], Dict[str, object]]]:
     """
     Parse entries from an RC or RV (CSV file).
