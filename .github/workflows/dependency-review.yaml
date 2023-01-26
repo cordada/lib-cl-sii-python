@@ -1,0 +1,24 @@
+name: Dependency Review
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Check Out VCS Repository
+        uses: actions/checkout@v3.3.0
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v3.0.3
+        with:
+          config-file: cordada/github-actions-utils/.github/dependency-review-config-foss.yaml@master
