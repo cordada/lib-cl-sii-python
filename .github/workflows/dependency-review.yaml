@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   dependency-review:
+    name: Dependency Review
     runs-on: ubuntu-22.04
 
     steps:
@@ -21,4 +22,4 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v3.0.3
         with:
-          config-file: cordada/github-actions-utils/.github/dependency-review-config-foss.yaml@master
+          fail-on-severity: critical
