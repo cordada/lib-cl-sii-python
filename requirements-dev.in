@@ -9,7 +9,7 @@ bumpversion==0.5.3
 codecov==2.1.12
 coverage==6.5.0
 flake8==4.0.1
-isort==5.10.1
+isort==5.11.4
 mypy==0.991
 tox==3.25.1
 twine==3.1.1
