@@ -12,9 +12,13 @@ heading-style:
 
 line-length:
   line_length: 100
+  code_block_line_length: 200
+  tables: false
 
 no-duplicate-heading:
   allow_different_nesting: true
+
+no-emphasis-as-heading: false
 
 no-multiple-blanks:
   maximum: 2
