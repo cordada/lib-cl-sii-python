@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from datetime import date, datetime
-from typing import Any, Optional, Union
+from typing import Any, Mapping, Optional, Union
 
 import marshmallow
 import marshmallow.fields
@@ -22,10 +24,6 @@ def validate_no_unexpected_input_fields(
     Usage::
 
         class MySchema(marshmallow.Schema):
-
-            class Meta:
-                strict = True
-
             folio = marshmallow.fields.Integer()
 
             @marshmallow.validates_schema(pass_original=True)
@@ -36,7 +34,7 @@ def validate_no_unexpected_input_fields(
     # Original inspiration from
     #   https://marshmallow.readthedocs.io/en/2.x-line/extending.html#validating-original-input-data
     fields_name_or_load_from = {
-        field.name if field.load_from is None else field.load_from
+        field.name if field.data_key is None else field.data_key
         for field_key, field in schema.fields.items()
     }
     unexpected_input_fields = set(original_data) - fields_name_or_load_from
@@ -98,11 +96,13 @@ class CustomMarshmallowDateField(marshmallow.fields.Field):
         # TODO: for 'marshmallow 3', rename 'dateformat' to 'datetimeformat'.
         self.dateformat = format
 
-    def _add_to_schema(self, field_name: str, schema: marshmallow.Schema) -> None:
-        super()._add_to_schema(field_name, schema)
+    def _bind_to_schema(self, field_name: str, schema: marshmallow.Schema) -> None:
+        super()._bind_to_schema(field_name, schema)
         self.dateformat = self.dateformat or schema.opts.dateformat
 
-    def _serialize(self, value: date, attr: str, obj: object) -> Union[str, None]:
+    def _serialize(
+        self, value: date, attr: str | None, obj: object, **kwargs: Any
+    ) -> Union[str, None]:
         if value is None:
             return None
         self.dateformat = self.dateformat or self.DEFAULT_FORMAT
@@ -110,29 +110,31 @@ class CustomMarshmallowDateField(marshmallow.fields.Field):
         if format_func:
             try:
                 date_str = format_func(value)
-            except (AttributeError, ValueError):
-                self.fail('format', input=value)
+            except (AttributeError, ValueError) as exc:
+                raise self.make_error('format', input=value) from exc
         else:
             date_str = value.strftime(self.dateformat)
 
         return date_str
 
-    def _deserialize(self, value: str, attr: str, data: dict) -> date:
+    def _deserialize(
+        self, value: str, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any
+    ) -> date:
         if not value:  # Falsy values, e.g. '', None, [] are not valid
-            self.fail('invalid')
+            raise self.make_error('invalid')
         self.dateformat = self.dateformat or self.DEFAULT_FORMAT
         func = self.DATEFORMAT_DESERIALIZATION_FUNCS.get(self.dateformat)
         if func:
             try:
                 date_value = func(value)  # type: date
-            except (TypeError, AttributeError, ValueError):
-                self.fail('invalid')
+            except (TypeError, AttributeError, ValueError) as exc:
+                raise self.make_error('invalid') from exc
         elif self.dateformat:
             try:
                 date_value = datetime.strptime(value, self.dateformat).date()
-            except (TypeError, AttributeError, ValueError):
-                self.fail('invalid')
+            except (TypeError, AttributeError, ValueError) as exc:
+                raise self.make_error('invalid') from exc
         else:
-            self.fail('invalid')
+            raise self.make_error('invalid')
 
         return date_value

@@ -4,13 +4,16 @@ cl_sii "extras" / Marshmallow fields.
 (for serializers)
 
 """
+from __future__ import annotations
+
+
 try:
     import marshmallow
 except ImportError as exc:  # pragma: no cover
     raise ImportError("Package 'marshmallow' is required to use this module.") from exc
 
 import datetime
-from typing import Optional
+from typing import Any, Mapping, Optional
 
 import marshmallow.fields
 
@@ -46,13 +49,18 @@ class RutField(marshmallow.fields.Field):
 
     default_error_messages = {
         'invalid': 'Not a syntactically valid RUT.',
+        'type': 'Invalid type.',
     }
 
-    def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[str]:
+    def _serialize(
+        self, value: Optional[object], attr: str | None, obj: object, **kwargs: Any
+    ) -> Optional[str]:
         validated = self._validated(value)
         return validated.canonical if validated is not None else None
 
-    def _deserialize(self, value: str, attr: str, data: dict) -> Optional[Rut]:
+    def _deserialize(
+        self, value: str, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any
+    ) -> Optional[Rut]:
         return self._validated(value)
 
     def _validated(self, value: Optional[object]) -> Optional[Rut]:
@@ -61,10 +69,10 @@ class RutField(marshmallow.fields.Field):
         else:
             try:
                 validated = Rut(value, validate_dv=False)  # type: ignore
-            except TypeError:
-                self.fail('type')
-            except ValueError:
-                self.fail('invalid')
+            except TypeError as exc:
+                raise self.make_error('type') from exc
+            except ValueError as exc:
+                raise self.make_error('invalid') from exc
         return validated
 
 
@@ -89,13 +97,18 @@ class TipoDteField(marshmallow.fields.Field):
 
     default_error_messages = {
         'invalid': 'Not a valid Tipo DTE.',
+        'type': 'Invalid type.',
     }
 
-    def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[int]:
+    def _serialize(
+        self, value: Optional[object], attr: str | None, obj: object, **kwargs: Any
+    ) -> Optional[int]:
         validated: Optional[TipoDte] = self._validated(value)
         return validated.value if validated is not None else None
 
-    def _deserialize(self, value: object, attr: str, data: dict) -> Optional[TipoDte]:
+    def _deserialize(
+        self, value: object, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any
+    ) -> Optional[TipoDte]:
         return self._validated(value)
 
     def _validated(self, value: Optional[object]) -> Optional[TipoDte]:
@@ -104,21 +117,21 @@ class TipoDteField(marshmallow.fields.Field):
         else:
             if isinstance(value, bool):
                 # is value is bool, `isinstance(value, int)` is True and `int(value)` works!
-                self.fail('type')
+                raise self.make_error('type')
             try:
                 value = int(value)  # type: ignore
-            except ValueError:
+            except ValueError as exc:
                 # `int('x')` raises 'ValueError', not 'TypeError'
-                self.fail('type')
-            except TypeError:
+                raise self.make_error('type') from exc
+            except TypeError as exc:
                 # `int(date(2018, 10, 10))` raises 'TypeError', unlike `int('x')`
-                self.fail('type')
+                raise self.make_error('type') from exc
 
             try:
                 validated = TipoDte(value)  # type: ignore
-            except ValueError:
+            except ValueError as exc:
                 # TipoDte('x') raises 'ValueError', not 'TypeError'
-                self.fail('invalid')
+                raise self.make_error('invalid') from exc
         return validated
 
 
@@ -142,13 +155,18 @@ class RcvTipoDoctoField(marshmallow.fields.Field):
 
     default_error_messages = {
         'invalid': "Not a valid RCV's Tipo de Documento.",
+        'type': "Invalid type.",
     }
 
-    def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[int]:
+    def _serialize(
+        self, value: Optional[object], attr: str | None, obj: object, **kwargs: Any
+    ) -> Optional[int]:
         validated: Optional[RcvTipoDocto] = self._validated(value)
         return validated.value if validated is not None else None
 
-    def _deserialize(self, value: object, attr: str, data: dict) -> Optional[RcvTipoDocto]:
+    def _deserialize(
+        self, value: object, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any
+    ) -> Optional[RcvTipoDocto]:
         return self._validated(value)
 
     def _validated(self, value: Optional[object]) -> Optional[RcvTipoDocto]:
@@ -157,21 +175,21 @@ class RcvTipoDoctoField(marshmallow.fields.Field):
         else:
             if isinstance(value, bool):
                 # is value is bool, `isinstance(value, int)` is True and `int(value)` works!
-                self.fail('type')
+                raise self.make_error('type')
             try:
                 value = int(value)  # type: ignore
-            except ValueError:
+            except ValueError as exc:
                 # `int('x')` raises 'ValueError', not 'TypeError'
-                self.fail('type')
-            except TypeError:
+                raise self.make_error('type') from exc
+            except TypeError as exc:
                 # `int(date(2018, 10, 10))` raises 'TypeError', unlike `int('x')`
-                self.fail('type')
+                raise self.make_error('type') from exc
 
             try:
                 validated = RcvTipoDocto(value)  # type: ignore
-            except ValueError:
+            except ValueError as exc:
                 # RcvTipoDocto('x') raises 'ValueError', not 'TypeError'
-                self.fail('invalid')
+                raise self.make_error('invalid') from exc
         return validated
 
 
@@ -186,14 +204,19 @@ class RcvPeriodoTributarioField(marshmallow.fields.Field):
 
     default_error_messages = {
         'invalid': "Not a valid RCV Periodo Tributario.",
+        'type': "Invalid type.",
     }
     _string_format = '%Y-%m'  # Example: '2019-12'
 
-    def _serialize(self, value: Optional[object], attr: str, obj: object) -> Optional[str]:
+    def _serialize(
+        self, value: Optional[object], attr: str | None, obj: object, **kwargs: Any
+    ) -> Optional[str]:
         validated: Optional[RcvPeriodoTributario] = self._validated(value)
         return validated.as_date().strftime(self._string_format) if validated is not None else None
 
-    def _deserialize(self, value: object, attr: str, data: dict) -> Optional[RcvPeriodoTributario]:
+    def _deserialize(
+        self, value: object, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any
+    ) -> Optional[RcvPeriodoTributario]:
         return self._validated(value)
 
     def _validated(self, value: Optional[object]) -> Optional[RcvPeriodoTributario]:
@@ -203,10 +226,10 @@ class RcvPeriodoTributarioField(marshmallow.fields.Field):
             try:
                 value = datetime.datetime.strptime(value, self._string_format)  # type: ignore
                 value = value.date()
-            except ValueError:
-                self.fail('invalid')
-            except TypeError:
-                self.fail('type')
+            except ValueError as exc:
+                raise self.make_error('invalid') from exc
+            except TypeError as exc:
+                raise self.make_error('type') from exc
 
             validated = RcvPeriodoTributario.from_date(value)  # type: ignore
 
