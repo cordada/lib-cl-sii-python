@@ -13,5 +13,7 @@ isort==5.10.1
 mypy==0.991
 tox==3.25.1
 twine==3.1.1
+types-jsonschema==4.17.0.3
+types-pyOpenSSL==23.0.0.2
 types-pytz==2022.7.1.0
 wheel==0.38.4
