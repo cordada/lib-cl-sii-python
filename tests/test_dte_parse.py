@@ -432,7 +432,7 @@ class FunctionParseDteXmlTest(unittest.TestCase):
             )
         )
 
-    def test_data(self):
+    def test_data(self) -> None:
         self.assertEqual(
             self._TEST_DTE_1_SIGNATURE_VALUE,
             b'~\xc6\x0f\xe6\x9f\xe55\xfa\x1f\x03?\x0f9(k&:\x97t\x14\xcd6\xdb\xef\xe3\xf4\xd6'

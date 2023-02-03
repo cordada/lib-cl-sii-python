@@ -13,6 +13,6 @@ class CustomMarshmallowDateFieldTest(unittest.TestCase):
 
 
 class FunctionsTest(unittest.TestCase):
-    def test_validate_no_unexpected_input_fields(self):
+    def test_validate_no_unexpected_input_fields(self) -> None:
         # TODO: implement for 'validate_no_unexpected_input_fields'.
         pass

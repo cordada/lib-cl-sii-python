@@ -5,7 +5,7 @@ from cl_sii.dte.constants import TipoDte
 
 
 class TipoDteTest(unittest.TestCase):
-    def test_members(self):
+    def test_members(self) -> None:
         self.assertSetEqual(
             {x for x in TipoDte},
             {
@@ -19,7 +19,7 @@ class TipoDteTest(unittest.TestCase):
             },
         )
 
-    def test_FACTURA_ELECTRONICA(self):
+    def test_FACTURA_ELECTRONICA(self) -> None:
         value = TipoDte.FACTURA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_ELECTRONICA')
@@ -37,7 +37,7 @@ class TipoDteTest(unittest.TestCase):
         for (result, expected) in assertions:
             self.assertEqual(result, expected)
 
-    def test_FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA(self):
+    def test_FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA(self) -> None:
         value = TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA')
@@ -55,7 +55,7 @@ class TipoDteTest(unittest.TestCase):
         for (result, expected) in assertions:
             self.assertTrue(result is expected)
 
-    def test_LIQUIDACION_FACTURA_ELECTRONICA(self):
+    def test_LIQUIDACION_FACTURA_ELECTRONICA(self) -> None:
         value = TipoDte.LIQUIDACION_FACTURA_ELECTRONICA
 
         self.assertEqual(value.name, 'LIQUIDACION_FACTURA_ELECTRONICA')
@@ -73,7 +73,7 @@ class TipoDteTest(unittest.TestCase):
         for (result, expected) in assertions:
             self.assertEqual(result, expected)
 
-    def test_FACTURA_COMPRA_ELECTRONICA(self):
+    def test_FACTURA_COMPRA_ELECTRONICA(self) -> None:
         value = TipoDte.FACTURA_COMPRA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_COMPRA_ELECTRONICA')
@@ -91,7 +91,7 @@ class TipoDteTest(unittest.TestCase):
         for (result, expected) in assertions:
             self.assertTrue(result is expected)
 
-    def test_GUIA_DESPACHO_ELECTRONICA(self):
+    def test_GUIA_DESPACHO_ELECTRONICA(self) -> None:
         value = TipoDte.GUIA_DESPACHO_ELECTRONICA
 
         self.assertEqual(value.name, 'GUIA_DESPACHO_ELECTRONICA')
@@ -109,7 +109,7 @@ class TipoDteTest(unittest.TestCase):
         for (result, expected) in assertions:
             self.assertTrue(result is expected)
 
-    def test_NOTA_DEBITO_ELECTRONICA(self):
+    def test_NOTA_DEBITO_ELECTRONICA(self) -> None:
         value = TipoDte.NOTA_DEBITO_ELECTRONICA
 
         self.assertEqual(value.name, 'NOTA_DEBITO_ELECTRONICA')
@@ -127,7 +127,7 @@ class TipoDteTest(unittest.TestCase):
         for (result, expected) in assertions:
             self.assertTrue(result is expected)
 
-    def test_NOTA_CREDITO_ELECTRONICA(self):
+    def test_NOTA_CREDITO_ELECTRONICA(self) -> None:
         value = TipoDte.NOTA_CREDITO_ELECTRONICA
 
         self.assertEqual(value.name, 'NOTA_CREDITO_ELECTRONICA')
