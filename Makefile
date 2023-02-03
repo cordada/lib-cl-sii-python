@@ -58,7 +58,7 @@ install-deps-dev: ## Install dependencies for development
 
 lint: ## run tools for code style analysis, static type check, etc
 	flake8 --config=setup.cfg  cl_sii  scripts  tests
-	mypy --config-file setup.cfg  cl_sii  scripts
+	mypy cl_sii  scripts
 	isort --check-only .
 	$(BLACK) --check .
 
