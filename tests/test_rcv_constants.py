@@ -6,7 +6,7 @@ from cl_sii.rcv.constants import RcEstadoContable, RcvKind, RcvTipoDocto  # noqa
 
 
 class RcvKindTest(unittest.TestCase):
-    def test_members(self):
+    def test_members(self) -> None:
         self.assertSetEqual(
             {x for x in RcvKind},
             {
@@ -15,10 +15,10 @@ class RcvKindTest(unittest.TestCase):
             },
         )
 
-    def test_values_type(self):
+    def test_values_type(self) -> None:
         self.assertSetEqual({type(x.value) for x in RcvKind}, {str})
 
-    def test_is_estado_contable_compatible(self):
+    def test_is_estado_contable_compatible(self) -> None:
         self.assertTrue(RcvKind.VENTAS.is_estado_contable_compatible(None))
         self.assertTrue(RcvKind.COMPRAS.is_estado_contable_compatible(RcEstadoContable.REGISTRO))
         self.assertTrue(RcvKind.COMPRAS.is_estado_contable_compatible(RcEstadoContable.NO_INCLUIR))
@@ -33,7 +33,7 @@ class RcvKindTest(unittest.TestCase):
 
 
 class RcEstadoContableTest(unittest.TestCase):
-    def test_members(self):
+    def test_members(self) -> None:
         self.assertSetEqual(
             {x for x in RcEstadoContable},
             {
@@ -44,12 +44,12 @@ class RcEstadoContableTest(unittest.TestCase):
             },
         )
 
-    def test_values_type(self):
+    def test_values_type(self) -> None:
         self.assertSetEqual({type(x.value) for x in RcEstadoContable}, {str})
 
 
 class RcvTipoDoctoTest(unittest.TestCase):
-    def test_members(self):
+    def test_members(self) -> None:
         self.assertSetEqual(
             {x for x in RcvTipoDocto},
             {
@@ -105,16 +105,16 @@ class RcvTipoDoctoTest(unittest.TestCase):
             },
         )
 
-    def test_values_type(self):
+    def test_values_type(self) -> None:
         self.assertSetEqual({type(x.value) for x in RcvTipoDocto}, {int})
 
-    def test_of_some_member(self):
+    def test_of_some_member(self) -> None:
         value = RcvTipoDocto.FACTURA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_ELECTRONICA')
         self.assertEqual(value.value, 33)
 
-    def test_as_tipo_dte(self):
+    def test_as_tipo_dte(self) -> None:
         self.assertEqual(
             RcvTipoDocto.FACTURA_ELECTRONICA.as_tipo_dte(),
             TipoDte.FACTURA_ELECTRONICA,

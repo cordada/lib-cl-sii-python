@@ -8,7 +8,7 @@ from cl_sii.libs.io_utils import with_encoding_utf8, with_mode_binary, with_mode
 
 
 class FunctionsTest(unittest.TestCase):
-    def test_with_encoding_utf8(self):
+    def test_with_encoding_utf8(self) -> None:
         filename = pathlib.Path(__file__).with_name('test_libs_io_utils-test-file-1.tmp')
         filename.touch()
 
@@ -99,7 +99,7 @@ class FunctionsTest(unittest.TestCase):
 
         filename.unlink()
 
-    def test_with_mode_x(self):
+    def test_with_mode_x(self) -> None:
         # For the sake of simplicity test here both 'with_mode_binary' and 'with_mode_text'.
 
         filename = pathlib.Path(__file__).with_name('test_libs_io_utils-test-file-2.tmp')

@@ -19,7 +19,7 @@ class AecXmlSchemaTest(unittest.TestCase):
     """
 
     @unittest.skip("TODO: Implement for 'AEC_XML_SCHEMA_OBJ'.")
-    def test_AEC_XML_SCHEMA_OBJ(self):
+    def test_AEC_XML_SCHEMA_OBJ(self) -> None:
         self.assertIsNotNone(AEC_XML_SCHEMA_OBJ)
 
 

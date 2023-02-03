@@ -7,10 +7,10 @@ from cl_sii.libs.rows_processing import (  # noqa: F401
 
 
 class FunctionsTest(unittest.TestCase):
-    def test_csv_rows_mm_deserialization_iterator(self):
+    def test_csv_rows_mm_deserialization_iterator(self) -> None:
         # TODO: implement for 'csv_rows_mm_deserialization_iterator'.
         pass
 
-    def test_rows_mm_deserialization_iterator(self):
+    def test_rows_mm_deserialization_iterator(self) -> None:
         # TODO: implement for 'rows_mm_deserialization_iterator'.
         pass
