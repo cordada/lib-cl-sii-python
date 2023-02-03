@@ -130,6 +130,8 @@ typed-ast==1.5.4
     # via
     #   black
     #   mypy
+types-jsonschema==4.17.0.3
+    # via -r requirements-dev.in
 types-pyopenssl==23.0.0.2
     # via -r requirements-dev.in
 types-pytz==2022.7.1.0
