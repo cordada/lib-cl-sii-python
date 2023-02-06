@@ -51,7 +51,7 @@ pyopenssl==22.1.0
     #   signxml
 pyrsistent==0.17.3
     # via jsonschema
-pytz==2022.6
+pytz==2022.7.1
     # via
     #   -r requirements.in
     #   django

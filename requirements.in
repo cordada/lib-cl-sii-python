@@ -15,5 +15,5 @@ lxml==4.9.2
 marshmallow==2.21.0
 pydantic==1.10.4
 pyOpenSSL==22.1.0
-pytz==2022.6
+pytz==2022.7.1
 signxml==2.10.1
