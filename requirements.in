@@ -12,7 +12,7 @@ djangorestframework>=3.10.3,<3.15
 importlib-metadata==1.6.0
 jsonschema==4.17.3
 lxml==4.9.2
-marshmallow==2.21.0
+marshmallow==3.19.0
 pydantic==1.10.4
 pyOpenSSL==23.0.0
 pytz==2022.7.1

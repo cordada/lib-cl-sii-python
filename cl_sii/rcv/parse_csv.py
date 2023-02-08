@@ -7,7 +7,7 @@ Parse RCV files (CSV)
 import csv
 import logging
 from datetime import date, datetime
-from typing import Callable, Dict, Iterable, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple
 
 import marshmallow
 
@@ -507,7 +507,7 @@ def parse_rcv_compra_pendiente_csv_file(
 
 class _RcvCsvRowSchemaBase(marshmallow.Schema):
     @marshmallow.validates_schema(pass_original=True)
-    def validate_schema(self, data: dict, original_data: dict) -> None:
+    def validate_schema(self, data: dict, original_data: dict, **kwargs: Any) -> None:
         mm_utils.validate_no_unexpected_input_fields(self, data, original_data)
 
     # @marshmallow.validates('field_x')
@@ -524,37 +524,34 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
     FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_RECLAMO_DT_TZ = SII_OFFICIAL_TZ
 
-    class Meta:
-        strict = True
-
     ###########################################################################
     # basic fields
     ###########################################################################
 
     tipo_docto = mm_fields.RcvTipoDoctoField(
         required=True,
-        load_from='Tipo Doc',
+        data_key='Tipo Doc',
     )
     folio = marshmallow.fields.Integer(
         required=True,
-        load_from='Folio',
+        data_key='Folio',
     )
     fecha_emision_date = mm_utils.CustomMarshmallowDateField(
         format='%d/%m/%Y',  # e.g. '22/10/2018'
         required=True,
-        load_from='Fecha Docto',
+        data_key='Fecha Docto',
     )
     receptor_rut = mm_fields.RutField(
         required=True,
-        load_from='Rut cliente',
+        data_key='Rut cliente',
     )
     monto_total = marshmallow.fields.Integer(
         required=True,
-        load_from='Monto total',
+        data_key='Monto total',
     )
     receptor_razon_social = marshmallow.fields.String(
         required=True,
-        load_from='Razon Social',
+        data_key='Razon Social',
     )
 
     ###########################################################################
@@ -572,23 +569,23 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
     fecha_recepcion_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=True,
-        load_from='Fecha Recepcion',
+        data_key='Fecha Recepcion',
     )
     fecha_acuse_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=False,
         allow_none=True,
-        load_from='Fecha Acuse Recibo',
+        data_key='Fecha Acuse Recibo',
     )
     fecha_reclamo_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=False,
         allow_none=True,
-        load_from='Fecha Reclamo',
+        data_key='Fecha Reclamo',
     )
 
     @marshmallow.pre_load
-    def preprocess(self, in_data: dict) -> dict:
+    def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
         # note: required fields checks are run later on automatically thus we may not assume that
         #   values of required fields (`required=True`) exist.
 
@@ -606,7 +603,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         return in_data
 
     @marshmallow.post_load
-    def postprocess(self, data: dict) -> dict:
+    def postprocess(self, data: dict, **kwargs: Any) -> dict:
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13'
         data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
@@ -673,37 +670,34 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
 
-    class Meta:
-        strict = True
-
     ###########################################################################
     # basic fields
     ###########################################################################
 
     emisor_rut = mm_fields.RutField(
         required=True,
-        load_from='RUT Proveedor',
+        data_key='RUT Proveedor',
     )
     tipo_docto = mm_fields.RcvTipoDoctoField(
         required=True,
-        load_from='Tipo Doc',
+        data_key='Tipo Doc',
     )
     folio = marshmallow.fields.Integer(
         required=True,
-        load_from='Folio',
+        data_key='Folio',
     )
     fecha_emision_date = mm_utils.CustomMarshmallowDateField(
         format='%d/%m/%Y',  # e.g. '22/10/2018'
         required=True,
-        load_from='Fecha Docto',
+        data_key='Fecha Docto',
     )
     monto_total = marshmallow.fields.Integer(
         required=True,
-        load_from='Monto Total',
+        data_key='Monto Total',
     )
     emisor_razon_social = marshmallow.fields.String(
         required=True,
-        load_from='Razon Social',
+        data_key='Razon Social',
     )
 
     ###########################################################################
@@ -721,17 +715,17 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
     fecha_recepcion_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=True,
-        load_from='Fecha Recepcion',
+        data_key='Fecha Recepcion',
     )
     fecha_acuse_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=True,
         allow_none=True,
-        load_from='Fecha Acuse',
+        data_key='Fecha Acuse',
     )
 
     @marshmallow.pre_load
-    def preprocess(self, in_data: dict) -> dict:
+    def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
         # note: required fields checks are run later on automatically thus we may not assume that
         #   values of required fields (`required=True`) exist.
 
@@ -746,7 +740,7 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
         return in_data
 
     @marshmallow.post_load
-    def postprocess(self, data: dict) -> dict:
+    def postprocess(self, data: dict, **kwargs: Any) -> dict:
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13'
         data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
@@ -840,37 +834,34 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_RECLAMO_DT_TZ = SII_OFFICIAL_TZ
 
-    class Meta:
-        strict = True
-
     ###########################################################################
     # basic fields
     ###########################################################################
 
     emisor_rut = mm_fields.RutField(
         required=True,
-        load_from='RUT Proveedor',
+        data_key='RUT Proveedor',
     )
     tipo_docto = mm_fields.RcvTipoDoctoField(
         required=True,
-        load_from='Tipo Doc',
+        data_key='Tipo Doc',
     )
     folio = marshmallow.fields.Integer(
         required=True,
-        load_from='Folio',
+        data_key='Folio',
     )
     fecha_emision_date = mm_utils.CustomMarshmallowDateField(
         format='%d/%m/%Y',  # e.g. '22/10/2018'
         required=True,
-        load_from='Fecha Docto',
+        data_key='Fecha Docto',
     )
     monto_total = marshmallow.fields.Integer(
         required=True,
-        load_from='Monto Total',
+        data_key='Monto Total',
     )
     emisor_razon_social = marshmallow.fields.String(
         required=True,
-        load_from='Razon Social',
+        data_key='Razon Social',
     )
 
     ###########################################################################
@@ -888,7 +879,7 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
     fecha_recepcion_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=True,
-        load_from='Fecha Recepcion',
+        data_key='Fecha Recepcion',
     )
     fecha_reclamo_dt = marshmallow.fields.DateTime(
         # note: for some reason the rows with 'tipo_docto' equal to
@@ -897,11 +888,11 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=False,
         allow_none=True,
-        load_from='Fecha Reclamo',
+        data_key='Fecha Reclamo',
     )
 
     @marshmallow.pre_load
-    def preprocess(self, in_data: dict) -> dict:
+    def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
         # note: required fields checks are run later on automatically thus we may not assume that
         #   values of required fields (`required=True`) exist.
 
@@ -919,7 +910,7 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
         return in_data
 
     @marshmallow.post_load
-    def postprocess(self, data: dict) -> dict:
+    def postprocess(self, data: dict, **kwargs: Any) -> dict:
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13'
         data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
@@ -980,37 +971,34 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
 
-    class Meta:
-        strict = True
-
     ###########################################################################
     # basic fields
     ###########################################################################
 
     emisor_rut = mm_fields.RutField(
         required=True,
-        load_from='RUT Proveedor',
+        data_key='RUT Proveedor',
     )
     tipo_docto = mm_fields.RcvTipoDoctoField(
         required=True,
-        load_from='Tipo Doc',
+        data_key='Tipo Doc',
     )
     folio = marshmallow.fields.Integer(
         required=True,
-        load_from='Folio',
+        data_key='Folio',
     )
     fecha_emision_date = mm_utils.CustomMarshmallowDateField(
         format='%d/%m/%Y',  # e.g. '22/10/2018'
         required=True,
-        load_from='Fecha Docto',
+        data_key='Fecha Docto',
     )
     monto_total = marshmallow.fields.Integer(
         required=True,
-        load_from='Monto Total',
+        data_key='Monto Total',
     )
     emisor_razon_social = marshmallow.fields.String(
         required=True,
-        load_from='Razon Social',
+        data_key='Razon Social',
     )
 
     ###########################################################################
@@ -1028,11 +1016,11 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
     fecha_recepcion_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=True,
-        load_from='Fecha Recepcion',
+        data_key='Fecha Recepcion',
     )
 
     @marshmallow.pre_load
-    def preprocess(self, in_data: dict) -> dict:
+    def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
         # note: required fields checks are run later on automatically thus we may not assume that
         #   values of required fields (`required=True`) exist.
 
@@ -1047,7 +1035,7 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
         return in_data
 
     @marshmallow.post_load
-    def postprocess(self, data: dict) -> dict:
+    def postprocess(self, data: dict, **kwargs: Any) -> dict:
         # >>> data['fecha_recepcion_dt'].isoformat()
         # '2018-10-23T01:54:13'
         data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
