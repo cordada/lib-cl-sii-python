@@ -43,7 +43,7 @@ filelock==3.0.12
     # via
     #   tox
     #   virtualenv
-flake8==4.0.1
+flake8==6.0.0
     # via -r requirements-dev.in
 idna==2.10
     # via requests
@@ -55,7 +55,7 @@ jeepney==0.8.0
     #   secretstorage
 keyring==21.4.0
     # via twine
-mccabe==0.6.1
+mccabe==0.7.0
     # via flake8
 mypy==1.0.1
     # via -r requirements-dev.in
@@ -78,13 +78,13 @@ pluggy==1.0.0
     # via tox
 py==1.10.0
     # via tox
-pycodestyle==2.8.0
+pycodestyle==2.10.0
     # via flake8
 pycparser==2.20
     # via
     #   -c requirements.txt
     #   cffi
-pyflakes==2.4.0
+pyflakes==3.0.1
     # via flake8
 pygments==2.13.0
     # via readme-renderer
