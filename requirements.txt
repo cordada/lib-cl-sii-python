@@ -12,7 +12,7 @@ certifi==2022.6.15
     # via signxml
 cffi==1.15.1
     # via cryptography
-cryptography==38.0.4
+cryptography==39.0.1
     # via
     #   -r requirements.in
     #   pyopenssl
