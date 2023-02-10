@@ -1,5 +1,25 @@
 # History
 
+## 0.20.0 (2023-02-10)
+
+- (PR #403, 2023-01-05) chore(deps): Bump pyopenssl from 22.0.0 to 22.1.0
+- (PR #406, 2023-01-05) chore(deps-dev): Bump mypy from 0.982 to 0.991
+- (PR #405, 2023-01-23) chore(deps): Bump jsonschema from 4.16.0 to 4.17.3
+- (PR #422, 2023-01-26) Add GitHub Dependency Review
+- (PR #423, 2023-01-26) Improve GitHub Dependency Review
+- (PR #411, 2023-01-26) chore(deps-dev): Bump black from 22.10.0 to 22.12.0
+- (PR #425, 2023-01-27) Update Markdownlint configuration
+- (PR #410, 2023-02-03) chore(deps): Bump pydantic from 1.10.2 to 1.10.4
+- (PR #433, 2023-02-03) Improve type checking
+- (PR #434, 2023-02-03) Improve type checking
+- (PR #424, 2023-02-06) chore(deps-dev): Bump coverage from 6.5.0 to 7.1.0
+- (PR #414, 2023-02-06) chore(deps): Bump lxml from 4.9.1 to 4.9.2
+- (PR #420, 2023-02-06) chore(deps): Bump pytz from 2022.6 to 2022.7.1
+- (PR #431, 2023-02-06) chore(deps): Bump pyopenssl from 22.1.0 to 23.0.0
+- (PR #436, 2023-02-08) chore(deps): Bump cryptography from 38.0.4 to 39.0.1
+- (PR #435, 2023-02-08) chore(deps): Bump django from 3.2.16 to 3.2.17
+- (PR #426, 2023-02-08) chore(deps): Bump marshmallow from 2.21.0 to 3.19.0
+
 ## 0.19.0 (2023-01-05)
 
 - (PR #398, 2022-11-23) fix: Fix Dependabot error pip.….Error: Constraints cannot have extras

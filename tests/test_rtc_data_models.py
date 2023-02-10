@@ -614,7 +614,7 @@ class CesionL1Test(CesionL0Test):
         )
         self.assertEqual(obj.as_dict(), expected_output)
 
-    def test_as_cesion_l0(self):
+    def test_as_cesion_l0(self) -> None:
         self._set_obj_1()
 
         obj = self.obj_1
@@ -634,7 +634,7 @@ class CesionL1Test(CesionL0Test):
         )
         self.assertEqual(obj.as_cesion_l0(), expected_output)
 
-    def test_as_dte_data_l1(self):
+    def test_as_dte_data_l1(self) -> None:
         self._set_obj_1()
 
         obj = self.obj_1
@@ -833,7 +833,7 @@ class CesionL2Test(CesionL1Test):
         )
         self.assertEqual(obj.as_dict(), expected_output)
 
-    def test_as_cesion_l1(self):
+    def test_as_cesion_l1(self) -> None:
         self._set_obj_1()
 
         obj = self.obj_1
@@ -858,7 +858,7 @@ class CesionL2Test(CesionL1Test):
         )
         self.assertEqual(obj.as_cesion_l1(), expected_output)
 
-    def test_as_dte_data_l2(self):
+    def test_as_dte_data_l2(self) -> None:
         self._set_obj_1()
 
         obj = self.obj_1

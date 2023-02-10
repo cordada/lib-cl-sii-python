@@ -34,7 +34,7 @@ class DataclassBWithMixin(DataclassBWithoutMixin, DcDeepCompareMixin):
 
 
 class NotADataclassWithMixin(DcDeepCompareMixin):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: object, **kwargs: object) -> None:
         self.args = args
         self.kwargs = kwargs
 

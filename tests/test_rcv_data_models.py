@@ -212,7 +212,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             ),
         )
 
-    def test_constants_match(self):
+    def test_constants_match(self) -> None:
         self.assertEqual(
             RvDetalleEntry.DATETIME_FIELDS_TZ,
             RcvDetalleEntry.DATETIME_FIELDS_TZ,
@@ -364,7 +364,7 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             ),
         )
 
-    def test_constants_match(self):
+    def test_constants_match(self) -> None:
         self.assertEqual(
             RcRegistroDetalleEntry.DATETIME_FIELDS_TZ,
             RcvDetalleEntry.DATETIME_FIELDS_TZ,
@@ -487,7 +487,7 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
             ),
         )
 
-    def test_constants_match(self):
+    def test_constants_match(self) -> None:
         self.assertEqual(
             RcReclamadoDetalleEntry.DATETIME_FIELDS_TZ,
             RcvDetalleEntry.DATETIME_FIELDS_TZ,

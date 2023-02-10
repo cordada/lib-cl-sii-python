@@ -11,7 +11,7 @@ These concept are defined in Python standard library module datetime
 
 """
 from datetime import datetime
-from typing import Union
+from typing import Optional, Union
 
 import pytz
 import pytz.tzinfo
@@ -85,7 +85,7 @@ def convert_naive_dt_to_tz_aware(dt: datetime, tz: PytzTimezone) -> datetime:
     return dt_tz_aware
 
 
-def convert_tz_aware_dt_to_naive(dt: datetime, tz: PytzTimezone = None) -> datetime:
+def convert_tz_aware_dt_to_naive(dt: datetime, tz: Optional[PytzTimezone] = None) -> datetime:
     """
     Convert a timezone-aware datetime object to an offset-naive one.
 

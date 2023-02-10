@@ -317,7 +317,7 @@ class DteDataL2Test(unittest.TestCase):
             receptor_email=None,
         )
 
-    def test_constants_match(self):
+    def test_constants_match(self) -> None:
         self.assertEqual(
             DteXmlData.DATETIME_FIELDS_TZ,
             DteDataL2.DATETIME_FIELDS_TZ,
@@ -775,7 +775,7 @@ class DteXmlDataTest(unittest.TestCase):
             receptor_email=None,
         )
 
-    def test_constants_match(self):
+    def test_constants_match(self) -> None:
         self.assertEqual(
             DteXmlData.DATETIME_FIELDS_TZ,
             DteDataL2.DATETIME_FIELDS_TZ,

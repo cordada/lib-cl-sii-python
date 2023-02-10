@@ -362,7 +362,7 @@ def write_xml_doc(xml_doc: XmlElement, output: IO[bytes]) -> None:
 
 def verify_xml_signature(
     xml_doc: XmlElement,
-    trusted_x509_cert: Union[crypto_utils.X509Cert, crypto_utils._X509CertOpenSsl] = None,
+    trusted_x509_cert: Optional[Union[crypto_utils.X509Cert, crypto_utils._X509CertOpenSsl]] = None,
     xml_verifier: Optional[signxml.XMLVerifier] = None,
     xml_verifier_supports_multiple_signatures: bool = False,
 ) -> Tuple[bytes, XmlElementTree, XmlElementTree]:

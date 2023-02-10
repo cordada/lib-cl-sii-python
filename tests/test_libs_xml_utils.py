@@ -261,7 +261,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             verify_xml_signature(xml_doc, trusted_x509_cert=None)
         self.assertEqual(
             cm.exception.args,
-            ("[20, 0, 'unable to get local issuer certificate']",),
+            ('unable to get local issuer certificate',),
         )
 
     def test_fail_signed_data_modified(self) -> None:

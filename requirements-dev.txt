@@ -6,7 +6,7 @@
 #
 appdirs==1.4.4
     # via virtualenv
-black==22.10.0
+black==22.12.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -26,14 +26,15 @@ click==8.0.3
     # via black
 codecov==2.1.12
     # via -r requirements-dev.in
-coverage==6.5.0
+coverage==7.1.0
     # via
     #   -r requirements-dev.in
     #   codecov
-cryptography==38.0.4
+cryptography==39.0.1
     # via
     #   -c requirements.txt
     #   secretstorage
+    #   types-pyopenssl
 distlib==0.3.6
     # via virtualenv
 docutils==0.19
@@ -66,14 +67,16 @@ keyring==21.4.0
     # via twine
 mccabe==0.6.1
     # via flake8
-mypy==0.982
+mypy==0.991
     # via -r requirements-dev.in
 mypy-extensions==0.4.3
     # via
     #   black
     #   mypy
-packaging==20.4
-    # via tox
+packaging==23.0
+    # via
+    #   -c requirements.txt
+    #   tox
 pathspec==0.9.0
     # via black
 pkginfo==1.8.3
@@ -94,8 +97,6 @@ pyflakes==2.4.0
     # via flake8
 pygments==2.13.0
     # via readme-renderer
-pyparsing==3.0.9
-    # via packaging
 readme-renderer==35.0
     # via twine
 requests==2.25.1
@@ -110,7 +111,6 @@ secretstorage==3.3.3
 six==1.16.0
     # via
     #   bleach
-    #   packaging
     #   tox
     #   virtualenv
 toml==0.10.2
@@ -129,6 +129,12 @@ typed-ast==1.5.4
     # via
     #   black
     #   mypy
+types-jsonschema==4.17.0.3
+    # via -r requirements-dev.in
+types-pyopenssl==23.0.0.2
+    # via -r requirements-dev.in
+types-pytz==2022.7.1.0
+    # via -r requirements-dev.in
 typing-extensions==4.3.0
     # via
     #   -c requirements.txt

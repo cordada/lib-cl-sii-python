@@ -1,6 +1,6 @@
 import csv
 import logging
-from typing import Dict, Iterable, Sequence, Tuple
+from typing import Dict, Iterable, Optional, Sequence, Tuple
 
 import marshmallow
 
@@ -24,8 +24,8 @@ def csv_rows_mm_deserialization_iterator(
     csv_reader: csv.DictReader,
     row_schema: marshmallow.Schema,
     n_rows_offset: int = 0,
-    max_n_rows: int = None,
-    fields_to_remove_names: Sequence[str] = None,
+    max_n_rows: Optional[int] = None,
+    fields_to_remove_names: Optional[Sequence[str]] = None,
 ) -> Iterable[Tuple[int, Dict[str, object], Dict[str, object], dict]]:
     """
     Marshmallow deserialization iterator over CSV rows.
@@ -78,8 +78,8 @@ def rows_mm_deserialization_iterator(
     rows_iterator: Iterable[Dict[str, object]],
     row_schema: marshmallow.Schema,
     n_rows_offset: int = 0,
-    max_n_rows: int = None,
-    fields_to_remove_names: Sequence[str] = None,
+    max_n_rows: Optional[int] = None,
+    fields_to_remove_names: Optional[Sequence[str]] = None,
 ) -> Iterable[Tuple[int, Dict[str, object], Dict[str, object], dict]]:
     """
     Marshmallow deserialization iterator.
@@ -122,36 +122,12 @@ def rows_mm_deserialization_iterator(
             row_data.pop(_field_name, None)
 
         try:
-            mm_result: marshmallow.UnmarshalResult = row_schema.load(row_data)
-            deserialized_row_data: dict = mm_result.data
+            deserialized_row_data: dict = row_schema.load(row_data)
             raised_validation_errors: dict = {}
-            returned_validation_errors: dict = mm_result.errors
         except marshmallow.ValidationError as exc:
             deserialized_row_data = {}
             raised_validation_errors = dict(exc.normalized_messages())
-            returned_validation_errors = {}
 
         validation_errors = raised_validation_errors
-        if returned_validation_errors:
-            if row_schema.strict:
-                # 'marshmallow.schema.BaseSchema':
-                # > :param bool strict: If `True`, raise errors if invalid data are passed in
-                # > instead of failing silently and storing the errors.
-                logger.error(
-                    "Marshmallow schema is 'strict' but validation errors were returned by "
-                    "method 'load' ('UnmarshalResult.errors') instead of being raised. "
-                    "Errors: %s",
-                    repr(returned_validation_errors),
-                )
-            if raised_validation_errors:
-                logger.fatal(
-                    "Programming error: either returned or raised validation errors "
-                    "(depending on 'strict') but never both. "
-                    "Returned errors: %s. Raised errors: %s",
-                    repr(returned_validation_errors),
-                    repr(raised_validation_errors),
-                )
-
-            validation_errors.update(returned_validation_errors)
 
         yield row_ix, row_data, deserialized_row_data, validation_errors
