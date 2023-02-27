@@ -21,7 +21,7 @@ TOXENV ?= py310
 .PHONY: clean clean-build clean-pyc clean-test
 .PHONY: install-dev install-deps-dev
 .PHONY: lint lint-fix test test-all test-coverage test-coverage-report-console test-coverage-report-html
-.PHONY: dist upload-release
+.PHONY: build dist upload-release
 .PHONE: python-virtualenv
 .PHONY: python-deps-compile python-deps-sync-check python-pip-tools-install
 .PHONY: python-pip-install python-setuptools-install python-wheel-install
@@ -91,7 +91,10 @@ test-coverage-report-console: ## print test coverage summary
 test-coverage-report-html: ## generate test coverage HTML report
 	coverage html --rcfile=setup.cfg
 
-dist: clean ## builds source and wheel package
+build: ## Build Python package
+	$(PYTHON) setup.py build
+
+dist: build ## builds source and wheel package
 	python setup.py sdist
 	python setup.py bdist_wheel
 	twine check dist/*
