@@ -1,0 +1,76 @@
+# GitHub Actions Workflow for Continuous Integration and Continuous Delivery
+#
+# Documentation:
+# - https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+# - https://docs.github.com/en/actions/learn-github-actions/contexts
+# - https://docs.github.com/en/actions/learn-github-actions/expressions
+# - https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+# - https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
+# - https://docs.github.com/en/actions/using-workflows/reusing-workflows
+
+name: CI/CD
+
+on:
+  push:
+
+permissions:
+  contents: write
+
+env:
+  PRODUCTION_VCS_REF: refs/heads/master
+  STAGING_VCS_REF: refs/heads/develop
+
+jobs:
+  # -----BEGIN Workflow Configuration Job-----
+  workflow_config:
+    name: Workflow Configuration
+    runs-on: ubuntu-22.04
+
+    outputs:
+      PRODUCTION_VCS_REF: ${{ env.PRODUCTION_VCS_REF }}
+      STAGING_VCS_REF: ${{ env.STAGING_VCS_REF }}
+
+    steps:
+      - run: "true"
+
+  # -----END Workflow Configuration Job-----
+
+  # -----BEGIN CI Job-----
+  ci:
+    name: CI
+    needs:
+      - workflow_config
+
+    uses: ./.github/workflows/ci.yaml
+
+  # -----END CI Job-----
+
+  # -----BEGIN Release Job-----
+  release:
+    name: Release
+    if: ${{ github.ref == needs.workflow_config.outputs.PRODUCTION_VCS_REF }}
+    needs:
+      - ci
+      - workflow_config
+
+    uses: ./.github/workflows/release.yaml
+    with:
+      create_git_tag_and_github_release: ${{ github.ref == needs.workflow_config.outputs.PRODUCTION_VCS_REF }}
+
+  # -----END Release Job-----
+
+  # -----BEGIN Deploy Job-----
+  deploy:
+    name: Deploy
+    if: ${{ github.ref == needs.workflow_config.outputs.PRODUCTION_VCS_REF }}
+    needs:
+      - release
+      - workflow_config
+
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      deploy_env: prod
+      artifacts_path: ${{ needs.release.outputs.artifacts_path }}
+    secrets: inherit
+
+  # -----END Deploy Job-----
