@@ -13,6 +13,9 @@ PYTHON_PIP_TOOLS_SRC_FILES = requirements.in requirements-dev.in
 # Black
 BLACK = black --config .black.cfg.toml
 
+# Tox
+TOXENV ?= py310
+
 .DEFAULT_GOAL := help
 .PHONY: help
 .PHONY: clean clean-build clean-pyc clean-test
@@ -73,8 +76,8 @@ lint-fix: ## Fix lint errors
 	$(BLACK) .
 	isort .
 
-test: ## run tests quickly with the default Python
-	python setup.py test
+test: ## run tests quickly with the default Tox Python
+	tox -e "$(TOXENV)"
 
 test-all: ## run tests on every Python version with tox
 	tox
