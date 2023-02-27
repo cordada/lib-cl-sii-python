@@ -14,10 +14,10 @@ The full documentation is at <https://lib-cl-sii-python.readthedocs.io>.
 
 ### Development
 
-| VCS Branch | Deployment Environment | VCS Repository | CI Status |
-| ---------- | ---------------------- | -------------- | --------- |
-| `develop` | Staging | [GitHub](https://github.com/fyntex/lib-cl-sii-python/tree/develop) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/fyntex/lib-cl-sii-python/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/fyntex/lib-cl-sii-python/tree/develop) |
-| `master` | Production | [GitHub](https://github.com/fyntex/lib-cl-sii-python/tree/master) | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/fyntex/lib-cl-sii-python/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/fyntex/lib-cl-sii-python/tree/master) |
+| VCS Branch | Deployment Environment | VCS Repository | CI/CD Status |
+| ---------- | ---------------------- | -------------- | ------------ |
+| `develop` | Staging | [GitHub](https://github.com/fyntex/lib-cl-sii-python/tree/develop) | [![GitHub Actions](https://github.com/fyntex/lib-cl-sii-python/actions/workflows/ci-cd.yaml/badge.svg?branch=develop)](https://github.com/fyntex/lib-cl-sii-python/actions/workflows/ci-cd.yaml?query=branch:develop) |
+| `master` | Production | [GitHub](https://github.com/fyntex/lib-cl-sii-python/tree/master) | [![GitHub Actions](https://github.com/fyntex/lib-cl-sii-python/actions/workflows/ci-cd.yaml/badge.svg?branch=master)](https://github.com/fyntex/lib-cl-sii-python/actions/workflows/ci-cd.yaml?query=branch:master) |
 
 | Code Coverage | Code Climate | Documentation | Project Analysis |
 | ------------- | ------------ | ------------- | ---------------- |
