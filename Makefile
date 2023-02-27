@@ -20,7 +20,8 @@ TOXENV ?= py310
 .PHONY: help
 .PHONY: clean clean-build clean-pyc clean-test
 .PHONY: install-dev install-deps-dev
-.PHONY: lint lint-fix test test-all test-coverage test-coverage-report-console test-coverage-report-html
+.PHONY: lint lint-fix test test-all test-coverage
+.PHONY: test-coverage-report test-coverage-report-console test-coverage-report-html
 .PHONY: build dist deploy upload-release
 .PHONE: python-virtualenv
 .PHONY: python-deps-compile python-deps-sync-check python-pip-tools-install
@@ -84,6 +85,10 @@ test-all: ## run tests on every Python version with tox
 
 test-coverage: ## run tests and record test coverage
 	coverage run --rcfile=setup.cfg setup.py test
+
+test-coverage-report: test-coverage-report-console
+test-coverage-report: test-coverage-report-html
+test-coverage-report: ## Run tests, measure code coverage, and generate reports
 
 test-coverage-report-console: ## print test coverage summary
 	coverage report --rcfile=setup.cfg -m
