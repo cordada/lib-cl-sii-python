@@ -21,7 +21,7 @@ TOXENV ?= py310
 .PHONY: clean clean-build clean-pyc clean-test
 .PHONY: install-dev install-deps-dev
 .PHONY: lint lint-fix test test-all test-coverage test-coverage-report-console test-coverage-report-html
-.PHONY: build dist upload-release
+.PHONY: build dist deploy upload-release
 .PHONE: python-virtualenv
 .PHONY: python-deps-compile python-deps-sync-check python-pip-tools-install
 .PHONY: python-pip-install python-setuptools-install python-wheel-install
@@ -102,6 +102,9 @@ dist: build ## builds source and wheel package
 
 upload-release: ## upload dist packages
 	python -m twine upload 'dist/*'
+
+deploy: upload-release
+deploy: ## Deploy or publish
 
 python-virtualenv: ## Create virtual Python environment
 	$(PYTHON) -m venv "$(PYTHON_VIRTUALENV_DIR)"
