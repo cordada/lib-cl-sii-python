@@ -3,6 +3,9 @@ SHELL = /usr/bin/env bash
 # Python
 PYTHON = python3
 PYTHON_PIP = $(PYTHON) -m pip
+PYTHON_PIP_VERSION_SPECIFIER = ==22.3.1
+PYTHON_SETUPTOOLS_VERSION_SPECIFIER = ==58.1.0
+PYTHON_WHEEL_VERSION_SPECIFIER = ==0.38.4
 PYTHON_PIP_TOOLS_VERSION_SPECIFIER = ~=6.8.0
 PYTHON_PIP_TOOLS_SRC_FILES = requirements.in requirements-dev.in
 
@@ -16,6 +19,7 @@ BLACK = black --config .black.cfg.toml
 .PHONY: lint lint-fix test test-all test-coverage test-coverage-report-console test-coverage-report-html
 .PHONY: dist upload-release
 .PHONY: python-deps-compile python-deps-sync-check python-pip-tools-install
+.PHONY: python-pip-install python-setuptools-install python-wheel-install
 
 help:
 	@grep '^[a-zA-Z]' $(MAKEFILE_LIST) | sort | awk -F ':.*?## ' 'NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
@@ -48,6 +52,7 @@ install-dev: ## Install for development
 	python -m pip install --editable .
 	python -m pip check
 
+install-deps-dev: python-pip-install python-setuptools-install python-wheel-install
 install-deps-dev: python-pip-tools-install
 install-deps-dev: ## Install dependencies for development
 	python -m pip install -r requirements.txt
@@ -89,6 +94,15 @@ dist: clean ## builds source and wheel package
 
 upload-release: ## upload dist packages
 	python -m twine upload 'dist/*'
+
+python-pip-install: ## Install Pip
+	$(PYTHON_PIP) install 'pip$(PYTHON_PIP_VERSION_SPECIFIER)'
+
+python-setuptools-install: ## Install Setuptools
+	$(PYTHON_PIP) install 'setuptools$(PYTHON_SETUPTOOLS_VERSION_SPECIFIER)'
+
+python-wheel-install: ## Install Wheel
+	$(PYTHON_PIP) install 'wheel$(PYTHON_WHEEL_VERSION_SPECIFIER)'
 
 python-deps-compile: $(patsubst %,python-deps-compile-%,$(PYTHON_PIP_TOOLS_SRC_FILES))
 python-deps-compile: ## Compile Python dependency manifests
