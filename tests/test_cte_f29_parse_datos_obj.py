@@ -16,7 +16,10 @@ class FunctionsTest(TestCase):
         datos_obj: Mapping[str, Any] = read_test_file_json_dict(
             'test_data/sii-cte/f29/cte--61002000-3--f29-6600000016-datos-obj-fake.json',
         )
-        obj = parse_datos_obj.parse_sii_cte_f29_datos_obj(datos_obj=datos_obj)
+        obj = parse_datos_obj.parse_sii_cte_f29_datos_obj(
+            datos_obj=datos_obj,
+            schema_validator=parse_datos_obj.cte_f29_datos_schema_best_effort_validator,
+        )
 
         self.assertIsInstance(obj, data_models.CteForm29)
         self.assertEqual(obj.contribuyente_rut, Rut('61002000-3'))
@@ -32,6 +35,7 @@ class FunctionsTest(TestCase):
             15: PeriodoTributario(year=2017, month=7),
             30: 723122062,
             48: 1409603,
+            49: 211345,
             60: 70,
             89: 0,
             77: 11429763,
@@ -79,6 +83,7 @@ class FunctionsTest(TestCase):
             "extra": {
                 30: 723122062,
                 48: 1409603,
+                49: 211345,
                 77: 11429763,
                 89: 0,
                 92: 0,

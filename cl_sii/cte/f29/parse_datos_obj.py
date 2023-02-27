@@ -13,7 +13,7 @@ from cl_sii.rut import Rut
 from .data_models import CteForm29
 
 
-SiiCteF29DatosObjType = Mapping[str, Mapping[str, object]]
+SiiCteF29DatosObjType = MutableMapping[str, Mapping[str, object]]
 _CTE_F29_DATOS_OBJ_SCHEMA_PATH = (
     Path(__file__).parent.parent.parent
     / 'data'
@@ -22,6 +22,16 @@ _CTE_F29_DATOS_OBJ_SCHEMA_PATH = (
     / 'f29_datos_obj.schema.json'
 )
 CTE_F29_DATOS_OBJ_SCHEMA = read_json_schema(_CTE_F29_DATOS_OBJ_SCHEMA_PATH)
+
+CTE_F29_DATOS_OBJ_SCHEMA_MISSING_TIPOS = {
+    '049': 'M',
+}
+CTE_F29_DATOS_OBJ_SCHEMA_MISSING_GLOSA = {
+    '049': (
+        'Restitución de devolución por concepto de Art. 27 ter D.L. 825, de 1974,'
+        ' inc. 2° (Ley N° 20.720)'
+    ),
+}
 
 
 def parse_sii_cte_f29_datos_obj(
@@ -172,3 +182,49 @@ def cte_f29_datos_schema_default_validator(datos_obj: SiiCteF29DatosObjType) -> 
         raise JsonSchemaValidationError("The keys of 'campos' and 'tipos' are not exactly the same")
     if datos_obj['campos'].keys() != datos_obj['glosa'].keys():
         raise JsonSchemaValidationError("The keys of 'campos' and 'tipos' are not exactly the same")
+
+
+def cte_f29_datos_schema_best_effort_validator(datos_obj: SiiCteF29DatosObjType) -> None:
+    """
+    Validate the ``datos`` object against the schema.
+
+    If there are missing keys in the `tipos` or `glosa` dicts, it will try to get them
+    from a list of default values.
+
+    :raises JsonSchemaValidationError: If schema validation fails.
+    :returns: ``None`` if schema validation passed.
+    """
+    try:
+        jsonschema.validate(datos_obj, schema=CTE_F29_DATOS_OBJ_SCHEMA)
+    except jsonschema.exceptions.ValidationError as exc:
+        raise JsonSchemaValidationError('Validation against JSON Schema failed') from exc
+
+    campos_tipos_keys_diff = datos_obj['campos'].keys() - datos_obj['tipos'].keys()
+    remaining_campos_tipos_diff = (
+        campos_tipos_keys_diff - CTE_F29_DATOS_OBJ_SCHEMA_MISSING_TIPOS.keys()
+    )
+    if remaining_campos_tipos_diff:
+        raise JsonSchemaValidationError(
+            "The keys of 'campos' and 'tipos' differ for the following codes: "
+            f"{remaining_campos_tipos_diff}"
+        )
+    else:
+        updated_tipos = {
+            key: CTE_F29_DATOS_OBJ_SCHEMA_MISSING_TIPOS[key] for key in campos_tipos_keys_diff
+        }
+        datos_obj['tipos'] = {**updated_tipos, **datos_obj['tipos']}
+
+    campos_glosa_keys_diff = datos_obj['campos'].keys() - datos_obj['glosa'].keys()
+    remaining_campos_glosa_diff = (
+        campos_glosa_keys_diff - CTE_F29_DATOS_OBJ_SCHEMA_MISSING_GLOSA.keys()
+    )
+    if remaining_campos_glosa_diff:
+        raise JsonSchemaValidationError(
+            "The keys of 'campos' and 'glosa' differ for the following codes: "
+            f"{remaining_campos_glosa_diff}"
+        )
+    else:
+        updated_glosa = {
+            key: CTE_F29_DATOS_OBJ_SCHEMA_MISSING_GLOSA[key] for key in campos_glosa_keys_diff
+        }
+        datos_obj['glosa'] = {**updated_glosa, **datos_obj['glosa']}
