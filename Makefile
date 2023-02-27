@@ -6,6 +6,7 @@ PYTHON_PIP = $(PYTHON) -m pip
 PYTHON_PIP_VERSION_SPECIFIER = ==22.3.1
 PYTHON_SETUPTOOLS_VERSION_SPECIFIER = ==58.1.0
 PYTHON_WHEEL_VERSION_SPECIFIER = ==0.38.4
+PYTHON_VIRTUALENV_DIR = venv
 PYTHON_PIP_TOOLS_VERSION_SPECIFIER = ~=6.8.0
 PYTHON_PIP_TOOLS_SRC_FILES = requirements.in requirements-dev.in
 
@@ -18,6 +19,7 @@ BLACK = black --config .black.cfg.toml
 .PHONY: install-dev install-deps-dev
 .PHONY: lint lint-fix test test-all test-coverage test-coverage-report-console test-coverage-report-html
 .PHONY: dist upload-release
+.PHONE: python-virtualenv
 .PHONY: python-deps-compile python-deps-sync-check python-pip-tools-install
 .PHONY: python-pip-install python-setuptools-install python-wheel-install
 
@@ -94,6 +96,9 @@ dist: clean ## builds source and wheel package
 
 upload-release: ## upload dist packages
 	python -m twine upload 'dist/*'
+
+python-virtualenv: ## Create virtual Python environment
+	$(PYTHON) -m venv "$(PYTHON_VIRTUALENV_DIR)"
 
 python-pip-install: ## Install Pip
 	$(PYTHON_PIP) install 'pip$(PYTHON_PIP_VERSION_SPECIFIER)'
