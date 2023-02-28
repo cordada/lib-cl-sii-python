@@ -10,7 +10,7 @@ codecov==2.1.12
 coverage==7.1.0
 flake8==4.0.1
 isort==5.10.1
-mypy==0.991
+mypy==1.0.1
 tox==3.25.1
 twine==3.1.1
 types-jsonschema==4.17.0.3
