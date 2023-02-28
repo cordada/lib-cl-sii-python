@@ -48,14 +48,13 @@ Either of the following alternatives::
     bumpversion major|minor|patch
     bumpversion --new-version 'X.Y.Z' part  # 'part' is a dummy argument.
 
-Push commit ``abcd1234`` and tag ``vX.Y.Z`` automatically created by ``bumpversion``::
+Push commit ``abcd1234`` automatically created by ``bumpversion``::
 
     git push
-    git push --tags
 
-Create branch ``release/vX.Y.Z`` that points to tag ``vX.Y.Z`` and push it::
+Create branch ``release/vX.Y.Z`` that points to commit ``abcd1234`` and push it::
 
-    git checkout vX.Y.Z
+    git checkout abcd1234
     git checkout -b release/vX.Y.Z
     git push origin HEAD
 
@@ -79,28 +78,16 @@ Create branch ``release/vX.Y.Z`` that points to tag ``vX.Y.Z`` and push it::
 
 * Merge PR.
 
-* Go to the CircleCI job named ``ci/circleci: dist`` corresponding to commit ``abcd1234``
-  (tagged ``vX.Y.Z``), tab "Artifacts", and download the generated package files to local repo
-  directory ``dist/``:
-
-  * ``cl-sii-X.Y.Z.tar.gz``
-
-  * ``cl_sii-X.Y.Z-py3-none-any.whl``
-
-* Create new release:
+* Modify release:
 
   * Go to the repo's
     `"Releases/tags" section <https://github.com/fyntex/lib-cl-sii-python/tags>`_.
 
-  * Create release for the new tag just pushed.
-
-  * Title: ``vX.Y.Z``.
+  * Edit the release that was automatically created by the CI/CD workflow for the new version.
 
   * Description: same as the PR just created.
 
-  * For the new GitHub release, add the files downloaded to ``dist/``.
-
-  * "Publish release".
+  * "Update release".
 
 4) Publish to PyPI
 +++++++++++++++++++

@@ -1,0 +1,101 @@
+# GitHub Actions Workflow for Release
+
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      create_git_tag_and_github_release:
+        type: boolean
+        required: true
+        description: Create Git tag and GitHub release.
+    outputs:
+      artifacts_path:
+        value: ${{ jobs.release.outputs.artifacts_path }}
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VIRTUALENV_ACTIVATE: venv/bin/activate
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-22.04
+
+    permissions:
+      contents: write
+
+    env:
+      ARTIFACTS_PATH: dist
+
+    outputs:
+      artifacts_path: ${{ env.ARTIFACTS_PATH }}
+
+    steps:
+      - name: Check Out VCS Repository
+        uses: actions/checkout@v3.3.0
+
+      - name: Set Up Python
+        id: set_up_python
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: "3.10.9"
+
+      - name: Create Python Virtual Environment
+        run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
+
+      - name: Restoring/Saving Cache
+        uses: actions/cache@v3.2.5
+        with:
+          path: "venv"
+          key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}-${{ hashFiles('Makefile', 'make/**.mk') }}
+
+      - name: Install Dependencies
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make install-deps-dev
+
+      - name: Build
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make clean-build build
+
+      - name: Build for Distribution
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make dist
+
+      - name: Store Artifacts
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: release
+          path: ${{ env.ARTIFACTS_PATH }}/
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Set Release Configuration
+        id: set_release_config
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+
+          library_version=$(python3 ./setup.py --version)
+
+          echo "library_version=${library_version:?}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Git Tag and GitHub Release
+        if: ${{ inputs.create_git_tag_and_github_release }}
+        run: |
+          gh release create \
+            "${VCS_TAG_NAME:?}" \
+            --target "${TARGET_VCS_REF:?}" \
+            --generate-notes \
+            ${ASSET_FILES:?}
+
+          echo "library_vcs_tag_name=${VCS_TAG_NAME:?}" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VCS_TAG_NAME: v${{ steps.set_release_config.outputs.library_version }}
+          TARGET_VCS_REF: ${{ github.sha }}
+          ASSET_FILES: ${{ env.ARTIFACTS_PATH }}/*

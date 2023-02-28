@@ -1,0 +1,149 @@
+# GitHub Actions Workflow for Continuous Integration
+
+name: CI
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VIRTUALENV_ACTIVATE: venv/bin/activate
+
+jobs:
+  pre-build:
+    name: Pre-Build
+    runs-on: ubuntu-22.04
+
+    steps:
+      - run: "true"
+
+  build:
+    name: Build
+    needs:
+      - pre-build
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        python_version:
+          - "3.7.15"
+          - "3.8.13"
+          - "3.9.16"
+          - "3.10.9"
+
+    steps:
+      - name: Check Out VCS Repository
+        uses: actions/checkout@v3.3.0
+
+      - name: Set Up Python ${{ matrix.python_version }}
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: "${{ matrix.python_version }}"
+
+      - name: Create Python Virtual Environment
+        run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
+
+      - name: Restoring/Saving Cache
+        uses: actions/cache@v3.2.5
+        with:
+          path: "venv"
+          key: py-v1-deps-${{ runner.os }}-${{ matrix.python_version }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}-${{ hashFiles('Makefile', 'make/**.mk') }}
+
+      - name: Install Dependencies
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make install-deps-dev
+
+      - name: Install Library
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make install-dev
+
+  test:
+    name: Test
+    needs:
+      - build
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        python_version:
+          - "3.7.15"
+          - "3.8.13"
+          - "3.9.16"
+          - "3.10.9"
+
+    steps:
+      - name: Check Out VCS Repository
+        uses: actions/checkout@v3.3.0
+
+      - name: Set Up Python ${{ matrix.python_version }}
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: "${{ matrix.python_version }}"
+
+      - name: Restoring/Saving Cache
+        uses: actions/cache@v3.2.5
+        with:
+          path: "venv"
+          key: py-v1-deps-${{ runner.os }}-${{ matrix.python_version }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}-${{ hashFiles('Makefile', 'make/**.mk') }}
+
+      - name: Set Tox Environment
+        id: set_tox_environment
+        run: |
+          # Set Tox environment to the installed Python version.
+          tox_env=$(
+            python -c 'import sys; v = sys.version_info; print("py{}{}".format(v.major, v.minor))'
+          )
+
+          echo "tox_env=${tox_env:?}" >> "$GITHUB_OUTPUT"
+
+      - name: Test
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make test
+        env:
+          TOXENV: ${{ steps.set_tox_environment.outputs.tox_env }}
+
+      - name: Lint
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make lint
+
+      - name: Test Coverage
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make test-coverage
+
+      - name: Test Coverage Report
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make test-coverage-report
+
+          codecov
+
+      - name: Check that compiled Python dependency manifests are up-to-date with their sources
+        # FIXME: There are issues related to testing with multiple Python versions.
+        if: ${{ startsWith(matrix.python_version, '3.7.') }}
+        run: |
+          source "$PYTHON_VIRTUALENV_ACTIVATE"
+          make python-deps-sync-check
+
+      - name: Store Artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: test_reports_${{ matrix.python_version }}
+          path: test-reports/
+          if-no-files-found: warn
+
+  post-test:
+    name: Post-Test
+    needs:
+      - test
+    runs-on: ubuntu-22.04
+
+    steps:
+      - run: "true"
