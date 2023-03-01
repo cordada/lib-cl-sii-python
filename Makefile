@@ -3,19 +3,29 @@ SHELL = /usr/bin/env bash
 # Python
 PYTHON = python3
 PYTHON_PIP = $(PYTHON) -m pip
+PYTHON_PIP_VERSION_SPECIFIER = ==22.3.1
+PYTHON_SETUPTOOLS_VERSION_SPECIFIER = ==58.1.0
+PYTHON_WHEEL_VERSION_SPECIFIER = ==0.38.4
+PYTHON_VIRTUALENV_DIR = venv
 PYTHON_PIP_TOOLS_VERSION_SPECIFIER = ~=6.8.0
 PYTHON_PIP_TOOLS_SRC_FILES = requirements.in requirements-dev.in
 
 # Black
 BLACK = black --config .black.cfg.toml
 
+# Tox
+TOXENV ?= py310
+
 .DEFAULT_GOAL := help
 .PHONY: help
 .PHONY: clean clean-build clean-pyc clean-test
 .PHONY: install-dev install-deps-dev
-.PHONY: lint lint-fix test test-all test-coverage test-coverage-report-console test-coverage-report-html
-.PHONY: dist upload-release
+.PHONY: lint lint-fix test test-all test-coverage
+.PHONY: test-coverage-report test-coverage-report-console test-coverage-report-html
+.PHONY: build dist deploy upload-release
+.PHONE: python-virtualenv
 .PHONY: python-deps-compile python-deps-sync-check python-pip-tools-install
+.PHONY: python-pip-install python-setuptools-install python-wheel-install
 
 help:
 	@grep '^[a-zA-Z]' $(MAKEFILE_LIST) | sort | awk -F ':.*?## ' 'NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
@@ -48,6 +58,7 @@ install-dev: ## Install for development
 	python -m pip install --editable .
 	python -m pip check
 
+install-deps-dev: python-pip-install python-setuptools-install python-wheel-install
 install-deps-dev: python-pip-tools-install
 install-deps-dev: ## Install dependencies for development
 	python -m pip install -r requirements.txt
@@ -66,8 +77,8 @@ lint-fix: ## Fix lint errors
 	$(BLACK) .
 	isort .
 
-test: ## run tests quickly with the default Python
-	python setup.py test
+test: ## run tests quickly with the default Tox Python
+	tox -e "$(TOXENV)"
 
 test-all: ## run tests on every Python version with tox
 	tox
@@ -75,13 +86,20 @@ test-all: ## run tests on every Python version with tox
 test-coverage: ## run tests and record test coverage
 	coverage run --rcfile=setup.cfg setup.py test
 
+test-coverage-report: test-coverage-report-console
+test-coverage-report: test-coverage-report-html
+test-coverage-report: ## Run tests, measure code coverage, and generate reports
+
 test-coverage-report-console: ## print test coverage summary
 	coverage report --rcfile=setup.cfg -m
 
 test-coverage-report-html: ## generate test coverage HTML report
 	coverage html --rcfile=setup.cfg
 
-dist: clean ## builds source and wheel package
+build: ## Build Python package
+	$(PYTHON) setup.py build
+
+dist: build ## builds source and wheel package
 	python setup.py sdist
 	python setup.py bdist_wheel
 	twine check dist/*
@@ -89,6 +107,21 @@ dist: clean ## builds source and wheel package
 
 upload-release: ## upload dist packages
 	python -m twine upload 'dist/*'
+
+deploy: upload-release
+deploy: ## Deploy or publish
+
+python-virtualenv: ## Create virtual Python environment
+	$(PYTHON) -m venv "$(PYTHON_VIRTUALENV_DIR)"
+
+python-pip-install: ## Install Pip
+	$(PYTHON_PIP) install 'pip$(PYTHON_PIP_VERSION_SPECIFIER)'
+
+python-setuptools-install: ## Install Setuptools
+	$(PYTHON_PIP) install 'setuptools$(PYTHON_SETUPTOOLS_VERSION_SPECIFIER)'
+
+python-wheel-install: ## Install Wheel
+	$(PYTHON_PIP) install 'wheel$(PYTHON_WHEEL_VERSION_SPECIFIER)'
 
 python-deps-compile: $(patsubst %,python-deps-compile-%,$(PYTHON_PIP_TOOLS_SRC_FILES))
 python-deps-compile: ## Compile Python dependency manifests
