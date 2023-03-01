@@ -1,5 +1,9 @@
 # History
 
+## 0.21.0 (2023-02-28)
+
+- (PR #441, 2023-03-01) Switch CI/CD from CircleCI to GitHub Actions
+
 ## 0.20.0 (2023-02-10)
 
 - (PR #403, 2023-01-05) chore(deps): Bump pyopenssl from 22.0.0 to 22.1.0
