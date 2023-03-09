@@ -1,5 +1,9 @@
 # History
 
+## 0.22.1 (2023-03-09)
+
+- (PR #452, 2023-03-09) fix(data.cte): Add JSON files to MANIFEST.in
+
 ## 0.22.0 (2023-03-09)
 
 - (PR #446, 2023-03-07) chore(deps-dev): Bump mypy from 0.991 to 1.0.1
