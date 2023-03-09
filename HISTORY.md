@@ -1,5 +1,12 @@
 # History
 
+## 0.22.0 (2023-03-09)
+
+- (PR #446, 2023-03-07) chore(deps-dev): Bump mypy from 0.991 to 1.0.1
+- (PR #449, 2023-03-08) Drop support for Python 3.7
+- (PR #442, 2023-03-09) chore: Bump actions/cache from 3.2.5 to 3.2.6
+- (PR #440, 2023-03-09) fix(cte): Add default values for known missing codes in SII CTE Form 29
+
 ## 0.21.0 (2023-02-28)
 
 - (PR #441, 2023-03-01) Switch CI/CD from CircleCI to GitHub Actions
