@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import copy
+import json
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
@@ -23,10 +25,17 @@ _CTE_F29_DATOS_OBJ_SCHEMA_PATH = (
 )
 CTE_F29_DATOS_OBJ_SCHEMA = read_json_schema(_CTE_F29_DATOS_OBJ_SCHEMA_PATH)
 
+_CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES_PATH = (
+    Path(__file__).parent.parent.parent / 'data' / 'cte' / 'f29_datos_obj_missing_key_fixes.json'
+)
+CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES: SiiCteF29DatosObjType = json.load(
+    open(_CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES_PATH)
+)
+
 
 def parse_sii_cte_f29_datos_obj(
     datos_obj: SiiCteF29DatosObjType,
-    schema_validator: Optional[Callable[[SiiCteF29DatosObjType], None]] = None,
+    schema_validator: Optional[Callable[[SiiCteF29DatosObjType], SiiCteF29DatosObjType]] = None,
     campo_deserializer: Optional[Callable[[object, str], object]] = None,
 ) -> CteForm29:
     """
@@ -55,7 +64,7 @@ def parse_sii_cte_f29_datos_obj(
 
 def _parse_sii_cte_f29_datos_obj_to_dict(
     datos_obj: SiiCteF29DatosObjType,
-    schema_validator: Callable[[SiiCteF29DatosObjType], None],
+    schema_validator: Callable[[SiiCteF29DatosObjType], SiiCteF29DatosObjType],
     campo_deserializer: Callable[[object, str], object],
 ) -> Mapping[str, object]:
     """
@@ -67,17 +76,17 @@ def _parse_sii_cte_f29_datos_obj_to_dict(
     :param campo_deserializer:
     :raises JsonSchemaValidationError: If schema validation fails.
     """
-    schema_validator(datos_obj)
+    validated_datos_obj = schema_validator(datos_obj)
 
     datos_obj_campos: Mapping[int, str] = {
-        int(code): str(value) for code, value in datos_obj['campos'].items()
+        int(code): str(value) for code, value in validated_datos_obj['campos'].items()
     }
-    datos_obj_extras: Mapping[str, object] = datos_obj['extras']
+    datos_obj_extras: Mapping[str, object] = validated_datos_obj['extras']
     datos_obj_glosa: Mapping[int, str] = {  # noqa: F841
-        int(code): str(value) for code, value in datos_obj['glosa'].items()
+        int(code): str(value) for code, value in validated_datos_obj['glosa'].items()
     }
     datos_obj_tipos: Mapping[int, str] = {
-        int(code): str(value) for code, value in datos_obj['tipos'].items()
+        int(code): str(value) for code, value in validated_datos_obj['tipos'].items()
     }
 
     deserialized_datos_obj_campos = {
@@ -156,12 +165,14 @@ def cte_f29_datos_obj_campo_best_effort_deserializer(campo_value: object, tipo: 
     return deserialized_value
 
 
-def cte_f29_datos_schema_default_validator(datos_obj: SiiCteF29DatosObjType) -> None:
+def cte_f29_datos_schema_default_validator(
+    datos_obj: SiiCteF29DatosObjType,
+) -> SiiCteF29DatosObjType:
     """
     Validate the ``datos`` object against the schema.
 
     :raises JsonSchemaValidationError: If schema validation fails.
-    :returns: ``None`` if schema validation passed.
+    :returns: Validated ``datos`` object if schema validation passed.
     """
     try:
         jsonschema.validate(datos_obj, schema=CTE_F29_DATOS_OBJ_SCHEMA)
@@ -172,3 +183,82 @@ def cte_f29_datos_schema_default_validator(datos_obj: SiiCteF29DatosObjType) -> 
         raise JsonSchemaValidationError("The keys of 'campos' and 'tipos' are not exactly the same")
     if datos_obj['campos'].keys() != datos_obj['glosa'].keys():
         raise JsonSchemaValidationError("The keys of 'campos' and 'tipos' are not exactly the same")
+
+    return datos_obj
+
+
+def cte_f29_datos_schema_best_effort_validator(
+    datos_obj: SiiCteF29DatosObjType,
+) -> SiiCteF29DatosObjType:
+    """
+    Validate the ``datos`` object against the schema.
+
+    If there are missing keys in the `tipos` or `glosa` dicts, it will try to get them
+    from a list of default values.
+
+    :raises JsonSchemaValidationError: If schema validation fails.
+    :returns: Validated ``datos`` object if schema validation passed.
+    """
+    try:
+        validated_datos_obj = cte_f29_datos_schema_default_validator(datos_obj)
+    except JsonSchemaValidationError as exc:
+        if exc.__cause__ is jsonschema.exceptions.ValidationError:
+            # We will not try to fix this kind of error.
+            raise
+        elif exc.__cause__ is None:
+            # Let's try to fix this.
+            new_datos_obj = try_fix_cte_f29_datos(datos_obj)
+
+            # Let's try again.
+            cte_f29_datos_schema_default_validator(new_datos_obj)
+            return new_datos_obj
+        else:
+            raise
+    else:
+        return validated_datos_obj
+
+
+def try_fix_cte_f29_datos(datos_obj: SiiCteF29DatosObjType) -> SiiCteF29DatosObjType:
+    """
+    Try to fix the ``datos`` object.
+
+    If there are missing keys in the `tipos` or `glosa` dicts, it will try to get them
+    from a list of default values.
+
+    :raises JsonSchemaValidationError: If an unfixable issue is found.
+    :returns: A possibly fixed ``datos`` object.
+    """
+    new_datos_obj: Mapping[str, MutableMapping[str, object]]
+    new_datos_obj = copy.deepcopy(datos_obj)  # type: ignore[arg-type]
+
+    campos_tipos_keys_diff = datos_obj['campos'].keys() - datos_obj['tipos'].keys()
+    remaining_campos_tipos_diff = (
+        campos_tipos_keys_diff - CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES['tipos'].keys()
+    )
+    if remaining_campos_tipos_diff:
+        raise JsonSchemaValidationError(
+            "The keys of 'campos' and 'tipos' differ for the following codes: "
+            f"{remaining_campos_tipos_diff}"
+        )
+    else:
+        for missing_key in campos_tipos_keys_diff:
+            new_datos_obj['tipos'][missing_key] = CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES['tipos'][
+                missing_key
+            ]
+
+    campos_glosa_keys_diff = datos_obj['campos'].keys() - datos_obj['glosa'].keys()
+    remaining_campos_glosa_diff = (
+        campos_glosa_keys_diff - CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES['glosa'].keys()
+    )
+    if remaining_campos_glosa_diff:
+        raise JsonSchemaValidationError(
+            "The keys of 'campos' and 'glosa' differ for the following codes: "
+            f"{remaining_campos_glosa_diff}"
+        )
+    else:
+        for missing_key in campos_glosa_keys_diff:
+            new_datos_obj['glosa'][missing_key] = CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES['glosa'][
+                missing_key
+            ]
+
+    return new_datos_obj
