@@ -1,6 +1,7 @@
 include HISTORY.md
 include LICENSE
 include README.md
+include cl_sii/data/cte/*.json
 recursive-include cl_sii *py
 recursive-include cl_sii/data/cte/schemas-json *.schema.json
 recursive-include cl_sii/data/ref/factura_electronica/schemas-xml *.xsd
