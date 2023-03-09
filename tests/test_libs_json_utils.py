@@ -5,7 +5,6 @@ from .utils import read_test_file_json_dict  # noqa: F401
 
 
 class FunctionReadJsonSchemaTest(unittest.TestCase):
-
     # TODO: implement
 
     pass

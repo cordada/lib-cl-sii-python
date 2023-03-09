@@ -12,13 +12,11 @@ from cl_sii.libs.dataclass_utils import (
 
 @dataclasses.dataclass
 class DataclassA:
-
     field_1: int = dataclasses.field()
 
 
 @dataclasses.dataclass
 class DataclassBWithoutMixin:
-
     field_1: object = dataclasses.field()
     field_2: Dict[str, object] = dataclasses.field()
     field_3: tuple = dataclasses.field()
@@ -29,7 +27,6 @@ class DataclassBWithoutMixin:
 
 @dataclasses.dataclass
 class DataclassBWithMixin(DataclassBWithoutMixin, DcDeepCompareMixin):
-
     pass
 
 

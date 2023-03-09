@@ -34,7 +34,7 @@ class TipoDteTest(unittest.TestCase):
             (value.receptor_is_vendedor, False),
         ]
 
-        for (result, expected) in assertions:
+        for result, expected in assertions:
             self.assertEqual(result, expected)
 
     def test_FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA(self) -> None:
@@ -52,7 +52,7 @@ class TipoDteTest(unittest.TestCase):
             (value.receptor_is_vendedor, False),
         ]
 
-        for (result, expected) in assertions:
+        for result, expected in assertions:
             self.assertTrue(result is expected)
 
     def test_LIQUIDACION_FACTURA_ELECTRONICA(self) -> None:
@@ -70,7 +70,7 @@ class TipoDteTest(unittest.TestCase):
             (value.receptor_is_vendedor, False),
         ]
 
-        for (result, expected) in assertions:
+        for result, expected in assertions:
             self.assertEqual(result, expected)
 
     def test_FACTURA_COMPRA_ELECTRONICA(self) -> None:
@@ -88,7 +88,7 @@ class TipoDteTest(unittest.TestCase):
             (value.receptor_is_vendedor, True),
         ]
 
-        for (result, expected) in assertions:
+        for result, expected in assertions:
             self.assertTrue(result is expected)
 
     def test_GUIA_DESPACHO_ELECTRONICA(self) -> None:
@@ -106,7 +106,7 @@ class TipoDteTest(unittest.TestCase):
             (value.receptor_is_vendedor, False),
         ]
 
-        for (result, expected) in assertions:
+        for result, expected in assertions:
             self.assertTrue(result is expected)
 
     def test_NOTA_DEBITO_ELECTRONICA(self) -> None:
@@ -124,7 +124,7 @@ class TipoDteTest(unittest.TestCase):
             (value.receptor_is_vendedor, False),
         ]
 
-        for (result, expected) in assertions:
+        for result, expected in assertions:
             self.assertTrue(result is expected)
 
     def test_NOTA_CREDITO_ELECTRONICA(self) -> None:
@@ -142,5 +142,5 @@ class TipoDteTest(unittest.TestCase):
             (value.receptor_is_vendedor, False),
         ]
 
-        for (result, expected) in assertions:
+        for result, expected in assertions:
             self.assertTrue(result is expected)

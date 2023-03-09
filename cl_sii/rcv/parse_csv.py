@@ -519,7 +519,6 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
 
 
 class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
-
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_RECLAMO_DT_TZ = SII_OFFICIAL_TZ
@@ -666,7 +665,6 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
 
 
 class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
-
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
 
@@ -830,7 +828,6 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
 
 
 class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
-
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_RECLAMO_DT_TZ = SII_OFFICIAL_TZ
 
@@ -967,7 +964,6 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
 
 
 class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
-
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
 

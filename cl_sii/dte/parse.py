@@ -544,7 +544,6 @@ def _text_strip_or_raise(xml_em: XmlElement) -> str:
 
 
 def _set_dte_xml_missing_xmlns(xml_doc: XmlElement) -> Tuple[XmlElement, bool]:
-
     # source: name of the XML element without namespace.
     #   cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L22 (f57a326)
     #   cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L92 (f57a326)
