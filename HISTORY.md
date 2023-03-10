@@ -1,5 +1,10 @@
 # History
 
+## 0.22.2 (2023-03-10)
+
+- (PR #427, 2023-03-10) chore(deps-dev): Bump black from 22.12.0 to 23.1.0
+- (PR #455, 2023-03-10) fix(data.cte): Add missing codes to files used by schema validator
+
 ## 0.22.1 (2023-03-09)
 
 - (PR #452, 2023-03-09) fix(data.cte): Add JSON files to MANIFEST.in
