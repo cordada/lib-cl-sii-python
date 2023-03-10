@@ -9,7 +9,6 @@ import rest_framework  # noqa: F401
 
 
 class RutFieldTest(unittest.TestCase):
-
     # TODO: implement!
 
     pass

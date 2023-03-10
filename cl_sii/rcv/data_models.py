@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 
 @pydantic.dataclasses.dataclass(frozen=True)
 class PeriodoTributario:
-
     ###########################################################################
     # constants
     ###########################################################################

@@ -128,7 +128,6 @@ class FunctionsTest(unittest.TestCase):
             self.assertFalse(with_mode_text(f))
 
         with tempfile.NamedTemporaryFile() as f:
-
             self.assertTrue(isinstance(f, tempfile._TemporaryFileWrapper))
             self.assertTrue(with_mode_binary(f))
             self.assertFalse(with_mode_text(f))
