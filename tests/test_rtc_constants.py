@@ -4,7 +4,6 @@ from cl_sii.rtc.constants import TIPO_DTE_CEDIBLES
 
 
 class TipoDteCediblesTest(unittest.TestCase):
-
     # For 'TIPO_DTE_CEDIBLES'
 
     def test_all_are_factura(self) -> None:

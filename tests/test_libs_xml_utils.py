@@ -96,21 +96,18 @@ class FunctionParseUntrustedXmlTests(unittest.TestCase):
 
 
 class FunctionReadXmlSchemaTest(unittest.TestCase):
-
     # TODO: implement
 
     pass
 
 
 class FunctionValidateXmlDocTest(unittest.TestCase):
-
     # TODO: implement
 
     pass
 
 
 class FunctionWriteXmlDocTest(unittest.TestCase):
-
     # TODO: implement for function 'write_xml_doc'. Consider each of the "observations".
     pass
 

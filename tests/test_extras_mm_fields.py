@@ -44,7 +44,6 @@ class RutFieldTest(unittest.TestCase):
             )
 
         class MyMmSchemaStrict(marshmallow.Schema):
-
             emisor_rut = RutField(
                 required=True,
                 data_key='RUT of Emisor',
@@ -110,7 +109,6 @@ class RutFieldTest(unittest.TestCase):
         self.assertEqual(data, {})
 
     def test_load_fail(self) -> None:
-
         schema = self.LoadMyMmSchema()
 
         data_invalid_1 = {'RUT of Emisor': '123123123123'}
@@ -252,7 +250,6 @@ class TipoDteFieldTest(unittest.TestCase):
         self.assertEqual(data, {})
 
     def test_load_fail(self) -> None:
-
         schema = self.LoadMyMmSchema()
 
         data_invalid_1 = {'source field name': '123'}
@@ -406,7 +403,6 @@ class RcvTipoDoctoFieldTest(unittest.TestCase):
         self.assertEqual(data, {})
 
     def test_load_fail(self) -> None:
-
         schema = self.LoadMyMmSchema()
 
         data_invalid_1 = {'source field name': '123'}

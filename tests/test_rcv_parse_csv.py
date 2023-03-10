@@ -19,31 +19,26 @@ from .utils import get_test_file_path
 
 
 class RcvVentaCsvRowSchemaTest(unittest.TestCase):
-
     # TODO: implement for 'RcvVentaCsvRowSchema'.
     pass
 
 
 class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
-
     # TODO: implement for 'RcvCompraRegistroCsvRowSchema'.
     pass
 
 
 class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
-
     # TODO: implement for 'RcvCompraNoIncluirCsvRowSchema'.
     pass
 
 
 class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
-
     # TODO: implement for 'RcvCompraReclamadoCsvRowSchema'.
     pass
 
 
 class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
-
     # TODO: implement for 'RcvCompraPendienteCsvRowSchema'.
     pass
 

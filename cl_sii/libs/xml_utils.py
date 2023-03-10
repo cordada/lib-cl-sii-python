@@ -182,7 +182,6 @@ def parse_untrusted_xml(value: bytes) -> XmlElement:
 
     # warning: do NOT change the exception handling order.
     try:
-
         xml_root_em = defusedxml.lxml.fromstring(
             text=value,
             parser=None,  # default: None (a custom one will be created)

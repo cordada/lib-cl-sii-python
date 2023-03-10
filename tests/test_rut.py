@@ -5,7 +5,6 @@ from cl_sii.rut import constants  # noqa: F401
 
 
 class RutTest(unittest.TestCase):
-
     valid_rut_canonical: str
     valid_rut_dv: str
     valid_rut_digits: str
