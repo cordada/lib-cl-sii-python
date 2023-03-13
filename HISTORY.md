@@ -1,5 +1,11 @@
 # History
 
+## 0.22.3 (2023-03-13)
+
+- (PR #432, 2023-03-13) chore(deps-dev): Bump isort from 5.10.1 to 5.12.0
+- (PR #430, 2023-03-13) chore(deps-dev): Bump flake8 from 4.0.1 to 6.0.0
+- (PR #458, 2023-03-13) fix(data.cte): Add missing code `8020` to file used by schema validator
+
 ## 0.22.2 (2023-03-10)
 
 - (PR #427, 2023-03-10) chore(deps-dev): Bump black from 22.12.0 to 23.1.0
