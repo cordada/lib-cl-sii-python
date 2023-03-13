@@ -16,4 +16,4 @@ marshmallow==3.19.0
 pydantic==1.10.4
 pyOpenSSL==23.0.0
 pytz==2022.7.1
-signxml==2.10.1
+signxml==3.1.0
