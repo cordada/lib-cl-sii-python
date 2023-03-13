@@ -30,7 +30,9 @@ import defusedxml
 import defusedxml.lxml
 import lxml.etree
 import signxml
+import signxml.algorithms
 import signxml.exceptions
+import signxml.verifier
 from lxml.etree import ElementBase as XmlElement
 from lxml.etree import XMLSchema as XmlSchema
 from lxml.etree import (  # note: 'lxml.etree.ElementTree' is a **function**, not a class.  # noqa: E501
@@ -478,12 +480,17 @@ def verify_xml_signature(
         #
         #   Source:
         #   https://github.com/XML-Security/signxml/commit/ef15da8dbb904f1dedfdd210ae3e0df5da535612
-        result: signxml.VerifyResult = xml_verifier.verify(
+        result = xml_verifier.verify(
             data=tmp_bytes,
             require_x509=True,
             x509_cert=trusted_x509_cert_open_ssl,
             ignore_ambiguous_key_info=True,
+            expect_config=signxml.verifier.SignatureConfiguration(
+                signature_methods=frozenset([signxml.algorithms.SignatureMethod.RSA_SHA1]),
+                digest_algorithms=frozenset([signxml.algorithms.DigestAlgorithm.SHA1]),
+            ),
         )
+        assert isinstance(result, signxml.VerifyResult)
 
     except signxml.exceptions.InvalidDigest as exc:
         # warning: catch before 'InvalidSignature' (it is the parent of 'InvalidDigest').

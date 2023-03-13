@@ -4,6 +4,7 @@ import logging
 from typing import Any, ClassVar, Optional
 
 import signxml
+import signxml.util
 
 from cl_sii.dte.parse import DTE_XMLNS_MAP
 from cl_sii.libs import crypto_utils, xml_utils
@@ -29,10 +30,10 @@ class AecXMLVerifier(signxml.XMLVerifier):
                 f'Only XML element {self.AEC_XML_ELEMENT_TAG!r} is supported. Found: {root.tag!r}',
             )
 
-        if root.tag == signxml.ds_tag("Signature"):
+        if root.tag == signxml.util.ds_tag("Signature"):
             return root
         else:
-            return self._find(root, "Signature", anywhere=False)
+            return self._find(root, "Signature")
 
 
 ###############################################################################

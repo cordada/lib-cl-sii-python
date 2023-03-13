@@ -27,7 +27,7 @@ djangorestframework==3.14.0
     # via -r requirements.in
 importlib-metadata==1.6.0
     # via -r requirements.in
-importlib-resources==5.10.2
+importlib-resources==5.12.0
     # via jsonschema
 jsonschema==4.17.3
     # via -r requirements.in
@@ -56,7 +56,7 @@ pytz==2022.7.1
     #   -r requirements.in
     #   django
     #   djangorestframework
-signxml==2.10.1
+signxml==3.1.0
     # via -r requirements.in
 sqlparse==0.4.2
     # via django
