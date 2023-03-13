@@ -2,11 +2,13 @@
   "glosa": {
     "049": "(Desconocido)",
     "156": "BASE IMPTO.A74,T.V.",
-    "157": "RET..ART74,T.VAR"
+    "157": "RET..ART74,T.VAR",
+    "8020": "(Desconocido)"
   },
   "tipos": {
     "049": "M",
     "156": "M",
-    "157": "M"
+    "157": "M",
+    "8020": "M"
   }
 }
