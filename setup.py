@@ -29,7 +29,7 @@ requirements = [
     'pydantic>=1.6.2,!=1.7.*,!=1.8.*,!=1.9.*',
     'pyOpenSSL>=22.0.0',
     'pytz>=2019.3',
-    'signxml>=2.10.1',
+    'signxml>=3.1.0',
 ]
 
 extras_requirements = {
