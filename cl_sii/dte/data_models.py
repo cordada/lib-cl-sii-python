@@ -15,6 +15,8 @@ In the domain of a DTE, a:
   It *usually* corresponds to the DTE's "receptor", but not always.
 
 """
+from __future__ import annotations
+
 import dataclasses
 from datetime import date, datetime
 from typing import Mapping, Optional, Sequence
@@ -572,6 +574,83 @@ class DteXmlReferencia:
 
     DTE doc XML element: '..//Documento//Referencia//RazonRef'
     """
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
+
+    @pydantic.validator('numero_linea_ref')
+    def validate_numero_linea_ref(cls, value: int) -> int:
+        if (
+            constants.DTE_REFERENCIA_LINE_NUMBER_MIN_VALUE
+            <= value
+            <= constants.DTE_REFERENCIA_LINE_NUMBER_MAX_VALUE
+        ):
+            return value
+
+        raise ValueError(
+            "Value 'numero_linea_ref' must be a value between "
+            f"{constants.DTE_REFERENCIA_LINE_NUMBER_MIN_VALUE} and "
+            f"{constants.DTE_REFERENCIA_LINE_NUMBER_MAX_VALUE}",
+            value,
+        )
+
+    @pydantic.validator('tipo_documento_ref')
+    def validate_tipo_documento_ref(cls, value: str) -> str:
+        if 1 <= len(value) <= 3:
+            return value
+
+        raise ValueError(
+            "The length of 'tipo_documento_ref' must be a value between 1 and 3", value
+        )
+
+    @pydantic.validator('ind_global')
+    def validate_ind_global(cls, value: int | None) -> int | None:
+        if value and value != 1:
+            raise ValueError("Only the value '1' is valid for the field 'ind_global'", value)
+        return value
+
+    @pydantic.validator('folio_ref')
+    def validate_folio_ref(cls, value: str) -> str:
+        if (
+            constants.DTE_REFERENCIA_FOLIO_MIN_LENGTH
+            <= len(value)
+            <= constants.DTE_REFERENCIA_FOLIO_MAX_LENGTH
+        ):
+            return value
+
+        raise ValueError(
+            "The length of 'folio_ref' must be a value between "
+            f"{constants.DTE_REFERENCIA_FOLIO_MIN_LENGTH} and "
+            f"{constants.DTE_REFERENCIA_FOLIO_MAX_LENGTH}",
+            value,
+        )
+
+    @pydantic.validator('fecha_ref')
+    def validate_fecha_ref(cls, value: date) -> date:
+        if (
+            value < constants.DTE_REFERENCIA_FECHA_NOT_BEFORE
+            or value > constants.DTE_REFERENCIA_FECHA_NOT_AFTER
+        ):
+            raise ValueError(
+                "The date 'fecha_ref' must be after "
+                f"{constants.DTE_REFERENCIA_FECHA_NOT_BEFORE} and before "
+                f"{constants.DTE_REFERENCIA_FECHA_NOT_AFTER}",
+                value,
+            )
+
+        return value
+
+    @pydantic.validator('razon_ref')
+    def validate_razon_ref(cls, value: str | None) -> str | None:
+        if value and len(value) > constants.DTE_REFERENCIA_RAZON_MAX_LENGTH:
+            raise ValueError(
+                "The maximum length allowed for `razon_ref` is "
+                f"{constants.DTE_REFERENCIA_RAZON_MAX_LENGTH}",
+                value,
+            )
+
+        return value
 
 
 @pydantic.dataclasses.dataclass(

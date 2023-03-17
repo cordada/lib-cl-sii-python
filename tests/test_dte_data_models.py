@@ -710,6 +710,218 @@ class DteDataL2Test(unittest.TestCase):
         )
 
 
+class DteXmlReferenciaTest(unittest.TestCase):
+    """
+    Tests for :class:`DteXmlReferencia`.
+    """
+
+    def _set_obj_1(self) -> None:
+        obj = DteXmlReferencia(
+            numero_linea_ref=1,
+            tipo_documento_ref="801",
+            folio_ref="4769807823",
+            fecha_ref=date(2021, 4, 16),
+        )
+        self.assertIsInstance(obj, DteXmlReferencia)
+
+        self.obj_1 = obj
+
+    def _set_obj_2(self) -> None:
+        obj = DteXmlReferencia(
+            numero_linea_ref=2,
+            tipo_documento_ref="HES",
+            folio_ref="1001055906",
+            fecha_ref=date(2021, 4, 16),
+        )
+        self.assertIsInstance(obj, DteXmlReferencia)
+
+        self.obj_2 = obj
+
+    def test_create_new_empty_instance(self) -> None:
+        with self.assertRaises(TypeError):
+            DteXmlReferencia()
+
+    def test_init_fail_numero_linea_ref_out_of_range(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                numero_linea_ref=0,
+            )
+        self.assertEqual(
+            assert_raises_cm.exception.errors(),
+            [
+                {
+                    'loc': ('numero_linea_ref',),
+                    'msg': '("Value \'numero_linea_ref\' must be a value between 1 and 40", 0)',
+                    'type': 'value_error',
+                }
+            ],
+        )
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                numero_linea_ref=41,
+            )
+        self.assertEqual(
+            assert_raises_cm.exception.errors(),
+            [
+                {
+                    'loc': ('numero_linea_ref',),
+                    'msg': '("Value \'numero_linea_ref\' must be a value between 1 and 40", 41)',
+                    'type': 'value_error',
+                }
+            ],
+        )
+
+    def test_init_fail_tipo_documento_ref_invalid(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                tipo_documento_ref="8001",
+            )
+        self.assertEqual(
+            assert_raises_cm.exception.errors(),
+            [
+                {
+                    'loc': ('tipo_documento_ref',),
+                    'msg': '("The length of \'tipo_documento_ref\' must be a '
+                    'value between 1 and 3", \'8001\')',
+                    'type': 'value_error',
+                }
+            ],
+        )
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                tipo_documento_ref="2BAD",
+            )
+        self.assertEqual(
+            assert_raises_cm.exception.errors(),
+            [
+                {
+                    'loc': ('tipo_documento_ref',),
+                    'msg': '("The length of \'tipo_documento_ref\' must be a value '
+                    'between 1 and 3", \'2BAD\')',
+                    'type': 'value_error',
+                },
+            ],
+        )
+
+    def test_init_fail_ind_global_invalid(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                ind_global=2,
+            )
+        self.assertEqual(
+            assert_raises_cm.exception.errors(),
+            [
+                {
+                    'loc': ('ind_global',),
+                    'msg': '("Only the value \'1\' is valid for the field \'ind_global\'", 2)',
+                    'type': 'value_error',
+                }
+            ],
+        )
+
+    def test_init_fail_folio_ref_empty(self) -> None:
+        self._set_obj_2()
+
+        obj = self.obj_2
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                folio_ref="",
+            )
+        self.assertEqual(
+            assert_raises_cm.exception.errors(),
+            [
+                {
+                    'loc': ('folio_ref',),
+                    'msg': '("The length of \'folio_ref\' must be a value between 1 and 18", \'\')',
+                    'type': 'value_error',
+                }
+            ],
+        )
+
+    def test_init_fail_fecha_ref_out_of_range(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                fecha_ref=date(2002, 7, 31),
+            )
+        self.assertEqual(
+            assert_raises_cm.exception.errors(),
+            [
+                {
+                    'loc': ('fecha_ref',),
+                    'msg': '("The date \'fecha_ref\' must be after 2002-08-01 and '
+                    'before 2050-12-31", datetime.date(2002, 7, 31))',
+                    'type': 'value_error',
+                }
+            ],
+        )
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                fecha_ref=date(2051, 1, 1),
+            )
+        self.assertEqual(
+            assert_raises_cm.exception.errors(),
+            [
+                {
+                    'loc': ('fecha_ref',),
+                    'msg': '("The date \'fecha_ref\' must be after 2002-08-01 and '
+                    'before 2050-12-31", datetime.date(2051, 1, 1))',
+                    'type': 'value_error',
+                },
+            ],
+        )
+
+    def test_init_fail_razon_ref_too_long(self) -> None:
+        self._set_obj_1()
+
+        obj = self.obj_1
+
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            dataclasses.replace(
+                obj,
+                razon_ref=(
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing '
+                    'elit. Sed metus magna, ultricies sit amet dolor sed'
+                ),
+            )
+        self.assertEqual(
+            assert_raises_cm.exception.errors(),
+            [
+                {
+                    'loc': ('razon_ref',),
+                    'msg': "('The maximum length allowed for `razon_ref` is 90', "
+                    "'Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+                    "Sed metus magna, ultricies sit amet dolor sed')",
+                    'type': 'value_error',
+                }
+            ],
+        )
+
+
 class DteXmlDataTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
