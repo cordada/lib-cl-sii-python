@@ -15,5 +15,5 @@ tox==3.25.1
 twine==3.1.1
 types-jsonschema==4.17.0.6
 types-pyOpenSSL==23.0.0.4
-types-pytz==2022.7.1.2
+types-pytz==2023.2.0.1
 wheel==0.38.4

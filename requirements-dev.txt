@@ -120,12 +120,11 @@ types-jsonschema==4.17.0.6
     # via -r requirements-dev.in
 types-pyopenssl==23.0.0.4
     # via -r requirements-dev.in
-types-pytz==2022.7.1.2
+types-pytz==2023.2.0.1
     # via -r requirements-dev.in
 typing-extensions==4.3.0
     # via
     #   -c requirements.txt
-    #   black
     #   mypy
 urllib3==1.26.12
     # via requests
