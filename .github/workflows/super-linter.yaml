@@ -10,6 +10,14 @@ name: Super-Linter
 
 on:
   push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
 
 permissions:
   contents: read
@@ -22,5 +30,6 @@ jobs:
     uses: cordada/github-actions-utils/.github/workflows/super-linter.yaml@master
     with:
       default_git_branch: develop
+      validate_all_codebase: false
 
       validate_markdown: true
