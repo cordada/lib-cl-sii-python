@@ -25,7 +25,7 @@ django==3.2.17
     #   djangorestframework
 djangorestframework==3.14.0
     # via -r requirements.in
-importlib-metadata==6.0.0
+importlib-metadata==6.1.0
     # via -r requirements.in
 importlib-resources==5.12.0
     # via jsonschema
