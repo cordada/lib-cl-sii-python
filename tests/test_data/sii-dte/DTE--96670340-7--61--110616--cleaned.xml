@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+<Documento ID="DTE-61-110616">
+<Encabezado>
+<IdDoc>
+<TipoDTE>61</TipoDTE>
+<Folio>110616</Folio>
+<FchEmis>2019-08-02</FchEmis>
+<FmaPago>2</FmaPago>
+<MedioPago>OT</MedioPago>
+<TermPagoGlosa>Crédito</TermPagoGlosa>
+<FchVenc>2019-09-01</FchVenc>
+</IdDoc>
+<Emisor>
+<RUTEmisor>96670340-7</RUTEmisor>
+<RznSoc>Bata Chile S.A.</RznSoc>
+<GiroEmis>Venta de calzado, accesorios y prendas de vestir</GiroEmis>
+<Acteco>513100</Acteco>
+<Sucursal>Camino a Melipilla N</Sucursal>
+<CdgSIISucur>5149528</CdgSIISucur>
+<DirOrigen>Camino a Melipilla N 9460</DirOrigen>
+<CmnaOrigen>Maipu</CmnaOrigen>
+<CiudadOrigen>Santiago</CiudadOrigen>
+</Emisor>
+<Receptor>
+<RUTRecep>81675600-6</RUTRecep>
+<RznSocRecep>Comercializadora S.A</RznSocRecep>
+<GiroRecep>Grandes Tiendas</GiroRecep>
+<Contacto/>
+<DirRecep>Moneda 970 piso 4</DirRecep>
+<CmnaRecep>Santiago</CmnaRecep>
+<CiudadRecep>Santiago</CiudadRecep>
+<DirPostal>3079</DirPostal>
+<CmnaPostal/>
+<CiudadPostal/>
+</Receptor>
+<Totales>
+<MntNeto>48190822</MntNeto>
+<MntExe>0</MntExe>
+<TasaIVA>19</TasaIVA>
+<IVA>9156256</IVA>
+<MntTotal>57347078</MntTotal>
+<SaldoAnterior>0</SaldoAnterior>
+<VlrPagar>57347078</VlrPagar>
+</Totales>
+</Encabezado>
+<Detalle>
+<NroLinDet>1</NroLinDet>
+<NmbItem>Comision Corner</NmbItem>
+<DscItem>Comision Venta Corner Hites Julio 2019</DscItem>
+<PrcRef>48190822.0</PrcRef>
+<QtyItem>1.0</QtyItem>
+<PrcItem>48190822.0</PrcItem>
+<MontoItem>48190822</MontoItem>
+</Detalle>
+<Referencia>
+<NroLinRef>1</NroLinRef>
+<TpoDocRef>33</TpoDocRef>
+<FolioRef>115885</FolioRef>
+<FchRef>2019-08-02</FchRef>
+<CodRef>3</CodRef>
+<RazonRef>Comision venta corner Hites</RazonRef>
+</Referencia>
+<TED version="1.0">
+<DD>
+<RE>96670340-7</RE>
+<TD>61</TD>
+<F>110616</F>
+<FE>2019-08-02</FE>
+<RR>81675600-6</RR>
+<RSR>Comercializadora S.A</RSR>
+<MNT>57347078</MNT>
+<IT1>Comision Corner</IT1>
+<CAF version="1.0">
+<DA>
+<RE>96670340-7</RE>
+<RS>BATA CHILE  S.A.</RS>
+<TD>61</TD>
+<RNG>
+<D>104464</D>
+<H>129299</H>
+</RNG>
+<FA>2019-06-21</FA>
+<RSAPK>
+<M>zg4wuIeBAqppHBQob2Er7TRodxLT2fUYYcLLHlUl3EymHePYAmCCPDlzSfyGzBxfvRk7oX5Jnul9NheFqtueIQ==</M>
+<E>Aw==</E>
+</RSAPK>
+<IDK>300</IDK>
+</DA>
+<FRMA algoritmo="SHA1withRSA">PXTyoe3OAnPS0c3mlsIrpNLwty6O4Vl/tSSyUiwdqi4Pv3WOF2zTV3l9McvbxNh1dFrJ+NZUZKNkyi4Ed252IA==</FRMA>
+</CAF>
+<TSTED>2019-08-05T15:20:06</TSTED>
+</DD>
+<FRMT algoritmo="SHA1withRSA">QS0M35REFeAEfUfRN3NHZ7mCzCmPxabKxVkLxTmdZtYW58AQZoETLc/8+WkBTnK5Pztd9h5nDEim1uvSvV5GxA==</FRMT>
+</TED>
+<TmstFirma>2019-08-05T15:20:06</TmstFirma>
+</Documento>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<SignedInfo>
+<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<Reference URI="#DTE-61-110616">
+<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<DigestValue>VcVzMYkB0P0dxCbegpFllEpGuAk=</DigestValue>
+</Reference>
+</SignedInfo>
+<SignatureValue>
+tklxn/gxaX16GGNmk4chkBoAJHUOaWm1XDLGCCRPpZQ8ireiXel+c1+Nxen4x+tzAAX2tJ1CiGuK
+euDy1Kd5c+5ngdtMqFrtBiOIXI2xLBUHVcVN87UzLBbH5wGVbLOaT1L7QX+4A5wm3qKWGyvDgCHR
+bemWqJedpswZ3ZiDBbE=
+</SignatureValue>
+<KeyInfo>
+<KeyValue>
+<RSAKeyValue>
+<Modulus>
+utp/IHvu2WqN+rq146FGZ9HLMRhaQVyokp6fkwvOu6mgxIWvrEClE4cuZG3N5q6eT6Dpldg4ulf9
+j4ioZ/tYZ119+hCN3SdNK9+BlJPqH+Yz3pzU1PRLyResbxhLM2HBPC5NhfqdYaH3RaMYifE6YvJk
+xElJ3ORstJEXzS7TsBk=
+</Modulus>
+<Exponent>AQAB</Exponent>
+</RSAKeyValue>
+</KeyValue>
+<X509Data>
+<X509Certificate>
+MIIGOjCCBSKgAwIBAgIKFh8ihAAAAAuKQDANBgkqhkiG9w0BAQUFADCB0jELMAkGA1UEBhMCQ0wx
+HTAbBgNVBAgTFFJlZ2lvbiBNZXRyb3BvbGl0YW5hMREwDwYDVQQHEwhTYW50aWFnbzEUMBIGA1UE
+ChMLRS1DRVJUQ0hJTEUxIDAeBgNVBAsTF0F1dG9yaWRhZCBDZXJ0aWZpY2Fkb3JhMTAwLgYDVQQD
+EydFLUNFUlRDSElMRSBDQSBGSVJNQSBFTEVDVFJPTklDQSBTSU1QTEUxJzAlBgkqhkiG9w0BCQEW
+GHNjbGllbnRlc0BlLWNlcnRjaGlsZS5jbDAeFw0xODA3MTQyMjA3MzdaFw0yMTA3MTMyMjA3Mzda
+MIG7MQswCQYDVQQGEwJDTDEjMCEGA1UECBMaTUVUUk9QT0xJVEFOQSBERSBTQU5USUFHTyAxETAP
+BgNVBAcTCFNhbnRpYWdvMSAwHgYDVQQKExdCbHVldGVjaCBDb25zdWx0aW5nIFNwQTEKMAgGA1UE
+CwwBKjEiMCAGA1UEAxMZTWFyaWEgVGVyZXNhIEFiYXN0byBQZXJlejEiMCAGCSqGSIb3DQEJARYT
+c29wb3J0ZUBibHVlbGluZS5jbDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAutp/IHvu2WqN
++rq146FGZ9HLMRhaQVyokp6fkwvOu6mgxIWvrEClE4cuZG3N5q6eT6Dpldg4ulf9j4ioZ/tYZ119
++hCN3SdNK9+BlJPqH+Yz3pzU1PRLyResbxhLM2HBPC5NhfqdYaH3RaMYifE6YvJkxElJ3ORstJEX
+zS7TsBkCAwEAAaOCAqkwggKlMIIBTwYDVR0gBIIBRjCCAUIwggE+BggrBgEEAcNSBTCCATAwLQYI
+KwYBBQUHAgEWIWh0dHA6Ly93d3cuZS1jZXJ0Y2hpbGUuY2wvQ1BTLmh0bTCB/gYIKwYBBQUHAgIw
+gfEege4ARQBsACAAcgBlAHMAcABvAG4AZABlAHIAIABlAHMAdABlACAAZgBvAHIAbQB1AGwAYQBy
+AGkAbwAgAGUAcwAgAHUAbgAgAHIAZQBxAHUAaQBzAGkAdABvACAAaQBuAGQAaQBzAHAAZQBuAHMA
+YQBiAGwAZQAgAHAAYQByAGEAIABkAGEAcgAgAGkAbgBpAGMAaQBvACAAYQBsACAAcAByAG8AYwBl
+AHMAbwAgAGQAZQAgAGMAZQByAHQAaQBmAGkAYwBhAGMAaQDzAG4ALgAgAFAAbwBzAHQAZQByAGkA
+bwByAG0AZQBuAHQAZQAsMB0GA1UdDgQWBBRhyzEF5P9e+/nyySWp9aqz3051zTALBgNVHQ8EBAMC
+BPAwIwYDVR0RBBwwGqAYBggrBgEEAcEBAaAMFgoyMzA5OTUzNi0yMB8GA1UdIwQYMBaAFHjhPp/S
+ErN6PI3NMA5Ts0MpB7NVMD4GA1UdHwQ3MDUwM6AxoC+GLWh0dHA6Ly9jcmwuZS1jZXJ0Y2hpbGUu
+Y2wvZWNlcnRjaGlsZWNhRkVTLmNybDA6BggrBgEFBQcBAQQuMCwwKgYIKwYBBQUHMAGGHmh0dHA6
+Ly9vY3NwLmVjZXJ0Y2hpbGUuY2wvb2NzcDA9BgkrBgEEAYI3FQcEMDAuBiYrBgEEAYI3FQiC3IMv
+hZOMZoXVnReC4twnge/sPGGBy54UhqiCWAIBZAIBBDAjBgNVHRIEHDAaoBgGCCsGAQQBwQECoAwW
+Cjk2OTI4MTgwLTUwDQYJKoZIhvcNAQEFBQADggEBAFf1p3ZXYrCCbcUzvPAajwmuI8JjFgtwZ2OF
+On62xMjX7Tj19n8Ad2ephI6d/vysjfpjR1QX2HzYGtnigX1eG0zSSkMXNw12hGl0Oyja2iIieHlC
+nJbaP0uQaaZnGvi5kpas6VUQAcD02sVMG4QA+iiGAhOYEV58+YwtkDnzNrdYJJMEE5qqzIBT0Uv9
+9MdD6f/zoeQQ9adEI1Hshe/c4fp7P4A5vUVTfAWitH0UVMVSUG5FHz806gMhjMWFu029mQE8PH0t
+IUWykHq2GsoSg3fT8clr+luOsU1JwFKUY51+P4E4Y+QNWckEedLfeYMSu+vXtEABfb36+XAox5gU
+7NU=
+</X509Certificate>
+</X509Data>
+</KeyInfo>
+</Signature>
+</DTE>
