@@ -17,11 +17,16 @@ True
 >>> dte_xml_data = parse.parse_dte_xml(xml_doc)
 
 """
+
+from __future__ import annotations
+
 import io
 import logging
 import os
 from datetime import date, datetime
-from typing import Optional, Tuple
+from typing import Mapping, Optional, Sequence, Tuple
+
+import pydantic
 
 from cl_sii.libs import encoding_utils, tz_utils, xml_utils
 from cl_sii.libs.xml_utils import XmlElement, XmlElementTree
@@ -415,6 +420,18 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
         namespaces=DTE_XMLNS_MAP,
     )
 
+    # 'Documento.Referencia'
+    referencia_em_list: Sequence[XmlElement] = documento_em.findall(
+        'sii-dte:Referencia',
+        namespaces=DTE_XMLNS_MAP,
+    )
+    referencia_xml_list: Optional[Sequence[data_models.DteXmlReferencia]] = None
+    if len(referencia_em_list) > 0:
+        referencia_xml_list = [
+            _DteXmlReferenciaParser.parse_xml(referencia_em).as_dte_xml_referencia()
+            for referencia_em in referencia_em_list
+        ]
+
     # 'Signature'
     # signature_signed_info_em = signature_em.find(
     #     'ds:SignedInfo',  # "Descripcion de la Informacion Firmada y del Metodo de Firma"
@@ -502,6 +519,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
         emisor_giro=emisor_giro_value,
         emisor_email=emisor_email_value,
         receptor_email=receptor_email_value,
+        referencias=referencia_xml_list,
     )
 
 
@@ -536,6 +554,93 @@ def _text_strip_or_raise(xml_em: XmlElement) -> str:
         stripped_text: str = xml_em.text.strip()
 
     return stripped_text
+
+
+###############################################################################
+# Parser Functions and Models
+###############################################################################
+
+
+def _validate_rut(v: object) -> object:
+    """
+    Reusable Pydantic validator for fields of type :class:`Rut`.
+    """
+    if isinstance(v, str):
+        v = Rut(value=v, validate_dv=False)  # Raises ValueError if invalid.
+    return v
+
+
+class _DteXmlReferenciaParser(pydantic.BaseModel):
+    """
+    Parser for ``/Documento/Referencia``.
+    """
+
+    class Config:
+        allow_mutation = False
+        anystr_strip_whitespace = True
+        arbitrary_types_allowed = True
+        extra = pydantic.Extra.forbid
+
+    ###########################################################################
+    # Fields
+    ###########################################################################
+
+    numero_linea_ref: int
+    tipo_documento_ref: str
+    ind_global: Optional[int]
+    folio_ref: str
+    rut_otro: Optional[Rut]
+    fecha_ref: date
+    codigo_ref: Optional[constants.CodigoReferencia]
+    razon_ref: Optional[str]
+
+    ###########################################################################
+    # Custom Methods
+    ###########################################################################
+
+    @classmethod
+    def parse_xml(cls, xml_doc: XmlElement) -> _DteXmlReferenciaParser:
+        aec_dict = cls.parse_xml_to_dict(xml_doc)
+        return cls.parse_obj(aec_dict)
+
+    def as_dte_xml_referencia(self) -> data_models.DteXmlReferencia:
+        return data_models.DteXmlReferencia(
+            numero_linea_ref=self.numero_linea_ref,
+            tipo_documento_ref=self.tipo_documento_ref,
+            ind_global=self.ind_global,
+            folio_ref=self.folio_ref,
+            rut_otro=self.rut_otro,
+            fecha_ref=self.fecha_ref,
+            codigo_ref=self.codigo_ref,
+            razon_ref=self.razon_ref,
+        )
+
+    @staticmethod
+    def parse_xml_to_dict(xml_em: XmlElement) -> Mapping[str, object]:
+        """
+        Parse XML element and return a dictionary.
+        """
+        # XPath: /Documento/Referencia
+        return dict(
+            numero_linea_ref=xml_em.findtext('sii-dte:NroLinRef', namespaces=DTE_XMLNS_MAP),
+            tipo_documento_ref=xml_em.findtext('sii-dte:TpoDocRef', namespaces=DTE_XMLNS_MAP),
+            ind_global=xml_em.findtext('sii-dte:IndGlobal', namespaces=DTE_XMLNS_MAP) or None,
+            folio_ref=xml_em.findtext('sii-dte:FolioRef', namespaces=DTE_XMLNS_MAP),
+            rut_otro=xml_em.findtext('sii-dte:RUTOtr', namespaces=DTE_XMLNS_MAP) or None,
+            fecha_ref=xml_em.findtext('sii-dte:FchRef', namespaces=DTE_XMLNS_MAP),
+            codigo_ref=xml_em.findtext('sii-dte:CodRef', namespaces=DTE_XMLNS_MAP) or None,
+            razon_ref=xml_em.findtext('sii-dte:RazonRef', namespaces=DTE_XMLNS_MAP) or None,
+        )
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
+
+    _validate_rut = pydantic.validator(
+        'rut_otro',
+        pre=True,
+        allow_reuse=True,
+    )(_validate_rut)
 
 
 ###############################################################################

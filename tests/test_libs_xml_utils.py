@@ -267,7 +267,10 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
 
         with self.assertRaises(XmlSignatureUnverified) as cm:
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
-        self.assertEqual(cm.exception.args, ("Digest mismatch for reference 0",))
+        self.assertEqual(
+            cm.exception.args,
+            ("Digest mismatch for reference 0 (#MiPE76354771-13419)",),
+        )
 
     def test_xml_doc_without_signature_1(self) -> None:
         xml_doc = parse_untrusted_xml(self.without_signature)

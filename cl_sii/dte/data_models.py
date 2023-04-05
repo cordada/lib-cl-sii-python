@@ -15,9 +15,11 @@ In the domain of a DTE, a:
   It *usually* corresponds to the DTE's "receptor", but not always.
 
 """
+from __future__ import annotations
+
 import dataclasses
 from datetime import date, datetime
-from typing import Mapping, Optional
+from typing import Mapping, Optional, Sequence
 
 import pydantic
 
@@ -27,7 +29,7 @@ from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 from . import constants
-from .constants import TipoDte
+from .constants import CodigoReferencia, TipoDte
 
 
 def validate_dte_folio(value: int) -> None:
@@ -472,6 +474,195 @@ class DteDataL2(DteDataL1):
         ),
     ),
 )
+class DteXmlReferencia:
+    """
+    Data in XML element ``Referencia`` in an DTE XML doc.
+
+    > Identificacion de otros documentos Referenciados por Documento
+
+    DTE doc XML element: 'Documento//Referencia'
+
+    .. note:: An XML DTE document includes none or up to 40 "Referencia" elements.
+
+    .. seealso::
+        XML schema of ``{http://www.sii.cl/SiiDte}/DTE/Documento/Referencia`` in 'DTE_v10.xsd' at
+        https://github.com/cl-sii-extraoficial/archivos-oficiales/blob/master/src/code/dte/README.md
+
+    """
+
+    ###########################################################################
+    # Fields
+    ###########################################################################
+
+    numero_linea_ref: int
+    """
+    Sequential line  number of the "referencia". Must be an integer between 1 and 40 inclusive
+
+    > Numero Secuencial de Linea de Referencia
+
+    DTE doc XML element: '..//Documento//Referencia//NroLinRef'
+    """
+
+    tipo_documento_ref: str
+    """
+    Kind of the document of "Referencia". Length must be >= 1 and <= 3
+
+    > Tipo de Documento de Referencia
+
+    DTE doc XML element: '..//Documento//Referencia//TpoDocRef'
+
+    .. note::
+        This field accepts any of the elements of the class:`TipoDocumento` or
+        an alphanumeric to refer to non-tax documents (in this case, validation does not apply)
+    """
+
+    folio_ref: str
+    """
+    The folio of the document referred to.
+
+    > Identificación del documento de referencia.
+
+    DTE doc XML element: '..//Documento//Referencia//FolioRef'
+    """
+
+    fecha_ref: date
+    """
+    The 'fecha_emision' of the document referred to.
+
+    > Fecha del documento de referencia
+
+    DTE doc XML element: '..//Documento//Referencia//FchRef'
+    """
+
+    ind_global: Optional[int] = None
+    """
+    Whether a set of documents of the same kind is referenced.
+
+    > Documento afecta a un número de más de 20 documentos del mismo `tipo_documento_ref`
+    > Se explicita la razón en `Razón Referencia`
+
+    DTE doc XML element: '..//Documento//Referencia//IndGlobal'
+    """
+
+    rut_otro: Optional[Rut] = None
+    """
+    The RUT of the "emisor" of the document referred to.
+
+    > RUT otro contribuyente
+
+    DTE doc XML element: '..//Documento//Referencia//RUTOtr'
+
+    .. note::
+        > Sólo si el documento de referencia es de tipo tributario y fue emitido
+        > por otro contribuyente
+    """
+
+    codigo_ref: Optional[CodigoReferencia] = None
+    """
+    The type of use for the reference
+
+    > Tipo de Uso de la Referencia
+
+    DTE doc XML element: '..//Documento//Referencia//CodRef'
+    """
+
+    razon_ref: Optional[str] = None
+    """
+    The reason the document is being referenced
+
+    > Razon Explicita por la que se Referencia el Documento
+
+    DTE doc XML element: '..//Documento//Referencia//RazonRef'
+    """
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
+
+    @pydantic.validator('numero_linea_ref')
+    def validate_numero_linea_ref(cls, value: int) -> int:
+        if (
+            constants.DTE_REFERENCIA_LINE_NUMBER_MIN_VALUE
+            <= value
+            <= constants.DTE_REFERENCIA_LINE_NUMBER_MAX_VALUE
+        ):
+            return value
+
+        raise ValueError(
+            "Value 'numero_linea_ref' must be a value between "
+            f"{constants.DTE_REFERENCIA_LINE_NUMBER_MIN_VALUE} and "
+            f"{constants.DTE_REFERENCIA_LINE_NUMBER_MAX_VALUE}",
+            value,
+        )
+
+    @pydantic.validator('tipo_documento_ref')
+    def validate_tipo_documento_ref(cls, value: str) -> str:
+        if 1 <= len(value) <= 3:
+            return value
+
+        raise ValueError(
+            "The length of 'tipo_documento_ref' must be a value between 1 and 3", value
+        )
+
+    @pydantic.validator('ind_global')
+    def validate_ind_global(cls, value: int | None) -> int | None:
+        if value and value != 1:
+            raise ValueError("Only the value '1' is valid for the field 'ind_global'", value)
+        return value
+
+    @pydantic.validator('folio_ref')
+    def validate_folio_ref(cls, value: str) -> str:
+        if (
+            constants.DTE_REFERENCIA_FOLIO_MIN_LENGTH
+            <= len(value)
+            <= constants.DTE_REFERENCIA_FOLIO_MAX_LENGTH
+        ):
+            return value
+
+        raise ValueError(
+            "The length of 'folio_ref' must be a value between "
+            f"{constants.DTE_REFERENCIA_FOLIO_MIN_LENGTH} and "
+            f"{constants.DTE_REFERENCIA_FOLIO_MAX_LENGTH}",
+            value,
+        )
+
+    @pydantic.validator('fecha_ref')
+    def validate_fecha_ref(cls, value: date) -> date:
+        if (
+            value < constants.DTE_REFERENCIA_FECHA_NOT_BEFORE
+            or value > constants.DTE_REFERENCIA_FECHA_NOT_AFTER
+        ):
+            raise ValueError(
+                "The date 'fecha_ref' must be after "
+                f"{constants.DTE_REFERENCIA_FECHA_NOT_BEFORE} and before "
+                f"{constants.DTE_REFERENCIA_FECHA_NOT_AFTER}",
+                value,
+            )
+
+        return value
+
+    @pydantic.validator('razon_ref')
+    def validate_razon_ref(cls, value: str | None) -> str | None:
+        if value and len(value) > constants.DTE_REFERENCIA_RAZON_MAX_LENGTH:
+            raise ValueError(
+                "The maximum length allowed for `razon_ref` is "
+                f"{constants.DTE_REFERENCIA_RAZON_MAX_LENGTH}",
+                value,
+            )
+
+        return value
+
+
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=type(
+        'Config',
+        (),
+        dict(
+            arbitrary_types_allowed=True,
+        ),
+    ),
+)
 class DteXmlData(DteDataL1):
 
     """
@@ -549,6 +740,14 @@ class DteXmlData(DteDataL1):
     Email address of the "receptor" of the DTE.
     """
 
+    referencias: Optional[Sequence[DteXmlReferencia]] = None
+    """
+    List of structs for ``Referencia`` XML elements.
+
+    ..warning::
+        The items MUST be ordered according to their ``numero_linea_ref``.
+    """
+
     def as_dte_data_l1(self) -> DteDataL1:
         return DteDataL1(
             emisor_rut=self.emisor_rut,
@@ -611,3 +810,76 @@ class DteXmlData(DteDataL1):
         if isinstance(v, str):
             validate_non_empty_str(v)
         return v
+
+    @pydantic.validator('referencias')
+    def validate_referencias_numero_linea_ref_order(cls, v: object) -> object:
+        if isinstance(v, Sequence):
+            for idx, referencia in enumerate(v, start=1):
+                if referencia.numero_linea_ref != idx:
+                    raise ValueError("items must be ordered according to their 'numero_linea_ref'")
+        return v
+
+    @pydantic.root_validator(skip_on_failure=True)
+    def validate_referencias_rut_otro_is_consistent_with_tipo_dte(
+        cls,
+        values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        referencias = values['referencias']
+        tipo_dte = values['tipo_dte']
+
+        if (
+            isinstance(referencias, Sequence)
+            and isinstance(tipo_dte, TipoDte)
+            and tipo_dte not in constants.DTE_REFERENCIA_RUTOTR_TIPO_DOC_SET
+        ):
+            for referencia in referencias:
+                if referencia.rut_otro:
+                    raise ValueError(
+                        f"Setting a 'rut_otro' is not a valid option for this 'tipo_dte':"
+                        f" 'tipo_dte' == {tipo_dte!r},"
+                        f" 'Referencia' number {referencia.numero_linea_ref}.",
+                    )
+
+        return values
+
+    @pydantic.root_validator(skip_on_failure=True)
+    def validate_referencias_rut_otro_is_consistent_with_emisor_rut(
+        cls,
+        values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        referencias = values['referencias']
+        emisor_rut = values['emisor_rut']
+
+        if isinstance(referencias, Sequence) and isinstance(emisor_rut, Rut):
+            for referencia in referencias:
+                if referencia.rut_otro and referencia.rut_otro == emisor_rut:
+                    raise ValueError(
+                        f"'rut_otro' must be different from 'emisor_rut':"
+                        f" {referencia.rut_otro!r} == {emisor_rut!r},"
+                        f" 'Referencia' number {referencia.numero_linea_ref}.",
+                    )
+
+        return values
+
+    @pydantic.root_validator(skip_on_failure=True)
+    def validate_referencias_codigo_ref_is_consistent_with_tipo_dte(
+        cls,
+        values: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        referencias = values['referencias']
+        tipo_dte = values['tipo_dte']
+
+        if (
+            isinstance(referencias, Sequence)
+            and isinstance(tipo_dte, TipoDte)
+            and tipo_dte in constants.DTE_REFERENCIA_CODREF_TIPO_DOC_MANDATORY_SET
+        ):
+            for referencia in referencias:
+                if not referencia.codigo_ref:
+                    raise ValueError(
+                        f"'codigo_ref' is mandatory for this 'tipo_dte':"
+                        f" 'tipo_dte' == {tipo_dte!r},"
+                        f" 'Referencia' number {referencia.numero_linea_ref}.",
+                    )
+
+        return values
