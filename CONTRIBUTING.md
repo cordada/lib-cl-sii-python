@@ -230,5 +230,5 @@ This is done by the CI/CD system.
 [^semver]: [Semantic Versioning](https://semver.org/)
 [^git-alias-github-pr-summary]: Add a Git alias that generates a summary of changes from GitHub pull
   requests:
-  `git config --global alias.lg-github-pr-summary \
+  `git config --global alias.lg-github-pr-summary
     '!f() { git log --date=short --reverse --merges --grep "^Merge pull request #[[:digit:]]* from" --pretty="tformat:- (%C(auto,red)<S>%s</S>%C(reset), %C(auto,green)%ad%C(reset)) %b" "$@" | sed -E "s|<S>Merge pull request (#[0-9]+) from .+</S>|PR \1|"; }; f'` <!-- markdownlint-disable-line MD013 -->
