@@ -1,5 +1,19 @@
 # History
 
+## 0.23.0 (2023-04-05)
+
+- (PR #443, 2023-03-13) chore(deps-dev): Bump types-pytz from 2022.7.1.0 to 2022.7.1.2
+- (PR #445, 2023-03-13) chore(deps-dev): Bump types-jsonschema from 4.17.0.3 to 4.17.0.6
+- (PR #428, 2023-03-13) chore(deps): Bump signxml from 2.10.1 to 3.1.0
+- (PR #444, 2023-03-13) chore(deps-dev): Bump types-pyopenssl from 23.0.0.2 to 23.0.0.4
+- (PR #462, 2023-03-14) Update minimum version of `signxml` to `3.1.0`
+- (PR #429, 2023-03-14) chore(deps): Bump importlib-metadata from 1.6.0 to 6.0.0
+- (PR #463, 2023-03-29) Decrease Dependabot's open pull request limit to 5
+- (PR #475, 2023-04-03) Update Editor Configuration
+- (PR #474, 2023-04-04) Update Super-Linter configuration
+- (PR #218, 2023-04-04)  Add data model for DTE Referencia
+- (PR #461, 2023-04-04) Add contributing guidelines
+
 ## 0.22.3 (2023-03-13)
 
 - (PR #432, 2023-03-13) chore(deps-dev): Bump isort from 5.10.1 to 5.12.0
