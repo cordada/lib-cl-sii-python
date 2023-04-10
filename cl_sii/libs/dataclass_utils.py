@@ -91,8 +91,16 @@ def _dc_deep_compare_to(value_a: object, value_b: object) -> DcDeepComparison:
         return DcDeepComparison.EQUAL
 
     # Remove dataclass attributes whose value is None.
-    self_dict_clean = {k: v for k, v in dataclasses.asdict(value_a).items() if v is not None}
-    value_dict_clean = {k: v for k, v in dataclasses.asdict(value_b).items() if v is not None}
+    self_dict_clean = {
+        k: v
+        for k, v in dataclasses.asdict(value_a).items()  # type: ignore[call-overload]
+        if v is not None
+    }
+    value_dict_clean = {
+        k: v
+        for k, v in dataclasses.asdict(value_b).items()  # type: ignore[call-overload]
+        if v is not None
+    }
 
     if len(self_dict_clean) < len(value_dict_clean):
         for k, v in self_dict_clean.items():
