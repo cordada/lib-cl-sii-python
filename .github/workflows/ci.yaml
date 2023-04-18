@@ -120,8 +120,6 @@ jobs:
           source "$PYTHON_VIRTUALENV_ACTIVATE"
           make test-coverage-report
 
-          codecov
-
       - name: Check that compiled Python dependency manifests are up-to-date with their sources
         # FIXME: There are issues related to testing with multiple Python versions.
         if: ${{ startsWith(matrix.python_version, '3.8.') }}
