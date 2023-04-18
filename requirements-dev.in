@@ -6,7 +6,6 @@
 
 black==23.1.0
 bumpversion==0.5.3
-codecov==2.1.12
 coverage==7.1.0
 flake8==6.0.0
 isort==5.12.0

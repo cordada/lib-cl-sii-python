@@ -24,12 +24,8 @@ chardet==4.0.0
     # via requests
 click==8.0.3
     # via black
-codecov==2.1.12
-    # via -r requirements-dev.in
 coverage==7.1.0
-    # via
-    #   -r requirements-dev.in
-    #   codecov
+    # via -r requirements-dev.in
 cryptography==39.0.1
     # via
     #   -c requirements.txt
@@ -92,7 +88,6 @@ readme-renderer==35.0
     # via twine
 requests==2.25.1
     # via
-    #   codecov
     #   requests-toolbelt
     #   twine
 requests-toolbelt==0.9.1

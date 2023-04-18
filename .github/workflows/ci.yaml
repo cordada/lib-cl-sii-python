@@ -120,7 +120,11 @@ jobs:
           source "$PYTHON_VIRTUALENV_ACTIVATE"
           make test-coverage-report
 
-          codecov
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3.1.2
+        with:
+          directory: ./test-reports/coverage/
+          fail_ci_if_error: true
 
       - name: Check that compiled Python dependency manifests are up-to-date with their sources
         # FIXME: There are issues related to testing with multiple Python versions.
