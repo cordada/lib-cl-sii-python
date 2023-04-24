@@ -5,7 +5,7 @@
 # Note: To install a package from a Git VCS repository, see the following example:
 #   git+https://github.com/example/example.git@example-vcs-ref#egg=example-pkg[foo,bar]==1.42.3
 
-cryptography==39.0.1
+cryptography==39.0.2
 defusedxml==0.7.1
 Django>=2.2.24
 djangorestframework>=3.10.3,<3.15
