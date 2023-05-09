@@ -58,7 +58,7 @@ pytz==2023.3
     #   djangorestframework
 signxml==3.1.0
     # via -r requirements.in
-sqlparse==0.4.2
+sqlparse==0.4.4
     # via django
 typing-extensions==4.3.0
     # via pydantic
