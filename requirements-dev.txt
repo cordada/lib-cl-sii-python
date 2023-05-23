@@ -20,7 +20,7 @@ cffi==1.15.1
     # via
     #   -c requirements.txt
     #   cryptography
-chardet==4.0.0
+charset-normalizer==3.1.0
     # via requests
 click==8.0.3
     # via black
@@ -86,7 +86,7 @@ pygments==2.15.0
     # via readme-renderer
 readme-renderer==35.0
     # via twine
-requests==2.25.1
+requests==2.31.0
     # via
     #   requests-toolbelt
     #   twine
