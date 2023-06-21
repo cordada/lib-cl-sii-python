@@ -6,7 +6,7 @@
 #
 appdirs==1.4.4
     # via virtualenv
-black==23.1.0
+black==23.3.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
