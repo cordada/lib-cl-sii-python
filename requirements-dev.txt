@@ -120,7 +120,6 @@ types-pytz==2023.3.0.0
 typing-extensions==4.3.0
     # via
     #   -c requirements.txt
-    #   black
     #   mypy
 urllib3==1.26.12
     # via requests
@@ -128,7 +127,7 @@ virtualenv==20.4.3
     # via tox
 webencodings==0.5.1
     # via bleach
-wheel==0.38.4
+wheel==0.40.0
     # via -r requirements-dev.in
 
 # The following packages are considered to be unsafe in a requirements file:
