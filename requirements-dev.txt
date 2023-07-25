@@ -28,7 +28,7 @@ click==8.0.3
     # via black
 colorama==0.4.6
     # via tox
-coverage==7.1.0
+coverage==7.2.7
     # via -r requirements-dev.in
 cryptography==41.0.2
     # via
