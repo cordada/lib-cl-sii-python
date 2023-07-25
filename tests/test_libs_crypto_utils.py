@@ -488,7 +488,7 @@ class LoadPemX509CertTest(unittest.TestCase):
         some_microsoft_extension_oid = oid.ObjectIdentifier("1.3.6.1.4.1.311.21.7")
         some_microsoft_ext = cert_extensions.get_extension_for_oid(some_microsoft_extension_oid)
         self.assertEqual(some_microsoft_ext.critical, False)
-        self.assertTrue(isinstance(some_microsoft_ext.value.value, bytes))
+        self.assertTrue(isinstance(some_microsoft_ext.value.public_bytes(), bytes))
 
     def test_load_der_x509_cert_ok_cert_real_dte_3(self) -> None:
         cert_der_bytes = utils.read_test_file_bytes(
