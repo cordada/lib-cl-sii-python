@@ -12,7 +12,7 @@ bumpversion==0.5.3
     # via -r requirements-dev.in
 cachetools==5.3.1
     # via tox
-certifi==2022.6.15
+certifi==2023.7.22
     # via
     #   -c requirements.txt
     #   requests
