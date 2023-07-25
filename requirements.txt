@@ -8,7 +8,7 @@ asgiref==3.5.2
     # via django
 attrs==20.3.0
     # via jsonschema
-certifi==2022.6.15
+certifi==2023.7.22
     # via signxml
 cffi==1.15.1
     # via cryptography
