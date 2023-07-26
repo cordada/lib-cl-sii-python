@@ -1,5 +1,39 @@
 # History
 
+## 0.23.1 (2023-07-26)
+
+- (PR #478, 2023-04-05) Fix Git alias `lg-github-pr-summary` in Contributing Guidelines
+- (PR #479, 2023-04-05) Update code owners for Python dependencies
+- (PR #467, 2023-04-10) chore(deps): Bump importlib-metadata from 6.0.0 to 6.1.0
+- (PR #483, 2023-04-18) Add Codecov to CI workflow
+- (PR #466, 2023-04-18) chore: Bump actions/cache from 3.2.6 to 3.3.1
+- (PR #465, 2023-04-18) chore: Bump actions/dependency-review-action from 3.0.3 to 3.0.4
+- (PR #481, 2023-04-24) chore: Bump actions/checkout from 3.3.0 to 3.5.2
+- (PR #480, 2023-04-24) chore(deps-dev): Bump mypy from 1.0.1 to 1.2.0
+- (PR #473, 2023-04-24) chore(deps-dev): Bump types-pytz from 2022.7.1.2 to 2023.3.0.0
+- (PR #471, 2023-04-24) chore(deps): Bump pytz from 2022.7.1 to 2023.3
+- (PR #468, 2023-04-24) chore(deps): Bump cryptography from 39.0.1 to 39.0.2
+- (PR #486, 2023-05-05) chore: Bump codecov/codecov-action from 3.1.2 to 3.1.3
+- (PR #484, 2023-05-09) chore: Bump sqlparse from 0.4.2 to 0.4.4
+- (PR #499, 2023-06-22) chore(deps): Update `black` from 23.1.0 to 23.3.0
+- (PR #501, 2023-07-03) chore: Bump actions/checkout from 3.5.2 to 3.5.3
+- (PR #502, 2023-07-03) chore(deps): Update `pip-tools` from 6.8.0 to 6.14.0
+- (PR #504, 2023-07-19) chore: Bump actions/setup-python from 4.5.0 to 4.7.0
+- (PR #495, 2023-07-20) chore: Bump actions/dependency-review-action from 3.0.4 to 3.0.6
+- (PR #494, 2023-07-21) chore: Bump codecov/codecov-action from 3.1.3 to 3.1.4
+- (PR #497, 2023-07-25) chore: Bump pyopenssl from 23.0.0 to 23.2.0
+- (PR #505, 2023-07-25) chore: Bump pygments from 2.13.0 to 2.15.0
+- (PR #492, 2023-07-25) chore: Bump requests from 2.25.1 to 2.31.0
+- (PR #512, 2023-07-25) chore: Bump cryptography from 39.0.2 to 41.0.2
+- (PR #513, 2023-07-25) chore(deps): Update `django` from 3.2.17 to 3.2.20
+- (PR #490, 2023-07-25) chore(deps): Bump signxml from 3.1.0 to 3.2.0
+- (PR #514, 2023-07-25) chore(deps): Update `tox` from 3.25.1 to 4.6.4
+- (PR #506, 2023-07-25) chore: Bump types-pyopenssl from 23.0.0.4 to 23.2.0.2
+- (PR #498, 2023-07-25) chore: Bump coverage from 7.1.0 to 7.2.7
+- (PR #515, 2023-07-25) chore(deps): Update `certifi` from 2022.6.15 to 2023.7.22
+- (PR #516, 2023-07-25) Update code owners
+- (PR #511, 2023-07-25) chore: Bump wheel from 0.38.4 to 0.41.0
+
 ## 0.23.0 (2023-04-05)
 
 - (PR #443, 2023-03-13) chore(deps-dev): Bump types-pytz from 2022.7.1.0 to 2022.7.1.2
