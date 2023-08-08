@@ -32,4 +32,5 @@ jobs:
       default_git_branch: develop
       validate_all_codebase: false
 
+      validate_editorconfig: true
       validate_markdown: true
