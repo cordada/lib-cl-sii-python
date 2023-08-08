@@ -12,7 +12,7 @@ certifi==2023.7.22
     # via signxml
 cffi==1.15.1
     # via cryptography
-cryptography==41.0.2
+cryptography==41.0.3
     # via
     #   -r requirements.in
     #   pyopenssl
@@ -27,7 +27,7 @@ djangorestframework==3.14.0
     # via -r requirements.in
 importlib-metadata==6.1.0
     # via -r requirements.in
-importlib-resources==6.0.0
+importlib-resources==6.0.1
     # via jsonschema
 jsonschema==4.17.3
     # via -r requirements.in
