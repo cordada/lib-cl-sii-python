@@ -24,8 +24,8 @@ indent_size = 2
 
 # minified JavaScript files should not be modified
 [**.min.js]
-indent_style = ignore
-insert_final_newline = ignore
+indent_style = unset
+insert_final_newline = unset
 
 [*.md]
 indent_style = space
