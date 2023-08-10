@@ -8,7 +8,9 @@ black==23.3.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
-bumpversion==0.5.3
+bump2version==1.0.1
+    # via bumpversion
+bumpversion==0.6.0
     # via -r requirements-dev.in
 cachetools==5.3.1
     # via tox
@@ -125,7 +127,6 @@ types-pytz==2023.3.0.0
 typing-extensions==4.3.0
     # via
     #   -c requirements.txt
-    #   black
     #   mypy
 urllib3==1.26.12
     # via requests

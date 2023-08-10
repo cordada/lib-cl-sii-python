@@ -5,7 +5,7 @@
 -c requirements.txt
 
 black==23.3.0
-bumpversion==0.5.3
+bumpversion==0.6.0
 coverage==7.2.7
 flake8==6.0.0
 isort==5.12.0
