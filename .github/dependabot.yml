@@ -11,6 +11,14 @@ version: 2
 updates:
   - package-ecosystem: pip
     directory: /
+    ignore:
+      - dependency-name: "bumpversion"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+    groups:
+      development-dependencies:
+        dependency-type: development
+        exclude-patterns:
+          - "bumpversion"
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
@@ -19,6 +27,9 @@ updates:
 
   - package-ecosystem: github-actions
     directory: /
+    groups:
+      production-dependencies:
+        dependency-type: production
     schedule:
       interval: monthly
     commit-message:
