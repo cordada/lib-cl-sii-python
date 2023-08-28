@@ -11,6 +11,9 @@ version: 2
 updates:
   - package-ecosystem: pip
     directory: /
+    ignore:
+      - dependency-name: "bumpversion"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
