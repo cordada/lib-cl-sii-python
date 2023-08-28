@@ -43,7 +43,7 @@ filelock==3.12.2
     # via
     #   tox
     #   virtualenv
-flake8==6.0.0
+flake8==6.1.0
     # via -r requirements-dev.in
 idna==2.10
     # via requests
@@ -80,13 +80,13 @@ platformdirs==3.9.1
     #   virtualenv
 pluggy==1.2.0
     # via tox
-pycodestyle==2.10.0
+pycodestyle==2.11.0
     # via flake8
 pycparser==2.20
     # via
     #   -c requirements.txt
     #   cffi
-pyflakes==3.0.1
+pyflakes==3.1.0
     # via flake8
 pygments==2.15.0
     # via readme-renderer
@@ -125,7 +125,6 @@ types-pytz==2023.3.0.0
 typing-extensions==4.3.0
     # via
     #   -c requirements.txt
-    #   black
     #   mypy
 urllib3==1.26.12
     # via requests
