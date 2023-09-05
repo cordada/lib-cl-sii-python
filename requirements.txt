@@ -60,7 +60,7 @@ signxml==3.2.0
     # via -r requirements.in
 sqlparse==0.4.4
     # via django
-typing-extensions==4.3.0
+typing-extensions==4.7.1
     # via pydantic
 zipp==3.8.1
     # via
