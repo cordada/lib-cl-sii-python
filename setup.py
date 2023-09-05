@@ -6,7 +6,7 @@ from typing import Sequence
 from setuptools import find_packages, setup
 
 
-def get_version(*file_paths: Sequence[str]) -> str:
+def get_version(*file_paths: str) -> str:
     filename = os.path.join(os.path.dirname(__file__), *file_paths)
     version_file = open(filename).read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
@@ -37,9 +37,9 @@ extras_requirements = {
     'djangorestframework': ['djangorestframework>=3.10.3,<3.15'],
 }
 
-setup_requirements = []
+setup_requirements: Sequence[str] = []
 
-test_requirements = [
+test_requirements: Sequence[str] = [
     # note: include here only packages **imported** in test code (e.g. 'requests-mock'), NOT those
     #   like 'coverage' or 'tox'.
 ]
