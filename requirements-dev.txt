@@ -134,7 +134,7 @@ types-pyopenssl==23.2.0.2
     # via -r requirements-dev.in
 types-pytz==2023.3.0.1
     # via -r requirements-dev.in
-typing-extensions==4.3.0
+typing-extensions==4.7.1
     # via
     #   -c requirements.txt
     #   black
