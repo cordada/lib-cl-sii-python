@@ -1,5 +1,14 @@
 # History
 
+## 0.23.2 (2023-09-05)
+
+- (PR #522, 2023-08-07) Enable Editor Configuration validation in Super-Linter
+- (PR #523, 2023-08-08) chore(deps): Update `pydantic` from 1.10.4 to 1.10.12
+- (PR #524, 2023-08-10) Fix type checking of Setuptools configuration
+- (PR #521, 2023-08-10) chore: Bump cryptography from 41.0.2 to 41.0.3
+- (PR #525, 2023-08-28) Add dependency groups to Dependabot configuration
+- (PR #526, 2023-08-28) chore: Bump the production-dependencies group with 2 updates
+
 ## 0.23.1 (2023-07-26)
 
 - (PR #478, 2023-04-05) Fix Git alias `lg-github-pr-summary` in Contributing Guidelines
