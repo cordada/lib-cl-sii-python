@@ -277,4 +277,4 @@ tags
 # warning: rules order matter. Do not move the ones in this section upwards!
 
 # note: prevent this dir from being ignored (because of rule `[Ss]cripts`)
-!/scripts/
+!/src/scripts/

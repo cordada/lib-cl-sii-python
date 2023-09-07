@@ -43,8 +43,8 @@ XML namespace for DTE element in DTE XML schema.
 
 Ref: target namespace in 'DTE_v10.xsd' and 'EnvioDTE_v10.xsd'.
 
-* cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L19 (f57a326)
-* cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L14 (f57a326)
+* src/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L19 (f57a326)
+* src/cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L14 (f57a326)
 """
 
 DTE_XMLNS_MAP = {
@@ -650,8 +650,8 @@ class _DteXmlReferenciaParser(pydantic.BaseModel):
 
 def _set_dte_xml_missing_xmlns(xml_doc: XmlElement) -> Tuple[XmlElement, bool]:
     # source: name of the XML element without namespace.
-    #   cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L22 (f57a326)
-    #   cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L92 (f57a326)
+    #   src/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L22 (f57a326)
+    #   src/cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L92 (f57a326)
     em_tag_simple = 'DTE'
 
     em_namespace = DTE_XMLNS

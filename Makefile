@@ -1,5 +1,8 @@
 SHELL = /usr/bin/env bash
 
+# Sources Root
+SOURCES_ROOT = $(CURDIR)/src
+
 # Python
 PYTHON = python3
 PYTHON_PIP = $(PYTHON) -m pip
@@ -67,15 +70,20 @@ install-deps-dev: ## Install dependencies for development
 	python -m pip install -r requirements-dev.txt
 	python -m pip check
 
+lint: FLAKE8_FILES = *.py "$(SOURCES_ROOT)"
+lint: ISORT_FILES = *.py "$(SOURCES_ROOT)"
+lint: BLACK_SRC = *.py "$(SOURCES_ROOT)"
 lint: ## run tools for code style analysis, static type check, etc
-	flake8 --config=setup.cfg  cl_sii  scripts  tests
+	flake8 $(FLAKE8_FILES)
 	mypy
-	isort --check-only .
-	$(BLACK) --check .
+	isort --check-only $(ISORT_FILES)
+	$(BLACK) --check $(BLACK_SRC)
 
+lint-fix: BLACK_SRC = *.py "$(SOURCES_ROOT)"
+lint-fix: ISORT_FILES = *.py "$(SOURCES_ROOT)"
 lint-fix: ## Fix lint errors
-	$(BLACK) .
-	isort .
+	$(BLACK) $(BLACK_SRC)
+	isort $(ISORT_FILES)
 
 test: ## run tests quickly with the default Tox Python
 	tox -e "$(TOXENV)"
