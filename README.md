@@ -21,7 +21,7 @@ The full documentation is at <https://lib-cl-sii-python.readthedocs.io>.
 
 | Code Coverage | Code Climate | Documentation | Project Analysis |
 | ------------- | ------------ | ------------- | ---------------- |
-| [![Codecov](https://codecov.io/gh/fyntex/lib-cl-sii-python/branch/develop/graph/badge.svg?token=VdwPUEUzzQ)](https://codecov.io/gh/fyntex/lib-cl-sii-python) | [![Maintainability](https://api.codeclimate.com/v1/badges/c4e8a9b023310ff8c276/maintainability)](https://codeclimate.com/github/fyntex/lib-cl-sii-python/maintainability) | [![Read the Docs](https://readthedocs.org/projects/lib-cl-sii-python/badge/)](https://readthedocs.org/projects/lib-cl-sii-python/) | [Open Source Insights](https://deps.dev/pypi/cl-sii) |
+| [![Codecov](https://codecov.io/gh/cordada/lib-cl-sii-python/graph/badge.svg?token=VdwPUEUzzQ)](https://codecov.io/gh/cordada/lib-cl-sii-python) | [![Maintainability](https://api.codeclimate.com/v1/badges/c4e8a9b023310ff8c276/maintainability)](https://codeclimate.com/github/fyntex/lib-cl-sii-python/maintainability) | [![Read the Docs](https://readthedocs.org/projects/lib-cl-sii-python/badge/)](https://readthedocs.org/projects/lib-cl-sii-python/) | [Open Source Insights](https://deps.dev/pypi/cl-sii) |
 
 ### Hosting
 
