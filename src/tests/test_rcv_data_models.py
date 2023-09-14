@@ -2,7 +2,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
-import pydantic
+import pydantic.v1
 
 import cl_sii.dte.constants
 from cl_sii.base.constants import SII_OFFICIAL_TZ
@@ -39,7 +39,7 @@ class PeriodoTributarioTest(unittest.TestCase):
         ]
 
         # Validate the minimum value of the field year
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.periodo_tributario_1,
                 year=1899,
@@ -60,7 +60,7 @@ class PeriodoTributarioTest(unittest.TestCase):
         ]
 
         # Validate the minimum value of the field month
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.periodo_tributario_1,
                 month=0,
@@ -72,7 +72,7 @@ class PeriodoTributarioTest(unittest.TestCase):
             self.assertIn(expected_validation_error, validation_errors)
 
         # Validate the maximum value of the field month
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.periodo_tributario_1,
                 month=13,
@@ -111,7 +111,7 @@ class RcvDetalleEntryTest(unittest.TestCase):
         ]
 
         # Validate the minimum value of the field folio
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rcv_detalle_entry_1,
                 folio=cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE - 1,
@@ -123,7 +123,7 @@ class RcvDetalleEntryTest(unittest.TestCase):
             self.assertIn(expected_validation_error, validation_errors)
 
         # Validate the maximum value of the field folio
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rcv_detalle_entry_1,
                 folio=cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE + 1,
@@ -145,7 +145,7 @@ class RcvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rcv_detalle_entry_1,
                 fecha_recepcion_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -171,7 +171,7 @@ class RcvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rcv_detalle_entry_1,
                 fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -227,7 +227,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 receptor_razon_social='',
@@ -250,7 +250,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 fecha_acuse_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -276,7 +276,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 fecha_acuse_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -301,7 +301,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 fecha_reclamo_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -327,7 +327,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 fecha_reclamo_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -379,7 +379,7 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_registro_detalle_entry_1,
                 emisor_razon_social='',
@@ -401,7 +401,7 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_registro_detalle_entry_1,
                 fecha_acuse_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -427,7 +427,7 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_registro_detalle_entry_1,
                 fecha_acuse_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -502,7 +502,7 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_reclamado_detalle_entry_1,
                 emisor_razon_social='',
@@ -524,7 +524,7 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_reclamado_detalle_entry_1,
                 fecha_reclamo_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -550,7 +550,7 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_reclamado_detalle_entry_1,
                 fecha_reclamo_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -592,7 +592,7 @@ class RcPendienteDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_pendiente_detalle_entry_1,
                 emisor_razon_social='',

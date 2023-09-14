@@ -21,7 +21,7 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Mapping, Optional, Sequence
 
-import pydantic
+import pydantic.v1
 
 import cl_sii.dte.data_models
 import cl_sii.dte.parse
@@ -104,7 +104,7 @@ def _validate_rut(v: object) -> object:
     return v
 
 
-class _XmlSignature(pydantic.BaseModel):
+class _XmlSignature(pydantic.v1.BaseModel):
     """
     Parser for ``//Signature``.
     """
@@ -112,7 +112,7 @@ class _XmlSignature(pydantic.BaseModel):
     class Config:
         allow_mutation = False
         anystr_strip_whitespace = True
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
         min_anystr_length = 1
 
     ###########################################################################
@@ -158,7 +158,7 @@ class _XmlSignature(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    @pydantic.validator(
+    @pydantic.v1.validator(
         'signature_value',
         'key_info_x509_data_x509_cert',
         pre=True,
@@ -178,7 +178,7 @@ class _XmlSignature(pydantic.BaseModel):
     #     return v
 
 
-class _Cesionario(pydantic.BaseModel):
+class _Cesionario(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion/Cesionario``.
     """
@@ -187,7 +187,7 @@ class _Cesionario(pydantic.BaseModel):
         allow_mutation = False
         anystr_strip_whitespace = True
         arbitrary_types_allowed = True
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
         min_anystr_length = 1
 
     ###########################################################################
@@ -220,14 +220,14 @@ class _Cesionario(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    _validate_rut = pydantic.validator(  # type: ignore[pydantic-field]
+    _validate_rut = pydantic.v1.validator(  # type: ignore[pydantic-field]
         'rut',
         pre=True,
         allow_reuse=True,
     )(_validate_rut)
 
 
-class _RutAutorizado(pydantic.BaseModel):
+class _RutAutorizado(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion/Cedente/RUTAutorizado``.
     """
@@ -236,7 +236,7 @@ class _RutAutorizado(pydantic.BaseModel):
         allow_mutation = False
         anystr_strip_whitespace = True
         arbitrary_types_allowed = True
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
         min_anystr_length = 1
 
     ###########################################################################
@@ -265,20 +265,20 @@ class _RutAutorizado(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    _empty_str_to_none = pydantic.validator(  # type: ignore[pydantic-field]
+    _empty_str_to_none = pydantic.v1.validator(  # type: ignore[pydantic-field]
         'nombre',
         pre=True,
         allow_reuse=True,
     )(_empty_str_to_none)
 
-    _validate_rut = pydantic.validator(  # type: ignore[pydantic-field]
+    _validate_rut = pydantic.v1.validator(  # type: ignore[pydantic-field]
         'rut',
         pre=True,
         allow_reuse=True,
     )(_validate_rut)
 
 
-class _Cedente(pydantic.BaseModel):
+class _Cedente(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion/Cedente``.
     """
@@ -287,7 +287,7 @@ class _Cedente(pydantic.BaseModel):
         allow_mutation = False
         anystr_strip_whitespace = True
         arbitrary_types_allowed = True
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
         min_anystr_length = 1
 
     ###########################################################################
@@ -338,13 +338,13 @@ class _Cedente(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('rut', pre=True)
+    @pydantic.v1.validator('rut', pre=True)
     def validate_rut(cls, v: object) -> object:
         if isinstance(v, str):
             v = Rut(value=v, validate_dv=False)  # Raises ValueError if invalid.
         return v
 
-    @pydantic.validator('ruts_autorizados')
+    @pydantic.v1.validator('ruts_autorizados')
     def validate_ruts_autorizados_item_count(cls, v: object) -> object:
         if isinstance(v, Sequence):
             if len(v) < 1:
@@ -354,7 +354,7 @@ class _Cedente(pydantic.BaseModel):
         return v
 
 
-class _IdDte(pydantic.BaseModel):
+class _IdDte(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion/IdDTE``.
     """
@@ -362,7 +362,7 @@ class _IdDte(pydantic.BaseModel):
     class Config:
         allow_mutation = False
         arbitrary_types_allowed = True
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
 
     ###########################################################################
     # Fields
@@ -408,26 +408,26 @@ class _IdDte(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    _validate_rut_emisor = pydantic.validator(  # type: ignore[pydantic-field]
+    _validate_rut_emisor = pydantic.v1.validator(  # type: ignore[pydantic-field]
         'rut_emisor',
         pre=True,
         allow_reuse=True,
     )(_validate_rut)
 
-    _validate_rut_receptor = pydantic.validator(  # type: ignore[pydantic-field]
+    _validate_rut_receptor = pydantic.v1.validator(  # type: ignore[pydantic-field]
         'rut_receptor',
         pre=True,
         allow_reuse=True,
     )(_validate_rut)
 
-    @pydantic.validator('tipo_dte', pre=True)
+    @pydantic.v1.validator('tipo_dte', pre=True)
     def validate_tipo_dte(cls, v: object) -> object:
         if isinstance(v, int):
             v = TipoDte(v)  # Raises ValueError if invalid.
         return v
 
 
-class _DocumentoCesion(pydantic.BaseModel):
+class _DocumentoCesion(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion``.
     """
@@ -435,7 +435,7 @@ class _DocumentoCesion(pydantic.BaseModel):
     class Config:
         allow_mutation = False
         anystr_strip_whitespace = True
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
         min_anystr_length = 1
 
     ###########################################################################
@@ -498,7 +498,7 @@ class _DocumentoCesion(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('tmst_cesion')
+    @pydantic.v1.validator('tmst_cesion')
     def validate_datetime(cls, v: object) -> object:
         if isinstance(v, str):
             v = datetime.fromisoformat(v)
@@ -511,14 +511,14 @@ class _DocumentoCesion(pydantic.BaseModel):
         return v
 
 
-class _Cesion(pydantic.BaseModel):
+class _Cesion(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC/Cesiones/Cesion``.
     """
 
     class Config:
         allow_mutation = False
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
 
     ###########################################################################
     # Fields
@@ -585,7 +585,7 @@ class _Cesion(pydantic.BaseModel):
         )
 
 
-class _DocumentoDteCedido(pydantic.BaseModel):
+class _DocumentoDteCedido(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC/Cesiones/DTECedido/DocumentoDTECedido``.
     """
@@ -593,7 +593,7 @@ class _DocumentoDteCedido(pydantic.BaseModel):
     class Config:
         allow_mutation = False
         arbitrary_types_allowed = True
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
 
     ###########################################################################
     # Fields
@@ -631,7 +631,7 @@ class _DocumentoDteCedido(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('dte', pre=True)
+    @pydantic.v1.validator('dte', pre=True)
     def validate_dte(cls, v: object) -> object:
         if isinstance(v, XmlElement):
             cl_sii.dte.parse.validate_dte_xml(v)
@@ -651,14 +651,14 @@ class _DocumentoDteCedido(pydantic.BaseModel):
     #     return v
 
 
-class _DteCedido(pydantic.BaseModel):
+class _DteCedido(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC/Cesiones/DTECedido``.
     """
 
     class Config:
         allow_mutation = False
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
 
     ###########################################################################
     # Fields
@@ -702,7 +702,7 @@ class _DteCedido(pydantic.BaseModel):
         )
 
 
-class _Caratula(pydantic.BaseModel):
+class _Caratula(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC/Caratula``.
     """
@@ -711,7 +711,7 @@ class _Caratula(pydantic.BaseModel):
         allow_mutation = False
         anystr_strip_whitespace = True
         arbitrary_types_allowed = True
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
         min_anystr_length = 1
 
     ###########################################################################
@@ -748,7 +748,7 @@ class _Caratula(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    _empty_str_to_none = pydantic.validator(  # type: ignore[pydantic-field]
+    _empty_str_to_none = pydantic.v1.validator(  # type: ignore[pydantic-field]
         'nmb_contacto',
         'fono_contacto',
         'mail_contacto',
@@ -756,19 +756,19 @@ class _Caratula(pydantic.BaseModel):
         allow_reuse=True,
     )(_empty_str_to_none)
 
-    _validate_rut_cedente = pydantic.validator(  # type: ignore[pydantic-field]
+    _validate_rut_cedente = pydantic.v1.validator(  # type: ignore[pydantic-field]
         'rut_cedente',
         pre=True,
         allow_reuse=True,
     )(_validate_rut)
 
-    _validate_rut_cesionario = pydantic.validator(  # type: ignore[pydantic-field]
+    _validate_rut_cesionario = pydantic.v1.validator(  # type: ignore[pydantic-field]
         'rut_cesionario',
         pre=True,
         allow_reuse=True,
     )(_validate_rut)
 
-    @pydantic.validator('tmst_firmaenvio')
+    @pydantic.v1.validator('tmst_firmaenvio')
     def validate_datetime(cls, v: object) -> object:
         if isinstance(v, str):
             v = datetime.fromisoformat(v)
@@ -781,14 +781,14 @@ class _Caratula(pydantic.BaseModel):
         return v
 
 
-class _DocumentoAec(pydantic.BaseModel):
+class _DocumentoAec(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC/DocumentoAEC``.
     """
 
     class Config:
         allow_mutation = False
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
 
     ###########################################################################
     # Fields
@@ -844,7 +844,7 @@ class _DocumentoAec(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('cesiones_cesion')
+    @pydantic.v1.validator('cesiones_cesion')
     def validate_cesiones_cesion_min_items(cls, v: object) -> object:
         if isinstance(v, Sequence):
             if len(v) < 1:
@@ -852,14 +852,14 @@ class _DocumentoAec(pydantic.BaseModel):
         return v
 
 
-class _Aec(pydantic.BaseModel):
+class _Aec(pydantic.v1.BaseModel):
     """
     Parser for ``/AEC``.
     """
 
     class Config:
         allow_mutation = False
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
 
     ###########################################################################
     # Fields

@@ -21,7 +21,7 @@ import dataclasses
 from datetime import date, datetime
 from typing import Mapping, Optional, Sequence
 
-import pydantic
+import pydantic.v1
 
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
@@ -98,7 +98,7 @@ def validate_non_empty_bytes(value: bytes) -> None:
         raise ValueError("Bytes value length is 0.")
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -165,14 +165,14 @@ class DteNaturalKey:
     # Validators
     ###########################################################################
 
-    @pydantic.validator('folio')
+    @pydantic.v1.validator('folio')
     def validate_folio(cls, v: object) -> object:
         if isinstance(v, int):
             validate_dte_folio(v)
         return v
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -214,7 +214,7 @@ class DteDataL0(DteNaturalKey):
         return DteNaturalKey(emisor_rut=self.emisor_rut, tipo_dte=self.tipo_dte, folio=self.folio)
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -322,7 +322,7 @@ class DteDataL1(DteDataL0):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('monto_total')
+    @pydantic.v1.validator('monto_total')
     def validate_monto_total(cls, v: object, values: Mapping[str, object]) -> object:
         tipo_dte = values.get('tipo_dte')
 
@@ -332,7 +332,7 @@ class DteDataL1(DteDataL0):
         return v
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -433,38 +433,38 @@ class DteDataL2(DteDataL1):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('emisor_razon_social', 'receptor_razon_social')
+    @pydantic.v1.validator('emisor_razon_social', 'receptor_razon_social')
     def validate_contribuyente_razon_social(cls, v: object) -> object:
         if isinstance(v, str):
             validate_contribuyente_razon_social(v)
         return v
 
-    @pydantic.validator('firma_documento_dt')
+    @pydantic.v1.validator('firma_documento_dt')
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
-    @pydantic.validator('signature_value', 'signature_x509_cert_der')
+    @pydantic.v1.validator('signature_value', 'signature_x509_cert_der')
     def validate_non_empty_bytes(cls, v: object) -> object:
         if isinstance(v, bytes):
             validate_non_empty_bytes(v)
         return v
 
-    @pydantic.validator('emisor_giro', 'emisor_email', 'receptor_email')
+    @pydantic.v1.validator('emisor_giro', 'emisor_email', 'receptor_email')
     def validate_no_leading_or_trailing_whitespace_characters(cls, v: object) -> object:
         if isinstance(v, str):
             validate_clean_str(v)
         return v
 
-    @pydantic.validator('emisor_giro', 'emisor_email', 'receptor_email')
+    @pydantic.v1.validator('emisor_giro', 'emisor_email', 'receptor_email')
     def validate_non_empty_stripped_str(cls, v: object) -> object:
         if isinstance(v, str):
             validate_non_empty_str(v)
         return v
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -579,7 +579,7 @@ class DteXmlReferencia:
     # Validators
     ###########################################################################
 
-    @pydantic.validator('numero_linea_ref')
+    @pydantic.v1.validator('numero_linea_ref')
     def validate_numero_linea_ref(cls, value: int) -> int:
         if (
             constants.DTE_REFERENCIA_LINE_NUMBER_MIN_VALUE
@@ -595,7 +595,7 @@ class DteXmlReferencia:
             value,
         )
 
-    @pydantic.validator('tipo_documento_ref')
+    @pydantic.v1.validator('tipo_documento_ref')
     def validate_tipo_documento_ref(cls, value: str) -> str:
         if 1 <= len(value) <= 3:
             return value
@@ -604,13 +604,13 @@ class DteXmlReferencia:
             "The length of 'tipo_documento_ref' must be a value between 1 and 3", value
         )
 
-    @pydantic.validator('ind_global')
+    @pydantic.v1.validator('ind_global')
     def validate_ind_global(cls, value: int | None) -> int | None:
         if value and value != 1:
             raise ValueError("Only the value '1' is valid for the field 'ind_global'", value)
         return value
 
-    @pydantic.validator('folio_ref')
+    @pydantic.v1.validator('folio_ref')
     def validate_folio_ref(cls, value: str) -> str:
         if (
             constants.DTE_REFERENCIA_FOLIO_MIN_LENGTH
@@ -626,7 +626,7 @@ class DteXmlReferencia:
             value,
         )
 
-    @pydantic.validator('fecha_ref')
+    @pydantic.v1.validator('fecha_ref')
     def validate_fecha_ref(cls, value: date) -> date:
         if (
             value < constants.DTE_REFERENCIA_FECHA_NOT_BEFORE
@@ -641,7 +641,7 @@ class DteXmlReferencia:
 
         return value
 
-    @pydantic.validator('razon_ref')
+    @pydantic.v1.validator('razon_ref')
     def validate_razon_ref(cls, value: str | None) -> str | None:
         if value and len(value) > constants.DTE_REFERENCIA_RAZON_MAX_LENGTH:
             raise ValueError(
@@ -653,7 +653,7 @@ class DteXmlReferencia:
         return value
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -781,37 +781,37 @@ class DteXmlData(DteDataL1):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('emisor_razon_social', 'receptor_razon_social')
+    @pydantic.v1.validator('emisor_razon_social', 'receptor_razon_social')
     def validate_contribuyente_razon_social(cls, v: object) -> object:
         if isinstance(v, str):
             validate_contribuyente_razon_social(v)
         return v
 
-    @pydantic.validator('firma_documento_dt')
+    @pydantic.v1.validator('firma_documento_dt')
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
-    @pydantic.validator('signature_value', 'signature_x509_cert_der')
+    @pydantic.v1.validator('signature_value', 'signature_x509_cert_der')
     def validate_non_empty_bytes(cls, v: object) -> object:
         if isinstance(v, bytes):
             validate_non_empty_bytes(v)
         return v
 
-    @pydantic.validator('emisor_giro', 'emisor_email', 'receptor_email')
+    @pydantic.v1.validator('emisor_giro', 'emisor_email', 'receptor_email')
     def validate_no_leading_or_trailing_whitespace_characters(cls, v: object) -> object:
         if isinstance(v, str):
             validate_clean_str(v)
         return v
 
-    @pydantic.validator('emisor_giro', 'emisor_email', 'receptor_email')
+    @pydantic.v1.validator('emisor_giro', 'emisor_email', 'receptor_email')
     def validate_non_empty_stripped_str(cls, v: object) -> object:
         if isinstance(v, str):
             validate_non_empty_str(v)
         return v
 
-    @pydantic.validator('referencias')
+    @pydantic.v1.validator('referencias')
     def validate_referencias_numero_linea_ref_order(cls, v: object) -> object:
         if isinstance(v, Sequence):
             for idx, referencia in enumerate(v, start=1):
@@ -819,7 +819,7 @@ class DteXmlData(DteDataL1):
                     raise ValueError("items must be ordered according to their 'numero_linea_ref'")
         return v
 
-    @pydantic.root_validator(skip_on_failure=True)
+    @pydantic.v1.root_validator(skip_on_failure=True)
     def validate_referencias_rut_otro_is_consistent_with_tipo_dte(
         cls,
         values: Mapping[str, object],
@@ -842,7 +842,7 @@ class DteXmlData(DteDataL1):
 
         return values
 
-    @pydantic.root_validator(skip_on_failure=True)
+    @pydantic.v1.root_validator(skip_on_failure=True)
     def validate_referencias_rut_otro_is_consistent_with_emisor_rut(
         cls,
         values: Mapping[str, object],
@@ -861,7 +861,7 @@ class DteXmlData(DteDataL1):
 
         return values
 
-    @pydantic.root_validator(skip_on_failure=True)
+    @pydantic.v1.root_validator(skip_on_failure=True)
     def validate_referencias_codigo_ref_is_consistent_with_tipo_dte(
         cls,
         values: Mapping[str, object],
