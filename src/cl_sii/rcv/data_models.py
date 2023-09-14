@@ -10,7 +10,7 @@ import logging
 from datetime import date, datetime
 from typing import ClassVar, Mapping, Optional
 
-import pydantic
+import pydantic.v1
 
 import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
@@ -22,7 +22,7 @@ from .constants import RcEstadoContable, RcvKind, RcvTipoDocto
 logger = logging.getLogger(__name__)
 
 
-@pydantic.dataclasses.dataclass(frozen=True)
+@pydantic.v1.dataclasses.dataclass(frozen=True)
 class PeriodoTributario:
     ###########################################################################
     # constants
@@ -41,14 +41,14 @@ class PeriodoTributario:
     # Validators
     ###########################################################################
 
-    @pydantic.validator('year')
+    @pydantic.v1.validator('year')
     def validate_year(cls, v: object) -> object:
         if isinstance(v, int) and v < 1900:
             # 1900 si an arbitrary number but it more useful than checking not < 1.
             raise ValueError("Value is out of the valid range for 'year'.")
         return v
 
-    @pydantic.validator('month')
+    @pydantic.v1.validator('month')
     def validate_month(cls, v: object) -> object:
         if isinstance(v, int):
             if v < 1 or v > 12:
@@ -97,7 +97,7 @@ class PeriodoTributario:
         )
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -161,19 +161,19 @@ class RcvDetalleEntry:
     # Validators
     ###########################################################################
 
-    @pydantic.validator('folio')
+    @pydantic.v1.validator('folio')
     def validate_folio(cls, v: object) -> object:
         if isinstance(v, int):
             cl_sii.dte.data_models.validate_dte_folio(v)
         return v
 
-    @pydantic.validator('fecha_recepcion_dt')
+    @pydantic.v1.validator('fecha_recepcion_dt')
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
-    @pydantic.root_validator(skip_on_failure=True)
+    @pydantic.v1.root_validator(skip_on_failure=True)
     def validate_rcv_kind_is_consistent_with_rc_estado_contable(
         cls,
         values: Mapping[str, object],
@@ -233,7 +233,7 @@ class RcvDetalleEntry:
         return dte_data
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -274,20 +274,20 @@ class RvDetalleEntry(RcvDetalleEntry):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('receptor_razon_social')
+    @pydantic.v1.validator('receptor_razon_social')
     def validate_contribuyente_razon_social(cls, v: object) -> object:
         if isinstance(v, str):
             cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
         return v
 
-    @pydantic.validator('fecha_acuse_dt', 'fecha_reclamo_dt')
+    @pydantic.v1.validator('fecha_acuse_dt', 'fecha_reclamo_dt')
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -325,20 +325,20 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('emisor_razon_social')
+    @pydantic.v1.validator('emisor_razon_social')
     def validate_contribuyente_razon_social(cls, v: object) -> object:
         if isinstance(v, str):
             cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
         return v
 
-    @pydantic.validator('fecha_acuse_dt')
+    @pydantic.v1.validator('fecha_acuse_dt')
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -358,7 +358,7 @@ class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
     RC_ESTADO_CONTABLE = RcEstadoContable.NO_INCLUIR
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -400,20 +400,20 @@ class RcReclamadoDetalleEntry(RcvDetalleEntry):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('emisor_razon_social')
+    @pydantic.v1.validator('emisor_razon_social')
     def validate_contribuyente_razon_social(cls, v: object) -> object:
         if isinstance(v, str):
             cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
         return v
 
-    @pydantic.validator('fecha_reclamo_dt')
+    @pydantic.v1.validator('fecha_reclamo_dt')
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -441,7 +441,7 @@ class RcPendienteDetalleEntry(RcvDetalleEntry):
     # Validators
     ###########################################################################
 
-    @pydantic.validator('emisor_razon_social')
+    @pydantic.v1.validator('emisor_razon_social')
     def validate_contribuyente_razon_social(cls, v: object) -> object:
         if isinstance(v, str):
             cl_sii.dte.data_models.validate_contribuyente_razon_social(v)

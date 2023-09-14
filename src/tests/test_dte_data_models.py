@@ -3,7 +3,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
-import pydantic
+import pydantic.v1
 
 from cl_sii.dte.constants import (
     DTE_FOLIO_FIELD_MAX_VALUE,
@@ -48,7 +48,7 @@ class DteNaturalKeyTest(unittest.TestCase):
         ]
 
         # Validate the minimum value of the field folio
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_nk_1,
                 folio=DTE_FOLIO_FIELD_MIN_VALUE - 1,
@@ -60,7 +60,7 @@ class DteNaturalKeyTest(unittest.TestCase):
             self.assertIn(expected_validation_error, validation_errors)
 
         # Validate the maximum value of the field folio
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_nk_1,
                 folio=DTE_FOLIO_FIELD_MAX_VALUE + 1,
@@ -136,7 +136,7 @@ class DteDataL1Test(unittest.TestCase):
                 tipo_dte=TipoDte.LIQUIDACION_FACTURA_ELECTRONICA,
                 monto_total=-1,
             )
-        except pydantic.ValidationError as exc:
+        except pydantic.v1.ValidationError as exc:
             self.fail(f'{exc.__class__.__name__} raised')
 
     def test_validate_monto_total_range(self) -> None:
@@ -149,7 +149,7 @@ class DteDataL1Test(unittest.TestCase):
         ]
 
         # Validate the minimum value of the field monto_total
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l1_1,
                 monto_total=DTE_MONTO_TOTAL_FIELD_MIN_VALUE - 1,
@@ -161,7 +161,7 @@ class DteDataL1Test(unittest.TestCase):
             self.assertIn(expected_validation_error, validation_errors)
 
         # Validate the maximum value of the field monto_total
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l1_1,
                 monto_total=DTE_MONTO_TOTAL_FIELD_MAX_VALUE + 1,
@@ -174,7 +174,7 @@ class DteDataL1Test(unittest.TestCase):
 
         # Validate the minimum value of the field monto_total
         # for a tipo_dte FACTURA_ELECTRONICA
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l1_1,
                 monto_total=-1,
@@ -331,7 +331,7 @@ class DteDataL2Test(unittest.TestCase):
                 emisor_razon_social=None,
                 receptor_razon_social=None,
             )
-        except pydantic.ValidationError as exc:
+        except pydantic.v1.ValidationError as exc:
             self.fail(f'{exc.__class__.__name__} raised')
 
     def test_validate_emisor_razon_social_empty(self) -> None:
@@ -343,7 +343,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_razon_social='',
@@ -363,7 +363,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 receptor_razon_social='',
@@ -385,7 +385,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 firma_documento_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -411,7 +411,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -455,7 +455,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 signature_value=b'',
@@ -496,7 +496,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 signature_x509_cert_der=b'',
@@ -516,7 +516,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_giro=' NASA ',
@@ -541,7 +541,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_email=' fake_emisor_email@test.cl ',
@@ -566,7 +566,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 receptor_email=' fake_receptor_email@test.cl ',
@@ -586,7 +586,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_giro='',
@@ -606,7 +606,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_email='',
@@ -626,7 +626,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 receptor_email='',
@@ -746,7 +746,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 numero_linea_ref=0,
@@ -761,7 +761,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
                 }
             ],
         )
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 numero_linea_ref=41,
@@ -782,7 +782,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 tipo_documento_ref="8001",
@@ -798,7 +798,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
                 }
             ],
         )
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 tipo_documento_ref="2BAD",
@@ -820,7 +820,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 ind_global=2,
@@ -841,7 +841,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_2
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 folio_ref="",
@@ -862,7 +862,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_ref=date(2002, 7, 31),
@@ -878,7 +878,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
                 }
             ],
         )
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_ref=date(2051, 1, 1),
@@ -900,7 +900,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 razon_ref=(
@@ -1065,7 +1065,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_razon_social='',
@@ -1085,7 +1085,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_razon_social='',
@@ -1105,7 +1105,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_razon_social=None,
@@ -1125,7 +1125,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_razon_social=None,
@@ -1147,7 +1147,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 firma_documento_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -1173,7 +1173,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -1217,7 +1217,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 signature_value=b'',
@@ -1258,7 +1258,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 signature_x509_cert_der=b'',
@@ -1278,7 +1278,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_giro=' NASA ',
@@ -1303,7 +1303,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_email=' fake_emisor_email@test.cl ',
@@ -1328,7 +1328,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_email=' fake_receptor_email@test.cl ',
@@ -1348,7 +1348,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_giro='',
@@ -1368,7 +1368,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_email='',
@@ -1388,7 +1388,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_email='',
@@ -1553,7 +1553,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 referencias=list(reversed(obj.referencias)),
@@ -1587,7 +1587,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 referencias=[obj_referencia],
@@ -1625,7 +1625,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 referencias=[obj_referencia],
@@ -1653,7 +1653,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 referencias=[obj_referencia],

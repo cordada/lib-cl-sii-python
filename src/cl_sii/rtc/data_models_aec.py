@@ -9,7 +9,7 @@ import dataclasses
 from datetime import date, datetime
 from typing import ClassVar, Mapping, Optional, Sequence, Tuple
 
-import pydantic
+import pydantic.v1
 
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.dte import data_models as dte_data_models
@@ -18,7 +18,7 @@ from cl_sii.rut import Rut
 from . import data_models
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -307,25 +307,25 @@ class CesionAecXml:
     # Validators
     ###########################################################################
 
-    @pydantic.validator('dte')
+    @pydantic.v1.validator('dte')
     def validate_dte_tipo_dte(cls, v: object) -> object:
         if isinstance(v, dte_data_models.DteDataL0):
             data_models.validate_cesion_dte_tipo_dte(v.tipo_dte)
         return v
 
-    @pydantic.validator('seq')
+    @pydantic.v1.validator('seq')
     def validate_seq(cls, v: object) -> object:
         if isinstance(v, int):
             data_models.validate_cesion_seq(v)
         return v
 
-    @pydantic.validator('monto_cesion')
+    @pydantic.v1.validator('monto_cesion')
     def validate_monto_cesion(cls, v: object) -> object:
         if isinstance(v, int):
             data_models.validate_cesion_monto(v)
         return v
 
-    @pydantic.validator(
+    @pydantic.v1.validator(
         'cedente_razon_social',
         'cesionario_razon_social',
     )
@@ -334,13 +334,13 @@ class CesionAecXml:
             dte_data_models.validate_contribuyente_razon_social(v)
         return v
 
-    @pydantic.validator('fecha_cesion_dt')
+    @pydantic.v1.validator('fecha_cesion_dt')
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
-    @pydantic.root_validator(skip_on_failure=True)
+    @pydantic.v1.root_validator(skip_on_failure=True)
     def validate_fecha_cesion_dt_is_consistent_with_dte(
         cls,
         values: Mapping[str, object],
@@ -353,7 +353,7 @@ class CesionAecXml:
 
         return values
 
-    @pydantic.root_validator(skip_on_failure=True)
+    @pydantic.v1.root_validator(skip_on_failure=True)
     def validate_monto_cesion_does_not_exceed_dte_monto_total(
         cls,
         values: Mapping[str, object],
@@ -369,7 +369,7 @@ class CesionAecXml:
 
         return values
 
-    @pydantic.root_validator(skip_on_failure=True)
+    @pydantic.v1.root_validator(skip_on_failure=True)
     def validate_fecha_ultimo_vencimiento_is_consistent_with_dte(
         cls,
         values: Mapping[str, object],
@@ -385,7 +385,7 @@ class CesionAecXml:
         return values
 
 
-@pydantic.dataclasses.dataclass(
+@pydantic.v1.dataclasses.dataclass(
     frozen=True,
     config=type(
         'Config',
@@ -693,26 +693,26 @@ class AecXml:
     # Validators
     ###########################################################################
 
-    @pydantic.validator('dte')
+    @pydantic.v1.validator('dte')
     def validate_dte_tipo_dte(cls, v: object) -> object:
         if isinstance(v, dte_data_models.DteDataL0):
             data_models.validate_cesion_dte_tipo_dte(v.tipo_dte)
         return v
 
-    @pydantic.validator('fecha_firma_dt')
+    @pydantic.v1.validator('fecha_firma_dt')
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
-    @pydantic.validator('cesiones')
+    @pydantic.v1.validator('cesiones')
     def validate_cesiones_min_items(cls, v: object) -> object:
         if isinstance(v, Sequence):
             if len(v) < 1:
                 raise ValueError("must contain at least one item")
         return v
 
-    @pydantic.validator('cesiones')
+    @pydantic.v1.validator('cesiones')
     def validate_cesiones_seq_order(cls, v: object) -> object:
         if isinstance(v, Sequence):
             for idx, cesion in enumerate(v, start=1):
@@ -739,7 +739,7 @@ class AecXml:
 
     #     return v
 
-    @pydantic.root_validator(skip_on_failure=True)
+    @pydantic.v1.root_validator(skip_on_failure=True)
     def validate_dte_matches_cesiones_dtes(
         cls,
         values: Mapping[str, object],
@@ -761,7 +761,7 @@ class AecXml:
 
         return values
 
-    @pydantic.root_validator(skip_on_failure=True)
+    @pydantic.v1.root_validator(skip_on_failure=True)
     def validate_last_cesion_matches_some_fields(
         cls,
         values: Mapping[str, object],
@@ -795,7 +795,7 @@ class AecXml:
 
         return values
 
-    @pydantic.root_validator
+    @pydantic.v1.root_validator
     def validate_signature_value_and_signature_x509_cert_der_may_only_be_none_together(
         cls,
         values: Mapping[str, object],
