@@ -4,7 +4,7 @@
 #
 #    pip-compile --strip-extras requirements-dev.in
 #
-black==23.3.0
+black==23.7.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -28,7 +28,7 @@ click==8.0.3
     # via black
 colorama==0.4.6
     # via tox
-coverage==7.2.7
+coverage==7.3.0
     # via -r requirements-dev.in
 cryptography==41.0.3
     # via
@@ -43,10 +43,14 @@ filelock==3.12.2
     # via
     #   tox
     #   virtualenv
-flake8==6.0.0
+flake8==6.1.0
     # via -r requirements-dev.in
 idna==2.10
     # via requests
+importlib-metadata==6.1.0
+    # via
+    #   -c requirements.txt
+    #   twine
 isort==5.12.0
     # via -r requirements-dev.in
 jeepney==0.8.0
@@ -55,9 +59,13 @@ jeepney==0.8.0
     #   secretstorage
 keyring==21.4.0
     # via twine
+markdown-it-py==3.0.0
+    # via rich
 mccabe==0.7.0
     # via flake8
-mypy==1.2.0
+mdurl==0.1.2
+    # via markdown-it-py
+mypy==1.5.1
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
@@ -80,16 +88,18 @@ platformdirs==3.9.1
     #   virtualenv
 pluggy==1.2.0
     # via tox
-pycodestyle==2.10.0
+pycodestyle==2.11.0
     # via flake8
 pycparser==2.20
     # via
     #   -c requirements.txt
     #   cffi
-pyflakes==3.0.1
+pyflakes==3.1.0
     # via flake8
 pygments==2.15.0
-    # via readme-renderer
+    # via
+    #   readme-renderer
+    #   rich
 pyproject-api==1.5.3
     # via tox
 readme-renderer==35.0
@@ -99,6 +109,10 @@ requests==2.31.0
     #   requests-toolbelt
     #   twine
 requests-toolbelt==0.9.1
+    # via twine
+rfc3986==2.0.0
+    # via twine
+rich==13.5.2
     # via twine
 secretstorage==3.3.3
     # via keyring
@@ -110,31 +124,33 @@ tomli==2.0.1
     #   mypy
     #   pyproject-api
     #   tox
-tox==4.6.4
+tox==4.8.0
     # via -r requirements-dev.in
-tqdm==4.64.0
-    # via twine
-twine==3.1.1
+twine==4.0.2
     # via -r requirements-dev.in
-types-jsonschema==4.17.0.6
+types-jsonschema==4.17.0.10
     # via -r requirements-dev.in
 types-pyopenssl==23.2.0.2
     # via -r requirements-dev.in
-types-pytz==2023.3.0.0
+types-pytz==2023.3.0.1
     # via -r requirements-dev.in
-typing-extensions==4.3.0
+typing-extensions==4.7.1
     # via
     #   -c requirements.txt
     #   black
     #   mypy
+    #   rich
 urllib3==1.26.12
-    # via requests
+    # via
+    #   requests
+    #   twine
 virtualenv==20.24.1
     # via tox
 webencodings==0.5.1
     # via bleach
-wheel==0.41.0
+wheel==0.41.2
     # via -r requirements-dev.in
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools
+zipp==3.8.1
+    # via
+    #   -c requirements.txt
+    #   importlib-metadata

@@ -4,7 +4,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
-import pydantic
+import pydantic.v1
 
 from cl_sii.dte.constants import TipoDte
 from cl_sii.dte.data_models import DteDataL1, DteNaturalKey, DteXmlData
@@ -464,7 +464,7 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 dte=dataclasses.replace(
@@ -493,7 +493,7 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_firma_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -519,7 +519,7 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_firma_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -546,7 +546,7 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cesiones=[],
@@ -570,7 +570,7 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cesiones=list(reversed(obj.cesiones)),
@@ -639,7 +639,7 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cesiones=[
@@ -677,7 +677,7 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cedente_rut=obj.cesionario_rut,

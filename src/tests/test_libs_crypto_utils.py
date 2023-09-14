@@ -22,7 +22,7 @@ from . import utils
 # TODO: get fake certificates, keys, and all the variations from
 #   https://github.com/urllib3/urllib3/tree/1.24.2/dummyserver/certs
 
-# TODO: move me into 'cl_sii/crypto/constants.py'
+# TODO: move me into 'src/cl_sii/crypto/constants.py'
 # - Organismo: MINISTERIO DE ECONOMÍA / SUBSECRETARIA DE ECONOMIA
 # - Decreto 181 (Julio-Agosto 2002)
 #   "APRUEBA REGLAMENTO DE LA LEY 19.799 SOBRE DOCUMENTOS ELECTRONICOS, FIRMA ELECTRONICA

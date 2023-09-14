@@ -15,7 +15,7 @@ def get_version(*file_paths: str) -> str:
     raise RuntimeError('Unable to find version string.')
 
 
-version = get_version('cl_sii', '__init__.py')
+version = get_version('src', 'cl_sii', '__init__.py')
 
 readme = open('README.md').read()
 history = open('HISTORY.md').read()
@@ -26,7 +26,7 @@ requirements = [
     'jsonschema>=3.1.1',
     'lxml>=4.6.5,<5',
     'marshmallow>=3,<4',
-    'pydantic>=1.6.2,!=1.7.*,!=1.8.*,!=1.9.*',
+    'pydantic>=2.3.0,!=1.7.*,!=1.8.*,!=1.9.*',
     'pyOpenSSL>=22.0.0',
     'pytz>=2019.3',
     'signxml>=3.1.0',
@@ -85,7 +85,8 @@ setup(
     include_package_data=True,
     name='cl-sii',
     package_data=_package_data,
-    packages=find_packages(exclude=['docs', 'tests*']),
+    package_dir={'': 'src'},
+    packages=find_packages(where='src', exclude=['scripts', 'tests*']),
     python_requires='>=3.8, <3.11',
     setup_requires=setup_requirements,
     test_suite='tests',

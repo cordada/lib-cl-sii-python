@@ -1,0 +1,13 @@
+[*.der]
+end_of_line = unset
+insert_final_newline = unset
+
+[*.pem]
+end_of_line = unset
+insert_final_newline = unset
+
+[*.xml]
+end_of_line = unset
+indent_style = unset
+trim_trailing_whitespace = unset
+insert_final_newline = unset

@@ -1,5 +1,14 @@
 # History
 
+## 0.23.3 (2023-09-14)
+
+- (PR #530, 2023-09-05) chore: Bump the development-dependencies group with 9 updates
+- (PR #536, 2023-09-05) chore(deps): Update `typing-extensions` from 4.3.0 to 4.7.1
+- (PR #538, 2023-09-06) Fix errors reported by EditorConfig-Checker
+- (PR #537, 2023-09-06) Change Python project structure from Flat layout to Src layout
+- (PR #539, 2023-09-07) Add Codecov repository upload token; update Codecov status badge
+- (PR #540, 2023-09-14) Update pydantic from 1.10.12 to 2.3.0
+
 ## 0.23.2 (2023-09-05)
 
 - (PR #522, 2023-08-07) Enable Editor Configuration validation in Super-Linter

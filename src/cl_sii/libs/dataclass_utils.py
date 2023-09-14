@@ -84,7 +84,7 @@ def dc_deep_compare(value_a: object, value_b: object) -> DcDeepComparison:
 
 
 def _dc_deep_compare_to(value_a: object, value_b: object) -> DcDeepComparison:
-    if type(value_a) != type(value_b):
+    if type(value_a) is not type(value_b):
         raise TypeError("Values to be compared must be of the same type.")
 
     if value_a == value_b:

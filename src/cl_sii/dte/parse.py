@@ -26,7 +26,7 @@ import os
 from datetime import date, datetime
 from typing import Mapping, Optional, Sequence, Tuple
 
-import pydantic
+import pydantic.v1
 
 from cl_sii.libs import encoding_utils, tz_utils, xml_utils
 from cl_sii.libs.xml_utils import XmlElement, XmlElementTree
@@ -43,8 +43,8 @@ XML namespace for DTE element in DTE XML schema.
 
 Ref: target namespace in 'DTE_v10.xsd' and 'EnvioDTE_v10.xsd'.
 
-* cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L19 (f57a326)
-* cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L14 (f57a326)
+* src/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L19 (f57a326)
+* src/cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L14 (f57a326)
 """
 
 DTE_XMLNS_MAP = {
@@ -570,7 +570,7 @@ def _validate_rut(v: object) -> object:
     return v
 
 
-class _DteXmlReferenciaParser(pydantic.BaseModel):
+class _DteXmlReferenciaParser(pydantic.v1.BaseModel):
     """
     Parser for ``/Documento/Referencia``.
     """
@@ -579,7 +579,7 @@ class _DteXmlReferenciaParser(pydantic.BaseModel):
         allow_mutation = False
         anystr_strip_whitespace = True
         arbitrary_types_allowed = True
-        extra = pydantic.Extra.forbid
+        extra = pydantic.v1.Extra.forbid
 
     ###########################################################################
     # Fields
@@ -636,7 +636,7 @@ class _DteXmlReferenciaParser(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    _validate_rut = pydantic.validator(
+    _validate_rut = pydantic.v1.validator(
         'rut_otro',
         pre=True,
         allow_reuse=True,
@@ -650,8 +650,8 @@ class _DteXmlReferenciaParser(pydantic.BaseModel):
 
 def _set_dte_xml_missing_xmlns(xml_doc: XmlElement) -> Tuple[XmlElement, bool]:
     # source: name of the XML element without namespace.
-    #   cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L22 (f57a326)
-    #   cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L92 (f57a326)
+    #   src/cl_sii/data/ref/factura_electronica/schemas-xml/DTE_v10.xsd#L22 (f57a326)
+    #   src/cl_sii/data/ref/factura_electronica/schemas-xml/EnvioDTE_v10.xsd#L92 (f57a326)
     em_tag_simple = 'DTE'
 
     em_namespace = DTE_XMLNS

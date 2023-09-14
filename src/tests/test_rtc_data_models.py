@@ -4,7 +4,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
-import pydantic
+import pydantic.v1
 
 from cl_sii.dte.constants import TipoDte
 from cl_sii.dte.data_models import DteDataL1, DteDataL2, DteNaturalKey
@@ -91,7 +91,7 @@ class CesionNaturalKeyTest(unittest.TestCase):
             'type': 'value_error',
         }
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 dte_key=dataclasses.replace(
@@ -116,7 +116,7 @@ class CesionNaturalKeyTest(unittest.TestCase):
                 'type': 'value_error',
             }
 
-            with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
                 dataclasses.replace(
                     obj,
                     seq=test_value,
@@ -211,7 +211,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
             'type': 'value_error',
         }
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 dte_key=dataclasses.replace(
@@ -236,7 +236,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
             'type': 'value_error',
         }
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=datetime(2019, 4, 5, 12, 57),
@@ -258,7 +258,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
             'type': 'value_error',
         }
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -432,7 +432,7 @@ class CesionL0Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 dte_key=dataclasses.replace(
@@ -461,7 +461,7 @@ class CesionL0Test(unittest.TestCase):
                 },
             ]
 
-            with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
                 dataclasses.replace(
                     obj,
                     seq=test_value,
@@ -487,7 +487,7 @@ class CesionL0Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -513,7 +513,7 @@ class CesionL0Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -663,7 +663,7 @@ class CesionL1Test(CesionL0Test):
                 },
             ]
 
-            with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+            with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
                 dataclasses.replace(
                     obj,
                     monto_cedido=test_value,
@@ -686,7 +686,7 @@ class CesionL1Test(CesionL0Test):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 monto_cedido=1000,
@@ -895,7 +895,7 @@ class CesionL2Test(CesionL1Test):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=datetime(2019, 4, 5, 12, 57, 32),
@@ -932,7 +932,7 @@ class CesionL2Test(CesionL1Test):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -979,7 +979,7 @@ class CesionL2Test(CesionL1Test):
             },
         ]
 
-        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cedente_razon_social='',
