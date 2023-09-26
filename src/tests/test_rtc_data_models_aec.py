@@ -4,7 +4,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
-import pydantic.v1
+import pydantic
 
 from cl_sii.dte.constants import TipoDte
 from cl_sii.dte.data_models import DteDataL1, DteNaturalKey, DteXmlData
@@ -101,7 +101,7 @@ class CesionAecXmlTest(unittest.TestCase):
         self.obj_2 = obj
 
     def test_create_new_empty_instance(self) -> None:
-        with self.assertRaises(TypeError):
+        with self.assertRaises(pydantic.ValidationError):
             CesionAecXml()
 
     def test_natural_key(self) -> None:
@@ -351,7 +351,7 @@ class AecXmlTest(unittest.TestCase):
         self.obj_1_cesion_2 = obj_cesion_2
 
     def test_create_new_empty_instance(self) -> None:
-        with self.assertRaises(TypeError):
+        with self.assertRaises(pydantic.ValidationError):
             AecXml()
 
     def test_natural_key(self) -> None:
@@ -459,12 +459,15 @@ class AecXmlTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('dte',),
-                'msg': """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
+                'msg': (
+                    "Value error, "
+                    """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)"""
+                ),
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 dte=dataclasses.replace(
@@ -473,10 +476,13 @@ class AecXmlTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_datetime_tz(self) -> None:
         self._set_obj_1()
@@ -488,21 +494,24 @@ class AecXmlTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_firma_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_firma_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -510,7 +519,7 @@ class AecXmlTest(unittest.TestCase):
             {
                 'loc': ('fecha_firma_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -519,7 +528,7 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_firma_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -528,10 +537,13 @@ class AecXmlTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_cesiones_min_items(self) -> None:
         self._set_obj_1()
@@ -541,21 +553,24 @@ class AecXmlTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('cesiones',),
-                'msg': 'must contain at least one item',
+                'msg': 'Value error, must contain at least one item',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cesiones=[],
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_cesiones_seq_order(self) -> None:
         self._set_obj_1()
@@ -565,21 +580,24 @@ class AecXmlTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('cesiones',),
-                'msg': "items must be ordered according to their 'seq'",
+                'msg': "Value error, items must be ordered according to their 'seq'",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cesiones=list(reversed(obj.cesiones)),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     # def test_validate_cesiones_monto_cesion_must_not_increase(self) -> None:
     #     self._set_obj_1()
@@ -620,8 +638,9 @@ class AecXmlTest(unittest.TestCase):
 
         expected_validation_errors = [
             {
-                'loc': ('__root__',),
+                'loc': (),
                 'msg': (
+                    "Value error, "
                     "'dte' of CesionAecXml with CesionNaturalKey("
                     "dte_key=DteNaturalKey("
                     "emisor_rut=Rut('76354771-K'),"
@@ -639,7 +658,7 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cesiones=[
@@ -654,10 +673,13 @@ class AecXmlTest(unittest.TestCase):
                 ],
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_last_cesion_matches_some_fields(self) -> None:
         self._set_obj_1()
@@ -666,8 +688,9 @@ class AecXmlTest(unittest.TestCase):
 
         expected_validation_errors = [
             {
-                'loc': ('__root__',),
+                'loc': (),
                 'msg': (
+                    "Value error, "
                     "'cedente_rut' of last 'cesion' must match 'cedente_rut':"
                     " Rut('76389992-6')"
                     " !="
@@ -677,13 +700,16 @@ class AecXmlTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cedente_rut=obj.cesionario_rut,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)

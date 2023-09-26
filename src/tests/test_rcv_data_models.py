@@ -2,7 +2,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
-import pydantic.v1
+import pydantic
 
 import cl_sii.dte.constants
 from cl_sii.base.constants import SII_OFFICIAL_TZ
@@ -33,55 +33,64 @@ class PeriodoTributarioTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('year',),
-                'msg': "Value is out of the valid range for 'year'.",
+                'msg': "Value error, Value is out of the valid range for 'year'.",
                 'type': 'value_error',
             },
         ]
 
         # Validate the minimum value of the field year
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.periodo_tributario_1,
                 year=1899,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_month_range(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('month',),
-                'msg': "Value is out of the valid range for 'month'.",
+                'msg': "Value error, Value is out of the valid range for 'month'.",
                 'type': 'value_error',
             },
         ]
 
         # Validate the minimum value of the field month
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.periodo_tributario_1,
                 month=0,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Validate the maximum value of the field month
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.periodo_tributario_1,
                 month=13,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
 
 class RcvDetalleEntryTest(unittest.TestCase):
@@ -105,34 +114,40 @@ class RcvDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('folio',),
-                'msg': "Value is out of the valid range for 'folio'.",
+                'msg': "Value error, Value is out of the valid range for 'folio'.",
                 'type': 'value_error',
             },
         ]
 
         # Validate the minimum value of the field folio
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rcv_detalle_entry_1,
                 folio=cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE - 1,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Validate the maximum value of the field folio
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rcv_detalle_entry_1,
                 folio=cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE + 1,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_datetime_tz(self) -> None:
         # Test TZ-awareness:
@@ -140,21 +155,24 @@ class RcvDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_recepcion_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rcv_detalle_entry_1,
                 fecha_recepcion_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -162,7 +180,7 @@ class RcvDetalleEntryTest(unittest.TestCase):
             {
                 'loc': ('fecha_recepcion_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -171,7 +189,7 @@ class RcvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rcv_detalle_entry_1,
                 fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -180,10 +198,13 @@ class RcvDetalleEntryTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
 
 class RvDetalleEntryTest(unittest.TestCase):
@@ -222,21 +243,23 @@ class RvDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('receptor_razon_social',),
-                'msg': "Value must not be empty.",
+                'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 receptor_razon_social='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_datetime_tz(self) -> None:
         # fecha_acuse_dt
@@ -245,21 +268,24 @@ class RvDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_acuse_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 fecha_acuse_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -267,7 +293,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             {
                 'loc': ('fecha_acuse_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -276,7 +302,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 fecha_acuse_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -285,10 +311,13 @@ class RvDetalleEntryTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # fecha_reclamo_dt
         # Test TZ-awareness:
@@ -296,21 +325,24 @@ class RvDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_reclamo_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 fecha_reclamo_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -318,7 +350,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             {
                 'loc': ('fecha_reclamo_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -327,7 +359,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
                 fecha_reclamo_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -336,10 +368,13 @@ class RvDetalleEntryTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
 
 class RcRegistroDetalleEntryTest(unittest.TestCase):
@@ -374,21 +409,24 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('emisor_razon_social',),
-                'msg': "Value must not be empty.",
+                'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_registro_detalle_entry_1,
                 emisor_razon_social='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_datetime_tz(self) -> None:
         # Test TZ-awareness:
@@ -396,21 +434,24 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_acuse_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_registro_detalle_entry_1,
                 fecha_acuse_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -418,7 +459,7 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             {
                 'loc': ('fecha_acuse_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -427,7 +468,7 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_registro_detalle_entry_1,
                 fecha_acuse_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -436,10 +477,13 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
 
 class RcNoIncluirDetalleEntryTest(unittest.TestCase):
@@ -497,21 +541,24 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('emisor_razon_social',),
-                'msg': "Value must not be empty.",
+                'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_reclamado_detalle_entry_1,
                 emisor_razon_social='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_datetime_tz(self) -> None:
         # Test TZ-awareness:
@@ -519,21 +566,24 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_reclamo_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_reclamado_detalle_entry_1,
                 fecha_reclamo_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -541,7 +591,7 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
             {
                 'loc': ('fecha_reclamo_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -550,7 +600,7 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_reclamado_detalle_entry_1,
                 fecha_reclamo_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -559,10 +609,13 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
 
 class RcPendienteDetalleEntryTest(unittest.TestCase):
@@ -587,18 +640,21 @@ class RcPendienteDetalleEntryTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('emisor_razon_social',),
-                'msg': "Value must not be empty.",
+                'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_pendiente_detalle_entry_1,
                 emisor_razon_social='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
