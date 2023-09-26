@@ -26,7 +26,7 @@ import os
 from datetime import date, datetime
 from typing import Mapping, Optional, Sequence, Tuple
 
-import pydantic.v1
+import pydantic
 
 from cl_sii.libs import encoding_utils, tz_utils, xml_utils
 from cl_sii.libs.xml_utils import XmlElement, XmlElementTree
@@ -570,16 +570,17 @@ def _validate_rut(v: object) -> object:
     return v
 
 
-class _DteXmlReferenciaParser(pydantic.v1.BaseModel):
+class _DteXmlReferenciaParser(pydantic.BaseModel):
     """
     Parser for ``/Documento/Referencia``.
     """
 
-    class Config:
-        allow_mutation = False
-        anystr_strip_whitespace = True
-        arbitrary_types_allowed = True
-        extra = pydantic.v1.Extra.forbid
+    model_config = pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
+        extra='forbid',
+        frozen=True,
+        str_strip_whitespace=True,
+    )
 
     ###########################################################################
     # Fields
@@ -601,7 +602,7 @@ class _DteXmlReferenciaParser(pydantic.v1.BaseModel):
     @classmethod
     def parse_xml(cls, xml_doc: XmlElement) -> _DteXmlReferenciaParser:
         aec_dict = cls.parse_xml_to_dict(xml_doc)
-        return cls.parse_obj(aec_dict)
+        return cls.model_validate(aec_dict)
 
     def as_dte_xml_referencia(self) -> data_models.DteXmlReferencia:
         return data_models.DteXmlReferencia(
@@ -636,10 +637,9 @@ class _DteXmlReferenciaParser(pydantic.v1.BaseModel):
     # Validators
     ###########################################################################
 
-    _validate_rut = pydantic.v1.validator(
+    _validate_rut = pydantic.field_validator(
         'rut_otro',
-        pre=True,
-        allow_reuse=True,
+        mode='before',
     )(_validate_rut)
 
 

@@ -21,9 +21,9 @@ from __future__ import annotations
 
 import dataclasses
 from datetime import date, datetime
-from typing import Any, ClassVar, Mapping, Optional
+from typing import ClassVar, Mapping, Optional
 
-import pydantic.v1
+import pydantic
 
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.dte import data_models as dte_data_models
@@ -79,14 +79,10 @@ def validate_cesion_and_dte_montos(cesion_value: int, dte_value: int) -> None:
         raise ValueError('Value of "cesión" must be <= value of DTE.', cesion_value, dte_value)
 
 
-@pydantic.v1.dataclasses.dataclass(
+@pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type(
-        'Config',
-        (),
-        dict(
-            arbitrary_types_allowed=True,
-        ),
+    config=pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
     ),
 )
 class CesionNaturalKey:
@@ -140,27 +136,25 @@ class CesionNaturalKey:
     # Validators
     ###########################################################################
 
-    @pydantic.v1.validator('dte_key')
+    @pydantic.field_validator('dte_key')
+    @classmethod
     def validate_dte_tipo_dte(cls, v: object) -> object:
         if isinstance(v, dte_data_models.DteNaturalKey):
             validate_cesion_dte_tipo_dte(v.tipo_dte)
         return v
 
-    @pydantic.v1.validator('seq')
+    @pydantic.field_validator('seq')
+    @classmethod
     def validate_seq(cls, v: object) -> object:
         if isinstance(v, int):
             validate_cesion_seq(v)
         return v
 
 
-@pydantic.v1.dataclasses.dataclass(
+@pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type(
-        'Config',
-        (),
-        dict(
-            arbitrary_types_allowed=True,
-        ),
+    config=pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
     ),
 )
 class CesionAltNaturalKey:
@@ -245,19 +239,22 @@ class CesionAltNaturalKey:
     # Validators
     ###########################################################################
 
-    @pydantic.v1.validator('dte_key')
+    @pydantic.field_validator('dte_key')
+    @classmethod
     def validate_dte_tipo_dte(cls, v: object) -> object:
         if isinstance(v, dte_data_models.DteNaturalKey):
             validate_cesion_dte_tipo_dte(v.tipo_dte)
         return v
 
-    @pydantic.v1.validator('fecha_cesion_dt')
+    @pydantic.field_validator('fecha_cesion_dt')
+    @classmethod
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
-    @pydantic.v1.validator('fecha_cesion_dt')
+    @pydantic.field_validator('fecha_cesion_dt')
+    @classmethod
     def truncate_fecha_cesion_dt_to_minutes(cls, v: object) -> object:
         if isinstance(v, datetime):
             if v.second != 0:
@@ -267,14 +264,10 @@ class CesionAltNaturalKey:
         return v
 
 
-@pydantic.v1.dataclasses.dataclass(
+@pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type(
-        'Config',
-        (),
-        dict(
-            arbitrary_types_allowed=True,
-        ),
+    config=pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
     ),
 )
 class CesionL0:
@@ -390,33 +383,32 @@ class CesionL0:
     # Validators
     ###########################################################################
 
-    @pydantic.v1.validator('dte_key')
+    @pydantic.field_validator('dte_key')
+    @classmethod
     def validate_dte_tipo_dte(cls, v: object) -> object:
         if isinstance(v, dte_data_models.DteNaturalKey):
             validate_cesion_dte_tipo_dte(v.tipo_dte)
         return v
 
-    @pydantic.v1.validator('seq')
+    @pydantic.field_validator('seq')
+    @classmethod
     def validate_seq(cls, v: object) -> object:
         if isinstance(v, int):
             validate_cesion_seq(v)
         return v
 
-    @pydantic.v1.validator('fecha_cesion_dt')
+    @pydantic.field_validator('fecha_cesion_dt')
+    @classmethod
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
 
-@pydantic.v1.dataclasses.dataclass(
+@pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type(
-        'Config',
-        (),
-        dict(
-            arbitrary_types_allowed=True,
-        ),
+    config=pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
     ),
 )
 class CesionL1(CesionL0):
@@ -508,36 +500,30 @@ class CesionL1(CesionL0):
 
     # TODO: Validate value of 'fecha_cesion_dt' in relation to the DTE data.
 
-    @pydantic.v1.validator('monto_cedido')
+    @pydantic.field_validator('monto_cedido')
+    @classmethod
     def validate_monto_cedido(cls, v: object) -> object:
         if isinstance(v, int):
             validate_cesion_monto(v)
         return v
 
-    @pydantic.v1.root_validator(skip_on_failure=True)
-    def validate_monto_cedido_does_not_exceed_dte_monto_total(
-        cls,
-        values: Mapping[str, object],
-    ) -> Mapping[str, object]:
-        monto_cedido = values['monto_cedido']
-        dte_monto_total = values['dte_monto_total']
+    @pydantic.model_validator(mode='after')
+    def validate_monto_cedido_does_not_exceed_dte_monto_total(self) -> CesionL1:
+        monto_cedido = self.monto_cedido
+        dte_monto_total = self.dte_monto_total
 
         if isinstance(monto_cedido, int) and isinstance(dte_monto_total, int):
             validate_cesion_and_dte_montos(cesion_value=monto_cedido, dte_value=dte_monto_total)
 
-        return values
+        return self
 
 
-@pydantic.v1.dataclasses.dataclass(
+@pydantic.dataclasses.dataclass(
     frozen=True,
-    config=type(
-        'Config',
-        (),
-        dict(
-            anystr_strip_whitespace=True,
-            arbitrary_types_allowed=True,
-            min_anystr_length=1,
-        ),
+    config=pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
+        str_min_length=1,
+        str_strip_whitespace=True,
     ),
 )
 class CesionL2(CesionL1):
@@ -696,43 +682,45 @@ class CesionL2(CesionL1):
 
     # TODO: Validate value of 'fecha_ultimo_vencimiento' in relation to the DTE data.
 
-    @pydantic.v1.validator(
+    @pydantic.field_validator(
         'fecha_cesion_dt',
         'fecha_firma_dt',
     )
+    @classmethod
     def validate_datetime_tz(cls, v: object) -> object:
         if isinstance(v, datetime):
             tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
         return v
 
-    @pydantic.v1.validator(
+    @pydantic.field_validator(
         'cedente_razon_social',
         'cesionario_razon_social',
         'dte_emisor_razon_social',
         'dte_receptor_razon_social',
     )
+    @classmethod
     def validate_contribuyente_razon_social(cls, v: object) -> object:
         if isinstance(v, str):
             dte_data_models.validate_contribuyente_razon_social(v)
         return v
 
-    @pydantic.v1.root_validator(skip_on_failure=True)
-    def validate_dte_data_l2(cls, values: Mapping[str, Any]) -> Mapping[str, object]:
-        dte_key = values['dte_key']
+    @pydantic.model_validator(mode='after')
+    def validate_dte_data_l2(self) -> CesionL2:
+        dte_key = self.dte_key
         try:
             # Note: Delegate some validation to 'dte_data_models.DteDataL2'.
             _ = dte_data_models.DteDataL2(
                 emisor_rut=dte_key.emisor_rut if dte_key is not None else None,
                 tipo_dte=dte_key.tipo_dte if dte_key is not None else None,
                 folio=dte_key.folio if dte_key is not None else None,
-                fecha_emision_date=values['dte_fecha_emision'],  # type: ignore[arg-type]
-                receptor_rut=values['dte_receptor_rut'],  # type: ignore[arg-type]
-                monto_total=values['dte_monto_total'],  # type: ignore[arg-type]
-                emisor_razon_social=values['dte_emisor_razon_social'],
-                receptor_razon_social=values['dte_receptor_razon_social'],
-                fecha_vencimiento_date=values['dte_fecha_vencimiento'],
+                fecha_emision_date=self.dte_fecha_emision,
+                receptor_rut=self.dte_receptor_rut,
+                monto_total=self.dte_monto_total,
+                emisor_razon_social=self.dte_emisor_razon_social,
+                receptor_razon_social=self.dte_receptor_razon_social,
+                fecha_vencimiento_date=self.dte_fecha_vencimiento,
             )
         except (TypeError, ValueError):
             raise
 
-        return values
+        return self
