@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.1.0
 
       - name: Set Up Python
         id: set_up_python
@@ -47,7 +47,7 @@ jobs:
           python-version: "3.10.9"
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v3.3.2
         with:
           path: "venv"
           key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}-${{ hashFiles('Makefile', 'make/**.mk') }}
