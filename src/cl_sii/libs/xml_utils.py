@@ -233,11 +233,10 @@ def parse_untrusted_xml(value: bytes) -> XmlElement:
         #   "parsing aborted"
         #   "out of memory"
 
-        # For sanity crop the XML-encoded content to max 1 KiB (arbitrary value).
-        log_msg = "Unexpected XML 'ExpatError' at line {} offset {}: {}. Content: %s".format(
+        log_msg = "Unexpected XML 'ExpatError' at line {} offset {}: {}.".format(
             exc.lineno, exc.offset, xml.parsers.expat.errors.messages[exc.code]
         )
-        logger.exception(log_msg, str(value[:1024]))
+        logger.exception(log_msg)
 
         exc_msg = "Unexpected error while parsing value as XML. Line {}, offset {}.".format(
             exc.lineno, exc.offset
@@ -249,9 +248,8 @@ def parse_untrusted_xml(value: bytes) -> XmlElement:
         #   it is just to raise the same exception with the same message) because it is a good
         #   idea to determine whether the source of the problem really is the response content.
 
-        # For sanity crop the XML-encoded content to max 1 KiB (arbitrary value).
-        log_msg = "Unexpected 'LxmlError' that is not an 'XMLSyntaxError'. Content: %s"
-        logger.exception(log_msg, str(value[:1024]))
+        log_msg = "Unexpected 'LxmlError' that is not an 'XMLSyntaxError'."
+        logger.exception(log_msg)
 
         exc_msg = "Unexpected error while parsing value as XML."
         raise UnknownXmlParsingError(exc_msg) from exc
@@ -261,9 +259,8 @@ def parse_untrusted_xml(value: bytes) -> XmlElement:
         #   it is just to raise the same exception with the same message) because it is a good
         #   idea to determine whether the source of the problem really is the response content.
 
-        # For sanity crop the XML-encoded content to max 1 KiB (arbitrary value).
-        log_msg = "Unexpected error while parsing value as XML. Content: %s"
-        logger.exception(log_msg, str(value[:1024]))
+        log_msg = "Unexpected error while parsing value as XML."
+        logger.exception(log_msg)
 
         exc_msg = "Unexpected error while parsing value as XML."
         raise UnknownXmlParsingError(exc_msg) from exc

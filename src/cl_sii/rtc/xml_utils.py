@@ -94,9 +94,7 @@ def verify_aec_signature(
     except Exception:
         signature_verified = None
         logger.exception(
-            "Unexpected error when trying to verify digital signature of XML document. "
-            "X509 certificate: %s",
-            signature_x509_cert,
+            "Unexpected error when trying to verify digital signature of XML document."
         )
     else:
         signature_verified = True
