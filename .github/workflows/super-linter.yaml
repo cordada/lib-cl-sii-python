@@ -24,6 +24,10 @@ permissions:
   statuses: write
   checks: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   super-linter:
     name: Super-Linter

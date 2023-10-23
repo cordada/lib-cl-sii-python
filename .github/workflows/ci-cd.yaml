@@ -16,6 +16,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   PRODUCTION_VCS_REF: refs/heads/master
   STAGING_VCS_REF: refs/heads/develop
