@@ -3,7 +3,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
-import pydantic.v1
+import pydantic
 
 from cl_sii.dte.constants import (
     DTE_FOLIO_FIELD_MAX_VALUE,
@@ -42,34 +42,40 @@ class DteNaturalKeyTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('folio',),
-                'msg': "Value is out of the valid range for 'folio'.",
+                'msg': "Value error, Value is out of the valid range for 'folio'.",
                 'type': 'value_error',
             },
         ]
 
         # Validate the minimum value of the field folio
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_nk_1,
                 folio=DTE_FOLIO_FIELD_MIN_VALUE - 1,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Validate the maximum value of the field folio
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_nk_1,
                 folio=DTE_FOLIO_FIELD_MAX_VALUE + 1,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_as_dict(self) -> None:
         self.assertDictEqual(
@@ -136,54 +142,63 @@ class DteDataL1Test(unittest.TestCase):
                 tipo_dte=TipoDte.LIQUIDACION_FACTURA_ELECTRONICA,
                 monto_total=-1,
             )
-        except pydantic.v1.ValidationError as exc:
+        except pydantic.ValidationError as exc:
             self.fail(f'{exc.__class__.__name__} raised')
 
     def test_validate_monto_total_range(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('monto_total',),
-                'msg': "Value is out of the valid range for 'monto_total'.",
+                'msg': "Value error, Value is out of the valid range for 'monto_total'.",
                 'type': 'value_error',
             },
         ]
 
         # Validate the minimum value of the field monto_total
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l1_1,
                 monto_total=DTE_MONTO_TOTAL_FIELD_MIN_VALUE - 1,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Validate the maximum value of the field monto_total
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l1_1,
                 monto_total=DTE_MONTO_TOTAL_FIELD_MAX_VALUE + 1,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Validate the minimum value of the field monto_total
         # for a tipo_dte FACTURA_ELECTRONICA
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l1_1,
                 monto_total=-1,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_as_dict(self) -> None:
         self.assertDictEqual(
@@ -331,48 +346,54 @@ class DteDataL2Test(unittest.TestCase):
                 emisor_razon_social=None,
                 receptor_razon_social=None,
             )
-        except pydantic.v1.ValidationError as exc:
+        except pydantic.ValidationError as exc:
             self.fail(f'{exc.__class__.__name__} raised')
 
     def test_validate_emisor_razon_social_empty(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_razon_social',),
-                'msg': "Value must not be empty.",
+                'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_razon_social='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_receptor_razon_social_empty(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('receptor_razon_social',),
-                'msg': "Value must not be empty.",
+                'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 receptor_razon_social='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_datetime_tz(self) -> None:
         # Test TZ-awareness:
@@ -380,21 +401,24 @@ class DteDataL2Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('firma_documento_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 firma_documento_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -402,7 +426,7 @@ class DteDataL2Test(unittest.TestCase):
             {
                 'loc': ('firma_documento_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -411,7 +435,7 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -420,10 +444,12 @@ class DteDataL2Test(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_init_fail_regression_signature_value_bytes_with_x20(self) -> None:
         bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
@@ -450,21 +476,24 @@ class DteDataL2Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('signature_value',),
-                'msg': 'Bytes value length is 0.',
+                'msg': 'Value error, Bytes value length is 0.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 signature_value=b'',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_init_fail_regression_signature_cert_der_bytes_with_x20(self) -> None:
         bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
@@ -491,47 +520,57 @@ class DteDataL2Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('signature_x509_cert_der',),
-                'msg': 'Bytes value length is 0.',
+                'msg': 'Value error, Bytes value length is 0.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 signature_x509_cert_der=b'',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_no_leading_or_trailing_whitespace_characters_emisor_giro(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_giro',),
-                'msg': "('Value has leading or trailing whitespace characters.', ' NASA ')",
+                'msg': (
+                    "Value error, "
+                    "('Value has leading or trailing whitespace characters.', ' NASA ')"
+                ),
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_giro=' NASA ',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_no_leading_or_trailing_whitespace_characters_emisor_email(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_email',),
                 'msg': (
+                    "Value error, "
                     "("
                     "'Value has leading or trailing whitespace characters.', "
                     "' fake_emisor_email@test.cl '"
@@ -541,23 +580,26 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_email=' fake_emisor_email@test.cl ',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_no_leading_or_trailing_whitespace_characters_receptor_email(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('receptor_email',),
                 'msg': (
-                    "("
+                    "Value error, ("
                     "'Value has leading or trailing whitespace characters.', "
                     "' fake_receptor_email@test.cl '"
                     ")"
@@ -566,76 +608,88 @@ class DteDataL2Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 receptor_email=' fake_receptor_email@test.cl ',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_non_empty_stripped_str_emisor_giro(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_giro',),
-                'msg': "String value length (stripped) is 0.",
+                'msg': "Value error, String value length (stripped) is 0.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_giro='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_non_empty_stripped_str_emisor_email(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_email',),
-                'msg': "String value length (stripped) is 0.",
+                'msg': "Value error, String value length (stripped) is 0.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 emisor_email='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_non_empty_stripped_str_receptor_email(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('receptor_email',),
-                'msg': "String value length (stripped) is 0.",
+                'msg': "Value error, String value length (stripped) is 0.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_l2_1,
                 receptor_email='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_as_dict(self) -> None:
         self.assertDictEqual(
@@ -738,7 +792,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
         self.obj_2 = obj
 
     def test_create_new_empty_instance(self) -> None:
-        with self.assertRaises(TypeError):
+        with self.assertRaises(pydantic.ValidationError):
             DteXmlReferencia()
 
     def test_init_fail_numero_linea_ref_out_of_range(self) -> None:
@@ -746,32 +800,46 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 numero_linea_ref=0,
             )
         self.assertEqual(
-            assert_raises_cm.exception.errors(),
+            assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            ),
             [
                 {
                     'loc': ('numero_linea_ref',),
-                    'msg': '("Value \'numero_linea_ref\' must be a value between 1 and 40", 0)',
+                    'msg': (
+                        'Value error, '
+                        '("Value \'numero_linea_ref\' must be a value between 1 and 40", 0)'
+                    ),
                     'type': 'value_error',
                 }
             ],
         )
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 numero_linea_ref=41,
             )
         self.assertEqual(
-            assert_raises_cm.exception.errors(),
+            assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            ),
             [
                 {
                     'loc': ('numero_linea_ref',),
-                    'msg': '("Value \'numero_linea_ref\' must be a value between 1 and 40", 41)',
+                    'msg': (
+                        'Value error, '
+                        '("Value \'numero_linea_ref\' must be a value between 1 and 40", 41)'
+                    ),
                     'type': 'value_error',
                 }
             ],
@@ -782,33 +850,41 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 tipo_documento_ref="8001",
             )
         self.assertEqual(
-            assert_raises_cm.exception.errors(),
+            assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            ),
             [
                 {
                     'loc': ('tipo_documento_ref',),
-                    'msg': '("The length of \'tipo_documento_ref\' must be a '
+                    'msg': 'Value error, ("The length of \'tipo_documento_ref\' must be a '
                     'value between 1 and 3", \'8001\')',
                     'type': 'value_error',
                 }
             ],
         )
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 tipo_documento_ref="2BAD",
             )
         self.assertEqual(
-            assert_raises_cm.exception.errors(),
+            assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            ),
             [
                 {
                     'loc': ('tipo_documento_ref',),
-                    'msg': '("The length of \'tipo_documento_ref\' must be a value '
+                    'msg': 'Value error, ("The length of \'tipo_documento_ref\' must be a value '
                     'between 1 and 3", \'2BAD\')',
                     'type': 'value_error',
                 },
@@ -820,17 +896,24 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 ind_global=2,
             )
         self.assertEqual(
-            assert_raises_cm.exception.errors(),
+            assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            ),
             [
                 {
                     'loc': ('ind_global',),
-                    'msg': '("Only the value \'1\' is valid for the field \'ind_global\'", 2)',
+                    'msg': (
+                        'Value error, '
+                        '("Only the value \'1\' is valid for the field \'ind_global\'", 2)'
+                    ),
                     'type': 'value_error',
                 }
             ],
@@ -841,17 +924,24 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_2
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 folio_ref="",
             )
         self.assertEqual(
-            assert_raises_cm.exception.errors(),
+            assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            ),
             [
                 {
                     'loc': ('folio_ref',),
-                    'msg': '("The length of \'folio_ref\' must be a value between 1 and 18", \'\')',
+                    'msg': (
+                        'Value error, '
+                        '("The length of \'folio_ref\' must be a value between 1 and 18", \'\')'
+                    ),
                     'type': 'value_error',
                 }
             ],
@@ -862,34 +952,45 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_ref=date(2002, 7, 31),
             )
         self.assertEqual(
-            assert_raises_cm.exception.errors(),
+            assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            ),
             [
                 {
                     'loc': ('fecha_ref',),
-                    'msg': '("The date \'fecha_ref\' must be after 2002-08-01 and '
+                    'msg': 'Value error, ("The date \'fecha_ref\' must be after 2002-08-01 and '
                     'before 2050-12-31", datetime.date(2002, 7, 31))',
                     'type': 'value_error',
                 }
             ],
         )
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_ref=date(2051, 1, 1),
             )
         self.assertEqual(
-            assert_raises_cm.exception.errors(),
+            assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            ),
             [
                 {
                     'loc': ('fecha_ref',),
-                    'msg': '("The date \'fecha_ref\' must be after 2002-08-01 and '
-                    'before 2050-12-31", datetime.date(2051, 1, 1))',
+                    'msg': (
+                        'Value error, ('
+                        '"The date \'fecha_ref\' must be after 2002-08-01 and '
+                        'before 2050-12-31", datetime.date(2051, 1, 1))'
+                    ),
                     'type': 'value_error',
                 },
             ],
@@ -900,7 +1001,7 @@ class DteXmlReferenciaTest(unittest.TestCase):
 
         obj = self.obj_1
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 razon_ref=(
@@ -909,13 +1010,20 @@ class DteXmlReferenciaTest(unittest.TestCase):
                 ),
             )
         self.assertEqual(
-            assert_raises_cm.exception.errors(),
+            assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            ),
             [
                 {
                     'loc': ('razon_ref',),
-                    'msg': "('The maximum length allowed for `razon_ref` is 90', "
-                    "'Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-                    "Sed metus magna, ultricies sit amet dolor sed')",
+                    'msg': (
+                        "Value error, "
+                        "('The maximum length allowed for `razon_ref` is 90', "
+                        "'Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+                        "Sed metus magna, ultricies sit amet dolor sed')"
+                    ),
                     'type': 'value_error',
                 }
             ],
@@ -1060,103 +1168,116 @@ class DteXmlDataTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('emisor_razon_social',),
-                'msg': "Value must not be empty.",
+                'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_razon_social='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_receptor_razon_social_empty(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('receptor_razon_social',),
-                'msg': "Value must not be empty.",
+                'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_razon_social='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_emisor_razon_social_none(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_razon_social',),
-                'msg': "none is not an allowed value",
-                'type': 'type_error.none.not_allowed',
+                'msg': 'Input should be a valid string',
+                'type': 'string_type',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_razon_social=None,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_receptor_razon_social_none(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('receptor_razon_social',),
-                'msg': "none is not an allowed value",
-                'type': 'type_error.none.not_allowed',
+                'msg': 'Input should be a valid string',
+                'type': 'string_type',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_razon_social=None,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_datetime_tz(self) -> None:
         # Test TZ-awareness:
-
         expected_validation_errors = [
             {
                 'loc': ('firma_documento_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 firma_documento_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -1164,7 +1285,7 @@ class DteXmlDataTest(unittest.TestCase):
             {
                 'loc': ('firma_documento_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -1173,7 +1294,7 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 firma_documento_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -1182,10 +1303,13 @@ class DteXmlDataTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_init_fail_regression_signature_value_bytes_with_x20(self) -> None:
         bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
@@ -1212,21 +1336,24 @@ class DteXmlDataTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('signature_value',),
-                'msg': 'Bytes value length is 0.',
+                'msg': 'Value error, Bytes value length is 0.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 signature_value=b'',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_init_fail_regression_signature_cert_der_bytes_with_x20(self) -> None:
         bytes_value_with_x20_as_base64 = 'IN2pkDBxqDnGl4Pfvboi'
@@ -1253,48 +1380,57 @@ class DteXmlDataTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('signature_x509_cert_der',),
-                'msg': 'Bytes value length is 0.',
+                'msg': 'Value error, Bytes value length is 0.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 signature_x509_cert_der=b'',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_no_leading_or_trailing_whitespace_characters_emisor_giro(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_giro',),
-                'msg': "('Value has leading or trailing whitespace characters.', ' NASA ')",
+                'msg': (
+                    "Value error, "
+                    "('Value has leading or trailing whitespace characters.', ' NASA ')"
+                ),
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_giro=' NASA ',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_no_leading_or_trailing_whitespace_characters_emisor_email(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_email',),
                 'msg': (
-                    "("
+                    "Value error, ("
                     "'Value has leading or trailing whitespace characters.', "
                     "' fake_emisor_email@test.cl '"
                     ")"
@@ -1303,23 +1439,26 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_email=' fake_emisor_email@test.cl ',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_no_leading_or_trailing_whitespace_characters_receptor_email(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('receptor_email',),
                 'msg': (
-                    "("
+                    "Value error, ("
                     "'Value has leading or trailing whitespace characters.', "
                     "' fake_receptor_email@test.cl '"
                     ")"
@@ -1328,76 +1467,88 @@ class DteXmlDataTest(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_email=' fake_receptor_email@test.cl ',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_non_empty_stripped_str_emisor_giro(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_giro',),
-                'msg': "String value length (stripped) is 0.",
+                'msg': "Value error, String value length (stripped) is 0.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_giro='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_non_empty_stripped_str_emisor_email(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('emisor_email',),
-                'msg': "String value length (stripped) is 0.",
+                'msg': "Value error, String value length (stripped) is 0.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 emisor_email='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_non_empty_stripped_str_receptor_email(self) -> None:
         expected_validation_errors = [
             {
                 'loc': ('receptor_email',),
-                'msg': "String value length (stripped) is 0.",
+                'msg': "Value error, String value length (stripped) is 0.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.dte_xml_data_1,
                 receptor_email='',
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_as_dict(self) -> None:
         self.assertDictEqual(
@@ -1548,21 +1699,24 @@ class DteXmlDataTest(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('referencias',),
-                'msg': "items must be ordered according to their 'numero_linea_ref'",
+                'msg': "Value error, items must be ordered according to their 'numero_linea_ref'",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 referencias=list(reversed(obj.referencias)),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_referencias_rut_otro_is_consistent_with_tipo_dte(self) -> None:
         obj = self.dte_xml_data_2
@@ -1579,24 +1733,30 @@ class DteXmlDataTest(unittest.TestCase):
 
         expected_validation_errors = [
             {
-                'loc': ('__root__',),
-                'msg': "Setting a 'rut_otro' is not a valid option for this 'tipo_dte':"
-                " 'tipo_dte' == <TipoDte.FACTURA_ELECTRONICA: 33>,"
-                " 'Referencia' number 1.",
+                'loc': (),
+                'msg': (
+                    "Value error, "
+                    "Setting a 'rut_otro' is not a valid option for this 'tipo_dte':"
+                    " 'tipo_dte' == <TipoDte.FACTURA_ELECTRONICA: 33>,"
+                    " 'Referencia' number 1."
+                ),
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 referencias=[obj_referencia],
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_referencias_rut_otro_is_consistent_with_emisor_rut(self) -> None:
         obj = self.dte_xml_data_2
@@ -1617,24 +1777,30 @@ class DteXmlDataTest(unittest.TestCase):
 
         expected_validation_errors = [
             {
-                'loc': ('__root__',),
-                'msg': "'rut_otro' must be different from 'emisor_rut':"
-                " Rut('60910000-1') == Rut('60910000-1'),"
-                " 'Referencia' number 1.",
+                'loc': (),
+                'msg': (
+                    "Value error, "
+                    "'rut_otro' must be different from 'emisor_rut':"
+                    " Rut('60910000-1') == Rut('60910000-1'),"
+                    " 'Referencia' number 1."
+                ),
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 referencias=[obj_referencia],
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_referencias_codigo_ref_is_consistent_with_tipo_dte(self) -> None:
         obj = self.dte_xml_data_3
@@ -1645,24 +1811,27 @@ class DteXmlDataTest(unittest.TestCase):
 
         expected_validation_errors = [
             {
-                'loc': ('__root__',),
-                'msg': "'codigo_ref' is mandatory for this 'tipo_dte':"
+                'loc': (),
+                'msg': "Value error, 'codigo_ref' is mandatory for this 'tipo_dte':"
                 " 'tipo_dte' == <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>,"
                 " 'Referencia' number 1.",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 referencias=[obj_referencia],
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        self.assertEqual(validation_errors, expected_validation_errors)
 
 
 class FunctionsTest(unittest.TestCase):

@@ -4,7 +4,7 @@ import dataclasses
 import unittest
 from datetime import date, datetime
 
-import pydantic.v1
+import pydantic
 
 from cl_sii.dte.constants import TipoDte
 from cl_sii.dte.data_models import DteDataL1, DteDataL2, DteNaturalKey
@@ -40,7 +40,7 @@ class CesionNaturalKeyTest(unittest.TestCase):
         self.obj_1 = obj
 
     def test_create_new_empty_instance(self) -> None:
-        with self.assertRaises(TypeError):
+        with self.assertRaises(pydantic.ValidationError):
             CesionNaturalKey()
 
     def test_str_and_repr(self) -> None:
@@ -87,11 +87,14 @@ class CesionNaturalKeyTest(unittest.TestCase):
         obj = self.obj_1
         expected_validation_error = {
             'loc': ('dte_key',),
-            'msg': """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
+            'msg': (
+                'Value error, '
+                """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)"""
+            ),
             'type': 'value_error',
         }
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 dte_key=dataclasses.replace(
@@ -100,8 +103,12 @@ class CesionNaturalKeyTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, [expected_validation_error])
 
     def test_validate_seq(self) -> None:
         self._set_obj_1()
@@ -112,18 +119,22 @@ class CesionNaturalKeyTest(unittest.TestCase):
         for test_value in test_values:
             expected_validation_error = {
                 'loc': ('seq',),
-                'msg': f"""('Value is out of the valid range.', {test_value})""",
+                'msg': f"""Value error, ('Value is out of the valid range.', {test_value})""",
                 'type': 'value_error',
             }
 
-            with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+            with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
                 dataclasses.replace(
                     obj,
                     seq=test_value,
                 )
 
-            validation_errors = assert_raises_cm.exception.errors()
-            self.assertIn(expected_validation_error, validation_errors)
+            validation_errors = assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            )
+            self.assertEqual(validation_errors, [expected_validation_error])
 
 
 class CesionAltNaturalKeyTest(unittest.TestCase):
@@ -153,7 +164,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
         self.obj_1 = obj
 
     def test_create_new_empty_instance(self) -> None:
-        with self.assertRaises(TypeError):
+        with self.assertRaises(pydantic.ValidationError):
             CesionAltNaturalKey()
 
     def test_str_and_repr(self) -> None:
@@ -207,11 +218,14 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
         obj = self.obj_1
         expected_validation_error = {
             'loc': ('dte_key',),
-            'msg': """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
+            'msg': (
+                'Value error, '
+                """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)"""
+            ),
             'type': 'value_error',
         }
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 dte_key=dataclasses.replace(
@@ -220,8 +234,12 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, [expected_validation_error])
 
     def test_validate_datetime_tz(self) -> None:
         self._set_obj_1()
@@ -232,25 +250,29 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
 
         expected_validation_error = {
             'loc': ('fecha_cesion_dt',),
-            'msg': 'Value must be a timezone-aware datetime object.',
+            'msg': 'Value error, Value must be a timezone-aware datetime object.',
             'type': 'value_error',
         }
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=datetime(2019, 4, 5, 12, 57),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, [expected_validation_error])
 
         # Test TZ-value:
 
         expected_validation_error = {
             'loc': ('fecha_cesion_dt',),
             'msg': (
-                '('
+                'Value error, ('
                 '''"Timezone of datetime value must be 'America/Santiago'.",'''
                 ' datetime.datetime(2019, 4, 5, 12, 57, tzinfo=<UTC>)'
                 ')'
@@ -258,7 +280,7 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
             'type': 'value_error',
         }
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -267,8 +289,12 @@ class CesionAltNaturalKeyTest(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, [expected_validation_error])
 
     def test_truncate_fecha_cesion_dt_to_minutes(self) -> None:
         self._set_obj_1()
@@ -325,7 +351,7 @@ class CesionL0Test(unittest.TestCase):
         self.obj_1 = obj
 
     def test_create_new_empty_instance(self) -> None:
-        with self.assertRaises(TypeError):
+        with self.assertRaises(pydantic.ValidationError):
             CesionL0()
 
     def test_str_and_repr(self) -> None:
@@ -427,12 +453,15 @@ class CesionL0Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('dte_key',),
-                'msg': """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)""",
+                'msg': (
+                    'Value error, '
+                    """('Value is not "cedible".', <TipoDte.NOTA_CREDITO_ELECTRONICA: 61>)"""
+                ),
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 dte_key=dataclasses.replace(
@@ -441,10 +470,12 @@ class CesionL0Test(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_seq(self) -> None:
         self._set_obj_1()
@@ -456,21 +487,23 @@ class CesionL0Test(unittest.TestCase):
             expected_validation_errors = [
                 {
                     'loc': ('seq',),
-                    'msg': f"""('Value is out of the valid range.', {test_value})""",
+                    'msg': f"""Value error, ('Value is out of the valid range.', {test_value})""",
                     'type': 'value_error',
                 },
             ]
 
-            with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+            with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
                 dataclasses.replace(
                     obj,
                     seq=test_value,
                 )
 
-            validation_errors = assert_raises_cm.exception.errors()
-            self.assertEqual(len(validation_errors), len(expected_validation_errors))
-            for expected_validation_error in expected_validation_errors:
-                self.assertIn(expected_validation_error, validation_errors)
+            validation_errors = assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            )
+            self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_datetime_tz(self) -> None:
         self._set_obj_1()
@@ -482,21 +515,23 @@ class CesionL0Test(unittest.TestCase):
         expected_validation_errors = [
             {
                 'loc': ('fecha_cesion_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -504,7 +539,7 @@ class CesionL0Test(unittest.TestCase):
             {
                 'loc': ('fecha_cesion_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -513,7 +548,7 @@ class CesionL0Test(unittest.TestCase):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -522,10 +557,12 @@ class CesionL0Test(unittest.TestCase):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
 
 
 class CesionL1Test(CesionL0Test):
@@ -561,7 +598,7 @@ class CesionL1Test(CesionL0Test):
         self.obj_1 = obj
 
     def test_create_new_empty_instance(self) -> None:
-        with self.assertRaises(TypeError):
+        with self.assertRaises(pydantic.ValidationError):
             CesionL1()
 
     def test_str_and_repr(self) -> None:
@@ -658,21 +695,23 @@ class CesionL1Test(CesionL0Test):
             expected_validation_errors = [
                 {
                     'loc': ('monto_cedido',),
-                    'msg': f"""('Value is out of the valid range.', {test_value})""",
+                    'msg': f"""Value error, ('Value is out of the valid range.', {test_value})""",
                     'type': 'value_error',
                 },
             ]
 
-            with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+            with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
                 dataclasses.replace(
                     obj,
                     monto_cedido=test_value,
                 )
 
-            validation_errors = assert_raises_cm.exception.errors()
-            self.assertEqual(len(validation_errors), len(expected_validation_errors))
-            for expected_validation_error in expected_validation_errors:
-                self.assertIn(expected_validation_error, validation_errors)
+            validation_errors = assert_raises_cm.exception.errors(
+                include_context=False,
+                include_input=False,
+                include_url=False,
+            )
+            self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_monto_cedido_does_not_exceed_dte_monto_total(self) -> None:
         self._set_obj_1()
@@ -680,23 +719,25 @@ class CesionL1Test(CesionL0Test):
         obj = self.obj_1
         expected_validation_errors = [
             {
-                'loc': ('__root__',),
-                'msg': """('Value of "cesión" must be <= value of DTE.', 1000, 999)""",
+                'loc': (),
+                'msg': """Value error, ('Value of "cesión" must be <= value of DTE.', 1000, 999)""",
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 monto_cedido=1000,
                 dte_monto_total=999,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
 
 
 class CesionL2Test(CesionL1Test):
@@ -753,7 +794,7 @@ class CesionL2Test(CesionL1Test):
         self.obj_1 = obj
 
     def test_create_new_empty_instance(self) -> None:
-        with self.assertRaises(TypeError):
+        with self.assertRaises(pydantic.ValidationError):
             CesionL2()
 
     def test_str_and_repr(self) -> None:
@@ -885,27 +926,29 @@ class CesionL2Test(CesionL1Test):
         expected_validation_errors = [
             {
                 'loc': ('fecha_cesion_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
             {
                 'loc': ('fecha_firma_dt',),
-                'msg': 'Value must be a timezone-aware datetime object.',
+                'msg': 'Value error, Value must be a timezone-aware datetime object.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=datetime(2019, 4, 5, 12, 57, 32),
                 fecha_firma_dt=datetime(2019, 4, 5, 12, 57, 32),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
 
         # Test TZ-value:
 
@@ -913,7 +956,7 @@ class CesionL2Test(CesionL1Test):
             {
                 'loc': ('fecha_cesion_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -923,7 +966,7 @@ class CesionL2Test(CesionL1Test):
             {
                 'loc': ('fecha_firma_dt',),
                 'msg': (
-                    '('
+                    'Value error, ('
                     '''"Timezone of datetime value must be 'America/Santiago'.",'''
                     ' datetime.datetime(2019, 4, 5, 12, 57, 32, tzinfo=<UTC>)'
                     ')'
@@ -932,7 +975,7 @@ class CesionL2Test(CesionL1Test):
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 fecha_cesion_dt=tz_utils.convert_naive_dt_to_tz_aware(
@@ -945,10 +988,12 @@ class CesionL2Test(CesionL1Test):
                 ),
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
 
     def test_validate_contribuyente_razon_social(self) -> None:
         self._set_obj_1()
@@ -957,29 +1002,27 @@ class CesionL2Test(CesionL1Test):
         expected_validation_errors = [
             {
                 'loc': ('cedente_razon_social',),
-                'msg': 'ensure this value has at least 1 characters',
-                'type': 'value_error.any_str.min_length',
-                'ctx': {'limit_value': 1},
+                'msg': 'String should have at least 1 characters',
+                'type': 'string_too_short',
             },
             {
                 'loc': ('cesionario_razon_social',),
-                'msg': 'Value exceeds max allowed length.',
+                'msg': 'Value error, Value exceeds max allowed length.',
                 'type': 'value_error',
             },
             {
                 'loc': ('dte_emisor_razon_social',),
-                'msg': 'ensure this value has at least 1 characters',
-                'type': 'value_error.any_str.min_length',
-                'ctx': {'limit_value': 1},
+                'msg': 'String should have at least 1 characters',
+                'type': 'string_too_short',
             },
             {
                 'loc': ('dte_receptor_razon_social',),
-                'msg': 'Value exceeds max allowed length.',
+                'msg': 'Value error, Value exceeds max allowed length.',
                 'type': 'value_error',
             },
         ]
 
-        with self.assertRaises(pydantic.v1.ValidationError) as assert_raises_cm:
+        with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 obj,
                 cedente_razon_social='',
@@ -988,7 +1031,9 @@ class CesionL2Test(CesionL1Test):
                 dte_receptor_razon_social='R' * 200,
             )
 
-        validation_errors = assert_raises_cm.exception.errors()
-        self.assertEqual(len(validation_errors), len(expected_validation_errors))
-        for expected_validation_error in expected_validation_errors:
-            self.assertIn(expected_validation_error, validation_errors)
+        validation_errors = assert_raises_cm.exception.errors(
+            include_context=False,
+            include_input=False,
+            include_url=False,
+        )
+        self.assertEqual(validation_errors, expected_validation_errors)
