@@ -1,5 +1,16 @@
 # History
 
+## 0.23.4 (2023-10-23)
+
+- (PR #547, 2023-10-02) chore: Bump pydantic from 2.3.0 to 2.4.2
+- (PR #544, 2023-10-23) Migrate to `pydantic==2.4.2`
+- (PR #545, 2023-10-23) chore: Bump the production-dependencies group with 4 updates
+- (PR #549, 2023-10-23) chore: Bump the development-dependencies group with 5 updates
+- (PR #553, 2023-10-23) Improve CI/CD workflows
+- (PR #554, 2023-10-23) Enable GHA secrets inheritance so that Codecov token can be passed
+- (PR #543, 2023-10-23) chore: Bump cryptography from 41.0.3 to 41.0.4
+- (PR #551, 2023-10-23) chore: Bump urllib3 from 1.26.12 to 1.26.18
+
 ## 0.23.3 (2023-09-14)
 
 - (PR #530, 2023-09-05) chore: Bump the development-dependencies group with 9 updates
