@@ -21,7 +21,7 @@ cryptography==41.0.4
     #   signxml
 defusedxml==0.7.1
     # via -r requirements.in
-django==3.2.20
+django==3.2.23
     # via
     #   -r requirements.in
     #   djangorestframework
