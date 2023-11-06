@@ -4,7 +4,7 @@
 #
 #    pip-compile --strip-extras requirements-dev.in
 #
-attrs==20.3.0
+attrs==23.1.0
     # via
     #   -c requirements.txt
     #   referencing
@@ -50,9 +50,7 @@ filelock==3.12.4
 flake8==6.1.0
     # via -r requirements-dev.in
 idna==2.10
-    # via
-    #   requests
-    #   yarl
+    # via requests
 importlib-metadata==6.1.0
     # via
     #   -c requirements.txt
@@ -71,8 +69,6 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-multidict==6.0.4
-    # via yarl
 mypy==1.5.1
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
@@ -110,14 +106,12 @@ pygments==2.15.0
     #   rich
 pyproject-api==1.6.1
     # via tox
-pyrsistent==0.17.3
-    # via
-    #   -c requirements.txt
-    #   referencing
 readme-renderer==35.0
     # via twine
-referencing==0.8.11
-    # via types-jsonschema
+referencing==0.30.2
+    # via
+    #   -c requirements.txt
+    #   types-jsonschema
 requests==2.31.0
     # via
     #   requests-toolbelt
@@ -128,6 +122,10 @@ rfc3986==2.0.0
     # via twine
 rich==13.5.2
     # via twine
+rpds-py==0.10.6
+    # via
+    #   -c requirements.txt
+    #   referencing
 secretstorage==3.3.3
     # via keyring
 six==1.16.0
@@ -164,8 +162,6 @@ webencodings==0.5.1
     # via bleach
 wheel==0.41.2
     # via -r requirements-dev.in
-yarl==1.9.2
-    # via referencing
 zipp==3.8.1
     # via
     #   -c requirements.txt

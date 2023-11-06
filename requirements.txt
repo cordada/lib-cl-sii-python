@@ -8,8 +8,10 @@ annotated-types==0.5.0
     # via pydantic
 asgiref==3.5.2
     # via django
-attrs==20.3.0
-    # via jsonschema
+attrs==23.1.0
+    # via
+    #   jsonschema
+    #   referencing
 certifi==2023.7.22
     # via signxml
 cffi==1.15.1
@@ -30,9 +32,13 @@ djangorestframework==3.14.0
 importlib-metadata==6.1.0
     # via -r requirements.in
 importlib-resources==6.1.0
-    # via jsonschema
-jsonschema==4.17.3
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
+jsonschema==4.19.2
     # via -r requirements.in
+jsonschema-specifications==2023.7.1
+    # via jsonschema
 lxml==4.9.2
     # via
     #   -r requirements.in
@@ -53,13 +59,19 @@ pyopenssl==23.2.0
     # via
     #   -r requirements.in
     #   signxml
-pyrsistent==0.17.3
-    # via jsonschema
 pytz==2023.3
     # via
     #   -r requirements.in
     #   django
     #   djangorestframework
+referencing==0.30.2
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
+rpds-py==0.10.6
+    # via
+    #   jsonschema
+    #   referencing
 signxml==3.2.0
     # via -r requirements.in
 sqlparse==0.4.4
