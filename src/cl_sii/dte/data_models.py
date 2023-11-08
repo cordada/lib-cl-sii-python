@@ -811,7 +811,13 @@ class DteXmlData(DteDataL1):
         if isinstance(v, Sequence):
             for idx, referencia in enumerate(v, start=1):
                 if referencia.numero_linea_ref != idx:
-                    raise ValueError("items must be ordered according to their 'numero_linea_ref'")
+                    raise ValueError(
+                        "items must be ordered according to their 'numero_linea_ref'. "
+                        f"Expected index value: {idx}, "
+                        f"actual numero linea ref: {referencia.numero_linea_ref}. "
+                        f"All numero_linea_refs: "
+                        f"{', '.join(str(ref.numero_linea_ref) for ref in v)}"
+                    )
         return v
 
     @pydantic.model_validator(mode='after')
