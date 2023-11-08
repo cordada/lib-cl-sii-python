@@ -9,8 +9,9 @@ PYTHON_PIP = $(PYTHON) -m pip
 PYTHON_PIP_VERSION_SPECIFIER = ==22.3.1
 PYTHON_SETUPTOOLS_VERSION_SPECIFIER = ==58.1.0
 PYTHON_VIRTUALENV_DIR = venv
-PYTHON_PIP_TOOLS_VERSION_SPECIFIER = ==6.14.0
+PYTHON_PIP_TOOLS_VERSION_SPECIFIER = ==7.3.0
 PYTHON_PIP_TOOLS_SRC_FILES = requirements.in requirements-dev.in
+PYTHON_PIP_TOOLS_COMPILE_ARGS = --allow-unsafe --strip-extras --quiet
 
 # Black
 BLACK = black --config .black.cfg.toml
@@ -135,7 +136,7 @@ python-deps-compile: $(patsubst %,python-deps-compile-%,$(PYTHON_PIP_TOOLS_SRC_F
 python-deps-compile: ## Compile Python dependency manifests
 
 python-deps-compile-%:
-	pip-compile --strip-extras --quiet "$(*)"
+	pip-compile $(PYTHON_PIP_TOOLS_COMPILE_ARGS) "$(*)"
 
 python-deps-sync-check: $(patsubst %,python-deps-sync-check-%,$(PYTHON_PIP_TOOLS_SRC_FILES))
 python-deps-sync-check: ## Check that compiled Python dependency manifests are up-to-date with their sources
