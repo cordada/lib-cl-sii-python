@@ -1,5 +1,22 @@
 # History
 
+## 0.24.0 (2023-11-09)
+
+- (PR #555, 2023-10-23) Fix GitHub code scanning alerts 'Clear-text logging of sensitive info'
+- (PR #562, 2023-11-03) chore: Bump the production-dependencies group with 2 updates
+- (PR #509, 2023-11-06) chore: Bump marshmallow from 3.19.0 to 3.20.1
+- (PR #563, 2023-11-06) chore: Bump django from 3.2.20 to 3.2.23
+- (PR #561, 2023-11-06) chore: Bump jsonschema from 4.17.3 to 4.19.2
+- (PR #558, 2023-11-06) chore: Bump the development-dependencies group with 5 updates
+- (PR #559, 2023-11-06) chore: Bump signxml from 3.2.0 to 3.2.1
+- (PR #560, 2023-11-06) chore: Bump pytz from 2023.3 to 2023.3.post1
+- (PR #557, 2023-11-08) dte: Improve validation error message in `DteXmlData.referencias`
+- (PR #564, 2023-11-08) Remove Make task `python-wheel-install`
+- (PR #566, 2023-11-08) Add Python project configuration
+- (PR #565, 2023-11-09) chore(deps): Update `pip-tools` from 6.14.0 to 7.3.0
+- (PR #568, 2023-11-09) chore: Bump setuptools from 58.1.0 to 65.5.1
+- (PR #567, 2023-11-09) chore: Bump pip from 22.3.1 to 23.3
+
 ## 0.23.4 (2023-10-23)
 
 - (PR #547, 2023-10-02) chore: Bump pydantic from 2.3.0 to 2.4.2

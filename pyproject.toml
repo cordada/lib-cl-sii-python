@@ -1,0 +1,14 @@
+# Python Project Configuration
+#
+# Documentation:
+# - https://pip.pypa.io/en/stable/reference/build-system/pyproject-toml/
+# - https://github.com/pypa/pip/blob/23.2.1/docs/html/reference/build-system/pyproject-toml.md
+# - https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
+# - https://github.com/pypa/packaging.python.org/blob/df2c8b22/source/specifications/declaring-project-metadata.rst
+
+[build-system]
+requires = [
+  "setuptools==65.5.1",
+  "wheel==0.41.3",
+]
+build-backend = "setuptools.build_meta:__legacy__"
