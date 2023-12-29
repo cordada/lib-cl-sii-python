@@ -1,0 +1,23 @@
+# Configuration for Ignoring Revisions in Git Blame
+#
+# This file contains a list of revisions that are not helpful when assigning blame, such as source
+# code reformatting, Python `import` sorting, etc., so that `git blame` is able to ignore those
+# commits.
+#
+# > Ignore changes made by the revision when assigning blame, as if the change never happened.
+# > Lines that were changed or added by an ignored commit will be blamed on the previous commit
+# > that changed that line or nearby lines.
+#
+# Documentation:
+# - https://git-scm.com/docs/git-blame#Documentation/git-blame.txt---ignore-revs-fileltfilegt
+# - https://docs.github.com/en/repositories/working-with-files/using-files/viewing-a-file#ignore-commits-in-the-blame-view
+#
+# Using this file with Git Blame:
+# - GitHub automatically uses this configuration file.
+# - To use locally, run `git config blame.ignoreRevsFile .git-blame-ignore-revs`.
+
+# Sort Python imports with Isort
+
+# Reformat source code using 'Black'
+
+# Move files without changing them
