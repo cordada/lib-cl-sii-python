@@ -38,7 +38,7 @@ colorama==0.4.6
     # via tox
 coverage==7.3.2
     # via -r requirements-dev.in
-cryptography==41.0.4
+cryptography==41.0.6
     # via
     #   -c requirements.txt
     #   secretstorage
