@@ -8,7 +8,7 @@ attrs==23.1.0
     # via
     #   -c requirements.txt
     #   referencing
-black==23.10.1
+black==23.12.1
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -36,7 +36,7 @@ click==8.0.3
     #   pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.3.2
+coverage==7.4.0
     # via -r requirements-dev.in
 cryptography==41.0.6
     # via
@@ -60,7 +60,7 @@ importlib-metadata==6.1.0
     #   -c requirements.txt
     #   build
     #   twine
-isort==5.12.0
+isort==5.13.2
     # via -r requirements-dev.in
 jeepney==0.8.0
     # via
@@ -74,7 +74,7 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-mypy==1.6.1
+mypy==1.8.0
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
@@ -149,11 +149,11 @@ tomli==2.0.1
     #   pyproject-api
     #   pyproject-hooks
     #   tox
-tox==4.11.3
+tox==4.11.4
     # via -r requirements-dev.in
 twine==4.0.2
     # via -r requirements-dev.in
-types-jsonschema==4.19.0.4
+types-jsonschema==4.20.0.0
     # via -r requirements-dev.in
 types-pyopenssl==23.3.0.0
     # via -r requirements-dev.in
@@ -173,7 +173,7 @@ virtualenv==20.24.5
     # via tox
 webencodings==0.5.1
     # via bleach
-wheel==0.41.3
+wheel==0.42.0
     # via
     #   -r requirements-dev.in
     #   pip-tools
