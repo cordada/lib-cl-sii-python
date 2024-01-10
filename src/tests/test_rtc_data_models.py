@@ -1002,7 +1002,7 @@ class CesionL2Test(CesionL1Test):
         expected_validation_errors = [
             {
                 'loc': ('cedente_razon_social',),
-                'msg': 'String should have at least 1 characters',
+                'msg': 'String should have at least 1 character',
                 'type': 'string_too_short',
             },
             {
@@ -1012,7 +1012,7 @@ class CesionL2Test(CesionL1Test):
             },
             {
                 'loc': ('dte_emisor_razon_social',),
-                'msg': 'String should have at least 1 characters',
+                'msg': 'String should have at least 1 character',
                 'type': 'string_too_short',
             },
             {
