@@ -1701,7 +1701,6 @@ class DteXmlDataTest(unittest.TestCase):
                 'loc': ('referencias',),
                 'msg': (
                     "Value error, items must be ordered according to their 'numero_linea_ref'. "
-                    "Expected index value: 1, actual numero linea ref: 2. "
                     "All numero_linea_refs: 2, 1"
                 ),
                 'type': 'value_error',
