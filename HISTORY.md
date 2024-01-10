@@ -1,5 +1,13 @@
 # History
 
+## 0.25.0 (2024-10-01)
+
+- (PR #581, 2024-01-03) chore: Bump the production-dependencies group with 4 updates
+- (PR #571, 2024-01-03) chore: Bump cryptography from 41.0.4 to 41.0.6
+- (PR #580, 2024-01-09) chore: Bump the development-dependencies group with 7 updates
+- (PR #583, 2024-01-10) dte: Allow gaps when validating order of `DteXmlData.referencias`
+- (PR #579, 2024-01-10) chore: Bump pydantic from 2.4.2 to 2.5.3
+
 ## 0.24.0 (2023-11-09)
 
 - (PR #555, 2023-10-23) Fix GitHub code scanning alerts 'Clear-text logging of sensitive info'
