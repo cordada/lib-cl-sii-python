@@ -12,6 +12,8 @@ attrs==23.1.0
     # via
     #   jsonschema
     #   referencing
+backports-zoneinfo==0.2.1
+    # via django
 certifi==2023.7.22
     # via signxml
 cffi==1.15.1
@@ -23,7 +25,7 @@ cryptography==41.0.7
     #   signxml
 defusedxml==0.7.1
     # via -r requirements.in
-django==3.2.23
+django==4.1.13
     # via
     #   -r requirements.in
     #   djangorestframework
@@ -62,7 +64,6 @@ pyopenssl==23.2.0
 pytz==2023.3.post1
     # via
     #   -r requirements.in
-    #   django
     #   djangorestframework
 referencing==0.30.2
     # via
