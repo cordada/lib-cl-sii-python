@@ -182,7 +182,7 @@ def cte_f29_datos_schema_default_validator(
     if datos_obj['campos'].keys() != datos_obj['tipos'].keys():
         raise JsonSchemaValidationError("The keys of 'campos' and 'tipos' are not exactly the same")
     if datos_obj['campos'].keys() != datos_obj['glosa'].keys():
-        raise JsonSchemaValidationError("The keys of 'campos' and 'tipos' are not exactly the same")
+        raise JsonSchemaValidationError("The keys of 'campos' and 'glosa' are not exactly the same")
 
     return datos_obj
 

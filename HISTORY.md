@@ -1,5 +1,11 @@
 # History
 
+## 0.26.0 (2024-01-30)
+
+- (PR #586, 2024-01-30) fix: Add default value for missing code `098` in SII CTE Form 29
+- (PR #577, 2024-01-30) chore: Bump cryptography from 41.0.4 to 41.0.7
+- (PR #587, 2024-01-30) chore: Bump jsonschema from 4.19.2 to 4.21.1
+
 ## 0.25.0 (2024-10-01)
 
 - (PR #581, 2024-01-03) chore: Bump the production-dependencies group with 4 updates
