@@ -51,17 +51,21 @@ class FunctionParseUntrustedXmlTests(unittest.TestCase):
 
         self.assertSequenceEqual(
             cm.exception.args,
-            ("XML syntax error. Detected an entity reference loop, line 1, column 7.",),
+            (
+                "XML syntax error."
+                " Maximum entity amplification factor exceeded, see xmlCtxtSetMaxAmplification.,"
+                " line 1, column 25.",
+            ),
         )
 
     def test_attack_billion_laughs_2(self) -> None:
         value = read_test_file_bytes('test_data/xml/attacks/billion-laughs-2.xml')
-        with self.assertRaises(XmlSyntaxError) as cm:
+        with self.assertRaises(XmlFeatureForbidden) as cm:
             parse_untrusted_xml(value)
 
         self.assertSequenceEqual(
             cm.exception.args,
-            ("XML syntax error. Detected an entity reference loop, line 1, column 4.",),
+            ("XML uses or contains a forbidden feature.",),
         )
 
     def test_attack_quadratic_blowup(self) -> None:
