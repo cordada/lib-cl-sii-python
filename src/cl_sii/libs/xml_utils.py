@@ -19,6 +19,7 @@ It is used by various Web technologies such as SOAP, SAML, and others.
 
 
 """
+
 import io
 import logging
 import os
@@ -69,14 +70,12 @@ https://github.com/XML-Security/signxml/blob/16503242/signxml/__init__.py#L23-L3
 
 
 class BaseXmlParsingError(Exception):
-
     """
     Base class for all XML parsing errors.
     """
 
 
 class XmlSyntaxError(BaseXmlParsingError):
-
     """
     The value to be parsed is syntactically invalid XML.
 
@@ -87,7 +86,6 @@ class XmlSyntaxError(BaseXmlParsingError):
 
 
 class XmlFeatureForbidden(BaseXmlParsingError):
-
     """
     The parsed XML contains/uses a feature that is forbidden.
 
@@ -101,7 +99,6 @@ class XmlFeatureForbidden(BaseXmlParsingError):
 
 
 class UnknownXmlParsingError(BaseXmlParsingError):
-
     """
     An unkwnown XML parsing error or for which there is no handling implementation.
 
@@ -113,7 +110,6 @@ class UnknownXmlParsingError(BaseXmlParsingError):
 
 
 class XmlSchemaDocValidationError(Exception):
-
     """
     XML document did not be validate against an XML schema.
 
@@ -121,14 +117,12 @@ class XmlSchemaDocValidationError(Exception):
 
 
 class XmlSignatureInvalid(Exception):
-
     """
     XML signature is invalid, for any reason.
     """
 
 
 class XmlSignatureUnverified(XmlSignatureInvalid):
-
     """
     XML signature verification (i.e. digest validation) failed.
 
@@ -137,7 +131,6 @@ class XmlSignatureUnverified(XmlSignatureInvalid):
 
 
 class XmlSignatureInvalidCertificate(XmlSignatureInvalid):
-
     """
     Certificate validation failed on XML signature processing.
     """

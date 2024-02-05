@@ -4,6 +4,7 @@ cl_sii "extras" / Django REST Framework (DRF) fields.
 (for serializers)
 
 """
+
 try:
     import rest_framework
 except ImportError as exc:  # pragma: no cover
@@ -15,7 +16,6 @@ from cl_sii.rut import Rut
 
 
 class RutField(rest_framework.fields.CharField):
-
     """
     DRF field for RUT.
 

@@ -99,7 +99,6 @@ class RcEstadoContable(enum.Enum):
 
 @enum.unique
 class RcvTipoDocto(enum.IntEnum):
-
     """
     Enum of "Tipo de Documento" for the RCV domain.
 

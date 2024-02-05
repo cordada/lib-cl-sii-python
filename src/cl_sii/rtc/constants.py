@@ -66,7 +66,6 @@ CESION_SEQUENCE_NUMBER_MAX_VALUE: int = 40
 
 @enum.unique
 class RolContribuyenteEnCesion(enum.Enum):
-
     """
     "Rol" of "contribuyente" in a "cesion".
     """

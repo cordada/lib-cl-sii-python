@@ -5,13 +5,13 @@ Dataclass utils
 Utils for std lib's :class:`dataclasses.Dataclass` classes and instances.
 
 """
+
 import dataclasses
 import enum
 
 
 @enum.unique
 class DcDeepComparison(enum.IntEnum):
-
     """
     The possible results of a "deep comparison" between 2 dataclass instances.
 
@@ -50,7 +50,6 @@ class DcDeepComparison(enum.IntEnum):
 
 
 class DcDeepCompareMixin:
-
     """
     Mixin for dataclass instances "deep comparison".
     """
