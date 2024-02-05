@@ -29,7 +29,7 @@ django==3.2.23
     #   djangorestframework
 djangorestframework==3.14.0
     # via -r requirements.in
-importlib-metadata==6.1.0
+importlib-metadata==7.0.1
     # via -r requirements.in
 importlib-resources==6.1.0
     # via
