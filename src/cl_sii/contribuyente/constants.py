@@ -7,7 +7,6 @@ https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura
 
 """
 
-
 # TODO: RAZON_SOCIAL_LONG_REGEX = re.compile(r'^...$')
 
 RAZON_SOCIAL_LONG_MAX_LENGTH = 100

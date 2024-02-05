@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class MaxRowsExceeded(RuntimeError):
-
     """
     The maximum number of rows has been exceeded.
     """

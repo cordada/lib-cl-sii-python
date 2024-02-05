@@ -37,6 +37,7 @@ PEM stands for "Privacy Enhanced Mail".
 > base64 encoding of the DER certificate [plus the header and footer].
 
 """
+
 import base64
 from typing import Union
 

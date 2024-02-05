@@ -15,6 +15,7 @@ In the domain of a DTE, a:
   It *usually* corresponds to the DTE's "receptor", but not always.
 
 """
+
 from __future__ import annotations
 
 import dataclasses
@@ -105,7 +106,6 @@ def validate_non_empty_bytes(value: bytes) -> None:
     ),
 )
 class DteNaturalKey:
-
     """
     Natural key of a DTE.
 
@@ -176,7 +176,6 @@ class DteNaturalKey:
     ),
 )
 class DteDataL0(DteNaturalKey):
-
     """
     DTE data level 0.
 
@@ -214,7 +213,6 @@ class DteDataL0(DteNaturalKey):
     ),
 )
 class DteDataL1(DteDataL0):
-
     """
     DTE data level 1.
 
@@ -329,7 +327,6 @@ class DteDataL1(DteDataL0):
     ),
 )
 class DteDataL2(DteDataL1):
-
     """
     DTE data level 2.
 
@@ -653,7 +650,6 @@ class DteXmlReferencia:
     ),
 )
 class DteXmlData(DteDataL1):
-
     """
     DTE XML data.
 
