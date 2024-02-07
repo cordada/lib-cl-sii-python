@@ -24,7 +24,7 @@ requirements = [
     'cryptography>=38.0.0',
     'defusedxml>=0.6.0,<1',
     'jsonschema>=3.1.1',
-    'lxml>=4.6.5,<5',
+    'lxml>=4.6.5,<6',
     'marshmallow>=3,<4',
     'pydantic>=2.3.0,!=1.7.*,!=1.8.*,!=1.9.*',
     'pyOpenSSL>=22.0.0',

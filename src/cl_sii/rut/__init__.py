@@ -9,6 +9,7 @@ RUT "canonical format": no dots ('.'), with dash ('-'), uppercase K e.g.
 ``'76042235-5'``, ``'96874030-K'``.
 
 """
+
 import itertools
 import random
 import re
@@ -17,7 +18,6 @@ from . import constants
 
 
 class Rut:
-
     """
     Representation of a RUT.
 

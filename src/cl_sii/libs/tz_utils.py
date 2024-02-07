@@ -10,6 +10,7 @@ These concept are defined in Python standard library module datetime
 `docs <https://docs.python.org/3/library/datetime.html#module-datetime>`_.
 
 """
+
 from datetime import datetime
 from typing import Optional, Union
 

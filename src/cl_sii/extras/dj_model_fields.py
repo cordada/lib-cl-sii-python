@@ -2,6 +2,7 @@
 cl_sii "extras" / Django model fields.
 
 """
+
 try:
     import django
 except ImportError as exc:  # pragma: no cover
@@ -18,7 +19,6 @@ from cl_sii.rut import Rut
 
 
 class RutField(django.db.models.Field):
-
     """
     Django model field for RUT.
 

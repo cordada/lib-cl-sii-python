@@ -3,6 +3,7 @@ Base / constants
 ================
 
 """
+
 import enum
 
 import pytz
@@ -17,7 +18,6 @@ SII_OFFICIAL_TZ = TZ_CL_SANTIAGO
 
 @enum.unique
 class TipoDocumento(enum.IntEnum):
-
     """
     Enum of "Tipo de Documento".
 

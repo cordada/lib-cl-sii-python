@@ -4,6 +4,7 @@ cl_sii "extras" / Marshmallow fields.
 (for serializers)
 
 """
+
 from __future__ import annotations
 
 
@@ -24,7 +25,6 @@ from cl_sii.rut import Rut
 
 
 class RutField(marshmallow.fields.Field):
-
     """
     Marshmallow field for RUT.
 
@@ -77,7 +77,6 @@ class RutField(marshmallow.fields.Field):
 
 
 class TipoDteField(marshmallow.fields.Field):
-
     """
     Marshmallow field for a DTE's "tipo DTE".
 
@@ -136,7 +135,6 @@ class TipoDteField(marshmallow.fields.Field):
 
 
 class RcvTipoDoctoField(marshmallow.fields.Field):
-
     """
     Marshmallow field for RCV's "tipo documento".
 

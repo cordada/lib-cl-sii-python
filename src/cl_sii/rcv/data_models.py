@@ -4,6 +4,7 @@ RCV data models
 
 
 """
+
 from __future__ import annotations
 
 import logging
@@ -106,7 +107,6 @@ class PeriodoTributario:
     ),
 )
 class RcvDetalleEntry:
-
     """
     Entry of the "detalle" of an RCV.
     """
@@ -237,7 +237,6 @@ class RcvDetalleEntry:
     ),
 )
 class RvDetalleEntry(RcvDetalleEntry):
-
     """
     Entry of the "detalle" of an RV ("Registro de Ventas").
     """
@@ -289,7 +288,6 @@ class RvDetalleEntry(RcvDetalleEntry):
     ),
 )
 class RcRegistroDetalleEntry(RcvDetalleEntry):
-
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "registro".
     """
@@ -338,7 +336,6 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
     ),
 )
 class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
-
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "no incluir".
     """
@@ -354,7 +351,6 @@ class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
     ),
 )
 class RcReclamadoDetalleEntry(RcvDetalleEntry):
-
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "reclamado".
     """
@@ -407,7 +403,6 @@ class RcReclamadoDetalleEntry(RcvDetalleEntry):
     ),
 )
 class RcPendienteDetalleEntry(RcvDetalleEntry):
-
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "pendiente".
     """

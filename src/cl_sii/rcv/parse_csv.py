@@ -4,6 +4,7 @@ Parse RCV files (CSV)
 
 
 """
+
 import csv
 import logging
 from datetime import date, datetime
@@ -1086,7 +1087,6 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
 
 
 class _RcvCsvDialect(csv.Dialect):
-
     """
     CSV dialect of RCV CSV files.
 

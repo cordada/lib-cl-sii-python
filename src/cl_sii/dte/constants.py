@@ -5,6 +5,7 @@ Sources: official XML schemas 'SiiTypes_v10.xsd' and 'DTE_v10.xsd'.
 https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/
 
 """
+
 import enum
 from datetime import date
 from typing import FrozenSet
@@ -87,7 +88,6 @@ DTE_TIPO_DTE_FIELD_MIN_VALUE = 1
 
 @enum.unique
 class TipoDte(enum.IntEnum):
-
     """
     Enum of "Tipo de DTE".
 
@@ -351,7 +351,6 @@ DTE_REFERENCIA_CODREF_TIPO_DOC_MANDATORY_SET: FrozenSet[TipoDte] = frozenset(
 
 @enum.unique
 class CodigoReferencia(enum.IntEnum):
-
     """
     Enum of "Código de referencia".
 
