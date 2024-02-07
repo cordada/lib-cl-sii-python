@@ -59,7 +59,7 @@ pyopenssl==24.0.0
     # via
     #   -r requirements.in
     #   signxml
-pytz==2023.3.post1
+pytz==2024.1
     # via
     #   -r requirements.in
     #   django
