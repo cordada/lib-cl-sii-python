@@ -1,5 +1,18 @@
 # History
 
+## 0.27.0 (2024-02-07)
+
+- (PR #593, 2024-02-01) chore: Bump pydantic from 2.5.3 to 2.6.0
+- (PR #592, 2024-02-05) chore: Bump lxml from 4.9.2 to 4.9.4
+- (PR #595, 2024-02-05) chore: Bump the development-dependencies group with 6 updates
+- (PR #596, 2024-02-05) chore: Bump the production-dependencies group with 5 updates
+- (PR #599, 2024-02-07) chore: Bump signxml from 3.2.1 to 3.2.2
+- (PR #598, 2024-02-07) chore: Bump pydantic from 2.6.0 to 2.6.1
+- (PR #600, 2024-02-07) chore: Bump pyopenssl from 23.2.0 to 24.0.0
+- (PR #597, 2024-02-07) chore: Bump pytz from 2023.3.post1 to 2024.1
+- (PR #601, 2024-02-07) chore: Bump marshmallow from 3.20.1 to 3.20.2
+- (PR #602, 2024-02-07) chore(deps): Update `lxml` from 4.9.4 to 5.1.0
+
 ## 0.26.0 (2024-01-30)
 
 - (PR #586, 2024-01-30) fix: Add default value for missing code `098` in SII CTE Form 29
