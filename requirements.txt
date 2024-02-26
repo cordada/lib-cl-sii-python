@@ -16,14 +16,14 @@ certifi==2023.7.22
     # via signxml
 cffi==1.15.1
     # via cryptography
-cryptography==41.0.7
+cryptography==42.0.4
     # via
     #   -r requirements.in
     #   pyopenssl
     #   signxml
 defusedxml==0.7.1
     # via -r requirements.in
-django==3.2.23
+django==3.2.24
     # via
     #   -r requirements.in
     #   djangorestframework
