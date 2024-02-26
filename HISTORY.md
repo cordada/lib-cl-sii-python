@@ -1,5 +1,12 @@
 # History
 
+## 0.28.0 (2024-02-26)
+
+- (PR #606, 2024-02-14) fix: Add default value for missing codes in SII CTE Form 29
+- (PR #607, 2024-02-19) chore: Bump cryptography from 41.0.7 to 42.0.2
+- (PR #605, 2024-02-19) chore: Bump django from 3.2.23 to 3.2.24
+- (PR #608, 2024-02-26) chore: Bump cryptography from 42.0.2 to 42.0.4
+
 ## 0.27.0 (2024-02-07)
 
 - (PR #593, 2024-02-01) chore: Bump pydantic from 2.5.3 to 2.6.0
