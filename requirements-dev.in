@@ -4,16 +4,16 @@
 
 -c requirements.txt
 
-black==24.1.1
+black==24.2.0
 bumpversion==0.5.3
-coverage==7.4.1
+coverage==7.4.3
 flake8==7.0.0
 isort==5.13.2
 mypy==1.8.0
-pip-tools==7.3.0
+pip-tools==7.4.0
 tox==4.11.4
-twine==4.0.2
+twine==5.0.0
 types-jsonschema==4.21.0.20240118
-types-pyOpenSSL==24.0.0.20240130
+types-pyOpenSSL==24.0.0.20240228
 types-pytz==2024.1.0.20240203
 wheel==0.42.0
