@@ -55,7 +55,7 @@ pydantic==2.6.4
     # via -r requirements.in
 pydantic-core==2.16.3
     # via pydantic
-pyopenssl==24.0.0
+pyopenssl==24.1.0
     # via
     #   -r requirements.in
     #   signxml
