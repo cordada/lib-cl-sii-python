@@ -39,7 +39,7 @@ jsonschema==4.21.1
     # via -r requirements.in
 jsonschema-specifications==2023.7.1
     # via jsonschema
-lxml==5.1.0
+lxml==5.2.1
     # via
     #   -r requirements.in
     #   signxml
