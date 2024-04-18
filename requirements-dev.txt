@@ -8,7 +8,7 @@ attrs==23.1.0
     # via
     #   -c requirements.txt
     #   referencing
-black==24.3.0
+black==24.4.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -155,12 +155,16 @@ tox==4.11.4
     # via -r requirements-dev.in
 twine==5.0.0
     # via -r requirements-dev.in
-types-jsonschema==4.21.0.20240311
+types-cffi==1.16.0.20240331
+    # via types-pyopenssl
+types-jsonschema==4.21.0.20240331
     # via -r requirements-dev.in
-types-pyopenssl==24.0.0.20240311
+types-pyopenssl==24.0.0.20240417
     # via -r requirements-dev.in
-types-pytz==2024.1.0.20240203
+types-pytz==2024.1.0.20240417
     # via -r requirements-dev.in
+types-setuptools==69.5.0.20240415
+    # via types-cffi
 typing-extensions==4.7.1
     # via
     #   -c requirements.txt
