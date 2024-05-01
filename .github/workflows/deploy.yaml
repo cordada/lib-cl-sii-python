@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v4.1.2
+        uses: actions/checkout@v4.1.4
 
       - name: Set Up Python
         id: set_up_python
@@ -53,7 +53,7 @@ jobs:
           key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}-${{ hashFiles('Makefile', 'make/**.mk') }}
 
       - name: Restore Artifacts (Release)
-        uses: actions/download-artifact@v4.1.4
+        uses: actions/download-artifact@v4.1.7
         with:
           name: release
           path: ${{ inputs.artifacts_path }}/
