@@ -8,7 +8,7 @@ attrs==23.1.0
     # via
     #   -c requirements.txt
     #   referencing
-black==24.4.0
+black==24.4.2
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -36,7 +36,7 @@ click==8.0.3
     #   pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.4.4
+coverage==7.5.0
     # via -r requirements-dev.in
 cryptography==42.0.5
     # via
@@ -74,7 +74,7 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-mypy==1.9.0
+mypy==1.10.0
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
@@ -157,9 +157,9 @@ twine==5.0.0
     # via -r requirements-dev.in
 types-cffi==1.16.0.20240331
     # via types-pyopenssl
-types-jsonschema==4.21.0.20240331
+types-jsonschema==4.22.0.20240501
     # via -r requirements-dev.in
-types-pyopenssl==24.0.0.20240417
+types-pyopenssl==24.1.0.20240425
     # via -r requirements-dev.in
 types-pytz==2024.1.0.20240417
     # via -r requirements-dev.in
