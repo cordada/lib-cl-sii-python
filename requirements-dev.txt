@@ -8,7 +8,7 @@ attrs==23.1.0
     # via
     #   -c requirements.txt
     #   referencing
-black==24.1.1
+black==24.4.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -36,9 +36,9 @@ click==8.0.3
     #   pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.4.1
+coverage==7.4.4
     # via -r requirements-dev.in
-cryptography==42.0.4
+cryptography==42.0.5
     # via
     #   -c requirements.txt
     #   secretstorage
@@ -53,9 +53,9 @@ filelock==3.12.4
     #   virtualenv
 flake8==7.0.0
     # via -r requirements-dev.in
-idna==2.10
+idna==3.7
     # via requests
-importlib-metadata==6.1.0
+importlib-metadata==7.1.0
     # via
     #   -c requirements.txt
     #   build
@@ -74,7 +74,7 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-mypy==1.8.0
+mypy==1.9.0
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
@@ -89,7 +89,7 @@ packaging==23.1
     #   tox
 pathspec==0.9.0
     # via black
-pip-tools==7.3.0
+pip-tools==7.4.1
     # via -r requirements-dev.in
 pkginfo==1.8.3
     # via twine
@@ -115,7 +115,9 @@ pygments==2.15.0
 pyproject-api==1.6.1
     # via tox
 pyproject-hooks==1.0.0
-    # via build
+    # via
+    #   build
+    #   pip-tools
 readme-renderer==35.0
     # via twine
 referencing==0.30.2
@@ -151,14 +153,18 @@ tomli==2.0.1
     #   tox
 tox==4.11.4
     # via -r requirements-dev.in
-twine==4.0.2
+twine==5.0.0
     # via -r requirements-dev.in
-types-jsonschema==4.21.0.20240118
+types-cffi==1.16.0.20240331
+    # via types-pyopenssl
+types-jsonschema==4.21.0.20240331
     # via -r requirements-dev.in
-types-pyopenssl==24.0.0.20240130
+types-pyopenssl==24.0.0.20240417
     # via -r requirements-dev.in
-types-pytz==2024.1.0.20240203
+types-pytz==2024.1.0.20240417
     # via -r requirements-dev.in
+types-setuptools==69.5.0.20240415
+    # via types-cffi
 typing-extensions==4.7.1
     # via
     #   -c requirements.txt
@@ -173,7 +179,7 @@ virtualenv==20.24.5
     # via tox
 webencodings==0.5.1
     # via bleach
-wheel==0.42.0
+wheel==0.43.0
     # via
     #   -r requirements-dev.in
     #   pip-tools

@@ -20,6 +20,11 @@ It is used by various Web technologies such as SOAP, SAML, and others.
 
 """
 
+__all__ = [
+    'XmlElement',
+    'XmlElementTree',
+]
+
 import io
 import logging
 import os
@@ -354,7 +359,7 @@ def write_xml_doc(xml_doc: XmlElement, output: IO[bytes]) -> None:
 def verify_xml_signature(
     xml_doc: XmlElement,
     trusted_x509_cert: Optional[Union[crypto_utils.X509Cert, crypto_utils._X509CertOpenSsl]] = None,
-    xml_verifier: Optional[signxml.XMLVerifier] = None,
+    xml_verifier: Optional[signxml.verifier.XMLVerifier] = None,
     xml_verifier_supports_multiple_signatures: bool = False,
 ) -> Tuple[bytes, XmlElementTree, XmlElementTree]:
     """
@@ -419,13 +424,13 @@ def verify_xml_signature(
         raise NotImplementedError("XML document with more than one signature is not supported.")
 
     if use_default_xml_verifier:
-        xml_verifier = signxml.XMLVerifier()
+        xml_verifier = signxml.verifier.XMLVerifier()
 
         # Workaround for breaking change in signxml 2.10.0 and 2.10.1:
         # (See https://github.com/XML-Security/signxml/blob/v2.10.1/Changes.rst)
         xml_verifier.excise_empty_xmlns_declarations = True
 
-    if not isinstance(xml_verifier, signxml.XMLVerifier):
+    if not isinstance(xml_verifier, signxml.verifier.XMLVerifier):
         raise TypeError(
             "'xml_verifier' must be an instance of 'signxml.XMLVerifier' or of a subclass of it."
         )
@@ -480,7 +485,7 @@ def verify_xml_signature(
                 digest_algorithms=frozenset([signxml.algorithms.DigestAlgorithm.SHA1]),
             ),
         )
-        assert isinstance(result, signxml.VerifyResult)
+        assert isinstance(result, signxml.verifier.VerifyResult)
 
     except signxml.exceptions.InvalidDigest as exc:
         # warning: catch before 'InvalidSignature' (it is the parent of 'InvalidDigest').

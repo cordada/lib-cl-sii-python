@@ -1,5 +1,24 @@
 # History
 
+## 0.29.0 (2024-05-15)
+
+- (PR #614, 2024-03-26) chore: Bump the production-dependencies group with 4 updates
+- (PR #617, 2024-03-27) chore: Bump black from 24.1.1 to 24.3.0
+- (PR #619, 2024-03-27) chore: Bump pydantic from 2.6.1 to 2.6.4
+- (PR #618, 2024-03-27) chore: Bump marshmallow from 3.20.2 to 3.21.1
+- (PR #616, 2024-03-27) chore: Bump django from 3.2.24 to 3.2.25
+- (PR #615, 2024-03-27) chore: Bump cryptography from 42.0.4 to 42.0.5
+- (PR #620, 2024-03-27) chore: Bump the development-dependencies group with 7 updates
+- (PR #621, 2024-04-04) chore: Bump the production-dependencies group with 6 updates
+- (PR #628, 2024-04-16) chore: Bump sqlparse from 0.4.4 to 0.5.0
+- (PR #627, 2024-04-16) chore: Bump idna from 2.10 to 3.7
+- (PR #624, 2024-04-16) chore: Bump pyopenssl from 24.0.0 to 24.1.0
+- (PR #629, 2024-04-16) chore: Bump lxml from 5.1.0 to 5.2.1
+- (PR #626, 2024-04-18) chore: Bump importlib-metadata from 6.1.0 to 7.1.0
+- (PR #631, 2024-04-18) chore(deps): Bump the development-dependencies group with 4 updates
+- (PR #625, 2024-04-18) chore: Bump djangorestframework from 3.14.0 to 3.15.1
+- (PR #636, 2024-05-15) Disallow implicit re-exports of imported values in Python modules
+
 ## 0.28.0 (2024-02-26)
 
 - (PR #606, 2024-02-14) fix: Add default value for missing codes in SII CTE Form 29
