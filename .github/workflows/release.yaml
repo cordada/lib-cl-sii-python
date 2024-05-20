@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v4.1.2
+        uses: actions/checkout@v4.1.6
 
       - name: Set Up Python
         id: set_up_python
@@ -68,7 +68,7 @@ jobs:
           make dist
 
       - name: Store Artifacts
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: release
           path: ${{ env.ARTIFACTS_PATH }}/
