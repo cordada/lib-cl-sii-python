@@ -47,7 +47,7 @@ lxml==5.2.1
     # via
     #   -r requirements.in
     #   signxml
-marshmallow==3.21.1
+marshmallow==3.21.2
     # via -r requirements.in
 packaging==23.1
     # via marshmallow
