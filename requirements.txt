@@ -20,7 +20,7 @@ certifi==2023.7.22
     # via signxml
 cffi==1.15.1
     # via cryptography
-cryptography==42.0.5
+cryptography==42.0.8
     # via
     #   -r requirements.in
     #   pyopenssl
