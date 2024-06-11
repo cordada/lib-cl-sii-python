@@ -6,10 +6,19 @@ SOURCES_ROOT = $(CURDIR)/src
 # Python
 PYTHON = python3
 PYTHON_PIP = $(PYTHON) -m pip
-PYTHON_PIP_VERSION_SPECIFIER = ==23.3
-PYTHON_SETUPTOOLS_VERSION_SPECIFIER = ==65.5.1
+PYTHON_PIP_VERSION_SPECIFIER = $(shell \
+	grep -E '^pip==.+' --no-filename --only-matching --no-messages -- requirements{,-dev}.{txt,in} \
+	| head -n 1 | sed 's/^pip//' \
+)
+PYTHON_SETUPTOOLS_VERSION_SPECIFIER = $(shell \
+	grep -E '^setuptools==.+' --no-filename --only-matching --no-messages -- requirements{,-dev}.{txt,in} \
+	| head -n 1 | sed 's/^setuptools//' \
+)
 PYTHON_VIRTUALENV_DIR = venv
-PYTHON_PIP_TOOLS_VERSION_SPECIFIER = ==7.3.0
+PYTHON_PIP_TOOLS_VERSION_SPECIFIER = $(shell \
+	grep -E '^pip-tools==.+' --no-filename --only-matching --no-messages -- requirements{,-dev}.{txt,in} \
+	| head -n 1 | sed 's/^pip-tools//' \
+)
 PYTHON_PIP_TOOLS_SRC_FILES = requirements.in requirements-dev.in
 PYTHON_PIP_TOOLS_COMPILE_ARGS = --allow-unsafe --strip-extras --quiet
 
