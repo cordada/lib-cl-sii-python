@@ -1,5 +1,22 @@
 # History
 
+## 0.30.0 (2024-07-11)
+
+- (PR #640, 2024-05-20) chore: Bump the production-dependencies group across 1 directory with 5 updates
+- (PR #643, 2024-05-30) chore: Bump requests from 2.31.0 to 2.32.2
+- (PR #642, 2024-05-30) chore: Bump pydantic from 2.6.4 to 2.7.2
+- (PR #644, 2024-05-30) chore: Bump the development-dependencies group across 1 directory with 6 updates
+- (PR #633, 2024-05-30) chore: Bump jsonschema from 4.21.1 to 4.22.0
+- (PR #648, 2024-06-11) Replace hardcoded versions of Pip and others in Make variables
+- (PR #649, 2024-06-11) chore: Bump cryptography from 42.0.5 to 42.0.8
+- (PR #651, 2024-07-10) chore: Bump urllib3 from 1.26.18 to 1.26.19
+- (PR #652, 2024-07-10) chore: Bump djangorestframework from 3.15.1 to 3.15.2
+- (PR #655, 2024-07-10) chore(deps): Update package `zipp` from 3.8.1 to 3.19.2
+- (PR #650, 2024-07-11) chore: Bump marshmallow from 3.21.1 to 3.21.3
+- (PR #646, 2024-07-11) chore: Bump lxml from 5.2.1 to 5.2.2
+- (PR #656, 2024-07-11) chore: Bump the development-dependencies group across 1 directory with 6 updates
+- (PR #657, 2024-07-11) chore: Bump the production-dependencies group across 1 directory with 6 updates
+
 ## 0.29.0 (2024-05-15)
 
 - (PR #614, 2024-03-26) chore: Bump the production-dependencies group with 4 updates
