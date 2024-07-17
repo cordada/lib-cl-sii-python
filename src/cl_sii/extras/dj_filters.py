@@ -11,6 +11,7 @@ try:
     import django_filters
 except ImportError as exc:  # pragma: no cover
     raise ImportError("Package 'django-filter' is required to use this module.") from exc
+
 from copy import deepcopy
 from typing import ClassVar, Mapping, Tuple, Type
 
