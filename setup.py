@@ -34,6 +34,7 @@ requirements = [
 
 extras_requirements = {
     'django': ['Django>=2.2.24'],
+    'django-filter': ['django-filter>=24.2'],
     'djangorestframework': ['djangorestframework>=3.10.3,<3.16'],
 }
 
