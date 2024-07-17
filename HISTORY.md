@@ -1,5 +1,12 @@
 # History
 
+## 0.31.0 (2024-07-17)
+
+- (PR #661, 2024-07-17) extras: Add `RutFilter` for Django views and DRF views
+- (PR #662, 2024-07-17) extras: Add Django URL path converter for RUT and Tipo DTE
+- (PR #663, 2024-07-17) extras: Add mapping of Django model fields to DRF serializer fields
+- (PR #664, 2024-07-17) extras: Reformat source code of `.dj_filters`
+
 ## 0.30.0 (2024-07-11)
 
 - (PR #640, 2024-05-20) chore: Bump the production-dependencies group across 1 directory with 5 updates
