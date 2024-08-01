@@ -55,7 +55,7 @@ flake8==7.1.0
     # via -r requirements-dev.in
 idna==3.7
     # via requests
-importlib-metadata==7.1.0
+importlib-metadata==8.2.0
     # via
     #   -c requirements.txt
     #   build
