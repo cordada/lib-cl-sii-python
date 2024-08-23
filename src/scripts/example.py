@@ -49,6 +49,7 @@ root_logger.setLevel(logging.WARNING)
 # script
 ###############################################################################
 
+
 def main(args: Sequence[str]) -> None:
     start_ts = datetime.now()
 
@@ -57,8 +58,7 @@ def main(args: Sequence[str]) -> None:
     try:
         print("Action: do something")
     except FileNotFoundError:
-        logger.exception(
-            "Process aborted: a file could not be opened.", exc_info=True)
+        logger.exception("Process aborted: a file could not be opened.", exc_info=True)
     except KeyboardInterrupt:
         logger.error("Process interrupted by user.")
     except Exception:
