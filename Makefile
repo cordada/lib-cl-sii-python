@@ -101,7 +101,7 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 test-coverage: ## run tests and record test coverage
-	coverage run --rcfile=setup.cfg setup.py test
+	coverage run --rcfile=setup.cfg -m unittest discover -v -c -b -s src -t src
 
 test-coverage-report: test-coverage-report-console
 test-coverage-report: test-coverage-report-xml
