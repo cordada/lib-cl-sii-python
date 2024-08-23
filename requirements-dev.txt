@@ -179,7 +179,7 @@ virtualenv==20.26.3
     # via tox
 webencodings==0.5.1
     # via bleach
-wheel==0.43.0
+wheel==0.44.0
     # via
     #   -r requirements-dev.in
     #   pip-tools
