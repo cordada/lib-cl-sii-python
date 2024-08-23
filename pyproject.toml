@@ -1,10 +1,12 @@
 # Python Project Configuration
 #
 # Documentation:
+# - https://packaging.python.org/en/latest/specifications/pyproject-toml/
+#   (https://github.com/pypa/packaging.python.org/blob/caa20073/source/specifications/pyproject-toml.rst)
 # - https://pip.pypa.io/en/stable/reference/build-system/pyproject-toml/
-# - https://github.com/pypa/pip/blob/23.2.1/docs/html/reference/build-system/pyproject-toml.md
-# - https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
-# - https://github.com/pypa/packaging.python.org/blob/df2c8b22/source/specifications/declaring-project-metadata.rst
+#   (https://github.com/pypa/pip/blob/24.2/docs/html/reference/build-system/pyproject-toml.md)
+# - https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+#   (https://github.com/pypa/setuptools/blob/v70.3.0/docs/userguide/pyproject_config.rst)
 
 [build-system]
 requires = [
