@@ -1,14 +1,91 @@
 # Python Project Configuration
 #
 # Documentation:
+# - https://packaging.python.org/en/latest/specifications/pyproject-toml/
+#   (https://github.com/pypa/packaging.python.org/blob/caa20073/source/specifications/pyproject-toml.rst)
 # - https://pip.pypa.io/en/stable/reference/build-system/pyproject-toml/
-# - https://github.com/pypa/pip/blob/23.2.1/docs/html/reference/build-system/pyproject-toml.md
-# - https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
-# - https://github.com/pypa/packaging.python.org/blob/df2c8b22/source/specifications/declaring-project-metadata.rst
+#   (https://github.com/pypa/pip/blob/24.2/docs/html/reference/build-system/pyproject-toml.md)
+# - https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+#   (https://github.com/pypa/setuptools/blob/v70.3.0/docs/userguide/pyproject_config.rst)
 
 [build-system]
 requires = [
   "setuptools==70.3.0",
   "wheel==0.44.0",
 ]
-build-backend = "setuptools.build_meta:__legacy__"
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cl-sii"
+dependencies = [
+  "cryptography>=38.0.0",
+  "defusedxml>=0.6.0,<1",
+  "jsonschema>=3.1.1",
+  "lxml>=4.6.5,<6",
+  "marshmallow>=3,<4",
+  "pydantic>=2.3.0,!=1.7.*,!=1.8.*,!=1.9.*",
+  "pyOpenSSL>=22.0.0",
+  "pytz>=2019.3",
+  "signxml>=3.1.0",
+]
+requires-python = ">=3.8, <3.11"
+authors = [
+  {name = "Fyntex TI SpA", email = "no-reply@fyntex.ai"},
+]
+description = "Python library for Servicio de Impuestos Internos (SII) of Chile."
+readme = "README.md"
+license = {text = "MIT"}
+classifiers = [
+  # See https://pypi.org/classifiers/
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+django = ["Django>=2.2.24"]
+django-filter = ["django-filter>=24.2"]
+djangorestframework = ["djangorestframework>=3.10.3,<3.16"]
+
+[project.urls]
+Homepage = "https://github.com/fyntex/lib-cl-sii-python"
+Changelog = "https://github.com/fyntex/lib-cl-sii-python/blob/develop/HISTORY.md"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
+exclude = [
+  "scripts",
+  "tests*",
+]
+namespaces = true
+
+[tool.setuptools.package-data]
+# note: the "typing information" of this project's packages is not made available to its users
+#   automatically; it needs to be packaged and distributed. The way to do so is fairly new and
+#   it is specified in PEP 561 - "Distributing and Packaging Type Information".
+#   See:
+#   - https://www.python.org/dev/peps/pep-0561/#packaging-type-information
+#   - https://github.com/python/typing/issues/84
+#   - https://github.com/python/mypy/issues/3930
+# warning: remember to replicate this in the manifest file for source distribution ('MANIFEST.in').
+cl_sii = [
+  # Indicates that the "typing information" of the package should be distributed.
+  "py.typed",
+  # Data files that are not in a sub-package.
+  "data/cte/schemas-json/*.schema.json",
+  "data/ref/factura_electronica/schemas-xml/*.xsd",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "cl_sii.__version__"}
