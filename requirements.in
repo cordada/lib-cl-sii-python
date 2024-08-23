@@ -16,6 +16,6 @@ jsonschema==4.23.0
 lxml==5.2.2
 marshmallow==3.21.3
 pydantic==2.7.2
-pyOpenSSL==24.1.0
+pyOpenSSL==24.2.1
 pytz==2024.1
 signxml==3.2.2
