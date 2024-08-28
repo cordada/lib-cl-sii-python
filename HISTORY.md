@@ -1,5 +1,23 @@
 # History
 
+## 0.32.0 (2024-08-28)
+
+- (PR #660, 2024-08-23) chore: Bump setuptools from 65.5.1 to 70.3.0
+- (PR #672, 2024-08-23) chore: Bump django from 4.2.14 to 4.2.15
+- (PR #676, 2024-08-23) chore(deps): Update `pip` from 23.3 to 24.2
+- (PR #677, 2024-08-23) chore(deps): Update `wheel` from ≤0.43.0 to 0.44.0
+- (PR #675, 2024-08-23) Replace Setuptools Configuration with Python Project Configuration
+- (PR #670, 2024-08-23) chore: Bump jsonschema from 4.22.0 to 4.23.0
+- (PR #678, 2024-08-23) chore: Bump the development-dependencies group across 1 directory with 7 updates
+- (PR #679, 2024-08-23) chore: Bump the production-dependencies group across 1 directory with 2 updates
+- (PR #680, 2024-08-23) Test coverage broken by migration from `setup.py` to `pyproject.toml`
+- (PR #668, 2024-08-23) chore: Bump pyopenssl from 24.1.0 to 24.2.1
+- (PR #673, 2024-08-23) chore(deps): Bump importlib-metadata from 7.1.0 to 8.4.0
+- (PR #681, 2024-08-28) Move Flake8 configuration from `setup.cfg` to its own file
+- (PR #682, 2024-08-28) Move Coverage.py configuration from `setup.cfg` to its own file
+- (PR #683, 2024-08-28) Replace `setup.py sdist` and `bdist_wheel` with `build`
+- (PR #684, 2024-08-28) When running `twine check`, fail on warnings
+
 ## 0.31.0 (2024-07-17)
 
 - (PR #661, 2024-07-17) extras: Add `RutFilter` for Django views and DRF views

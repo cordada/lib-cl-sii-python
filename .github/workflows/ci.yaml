@@ -137,7 +137,7 @@ jobs:
 
       - name: Store Artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4.3.4
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: test_reports_${{ matrix.python_version }}
           path: test-reports/

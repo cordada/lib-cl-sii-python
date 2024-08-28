@@ -62,17 +62,16 @@ def clean_dte_xml_file(input_file_path: str, output_file_path: str) -> Iterable[
     # note: another way to compute the difference in a similar format is
     #   `diff -Naur $input_file_path $output_file_path`
     file_bytes_diff_gen = difflib.diff_bytes(
-        dfunc=difflib.unified_diff,
-        a=file_bytes.splitlines(),
-        b=file_bytes_rewritten.splitlines())
+        dfunc=difflib.unified_diff, a=file_bytes.splitlines(), b=file_bytes_rewritten.splitlines()
+    )
 
     return file_bytes_diff_gen
 
 
 def main_single_file(input_file_path: str, output_file_path: str) -> None:
     file_bytes_diff_gen = clean_dte_xml_file(
-        input_file_path=input_file_path,
-        output_file_path=output_file_path)
+        input_file_path=input_file_path, output_file_path=output_file_path
+    )
 
     for diff_line in file_bytes_diff_gen:
         print(diff_line)
@@ -89,8 +88,8 @@ def main_dir_files(input_files_dir_path: str) -> None:
 
         print(f"\n\nWill clean file '{input_file_path}' and save it to '{output_file_path}'.")
         file_bytes_diff_gen = clean_dte_xml_file(
-            input_file_path=input_file_path,
-            output_file_path=output_file_path)
+            input_file_path=input_file_path, output_file_path=output_file_path
+        )
 
         print("Difference between input and output files:")
         diff_line = None
@@ -102,11 +101,8 @@ def main_dir_files(input_files_dir_path: str) -> None:
 
 if __name__ == '__main__':
     if sys.argv[1] == 'file':
-        main_single_file(
-            input_file_path=sys.argv[2],
-            output_file_path=sys.argv[3])
+        main_single_file(input_file_path=sys.argv[2], output_file_path=sys.argv[3])
     elif sys.argv[1] == 'dir':
-        main_dir_files(
-            input_files_dir_path=sys.argv[2])
+        main_dir_files(input_files_dir_path=sys.argv[2])
     else:
         raise ValueError(f"Invalid option: '{sys.argv[1]}'")
