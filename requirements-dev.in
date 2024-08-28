@@ -5,6 +5,7 @@
 -c requirements.txt
 
 black==24.8.0
+build==1.0.3
 bumpversion==0.5.3
 coverage==7.6.1
 flake8==7.1.1

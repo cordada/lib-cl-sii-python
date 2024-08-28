@@ -13,7 +13,9 @@ black==24.8.0
 bleach==5.0.1
     # via readme-renderer
 build==1.0.3
-    # via pip-tools
+    # via
+    #   -r requirements-dev.in
+    #   pip-tools
 bumpversion==0.5.3
     # via -r requirements-dev.in
 cachetools==5.5.0

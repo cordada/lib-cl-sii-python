@@ -121,8 +121,8 @@ build: ## Build Python package
 	$(PYTHON) setup.py build
 
 dist: build ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
+	python -m build --sdist
+	python -m build --wheel
 	twine check dist/*
 	ls -l dist
 
