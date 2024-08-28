@@ -89,3 +89,6 @@ cl_sii = [
 
 [tool.setuptools.dynamic]
 version = {attr = "cl_sii.__version__"}
+
+[tool.distutils.bdist_wheel]
+universal = false
