@@ -101,7 +101,7 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 test-coverage: ## run tests and record test coverage
-	coverage run --rcfile=setup.cfg -m unittest discover -v -c -b -s src -t src
+	coverage run --rcfile=.coveragerc.test.ini -m unittest discover -v -c -b -s src -t src
 
 test-coverage-report: test-coverage-report-console
 test-coverage-report: test-coverage-report-xml
@@ -109,13 +109,13 @@ test-coverage-report: test-coverage-report-html
 test-coverage-report: ## Run tests, measure code coverage, and generate reports
 
 test-coverage-report-console: ## print test coverage summary
-	coverage report --rcfile=setup.cfg -m
+	coverage report --rcfile=.coveragerc.test.ini -m
 
 test-coverage-report-xml: ## Generate test coverage XML report
-	coverage xml --rcfile=setup.cfg
+	coverage xml --rcfile=.coveragerc.test.ini
 
 test-coverage-report-html: ## generate test coverage HTML report
-	coverage html --rcfile=setup.cfg
+	coverage html --rcfile=.coveragerc.test.ini
 
 build: ## Build Python package
 	$(PYTHON) setup.py build
