@@ -1,0 +1,20 @@
+[flake8]
+ignore =
+    # W503 line break before binary operator
+    W503
+
+exclude =
+    *.egg-info/,
+    .git/,
+    .mypy_cache/,
+    .pyenvs/,
+    __pycache__/,
+    build/,
+    dist/,
+    docs/
+
+max-line-length = 100
+
+doctests = True
+show-source = True
+statistics = True
