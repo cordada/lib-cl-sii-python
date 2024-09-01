@@ -5,12 +5,12 @@
 -c requirements.txt
 
 black==24.8.0
-build==1.0.3
+build==1.2.1
 bumpversion==0.5.3
 coverage==7.6.1
 flake8==7.1.1
 isort==5.13.2
-mypy==1.11.1
+mypy==1.11.2
 pip-tools==7.4.1
 tox==4.18.0
 twine==5.1.1

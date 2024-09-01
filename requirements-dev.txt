@@ -12,7 +12,7 @@ black==24.8.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
-build==1.0.3
+build==1.2.1
     # via
     #   -r requirements-dev.in
     #   pip-tools
@@ -76,7 +76,7 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-mypy==1.11.1
+mypy==1.11.2
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
