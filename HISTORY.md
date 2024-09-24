@@ -1,5 +1,15 @@
 # History
 
+## 0.33.0 (2024-09-24)
+
+- (PR #689, 2024-09-24) chore(deps): Bump pydantic from 2.7.2 to 2.8.2
+- (PR #694, 2024-09-24) deps: Bump the development-dependencies group with 4 updates
+- (PR #695, 2024-09-24) deps: Update `pydantic` from 2.8.2 to 2.9.2
+- (PR #693, 2024-09-24) chore(deps): Bump cryptography from 42.0.8 to 43.0.1
+- (PR #696, 2024-09-24) extras: Add Pydantic type for `Rut`
+- (PR #687, 2024-09-24) chore: Bump the production-dependencies group with 2 updates
+- (PR #697, 2024-09-24) cte: Close file object in `f29.parse_datos_obj`
+
 ## 0.32.0 (2024-08-28)
 
 - (PR #660, 2024-08-23) chore: Bump setuptools from 65.5.1 to 70.3.0
