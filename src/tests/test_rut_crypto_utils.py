@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 import cryptography.x509
-from cryptography.hazmat.backends.openssl import backend as crypto_x509_backend
+from cryptography.hazmat.primitives.serialization import pkcs12
 
 from cl_sii import rut
 from cl_sii.libs.crypto_utils import load_der_x509_cert
@@ -19,8 +19,8 @@ class FunctionsTest(unittest.TestCase):
         x509_cert = load_der_x509_cert(cert_der_bytes)
 
         with patch.object(
-            crypto_x509_backend,
-            'load_key_and_certificates_from_pkcs12',
+            pkcs12,
+            'load_key_and_certificates',
             Mock(return_value=(None, x509_cert, None)),
         ):
             pfx_file_bytes = b'hello'
@@ -40,8 +40,8 @@ class FunctionsTest(unittest.TestCase):
         x509_cert = load_der_x509_cert(cert_der_bytes)
 
         with patch.object(
-            crypto_x509_backend,
-            'load_key_and_certificates_from_pkcs12',
+            pkcs12,
+            'load_key_and_certificates',
             Mock(return_value=(None, x509_cert, None)),
         ):
             pfx_file_bytes = b'hello'
@@ -81,8 +81,8 @@ class FunctionsTest(unittest.TestCase):
         )
 
         with patch.object(
-            crypto_x509_backend,
-            'load_key_and_certificates_from_pkcs12',
+            pkcs12,
+            'load_key_and_certificates',
             Mock(return_value=(None, x509_cert, None)),
         ), patch.object(
             x509_cert.extensions,

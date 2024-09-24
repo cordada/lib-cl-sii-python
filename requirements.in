@@ -6,7 +6,7 @@
 #   git+https://github.com/example/example.git@example-vcs-ref#egg=example-pkg[foo,bar]==1.42.3
 
 backports-zoneinfo==0.2.1 ; python_version < "3.9" # Used by `djangorestframework`.
-cryptography==42.0.8
+cryptography==43.0.1
 defusedxml==0.7.1
 django-filter>=24.2
 Django>=2.2.24
@@ -15,7 +15,7 @@ importlib-metadata==8.4.0
 jsonschema==4.23.0
 lxml==5.2.2
 marshmallow==3.21.3
-pydantic==2.7.2
+pydantic==2.9.2
 pyOpenSSL==24.2.1
 pytz==2024.1
 signxml==3.2.2
