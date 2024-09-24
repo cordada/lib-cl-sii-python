@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: Set Up Python ${{ matrix.python_version }}
-        uses: actions/setup-python@v5.1.1
+        uses: actions/setup-python@v5.2.0
         with:
           python-version: "${{ matrix.python_version }}"
 
@@ -78,7 +78,7 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: Set Up Python ${{ matrix.python_version }}
-        uses: actions/setup-python@v5.1.1
+        uses: actions/setup-python@v5.2.0
         with:
           python-version: "${{ matrix.python_version }}"
 
@@ -137,7 +137,7 @@ jobs:
 
       - name: Store Artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4.3.6
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: test_reports_${{ matrix.python_version }}
           path: test-reports/
