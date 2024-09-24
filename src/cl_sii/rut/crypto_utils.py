@@ -4,6 +4,7 @@ from typing import Optional
 import cryptography
 import cryptography.x509
 from cryptography.hazmat.backends.openssl import backend as crypto_x509_backend
+from cryptography.hazmat.primitives.serialization import pkcs12
 
 from . import Rut, constants
 
@@ -21,9 +22,10 @@ def get_subject_rut_from_certificate_pfx(pfx_file_bytes: bytes, password: Option
         private_key,
         x509_cert,
         additional_certs,
-    ) = crypto_x509_backend.load_key_and_certificates_from_pkcs12(
+    ) = pkcs12.load_key_and_certificates(
         data=pfx_file_bytes,
         password=password.encode() if password is not None else None,
+        backend=crypto_x509_backend,
     )
     # https://cryptography.io/en/latest/hazmat/primitives/asymmetric/serialization/#cryptography.hazmat.primitives.serialization.pkcs12.load_key_and_certificates  # noqa: E501
 
