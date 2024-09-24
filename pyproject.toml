@@ -52,6 +52,7 @@ dynamic = ["version"]
 django = ["Django>=2.2.24"]
 django-filter = ["django-filter>=24.2"]
 djangorestframework = ["djangorestframework>=3.10.3,<3.16"]
+pydantic = ["pydantic>=2.0"]
 
 [project.urls]
 Homepage = "https://github.com/fyntex/lib-cl-sii-python"
