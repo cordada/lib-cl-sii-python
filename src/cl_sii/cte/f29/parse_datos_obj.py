@@ -28,9 +28,8 @@ CTE_F29_DATOS_OBJ_SCHEMA = read_json_schema(_CTE_F29_DATOS_OBJ_SCHEMA_PATH)
 _CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES_PATH = (
     Path(__file__).parent.parent.parent / 'data' / 'cte' / 'f29_datos_obj_missing_key_fixes.json'
 )
-CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES: SiiCteF29DatosObjType = json.load(
-    open(_CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES_PATH)
-)
+with open(_CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES_PATH) as f:
+    CTE_F29_DATOS_OBJ_MISSING_KEY_FIXES: SiiCteF29DatosObjType = json.load(f)
 
 
 def parse_sii_cte_f29_datos_obj(
