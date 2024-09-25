@@ -361,7 +361,11 @@ def verify_xml_signature(
     trusted_x509_cert: Optional[Union[crypto_utils.X509Cert, crypto_utils._X509CertOpenSsl]] = None,
     xml_verifier: Optional[signxml.verifier.XMLVerifier] = None,
     xml_verifier_supports_multiple_signatures: bool = False,
-) -> Tuple[bytes, XmlElementTree, XmlElementTree]:
+) -> Tuple[
+    bytes,
+    Optional[Union[XmlElementTree, lxml.etree._Element]],
+    Union[XmlElementTree, lxml.etree._Element],
+]:
     """
     Verify the XML signature in ``xml_doc``.
 

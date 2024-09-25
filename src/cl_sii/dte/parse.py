@@ -163,6 +163,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
         'ds:Signature',  # "Firma Digital sobre Documento"
         namespaces=xml_utils.XML_DSIG_NS_MAP,
     )
+    assert signature_em is not None
 
     if liquidacion_em is not None or exportaciones_em is not None:
         raise NotImplementedError("XML element 'Documento' is the only one supported.")
@@ -191,6 +192,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
         'sii-dte:Encabezado',  # "Identificacion y Totales del Documento"
         namespaces=DTE_XMLNS_MAP,
     )
+    assert encabezado_em is not None
     # note: excluded because currently it is not useful.
     # ted_em = documento_em.find(
     #     'sii-dte:TED',  # "Timbre Electronico de DTE"
@@ -215,18 +217,22 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
         'sii-dte:IdDoc',  # "Identificacion del DTE"
         namespaces=DTE_XMLNS_MAP,
     )
+    assert id_doc_em is not None
     emisor_em = encabezado_em.find(
         'sii-dte:Emisor',  # "Datos del Emisor"
         namespaces=DTE_XMLNS_MAP,
     )
+    assert emisor_em is not None
     receptor_em = encabezado_em.find(
         'sii-dte:Receptor',  # "Datos del Receptor"
         namespaces=DTE_XMLNS_MAP,
     )
+    assert receptor_em is not None
     totales_em = encabezado_em.find(
         'sii-dte:Totales',  # "Montos Totales del DTE"
         namespaces=DTE_XMLNS_MAP,
     )
+    assert totales_em is not None
 
     # 'Documento.Encabezado.IdDoc'
     # Excluded elements (optional according to the XML schema but the SII may require some of these
@@ -453,6 +459,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
         'ds:KeyInfo',  # "Informacion de Claves Publicas y Certificado"
         namespaces=xml_utils.XML_DSIG_NS_MAP,
     )
+    assert signature_key_info_em is not None
     # signature_key_info_key_value_em = signature_key_info_em.find(
     #     'ds:KeyValue',
     #     namespaces=xml_utils.XML_DSIG_NS_MAP)
@@ -460,6 +467,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
         'ds:X509Data',  # "Informacion del Certificado Publico"
         namespaces=xml_utils.XML_DSIG_NS_MAP,
     )
+    assert signature_key_info_x509_data_em is not None
     signature_key_info_x509_cert_em = signature_key_info_x509_data_em.find(
         'ds:X509Certificate',  # "Certificado Publico"
         namespaces=xml_utils.XML_DSIG_NS_MAP,
@@ -523,7 +531,7 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
     )
 
 
-def _text_strip_or_none(xml_em: XmlElement) -> Optional[str]:
+def _text_strip_or_none(xml_em: Optional[XmlElement]) -> Optional[str]:
     # note: we need the pair of functions '_text_strip_or_none' and '_text_strip_or_raise'
     #   because, under certain circumstances, an XML tag:
     #   - with no content -> `xml_em.text` is None instead of ''
@@ -539,7 +547,7 @@ def _text_strip_or_none(xml_em: XmlElement) -> Optional[str]:
     return stripped_text
 
 
-def _text_strip_or_raise(xml_em: XmlElement) -> str:
+def _text_strip_or_raise(xml_em: Optional[XmlElement]) -> str:
     # note: we need the pair of functions '_text_strip_or_none' and '_text_strip_or_raise'
     #   because, under certain circumstances, an XML tag:
     #   - with no content -> `xml_em.text` is None instead of ''
