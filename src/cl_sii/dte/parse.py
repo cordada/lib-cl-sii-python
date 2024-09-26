@@ -117,7 +117,7 @@ def validate_dte_xml(xml_doc: XmlElement) -> None:
     xml_utils.validate_xml_doc(DTE_XML_SCHEMA_OBJ, xml_doc)
 
 
-def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
+def parse_dte_xml(xml_doc: XmlElement, trust_input: bool = False) -> data_models.DteXmlData:
     """
     Parse data from a DTE XML doc.
 
@@ -125,6 +125,16 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
         It is assumed that ``xml_doc`` is an
         ``{http://www.sii.cl/SiiDte}/DTE``  XML element.
 
+    :param xml_doc:
+        DTE XML document.
+    :param trust_input:
+        If ``True``, the input data is trusted to be valid and
+        some validation errors are replaced by warnings.
+
+        .. warning::
+            Use this option *only* if the DTE XML document was obtained directly
+            from the SII *and* you need to work around some validation errors
+            that the SII should have caught, but let through.
     :raises ValueError:
     :raises TypeError:
     :raises NotImplementedError:
@@ -511,23 +521,28 @@ def parse_dte_xml(xml_doc: XmlElement) -> data_models.DteXmlData:
         _text_strip_or_raise(signature_key_info_x509_cert_em)
     )
 
-    return data_models.DteXmlData(
-        emisor_rut=emisor_rut_value,
-        tipo_dte=tipo_dte_value,
-        folio=folio_value,
-        fecha_emision_date=fecha_emision_value,
-        receptor_rut=receptor_rut_value,
-        monto_total=monto_total_value,
-        emisor_razon_social=emisor_razon_social_value,
-        receptor_razon_social=receptor_razon_social_value,
-        fecha_vencimiento_date=fecha_vencimiento_value,
-        firma_documento_dt=tmst_firma_value,
-        signature_value=signature_signature_value,
-        signature_x509_cert_der=signature_key_info_x509_cert_der,
-        emisor_giro=emisor_giro_value,
-        emisor_email=emisor_email_value,
-        receptor_email=receptor_email_value,
-        referencias=referencia_xml_list,
+    return data_models.DTE_XML_DATA_PYDANTIC_TYPE_ADAPTER.validate_python(
+        dict(
+            emisor_rut=emisor_rut_value,
+            tipo_dte=tipo_dte_value,
+            folio=folio_value,
+            fecha_emision_date=fecha_emision_value,
+            receptor_rut=receptor_rut_value,
+            monto_total=monto_total_value,
+            emisor_razon_social=emisor_razon_social_value,
+            receptor_razon_social=receptor_razon_social_value,
+            fecha_vencimiento_date=fecha_vencimiento_value,
+            firma_documento_dt=tmst_firma_value,
+            signature_value=signature_signature_value,
+            signature_x509_cert_der=signature_key_info_x509_cert_der,
+            emisor_giro=emisor_giro_value,
+            emisor_email=emisor_email_value,
+            receptor_email=receptor_email_value,
+            referencias=referencia_xml_list,
+        ),
+        context={
+            data_models.VALIDATION_CONTEXT_TRUST_INPUT: trust_input,
+        },
     )
 
 

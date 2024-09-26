@@ -14,6 +14,7 @@ from cl_sii.dte.constants import (
     TipoDte,
 )
 from cl_sii.dte.data_models import (  # noqa: F401
+    DTE_XML_DATA_PYDANTIC_TYPE_ADAPTER,
     VALIDATION_CONTEXT_TRUST_INPUT,
     DteDataL0,
     DteDataL1,
@@ -1062,8 +1063,6 @@ class DteXmlDataTest(unittest.TestCase):
             'test_data/sii-crypto/DTE--96670340-7--61--110616-cert.der'
         )
 
-        cls.dte_xml_data_pydantic_type_adapter = pydantic.TypeAdapter(DteXmlData)
-
     def setUp(self) -> None:
         super().setUp()
 
@@ -1788,7 +1787,7 @@ class DteXmlDataTest(unittest.TestCase):
         )
 
         invalid_but_trusted_obj: Mapping[str, object] = {
-            **self.dte_xml_data_pydantic_type_adapter.dump_python(obj),
+            **DTE_XML_DATA_PYDANTIC_TYPE_ADAPTER.dump_python(obj),
             **dict(
                 referencias=[obj_referencia],
             ),
@@ -1797,7 +1796,7 @@ class DteXmlDataTest(unittest.TestCase):
 
         try:
             with self.assertLogs('cl_sii.dte.data_models', level='WARNING') as assert_logs_cm:
-                self.dte_xml_data_pydantic_type_adapter.validate_python(
+                DTE_XML_DATA_PYDANTIC_TYPE_ADAPTER.validate_python(
                     invalid_but_trusted_obj, context=validation_context
                 )
         except pydantic.ValidationError as exc:
@@ -1876,7 +1875,7 @@ class DteXmlDataTest(unittest.TestCase):
         )
 
         invalid_but_trusted_obj: Mapping[str, object] = {
-            **self.dte_xml_data_pydantic_type_adapter.dump_python(obj),
+            **DTE_XML_DATA_PYDANTIC_TYPE_ADAPTER.dump_python(obj),
             **dict(
                 referencias=[obj_referencia],
             ),
@@ -1885,7 +1884,7 @@ class DteXmlDataTest(unittest.TestCase):
 
         try:
             with self.assertLogs('cl_sii.dte.data_models', level='WARNING') as assert_logs_cm:
-                self.dte_xml_data_pydantic_type_adapter.validate_python(
+                DTE_XML_DATA_PYDANTIC_TYPE_ADAPTER.validate_python(
                     invalid_but_trusted_obj, context=validation_context
                 )
         except pydantic.ValidationError as exc:

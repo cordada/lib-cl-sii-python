@@ -798,3 +798,6 @@ class AecXml:
             )
 
         return self
+
+
+AEC_XML_PYDANTIC_TYPE_ADAPTER = pydantic.TypeAdapter(AecXml)
