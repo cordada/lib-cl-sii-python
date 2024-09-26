@@ -26,7 +26,7 @@ import pydantic
 import cl_sii.dte.data_models
 import cl_sii.dte.parse
 from cl_sii.dte.constants import TipoDte
-from cl_sii.dte.data_models import DteXmlData
+from cl_sii.dte.data_models import DteXmlData, is_input_trusted_according_to_validation_context
 from cl_sii.dte.parse import DTE_XMLNS_MAP
 from cl_sii.libs import encoding_utils, tz_utils, xml_utils
 from cl_sii.libs.xml_utils import XmlElement
@@ -88,7 +88,7 @@ def parse_aec_xml(xml_doc: XmlElement, trust_input: bool = False) -> data_models
             that the SII should have caught, but let through.
     """
     aec_struct = _Aec.parse_xml(xml_doc, trust_input=trust_input)
-    return aec_struct.as_aec_xml()
+    return aec_struct.as_aec_xml(trust_input=trust_input)
 
 
 ###############################################################################
@@ -656,10 +656,11 @@ class _DocumentoDteCedido(pydantic.BaseModel):
 
     @pydantic.field_validator('dte', mode='before')
     @classmethod
-    def validate_dte(cls, v: object) -> object:
+    def validate_dte(cls, v: object, info: pydantic.ValidationInfo) -> object:
         if isinstance(v, XmlElement):
             cl_sii.dte.parse.validate_dte_xml(v)
-            v = cl_sii.dte.parse.parse_dte_xml(v)
+            trust_dte = is_input_trusted_according_to_validation_context(info.context)
+            v = cl_sii.dte.parse.parse_dte_xml(v, trust_input=trust_dte)
         return v
 
     # @pydantic.validator('tmst_firma')
@@ -909,7 +910,7 @@ class _Aec(pydantic.BaseModel):
             },
         )
 
-    def as_aec_xml(self) -> data_models_aec.AecXml:
+    def as_aec_xml(self, trust_input: bool = False) -> data_models_aec.AecXml:
         doc_aec_struct = self.documento_aec
         signature_over_doc_aec_struct = self.signature
 
@@ -922,17 +923,22 @@ class _Aec(pydantic.BaseModel):
             cesion_struct.as_cesion_aec_xml() for cesion_struct in cesion_struct_list
         ]
 
-        return data_models_aec.AecXml(
-            dte=dte,
-            cedente_rut=caratula_struct.rut_cedente,
-            cesionario_rut=caratula_struct.rut_cesionario,
-            fecha_firma_dt=caratula_struct.tmst_firmaenvio,
-            signature_value=signature_over_doc_aec_struct.signature_value,
-            signature_x509_cert_der=signature_over_doc_aec_struct.key_info_x509_data_x509_cert,
-            cesiones=aec_xml_cesion_list,
-            contacto_nombre=caratula_struct.nmb_contacto,
-            contacto_telefono=caratula_struct.fono_contacto,
-            contacto_email=caratula_struct.mail_contacto,
+        return data_models_aec.AEC_XML_PYDANTIC_TYPE_ADAPTER.validate_python(
+            dict(
+                dte=dte,
+                cedente_rut=caratula_struct.rut_cedente,
+                cesionario_rut=caratula_struct.rut_cesionario,
+                fecha_firma_dt=caratula_struct.tmst_firmaenvio,
+                signature_value=signature_over_doc_aec_struct.signature_value,
+                signature_x509_cert_der=signature_over_doc_aec_struct.key_info_x509_data_x509_cert,
+                cesiones=aec_xml_cesion_list,
+                contacto_nombre=caratula_struct.nmb_contacto,
+                contacto_telefono=caratula_struct.fono_contacto,
+                contacto_email=caratula_struct.mail_contacto,
+            ),
+            context={
+                cl_sii.dte.data_models.VALIDATION_CONTEXT_TRUST_INPUT: trust_input,
+            },
         )
 
     @staticmethod
