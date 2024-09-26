@@ -19,6 +19,7 @@ In the domain of a DTE, a:
 from __future__ import annotations
 
 import dataclasses
+import logging
 from datetime import date, datetime
 from typing import Mapping, Optional, Sequence
 
@@ -31,6 +32,9 @@ from cl_sii.libs import tz_utils
 from cl_sii.rut import Rut
 from . import constants
 from .constants import CodigoReferencia, TipoDte
+
+
+logger = logging.getLogger(__name__)
 
 
 def validate_dte_folio(value: int) -> None:
@@ -97,6 +101,39 @@ def validate_non_empty_bytes(value: bytes) -> None:
     # if len(value.strip()) == 0:
     if len(value) == 0:
         raise ValueError("Bytes value length is 0.")
+
+
+VALIDATION_CONTEXT_TRUST_INPUT: str = 'trust_input'
+"""
+Key for the validation context to indicate that the input data is trusted.
+"""
+
+
+def is_input_trusted_according_to_validation_context(
+    validation_context: Optional[Mapping[str, object]]
+) -> bool:
+    """
+    Return whether the input data is trusted according to the validation context.
+
+    :param validation_context:
+        The validation context of a Pydantic model.
+        Get it from ``pydantic.ValidationInfo.context``.
+
+    Example for data classes:
+
+    >>> dte_xml_data_instance_kwargs: Mapping[str, object] = dict(
+    ...     emisor_rut=Rut('60910000-1'),  # ...
+    ... )
+    >>> dte_xml_data_adapter = pydantic.TypeAdapter(DteXmlData)
+    >>> dte_xml_data_instance: DteXmlData = dte_xml_data_adapter.validate_python(
+    ...     dte_xml_data_instance_kwargs,
+    ...     context={VALIDATION_CONTEXT_TRUST_INPUT: True}
+    ... )
+    """
+    if validation_context is None:
+        return False
+    else:
+        return validation_context.get(VALIDATION_CONTEXT_TRUST_INPUT) is True
 
 
 @pydantic.dataclasses.dataclass(
@@ -815,7 +852,9 @@ class DteXmlData(DteDataL1):
         return v
 
     @pydantic.model_validator(mode='after')
-    def validate_referencias_rut_otro_is_consistent_with_tipo_dte(self) -> DteXmlData:
+    def validate_referencias_rut_otro_is_consistent_with_tipo_dte(
+        self, info: pydantic.ValidationInfo
+    ) -> DteXmlData:
         referencias = self.referencias
         tipo_dte = self.tipo_dte
 
@@ -826,27 +865,37 @@ class DteXmlData(DteDataL1):
         ):
             for referencia in referencias:
                 if referencia.rut_otro:
-                    raise ValueError(
+                    message: str = (
                         f"Setting a 'rut_otro' is not a valid option for this 'tipo_dte':"
                         f" 'tipo_dte' == {tipo_dte!r},"
-                        f" 'Referencia' number {referencia.numero_linea_ref}.",
+                        f" 'Referencia' number {referencia.numero_linea_ref}."
                     )
+                    if is_input_trusted_according_to_validation_context(info.context):
+                        logger.warning('Validation failed but input is trusted: %s', message)
+                    else:
+                        raise ValueError(message)
 
         return self
 
     @pydantic.model_validator(mode='after')
-    def validate_referencias_rut_otro_is_consistent_with_emisor_rut(self) -> DteXmlData:
+    def validate_referencias_rut_otro_is_consistent_with_emisor_rut(
+        self, info: pydantic.ValidationInfo
+    ) -> DteXmlData:
         referencias = self.referencias
         emisor_rut = self.emisor_rut
 
         if isinstance(referencias, Sequence) and isinstance(emisor_rut, Rut):
             for referencia in referencias:
                 if referencia.rut_otro and referencia.rut_otro == emisor_rut:
-                    raise ValueError(
+                    message: str = (
                         f"'rut_otro' must be different from 'emisor_rut':"
                         f" {referencia.rut_otro!r} == {emisor_rut!r},"
-                        f" 'Referencia' number {referencia.numero_linea_ref}.",
+                        f" 'Referencia' number {referencia.numero_linea_ref}."
                     )
+                    if is_input_trusted_according_to_validation_context(info.context):
+                        logger.warning('Validation failed but input is trusted: %s', message)
+                    else:
+                        raise ValueError(message)
 
         return self
 
