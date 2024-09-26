@@ -69,14 +69,25 @@ def validate_aec_xml(xml_doc: XmlElement) -> None:
     xml_utils.validate_xml_doc(AEC_XML_SCHEMA_OBJ, xml_doc)
 
 
-def parse_aec_xml(xml_doc: XmlElement) -> data_models_aec.AecXml:
+def parse_aec_xml(xml_doc: XmlElement, trust_input: bool = False) -> data_models_aec.AecXml:
     """
     Parse data from a "cesión"'s AEC XML doc.
 
     .. warning::
         It is assumed that ``xml_doc`` is an ``{http://www.sii.cl/SiiDte}/AEC`` XML element.
+
+    :param xml_doc:
+        AEC XML document.
+    :param trust_input:
+        If ``True``, the input data is trusted to be valid and
+        some validation errors are replaced by warnings.
+
+        .. warning::
+            Use this option *only* if you obtained the AEC XML document
+            from the SII *and* you need to work around some validation errors
+            that the SII should have caught, but let through.
     """
-    aec_struct = _Aec.parse_xml(xml_doc)
+    aec_struct = _Aec.parse_xml(xml_doc, trust_input=trust_input)
     return aec_struct.as_aec_xml()
 
 
@@ -134,11 +145,13 @@ class _XmlSignature(pydantic.BaseModel):
         """
         # XPath: //Signature/KeyInfo
         key_info_em = xml_em.find('ds:KeyInfo', namespaces=xml_utils.XML_DSIG_NS_MAP)
+        assert key_info_em is not None
 
         # XPath: //Signature/KeyInfo/X509Data
         key_info_x509_data_em = key_info_em.find(
             'ds:X509Data', namespaces=xml_utils.XML_DSIG_NS_MAP
         )
+        assert key_info_x509_data_em is not None
 
         # XPath: //Signature
         return dict(
@@ -474,14 +487,17 @@ class _DocumentoCesion(pydantic.BaseModel):
         """
         # XPath: /AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion/IdDTE
         id_dte_em = xml_em.find('sii-dte:IdDTE', namespaces=DTE_XMLNS_MAP)
+        assert id_dte_em is not None
         id_dte_dict = _IdDte.parse_xml_to_dict(id_dte_em)
 
         # XPath: /AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion/Cedente
         cedente_em = xml_em.find('sii-dte:Cedente', namespaces=DTE_XMLNS_MAP)
+        assert cedente_em is not None
         cedente_dict = _Cedente.parse_xml_to_dict(cedente_em)
 
         # XPath: /AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion/Cesionario
         cesionario_em = xml_em.find('sii-dte:Cesionario', namespaces=DTE_XMLNS_MAP)
+        assert cesionario_em is not None
         cesionario_dict = _Cesionario.parse_xml_to_dict(cesionario_em)
 
         # XPath: /AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion
@@ -543,6 +559,7 @@ class _Cesion(pydantic.BaseModel):
         """
         # XPath: /AEC/DocumentoAEC/Cesiones/Cesion/DocumentoCesion
         doc_cesion_em = xml_em.find('sii-dte:DocumentoCesion', namespaces=DTE_XMLNS_MAP)
+        assert doc_cesion_em is not None
         doc_cesion_dict = _DocumentoCesion.parse_xml_to_dict(doc_cesion_em)
 
         # Signature over 'DocumentoCesion'
@@ -689,6 +706,7 @@ class _DteCedido(pydantic.BaseModel):
             'sii-dte:DocumentoDTECedido',
             namespaces=DTE_XMLNS_MAP,
         )
+        assert doc_dte_cedido_em is not None
 
         # Signature over 'DocumentoDTECedido'
         # XPath: /AEC/DocumentoAEC/Cesiones/DTECedido/Signature
@@ -819,13 +837,16 @@ class _DocumentoAec(pydantic.BaseModel):
         """
         # XPath: /AEC/DocumentoAEC/Caratula
         caratula_em = xml_em.find('sii-dte:Caratula', namespaces=DTE_XMLNS_MAP)
+        assert caratula_em is not None
         caratula_dict = _Caratula.parse_xml_to_dict(caratula_em)
 
         # XPath: /AEC/DocumentoAEC/Cesiones
         cesiones_em = xml_em.find('sii-dte:Cesiones', namespaces=DTE_XMLNS_MAP)
+        assert cesiones_em is not None
 
         # XPath: /AEC/DocumentoAEC/Cesiones/DTECedido
         dte_cedido_em = cesiones_em.find('sii-dte:DTECedido', namespaces=DTE_XMLNS_MAP)
+        assert dte_cedido_em is not None
         dte_cedido_dict = _DteCedido.parse_xml_to_dict(dte_cedido_em)
 
         # XPath: /AEC/DocumentoAEC/Cesiones/Cesion
@@ -879,9 +900,14 @@ class _Aec(pydantic.BaseModel):
     ###########################################################################
 
     @classmethod
-    def parse_xml(cls, xml_doc: XmlElement) -> _Aec:
+    def parse_xml(cls, xml_doc: XmlElement, trust_input: bool = False) -> _Aec:
         aec_dict = cls.parse_xml_to_dict(xml_doc)
-        return cls.model_validate(aec_dict)
+        return cls.model_validate(
+            aec_dict,
+            context={
+                cl_sii.dte.data_models.VALIDATION_CONTEXT_TRUST_INPUT: trust_input,
+            },
+        )
 
     def as_aec_xml(self) -> data_models_aec.AecXml:
         doc_aec_struct = self.documento_aec
@@ -919,6 +945,7 @@ class _Aec(pydantic.BaseModel):
 
         # XPath: /AEC/DocumentoAEC
         doc_aec_em = aec_em.find('sii-dte:DocumentoAEC', namespaces=DTE_XMLNS_MAP)
+        assert doc_aec_em is not None
         doc_aec_dict = _DocumentoAec.parse_xml_to_dict(doc_aec_em)
 
         # Signature over 'DocumentoAEC'
@@ -927,6 +954,7 @@ class _Aec(pydantic.BaseModel):
             'ds:Signature',
             namespaces=xml_utils.XML_DSIG_NS_MAP,
         )
+        assert signature_over_doc_aec_em is not None
         signature_over_doc_aec_dict = _XmlSignature.parse_xml_to_dict(signature_over_doc_aec_em)
 
         # XPath: /AEC

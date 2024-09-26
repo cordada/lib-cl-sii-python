@@ -47,11 +47,11 @@ jsonschema==4.23.0
     # via -r requirements.in
 jsonschema-specifications==2023.12.1
     # via jsonschema
-lxml==5.2.2
+lxml==5.3.0
     # via
     #   -r requirements.in
     #   signxml
-marshmallow==3.21.3
+marshmallow==3.22.0
     # via -r requirements.in
 packaging==24.1
     # via marshmallow
