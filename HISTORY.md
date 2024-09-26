@@ -1,5 +1,13 @@
 # History
 
+## 0.34.0 (2024-09-26)
+
+- (PR #690, 2024-09-25) chore(deps): Bump lxml from 5.2.2 to 5.3.0
+- (PR #691, 2024-09-25) chore(deps): Bump marshmallow from 3.21.3 to 3.22.0
+- (PR #701, 2024-09-25) Enable type checking for `setuptools`
+- (PR #702, 2024-09-25) Enable type checking for `lxml`
+- (PR #703, 2024-09-26) Relax some validations for trusted inputs
+
 ## 0.33.0 (2024-09-24)
 
 - (PR #689, 2024-09-24) chore(deps): Bump pydantic from 2.7.2 to 2.8.2
