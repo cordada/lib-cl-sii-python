@@ -69,14 +69,25 @@ def validate_aec_xml(xml_doc: XmlElement) -> None:
     xml_utils.validate_xml_doc(AEC_XML_SCHEMA_OBJ, xml_doc)
 
 
-def parse_aec_xml(xml_doc: XmlElement) -> data_models_aec.AecXml:
+def parse_aec_xml(xml_doc: XmlElement, trust_input: bool = False) -> data_models_aec.AecXml:
     """
     Parse data from a "cesión"'s AEC XML doc.
 
     .. warning::
         It is assumed that ``xml_doc`` is an ``{http://www.sii.cl/SiiDte}/AEC`` XML element.
+
+    :param xml_doc:
+        AEC XML document.
+    :param trust_input:
+        If ``True``, the input data is trusted to be valid and
+        some validation errors are replaced by warnings.
+
+        .. warning::
+            Use this option *only* if you obtained the AEC XML document
+            from the SII *and* you need to work around some validation errors
+            that the SII should have caught, but let through.
     """
-    aec_struct = _Aec.parse_xml(xml_doc)
+    aec_struct = _Aec.parse_xml(xml_doc, trust_input=trust_input)
     return aec_struct.as_aec_xml()
 
 
@@ -889,9 +900,14 @@ class _Aec(pydantic.BaseModel):
     ###########################################################################
 
     @classmethod
-    def parse_xml(cls, xml_doc: XmlElement) -> _Aec:
+    def parse_xml(cls, xml_doc: XmlElement, trust_input: bool = False) -> _Aec:
         aec_dict = cls.parse_xml_to_dict(xml_doc)
-        return cls.model_validate(aec_dict)
+        return cls.model_validate(
+            aec_dict,
+            context={
+                cl_sii.dte.data_models.VALIDATION_CONTEXT_TRUST_INPUT: trust_input,
+            },
+        )
 
     def as_aec_xml(self) -> data_models_aec.AecXml:
         doc_aec_struct = self.documento_aec

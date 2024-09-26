@@ -2,6 +2,7 @@ import base64
 import dataclasses
 import unittest
 from datetime import date, datetime
+from typing import Mapping
 
 import pydantic
 
@@ -13,6 +14,7 @@ from cl_sii.dte.constants import (
     TipoDte,
 )
 from cl_sii.dte.data_models import (  # noqa: F401
+    VALIDATION_CONTEXT_TRUST_INPUT,
     DteDataL0,
     DteDataL1,
     DteDataL2,
@@ -1060,6 +1062,8 @@ class DteXmlDataTest(unittest.TestCase):
             'test_data/sii-crypto/DTE--96670340-7--61--110616-cert.der'
         )
 
+        cls.dte_xml_data_pydantic_type_adapter = pydantic.TypeAdapter(DteXmlData)
+
     def setUp(self) -> None:
         super().setUp()
 
@@ -1761,6 +1765,46 @@ class DteXmlDataTest(unittest.TestCase):
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
         self.assertEqual(validation_errors, expected_validation_errors)
 
+    def test_validate_referencias_rut_otro_is_consistent_with_tipo_dte_for_trusted_input(
+        self,
+    ) -> None:
+        obj = self.dte_xml_data_2
+        obj_referencia = DteXmlReferencia(
+            numero_linea_ref=1,
+            tipo_documento_ref="801",
+            folio_ref="1",
+            fecha_ref=date(2019, 3, 28),
+            ind_global=None,
+            rut_otro=Rut('76354771-K'),
+            codigo_ref=None,
+            razon_ref=None,
+        )
+
+        expected_log_msg = (
+            "Validation failed but input is trusted: "
+            "Setting a 'rut_otro' is not a valid option for this 'tipo_dte':"
+            " 'tipo_dte' == <TipoDte.FACTURA_ELECTRONICA: 33>,"
+            " 'Referencia' number 1."
+        )
+
+        invalid_but_trusted_obj: Mapping[str, object] = {
+            **self.dte_xml_data_pydantic_type_adapter.dump_python(obj),
+            **dict(
+                referencias=[obj_referencia],
+            ),
+        }
+        validation_context = {VALIDATION_CONTEXT_TRUST_INPUT: True}
+
+        try:
+            with self.assertLogs('cl_sii.dte.data_models', level='WARNING') as assert_logs_cm:
+                self.dte_xml_data_pydantic_type_adapter.validate_python(
+                    invalid_but_trusted_obj, context=validation_context
+                )
+        except pydantic.ValidationError as exc:
+            self.fail(f'{exc.__class__.__name__} raised')
+
+        self.assertEqual(assert_logs_cm.records[0].getMessage(), expected_log_msg)
+
     def test_validate_referencias_rut_otro_is_consistent_with_emisor_rut(self) -> None:
         obj = self.dte_xml_data_2
         obj = dataclasses.replace(
@@ -1804,6 +1848,50 @@ class DteXmlDataTest(unittest.TestCase):
         )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
         self.assertEqual(validation_errors, expected_validation_errors)
+
+    def test_validate_referencias_rut_otro_is_consistent_with_emisor_rut_for_trusted_input(
+        self,
+    ) -> None:
+        obj = self.dte_xml_data_2
+        obj = dataclasses.replace(
+            obj,
+            tipo_dte=TipoDte.FACTURA_COMPRA_ELECTRONICA,
+        )
+        obj_referencia = DteXmlReferencia(
+            numero_linea_ref=1,
+            tipo_documento_ref="801",
+            folio_ref="1",
+            fecha_ref=date(2019, 3, 28),
+            ind_global=None,
+            rut_otro=Rut('60910000-1'),
+            codigo_ref=None,
+            razon_ref=None,
+        )
+
+        expected_log_msg = (
+            "Validation failed but input is trusted: "
+            "'rut_otro' must be different from 'emisor_rut':"
+            " Rut('60910000-1') == Rut('60910000-1'),"
+            " 'Referencia' number 1."
+        )
+
+        invalid_but_trusted_obj: Mapping[str, object] = {
+            **self.dte_xml_data_pydantic_type_adapter.dump_python(obj),
+            **dict(
+                referencias=[obj_referencia],
+            ),
+        }
+        validation_context = {VALIDATION_CONTEXT_TRUST_INPUT: True}
+
+        try:
+            with self.assertLogs('cl_sii.dte.data_models', level='WARNING') as assert_logs_cm:
+                self.dte_xml_data_pydantic_type_adapter.validate_python(
+                    invalid_but_trusted_obj, context=validation_context
+                )
+        except pydantic.ValidationError as exc:
+            self.fail(f'{exc.__class__.__name__} raised')
+
+        self.assertEqual(assert_logs_cm.records[0].getMessage(), expected_log_msg)
 
     def test_validate_referencias_codigo_ref_is_consistent_with_tipo_dte(self) -> None:
         obj = self.dte_xml_data_3
