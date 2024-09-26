@@ -45,6 +45,8 @@ cryptography==43.0.1
     #   -c requirements.txt
     #   secretstorage
     #   types-pyopenssl
+cssselect==1.2.0
+    # via types-lxml
 distlib==0.3.7
     # via virtualenv
 docutils==0.19
@@ -157,9 +159,15 @@ tox==4.20.0
     # via -r requirements-dev.in
 twine==5.1.1
     # via -r requirements-dev.in
+types-beautifulsoup4==4.12.0.20240907
+    # via types-lxml
 types-cffi==1.16.0.20240331
     # via types-pyopenssl
+types-html5lib==1.1.11.20240806
+    # via types-beautifulsoup4
 types-jsonschema==4.23.0.20240813
+    # via -r requirements-dev.in
+types-lxml==2024.9.16
     # via -r requirements-dev.in
 types-pyopenssl==24.1.0.20240722
     # via -r requirements-dev.in
@@ -173,6 +181,7 @@ typing-extensions==4.12.2
     #   black
     #   mypy
     #   rich
+    #   types-lxml
 urllib3==1.26.19
     # via
     #   requests
