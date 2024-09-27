@@ -918,3 +918,6 @@ class DteXmlData(DteDataL1):
                     )
 
         return self
+
+
+DTE_XML_DATA_PYDANTIC_TYPE_ADAPTER = pydantic.TypeAdapter(DteXmlData)
