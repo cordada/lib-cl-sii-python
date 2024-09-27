@@ -1,5 +1,11 @@
 # History
 
+## 0.35.0 (2024-09-26)
+
+- (PR #706, 2024-09-26) Improvements and fixes related to validation of trusted inputs
+- (PR #582, 2024-09-26) Add configuration for ignoring revisions in Git Blame
+- (PR #707, 2024-09-26) Make file `setup.py` executable again
+
 ## 0.34.0 (2024-09-26)
 
 - (PR #690, 2024-09-25) chore(deps): Bump lxml from 5.2.2 to 5.3.0
