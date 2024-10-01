@@ -12,7 +12,7 @@ flake8==7.1.1
 isort==5.13.2
 mypy==1.11.2
 pip-tools==7.4.1
-tox==4.20.0
+tox==4.21.0
 twine==5.1.1
 types-jsonschema==4.23.0.20240813
 types-lxml==2024.9.16
