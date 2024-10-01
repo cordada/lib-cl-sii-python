@@ -46,9 +46,9 @@ __all__ = [
 import base64
 from typing import Union
 
+import cryptography.hazmat.backends.openssl.backend as _crypto_x509_backend
 import cryptography.x509
 import signxml.util
-from cryptography.hazmat.backends.openssl import backend as _crypto_x509_backend
 from cryptography.x509 import Certificate as X509Cert
 from OpenSSL.crypto import X509 as _X509CertOpenSsl
 
