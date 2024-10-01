@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import Mock, patch
 
+import cryptography.hazmat.primitives.serialization.pkcs12
 import cryptography.x509
-from cryptography.hazmat.primitives.serialization import pkcs12
 
 from cl_sii import rut
 from cl_sii.libs.crypto_utils import load_der_x509_cert
@@ -19,7 +19,7 @@ class FunctionsTest(unittest.TestCase):
         x509_cert = load_der_x509_cert(cert_der_bytes)
 
         with patch.object(
-            pkcs12,
+            cryptography.hazmat.primitives.serialization.pkcs12,
             'load_key_and_certificates',
             Mock(return_value=(None, x509_cert, None)),
         ):
@@ -40,7 +40,7 @@ class FunctionsTest(unittest.TestCase):
         x509_cert = load_der_x509_cert(cert_der_bytes)
 
         with patch.object(
-            pkcs12,
+            cryptography.hazmat.primitives.serialization.pkcs12,
             'load_key_and_certificates',
             Mock(return_value=(None, x509_cert, None)),
         ):
@@ -81,7 +81,7 @@ class FunctionsTest(unittest.TestCase):
         )
 
         with patch.object(
-            pkcs12,
+            cryptography.hazmat.primitives.serialization.pkcs12,
             'load_key_and_certificates',
             Mock(return_value=(None, x509_cert, None)),
         ), patch.object(
