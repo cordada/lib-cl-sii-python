@@ -51,6 +51,14 @@ def get_subject_rut_from_certificate_pfx(pfx_file_bytes: bytes, password: Option
         raise Exception(f'len(results) == {len(results)}')
 
     subject_rut_raw: bytes = results[0]
-    subject_rut = re.sub(r'[^0-9-]', '', subject_rut_raw.decode('utf-8'))
+    subject_rut_str = subject_rut_raw.decode('utf-8')
+
+    # Regex to extract Chilean RUT formatted string
+    rut_match = re.search(r'\b\d{1,8}-[0-9Kk]\b', subject_rut_str)
+
+    if not rut_match:
+        raise Exception('RUT format not found in certificate')
+
+    subject_rut = rut_match.group(0)
 
     return Rut(subject_rut)
