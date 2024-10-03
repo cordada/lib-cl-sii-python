@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import Mock, patch
 
+import cryptography.hazmat.primitives.serialization.pkcs12
 import cryptography.x509
-from cryptography.hazmat.primitives.serialization import pkcs12
 
 from cl_sii import rut
 from cl_sii.libs.crypto_utils import load_der_x509_cert
@@ -19,7 +19,7 @@ class FunctionsTest(unittest.TestCase):
         x509_cert = load_der_x509_cert(cert_der_bytes)
 
         with patch.object(
-            pkcs12,
+            cryptography.hazmat.primitives.serialization.pkcs12,
             'load_key_and_certificates',
             Mock(return_value=(None, x509_cert, None)),
         ):
@@ -32,6 +32,46 @@ class FunctionsTest(unittest.TestCase):
             self.assertIsInstance(subject_rut, rut.Rut)
             self.assertEqual(subject_rut, rut.Rut('13185095-6'))
 
+    def test_get_subject_rut_from_certificate_pfx_ok_with_rut_that_ends_with_K(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes('test_data/sii-crypto/TEST-DTE-13185095-K.der')
+
+        x509_cert = load_der_x509_cert(cert_der_bytes)
+
+        with patch.object(
+            cryptography.hazmat.primitives.serialization.pkcs12,
+            'load_key_and_certificates',
+            Mock(return_value=(None, x509_cert, None)),
+        ):
+            pfx_file_bytes = b'hello'
+            password = 'fake_password'
+            subject_rut = get_subject_rut_from_certificate_pfx(
+                pfx_file_bytes=pfx_file_bytes,
+                password=password,
+            )
+            self.assertIsInstance(subject_rut, rut.Rut)
+            self.assertEqual(subject_rut, rut.Rut('13185095-K'))
+
+    def test_get_subject_rut_from_certificate_pfx_not_matching_rut_format(self) -> None:
+        cert_der_bytes = utils.read_test_file_bytes(
+            'test_data/sii-crypto/TEST-DTE-WITH-ID-BUT-NO-RUT.der',
+        )
+
+        x509_cert = load_der_x509_cert(cert_der_bytes)
+
+        with patch.object(
+            cryptography.hazmat.primitives.serialization.pkcs12,
+            'load_key_and_certificates',
+            Mock(return_value=(None, x509_cert, None)),
+        ):
+            pfx_file_bytes = b'hello'
+            password = 'fake_password'
+            with self.assertRaises(Exception) as cm:
+                get_subject_rut_from_certificate_pfx(
+                    pfx_file_bytes=pfx_file_bytes,
+                    password=password,
+                )
+            self.assertEqual(cm.exception.args, ('RUT format not found in certificate',))
+
     def test_get_subject_rut_from_certificate_pfx_fails_if_rut_info_is_missing(self) -> None:
         cert_der_bytes = utils.read_test_file_bytes(
             'test_data/crypto/wildcard-google-com-cert.der',
@@ -40,7 +80,7 @@ class FunctionsTest(unittest.TestCase):
         x509_cert = load_der_x509_cert(cert_der_bytes)
 
         with patch.object(
-            pkcs12,
+            cryptography.hazmat.primitives.serialization.pkcs12,
             'load_key_and_certificates',
             Mock(return_value=(None, x509_cert, None)),
         ):
@@ -81,7 +121,7 @@ class FunctionsTest(unittest.TestCase):
         )
 
         with patch.object(
-            pkcs12,
+            cryptography.hazmat.primitives.serialization.pkcs12,
             'load_key_and_certificates',
             Mock(return_value=(None, x509_cert, None)),
         ), patch.object(
