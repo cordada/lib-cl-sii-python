@@ -59,7 +59,7 @@ flake8==7.1.1
     # via -r requirements-dev.in
 idna==3.7
     # via requests
-importlib-metadata==8.4.0
+importlib-metadata==8.5.0
     # via
     #   -c requirements.txt
     #   build
@@ -195,7 +195,7 @@ wheel==0.44.0
     # via
     #   -r requirements-dev.in
     #   pip-tools
-zipp==3.19.2
+zipp==3.20.2
     # via
     #   -c requirements.txt
     #   importlib-metadata
