@@ -67,7 +67,7 @@ pyopenssl==24.2.1
     # via
     #   -r requirements.in
     #   signxml
-pytz==2024.1
+pytz==2024.2
     # via -r requirements.in
 referencing==0.35.1
     # via
