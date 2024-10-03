@@ -1,5 +1,15 @@
 # History
 
+## 0.36.0 (2024-10-03)
+
+- (PR #715, 2024-10-01) chore: Bump actions/checkout from 4.1.7 to 4.2.0 in production-deps group
+- (PR #717, 2024-10-01) Refactor `cryptography.hazmat.*` Python imports
+- (PR #716, 2024-10-02) Update cleaning regex to match RUTs with non-numeric digits
+- (PR #710, 2024-10-03) chore: Bump tox from 4.20.0 to 4.21.0 in the development-dependencies group
+- (PR #711, 2024-10-03) chore(deps): Bump django-filter from 24.2 to 24.3
+- (PR #714, 2024-10-03) chore(deps): Bump pytz from 2024.1 to 2024.2
+- (PR #712, 2024-10-03) chore(deps): Bump importlib-metadata from 8.4.0 to 8.5.0
+
 ## 0.35.0 (2024-09-26)
 
 - (PR #706, 2024-09-26) Improvements and fixes related to validation of trusted inputs
