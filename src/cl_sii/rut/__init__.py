@@ -81,8 +81,7 @@ class Rut:
         self._dv = match_groups['dv']
 
         if validate_dv:
-            if Rut.calc_dv(self._digits) != self._dv:
-                raise ValueError("RUT's \"digito verificador\" is incorrect.", value)
+            self.validate_dv(raise_exception=True)
 
     ############################################################################
     # properties
