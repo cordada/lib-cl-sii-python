@@ -10,6 +10,8 @@ RUT "canonical format": no dots ('.'), with dash ('-'), uppercase K e.g.
 
 """
 
+from __future__ import annotations
+
 import itertools
 import random
 import re
@@ -50,7 +52,7 @@ class Rut:
 
     """
 
-    def __init__(self, value: str, validate_dv: bool = False) -> None:
+    def __init__(self, value: str | Rut, validate_dv: bool = False) -> None:
         """
         Constructor.
 
