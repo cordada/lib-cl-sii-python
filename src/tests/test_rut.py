@@ -262,6 +262,25 @@ class RutTest(unittest.TestCase):
         self.assertEqual(self.valid_rut_instance.__hash__(), rut_hash)
 
     ############################################################################
+    # custom methods
+    ############################################################################
+
+    def test_validate_dv(self) -> None:
+        self.assertIs(self.valid_rut_instance.validate_dv(), True)
+        self.assertIs(self.invalid_rut_instance.validate_dv(), False)
+
+    def test_validate_dv_raises_exception(self) -> None:
+        try:
+            self.valid_rut_instance.validate_dv(raise_exception=True)
+        except ValueError as exc:
+            self.fail(f'{exc.__class__.__name__} raised')
+
+        with self.assertRaisesRegex(
+            ValueError, r'''('RUT\\'s "digito verificador" is incorrect.', '6824160-0')'''
+        ):
+            self.invalid_rut_instance.validate_dv(raise_exception=True)
+
+    ############################################################################
     # class methods
     ############################################################################
 
