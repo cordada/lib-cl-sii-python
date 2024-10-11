@@ -10,6 +10,8 @@ RUT "canonical format": no dots ('.'), with dash ('-'), uppercase K e.g.
 
 """
 
+from __future__ import annotations
+
 import itertools
 import random
 import re
@@ -50,7 +52,7 @@ class Rut:
 
     """
 
-    def __init__(self, value: str, validate_dv: bool = False) -> None:
+    def __init__(self, value: str | Rut, validate_dv: bool = False) -> None:
         """
         Constructor.
 
@@ -79,8 +81,7 @@ class Rut:
         self._dv = match_groups['dv']
 
         if validate_dv:
-            if Rut.calc_dv(self._digits) != self._dv:
-                raise ValueError("RUT's \"digito verificador\" is incorrect.", value)
+            self.validate_dv(raise_exception=True)
 
     ############################################################################
     # properties
@@ -136,6 +137,22 @@ class Rut:
     def __hash__(self) -> int:
         # Objects are hashable so they can be used in hashable collections.
         return hash(self.canonical)
+
+    ############################################################################
+    # custom methods
+    ############################################################################
+
+    def validate_dv(self, raise_exception: bool = False) -> bool:
+        """
+        Whether the "digito verificador" of the RUT is correct.
+
+        :param raise_exception: Whether to raise an exception if validation fails.
+        :raises ValueError:
+        """
+        is_valid = self.calc_dv(self._digits) == self._dv
+        if not is_valid and raise_exception:
+            raise ValueError("RUT's \"digito verificador\" is incorrect.", self.canonical)
+        return is_valid
 
     ############################################################################
     # class methods
