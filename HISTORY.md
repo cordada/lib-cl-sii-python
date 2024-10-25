@@ -1,5 +1,11 @@
 # History
 
+## 0.37.0 (2024-10-25)
+
+- (PR #721, 2024-10-11) rut: Improve type annotation; Add method to validate DV
+- (PR #720, 2024-10-11) chore(deps): Bump django from 4.2.15 to 4.2.16
+- (PR #722, 2024-10-25) extras: Pydantic `Rut` type regex is not compliant with JSON Schema
+
 ## 0.36.0 (2024-10-03)
 
 - (PR #715, 2024-10-01) chore: Bump actions/checkout from 4.1.7 to 4.2.0 in production-deps group
