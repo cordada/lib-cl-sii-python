@@ -41,6 +41,9 @@ class _RutPydanticAnnotation:
         - Customizing the core schema and JSON schema:
             https://docs.pydantic.dev/2.9/architecture/#customizing-the-core-schema-and-json-schema
             (https://github.com/pydantic/pydantic/blob/v2.9.2/docs/architecture.md#customizing-the-core-schema-and-json-schema)
+        - Implementing __get_pydantic_json_schema__:
+            https://docs.pydantic.dev/2.9/concepts/json_schema/#implementing-__get_pydantic_json_schema__
+            (https://github.com/pydantic/pydantic/blob/v2.9.2/docs/concepts/json_schema.md#implementing-__get_pydantic_json_schema__-)
 
     Examples:
 
@@ -73,6 +76,7 @@ class _RutPydanticAnnotation:
     '78773510-K'
     >>> example_type_adapter.dump_json(cl_sii.rut.Rut('78773510-K'))
     b'"78773510-K"'
+    >>> example_json_schema = example_type_adapter.json_schema()
     """
 
     RUT_CANONICAL_STRICT_REGEX: ClassVar[Pattern] = re.compile(
@@ -99,7 +103,7 @@ class _RutPydanticAnnotation:
 
         from_str_schema = pydantic_core.core_schema.chain_schema(
             [
-                pydantic_core.core_schema.str_schema(pattern=cls.RUT_CANONICAL_STRICT_REGEX),
+                cls.str_schema(),
                 pydantic_core.core_schema.no_info_plain_validator_function(validate_from_str),
             ]
         )
@@ -116,6 +120,19 @@ class _RutPydanticAnnotation:
                 lambda instance: instance.canonical
             ),
         )
+
+    @classmethod
+    def __get_pydantic_json_schema__(
+        cls,
+        core_schema: pydantic_core.core_schema.CoreSchema,
+        handler: pydantic.GetJsonSchemaHandler,
+    ) -> pydantic.json_schema.JsonSchemaValue:
+        core_schema = cls.str_schema()
+        return handler(core_schema)
+
+    @classmethod
+    def str_schema(cls) -> pydantic_core.core_schema.CoreSchema:
+        return pydantic_core.core_schema.str_schema(pattern=cls.RUT_CANONICAL_STRICT_REGEX)
 
 
 Rut = Annotated[cl_sii.rut.Rut, _RutPydanticAnnotation]
