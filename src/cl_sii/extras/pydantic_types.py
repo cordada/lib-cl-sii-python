@@ -4,8 +4,9 @@ cl_sii "extras" / Pydantic types.
 
 from __future__ import annotations
 
+import re
 import sys
-from typing import Any
+from typing import Any, ClassVar, Pattern
 
 
 if sys.version_info[:2] >= (3, 9):
@@ -74,6 +75,21 @@ class _RutPydanticAnnotation:
     b'"78773510-K"'
     """
 
+    RUT_CANONICAL_STRICT_REGEX: ClassVar[Pattern] = re.compile(
+        re.sub(
+            pattern=r'\?P<\w+>',
+            repl='',
+            string=cl_sii.rut.constants.RUT_CANONICAL_STRICT_REGEX.pattern,
+        )
+    )
+    """
+    RUT (strict) regex for canonical format, without named groups.
+
+    .. warning::
+        JSON Schema and OpenAPI use the regular expression syntax from
+        JavaScript (ECMA 262), which does not support Python’s named groups.
+    """
+
     @classmethod
     def __get_pydantic_core_schema__(
         cls, source_type: Any, handler: pydantic.GetCoreSchemaHandler
@@ -83,9 +99,7 @@ class _RutPydanticAnnotation:
 
         from_str_schema = pydantic_core.core_schema.chain_schema(
             [
-                pydantic_core.core_schema.str_schema(
-                    pattern=cl_sii.rut.constants.RUT_CANONICAL_STRICT_REGEX.pattern
-                ),
+                pydantic_core.core_schema.str_schema(pattern=cls.RUT_CANONICAL_STRICT_REGEX),
                 pydantic_core.core_schema.no_info_plain_validator_function(validate_from_str),
             ]
         )
