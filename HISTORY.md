@@ -1,5 +1,10 @@
 # History
 
+## 0.38.0 (2024-10-28)
+
+- (PR #725, 2024-10-28) extras: Fix generation of JSON Schema for Pydantic `Rut` type
+- (PR #726, 2024-10-28) chore(deps): Update `mypy` from 1.11.2 to 1.13.0
+
 ## 0.37.0 (2024-10-25)
 
 - (PR #721, 2024-10-11) rut: Improve type annotation; Add method to validate DV
