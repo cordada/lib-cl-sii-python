@@ -133,3 +133,35 @@ class PydanticRutTest(unittest.TestCase):
 
                 with self.assertRaises(pydantic.ValidationError):
                     self.pydantic_type_adapter.validate_json(data)
+
+    def test_json_schema_for_validation(self) -> None:
+        # -----Arrange-----
+
+        expected_json_schema = {
+            'type': 'string',
+            'pattern': '^(\\d{1,8})-([\\dK])$',
+        }
+
+        # -----Act-----
+
+        actual_json_schema = self.pydantic_type_adapter.json_schema(mode='validation')
+
+        # -----Assert-----
+
+        self.assertEqual(expected_json_schema, actual_json_schema)
+
+    def test_json_schema_for_serialization(self) -> None:
+        # -----Arrange-----
+
+        expected_json_schema = {
+            'type': 'string',
+            'pattern': '^(\\d{1,8})-([\\dK])$',
+        }
+
+        # -----Act-----
+
+        actual_json_schema = self.pydantic_type_adapter.json_schema(mode='serialization')
+
+        # -----Assert-----
+
+        self.assertEqual(expected_json_schema, actual_json_schema)
