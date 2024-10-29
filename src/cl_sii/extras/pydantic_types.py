@@ -117,7 +117,8 @@ class _RutPydanticAnnotation:
                 ]
             ),
             serialization=pydantic_core.core_schema.plain_serializer_function_ser_schema(
-                lambda instance: instance.canonical
+                lambda instance: instance.canonical,
+                when_used='unless-none',
             ),
         )
 
