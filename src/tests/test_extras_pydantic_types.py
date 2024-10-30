@@ -49,12 +49,43 @@ class PydanticRutTest(unittest.TestCase):
 
         self.assertEqual(expected_serialized_value, actual_serialized_value)
 
+    def test_serialize_none_to_python(self) -> None:
+        # -----Arrange-----
+
+        instance = None
+
+        # -----Act-----
+
+        actual_serialized_value = self.pydantic_type_adapter.dump_python(instance)
+
+        # -----Assert-----
+
+        self.assertIsNone(actual_serialized_value)
+
     def test_serialize_to_json(self) -> None:
         # -----Arrange-----
 
         instance = self.valid_instance_1
 
         expected_serialized_value = b'"78773510-K"'
+        self.assertEqual(
+            expected_serialized_value, json.dumps(json.loads(expected_serialized_value)).encode()
+        )
+
+        # -----Act-----
+
+        actual_serialized_value = self.pydantic_type_adapter.dump_json(instance)
+
+        # -----Assert-----
+
+        self.assertEqual(expected_serialized_value, actual_serialized_value)
+
+    def test_serialize_none_to_json(self) -> None:
+        # -----Arrange-----
+
+        instance = None
+
+        expected_serialized_value = b'null'
         self.assertEqual(
             expected_serialized_value, json.dumps(json.loads(expected_serialized_value)).encode()
         )
