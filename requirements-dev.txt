@@ -12,7 +12,7 @@ black==24.8.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
-build==1.2.2
+build==1.2.2.post1
     # via
     #   -r requirements-dev.in
     #   pip-tools
@@ -155,7 +155,7 @@ tomli==2.0.1
     #   pyproject-api
     #   pyproject-hooks
     #   tox
-tox==4.21.0
+tox==4.23.2
     # via -r requirements-dev.in
 twine==5.1.1
     # via -r requirements-dev.in
@@ -171,7 +171,7 @@ types-lxml==2024.9.16
     # via -r requirements-dev.in
 types-pyopenssl==24.1.0.20240722
     # via -r requirements-dev.in
-types-pytz==2024.2.0.20240913
+types-pytz==2024.2.0.20241003
     # via -r requirements-dev.in
 types-setuptools==69.5.0.20240415
     # via types-cffi
