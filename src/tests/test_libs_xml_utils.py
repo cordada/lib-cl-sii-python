@@ -1,9 +1,15 @@
+import datetime
 import io
 import unittest
+from typing import Any
+from unittest import mock
 
 import lxml.etree
+import signxml
 
-from cl_sii.libs.crypto_utils import load_pem_x509_cert
+from cl_sii.base.constants import SII_OFFICIAL_TZ
+from cl_sii.libs.crypto_utils import _X509CertOpenSsl, load_pem_x509_cert
+from cl_sii.libs.tz_utils import convert_naive_dt_to_tz_aware
 from cl_sii.libs.xml_utils import (  # noqa: F401
     XmlElement,
     XmlFeatureForbidden,
@@ -185,6 +191,28 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         signature_xml_bytes = f.getvalue()
         self.assertEqual(signature_xml_bytes, self.with_valid_signature_signature_xml)
 
+    def test_ok_external_trusted_open_ssl_cert_with_signature(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_valid_signature)
+        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+
+        open_ssl_cert = _X509CertOpenSsl.from_cryptography(cert)
+
+        signed_data, signed_xml, signature_xml = verify_xml_signature(
+            xml_doc, trusted_x509_cert=open_ssl_cert
+        )
+
+        self.assertEqual(signed_data, self.with_valid_signature_signed_data)
+
+        f = io.BytesIO()
+        write_xml_doc(signed_xml, f)
+        signed_xml_bytes = f.getvalue()
+        self.assertEqual(signed_xml_bytes, self.with_valid_signature_signed_xml)
+
+        f = io.BytesIO()
+        write_xml_doc(signature_xml, f)
+        signature_xml_bytes = f.getvalue()
+        self.assertEqual(signature_xml_bytes, self.with_valid_signature_signature_xml)
+
     def test_ok_cert_in_signature(self) -> None:
         # TODO: implement!
 
@@ -221,7 +249,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(
             cm.exception.args,
-            ("Signature verification failed: wrong signature length",),
+            ("Signature verification failed: ",),
         )
 
     def test_bad_cert_included(self) -> None:
@@ -244,26 +272,58 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         )
 
     def test_fail_replaced_cert(self) -> None:
+        """
+        Tests that the signature verification fails
+        when the certificate is not the one that was used to sign the document.
+        """
         xml_doc = parse_untrusted_xml(self.with_replaced_cert)
-        cert = load_pem_x509_cert(self.any_x509_cert_pem_file)
+        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
 
         with self.assertRaises(XmlSignatureInvalid) as cm:
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(
             cm.exception.args,
-            ("Signature verification failed: []",),
+            ("Signature verification failed: ",),
         )
 
     def test_fail_included_cert_not_from_a_known_ca(self) -> None:
         xml_doc = parse_untrusted_xml(self.with_valid_signature)
+        xml_doc_signature_timestamp = convert_naive_dt_to_tz_aware(
+            dt=datetime.datetime.fromisoformat('2019-04-01T01:36:40'),  # From XML doc’s <TmstFirma>
+            tz=SII_OFFICIAL_TZ,
+        )
+
+        def _get_cert_chain_verifier(
+            *args: Any, **kwargs: Any
+        ) -> signxml.util.X509CertChainVerifier:
+            # The default signature verification time is the current time (see
+            # https://cryptography.io/en/43.0.3/x509/verification/#cryptography.x509.verification.PolicyBuilder.time
+            # ), but that causes verification to fail with the message
+            # “validation failed: cert is not valid at validation time”.
+            # To avoid that, we set the verification time to the time of the signature.
+            return signxml.util.X509CertChainVerifier(
+                ca_pem_file=kwargs['ca_pem_file'], verification_time=xml_doc_signature_timestamp
+            )
 
         # Without cert: fails because the issuer of the cert in the signature is not a known CA.
-        with self.assertRaises(XmlSignatureInvalidCertificate) as cm:
+        with self.assertRaises(XmlSignatureInvalidCertificate) as cm, mock.patch.object(
+            signxml.verifier.XMLVerifier,
+            'get_cert_chain_verifier',
+            side_effect=_get_cert_chain_verifier,
+        ) as mock_get_cert_chain_verifier:
             verify_xml_signature(xml_doc, trusted_x509_cert=None)
         self.assertEqual(
             cm.exception.args,
-            ('unable to get local issuer certificate',),
+            # According to some test cases from https://x509-limbo.com/, OpenSSL’s error message
+            # “unable to get local issuer certificate” seems to be equivalent to PyCA Cryptography’s
+            # error message below:
+            (
+                'validation failed:'
+                ' candidates exhausted:'
+                ' all candidates exhausted with no interior errors',
+            ),
         )
+        mock_get_cert_chain_verifier.assert_called_once_with(ca_pem_file=None)
 
     def test_fail_signed_data_modified(self) -> None:
         xml_doc = parse_untrusted_xml(self.with_signature_and_modified)
