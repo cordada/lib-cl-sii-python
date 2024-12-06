@@ -157,8 +157,7 @@ def add_pem_cert_header_footer(pem_cert: bytes) -> bytes:
     """
     pem_value_str = pem_cert.decode('ascii')
     # note: it would be great if 'add_pem_header' did not forcefully convert bytes to str.
-    mod_pem_value_str = signxml.util.add_pem_header(pem_value_str)
-    mod_pem_value: bytes = mod_pem_value_str.encode('ascii')
+    mod_pem_value: bytes = signxml.util.add_pem_header(pem_value_str)
     return mod_pem_value
 
 
