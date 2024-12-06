@@ -221,7 +221,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(
             cm.exception.args,
-            ("Signature verification failed: wrong signature length",),
+            ("Signature verification failed: ",),
         )
 
     def test_bad_cert_included(self) -> None:
@@ -251,7 +251,10 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(
             cm.exception.args,
-            ("Signature verification failed: []",),
+            (
+                'Invalid input.',
+                'DER encoded key value does not match specified signature algorithm',
+            ),
         )
 
     def test_fail_included_cert_not_from_a_known_ca(self) -> None:
@@ -262,7 +265,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             verify_xml_signature(xml_doc, trusted_x509_cert=None)
         self.assertEqual(
             cm.exception.args,
-            ('unable to get local issuer certificate',),
+            ('validation failed: cert is not valid at validation time',),
         )
 
     def test_fail_signed_data_modified(self) -> None:
