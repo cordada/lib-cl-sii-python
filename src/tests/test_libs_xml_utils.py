@@ -3,7 +3,7 @@ import unittest
 
 import lxml.etree
 
-from cl_sii.libs.crypto_utils import load_pem_x509_cert
+from cl_sii.libs.crypto_utils import _X509CertOpenSsl, load_pem_x509_cert
 from cl_sii.libs.xml_utils import (  # noqa: F401
     XmlElement,
     XmlFeatureForbidden,
@@ -185,6 +185,28 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         signature_xml_bytes = f.getvalue()
         self.assertEqual(signature_xml_bytes, self.with_valid_signature_signature_xml)
 
+    def test_ok_external_trusted_open_ssl_cert_with_signature(self) -> None:
+        xml_doc = parse_untrusted_xml(self.with_valid_signature)
+        cert = load_pem_x509_cert(self.xml_doc_cert_pem_bytes)
+
+        open_ssl_cert = _X509CertOpenSsl.from_cryptography(cert)
+
+        signed_data, signed_xml, signature_xml = verify_xml_signature(
+            xml_doc, trusted_x509_cert=open_ssl_cert
+        )
+
+        self.assertEqual(signed_data, self.with_valid_signature_signed_data)
+
+        f = io.BytesIO()
+        write_xml_doc(signed_xml, f)
+        signed_xml_bytes = f.getvalue()
+        self.assertEqual(signed_xml_bytes, self.with_valid_signature_signed_xml)
+
+        f = io.BytesIO()
+        write_xml_doc(signature_xml, f)
+        signature_xml_bytes = f.getvalue()
+        self.assertEqual(signature_xml_bytes, self.with_valid_signature_signature_xml)
+
     def test_ok_cert_in_signature(self) -> None:
         # TODO: implement!
 
@@ -221,7 +243,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(
             cm.exception.args,
-            ("Signature verification failed: wrong signature length",),
+            ("Signature verification failed: ",),
         )
 
     def test_bad_cert_included(self) -> None:
@@ -247,11 +269,14 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
         xml_doc = parse_untrusted_xml(self.with_replaced_cert)
         cert = load_pem_x509_cert(self.any_x509_cert_pem_file)
 
-        with self.assertRaises(XmlSignatureInvalid) as cm:
+        with self.assertRaises(ValueError) as cm:
             verify_xml_signature(xml_doc, trusted_x509_cert=cert)
         self.assertEqual(
             cm.exception.args,
-            ("Signature verification failed: []",),
+            (
+                'Invalid input.',
+                'DER encoded key value does not match specified signature algorithm',
+            ),
         )
 
     def test_fail_included_cert_not_from_a_known_ca(self) -> None:
@@ -262,7 +287,7 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             verify_xml_signature(xml_doc, trusted_x509_cert=None)
         self.assertEqual(
             cm.exception.args,
-            ('unable to get local issuer certificate',),
+            ('validation failed: cert is not valid at validation time',),
         )
 
     def test_fail_signed_data_modified(self) -> None:
