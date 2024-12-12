@@ -440,14 +440,8 @@ def verify_xml_signature(
         )
 
     if isinstance(trusted_x509_cert, crypto_utils._X509CertOpenSsl):
-        trusted_x509_cert_open_ssl = trusted_x509_cert
-    elif isinstance(trusted_x509_cert, crypto_utils.X509Cert):
-        trusted_x509_cert_open_ssl = crypto_utils._X509CertOpenSsl.from_cryptography(
-            trusted_x509_cert
-        )
-    elif trusted_x509_cert is None:
-        trusted_x509_cert_open_ssl = None
-    else:
+        trusted_x509_cert = trusted_x509_cert.to_cryptography()
+    elif not (isinstance(trusted_x509_cert, crypto_utils.X509Cert) or trusted_x509_cert is None):
         # A 'crypto_utils._X509CertOpenSsl' is ok but we prefer 'crypto_utils.X509Cert'.
         raise TypeError("'trusted_x509_cert' must be a 'crypto_utils.X509Cert' instance, or None.")
 
@@ -481,10 +475,10 @@ def verify_xml_signature(
         #   https://github.com/XML-Security/signxml/commit/ef15da8dbb904f1dedfdd210ae3e0df5da535612
         result = xml_verifier.verify(
             data=tmp_bytes,
-            require_x509=True,
-            x509_cert=trusted_x509_cert_open_ssl,
-            ignore_ambiguous_key_info=True,
+            x509_cert=trusted_x509_cert,
             expect_config=signxml.verifier.SignatureConfiguration(
+                require_x509=True,
+                ignore_ambiguous_key_info=True,
                 signature_methods=frozenset([signxml.algorithms.SignatureMethod.RSA_SHA1]),
                 digest_algorithms=frozenset([signxml.algorithms.DigestAlgorithm.SHA1]),
             ),
