@@ -21,7 +21,7 @@ certifi==2024.7.4
     # via signxml
 cffi==1.16.0
     # via cryptography
-cryptography==43.0.3
+cryptography==44.0.0
     # via
     #   -r requirements.in
     #   pyopenssl
@@ -63,7 +63,7 @@ pydantic==2.10.3
     # via -r requirements.in
 pydantic-core==2.27.1
     # via pydantic
-pyopenssl==24.2.1
+pyopenssl==24.3.0
     # via -r requirements.in
 pytz==2024.2
     # via -r requirements.in
