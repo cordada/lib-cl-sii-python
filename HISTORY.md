@@ -1,5 +1,17 @@
 # History
 
+## 0.39.0 (2024-12-12)
+
+- (PR #729, 2024-10-30) extras: Fix serialization of `None` in Pydantic `Rut` type
+- (PR #730, 2024-11-19) chore: Bump the production-dependencies group with 6 updates
+- (PR #733, 2024-11-20) chore: Bump the development-dependencies group across 1 directory with 5 updates
+- (PR #734, 2024-12-05) chore: Bump the production-dependencies group with 2 updates
+- (PR #732, 2024-12-05) chore(deps): Bump cryptography from 43.0.1 to 43.0.3
+- (PR #739, 2024-12-09) chore(deps): Bump pydantic from 2.9.2 to 2.10.3
+- (PR #740, 2024-12-09) chore(deps): Bump django from 4.2.16 to 4.2.17
+- (PR #736, 2024-12-12) chore(deps): Bump signxml from 3.2.2 to 4.0.3
+- (PR #742, 2024-12-12) deps: Update  cryptography to 44.0.0 and pyopenssl to 24.3.0
+
 ## 0.38.0 (2024-10-28)
 
 - (PR #725, 2024-10-28) extras: Fix generation of JSON Schema for Pydantic `Rut` type
