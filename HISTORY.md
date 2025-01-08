@@ -1,5 +1,10 @@
 # History
 
+## 0.41.0 (2025-01-08)
+
+- (PR #753, 2025-01-08) Exclude only individual test files in Mypy configuration
+- (PR #755, 2025-01-08) Improve Make tasks `clean-build`, `clean-pyc`, and `clean-test`
+
 ## 0.40.0 (2025-01-08)
 
 - (PR #748, 2025-01-06) Use most recent patch version of Python in CI/CD configuration
