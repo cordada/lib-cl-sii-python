@@ -47,7 +47,7 @@ jobs:
         run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.0
         with:
           path: "venv"
           key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements-dev.txt', 'Makefile', 'make/**.mk') }}
@@ -68,7 +68,7 @@ jobs:
           make dist
 
       - name: Store Artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4.5.0
         with:
           name: release
           path: ${{ env.ARTIFACTS_PATH }}/

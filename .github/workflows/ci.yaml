@@ -47,7 +47,7 @@ jobs:
         run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.0
         with:
           path: |
             .tox
@@ -89,7 +89,7 @@ jobs:
           check-latest: true
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.0
         with:
           path: |
             .tox
@@ -130,7 +130,7 @@ jobs:
           make test-coverage-report
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5.0.7
+        uses: codecov/codecov-action@v5.1.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./test-reports/coverage/
@@ -145,7 +145,7 @@ jobs:
 
       - name: Store Artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4.5.0
         with:
           name: test_reports_${{ matrix.python_version }}
           path: test-reports/
