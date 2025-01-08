@@ -40,6 +40,7 @@ jobs:
         uses: actions/setup-python@v5.3.0
         with:
           python-version: "${{ matrix.python_version }}"
+          check-latest: true
 
       - name: Create Python Virtual Environment
         run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
@@ -81,6 +82,7 @@ jobs:
         uses: actions/setup-python@v5.3.0
         with:
           python-version: "${{ matrix.python_version }}"
+          check-latest: true
 
       - name: Restoring/Saving Cache
         uses: actions/cache@v4.1.2
