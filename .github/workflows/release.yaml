@@ -50,7 +50,7 @@ jobs:
         uses: actions/cache@v4.1.2
         with:
           path: "venv"
-          key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}-${{ hashFiles('Makefile', 'make/**.mk') }}
+          key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements-dev.txt', 'Makefile', 'make/**.mk') }}
 
       - name: Install Dependencies
         run: |

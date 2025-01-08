@@ -37,6 +37,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Set Up Python ${{ matrix.python_version }}
+        id: set_up_python
         uses: actions/setup-python@v5.3.0
         with:
           python-version: "${{ matrix.python_version }}"
@@ -48,8 +49,10 @@ jobs:
       - name: Restoring/Saving Cache
         uses: actions/cache@v4.1.2
         with:
-          path: "venv"
-          key: py-v1-deps-${{ runner.os }}-${{ matrix.python_version }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}-${{ hashFiles('Makefile', 'make/**.mk') }}
+          path: |
+            .tox
+            venv
+          key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements-dev.txt', 'Makefile', 'make/**.mk') }}
 
       - name: Install Dependencies
         run: |
@@ -79,6 +82,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Set Up Python ${{ matrix.python_version }}
+        id: set_up_python
         uses: actions/setup-python@v5.3.0
         with:
           python-version: "${{ matrix.python_version }}"
@@ -87,8 +91,10 @@ jobs:
       - name: Restoring/Saving Cache
         uses: actions/cache@v4.1.2
         with:
-          path: "venv"
-          key: py-v1-deps-${{ runner.os }}-${{ matrix.python_version }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}-${{ hashFiles('Makefile', 'make/**.mk') }}
+          path: |
+            .tox
+            venv
+          key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements-dev.txt', 'Makefile', 'make/**.mk') }}
           fail-on-cache-miss: true
 
       - name: Set Tox Environment
