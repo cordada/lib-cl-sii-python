@@ -1,5 +1,16 @@
 # History
 
+## 0.40.0 (2025-01-08)
+
+- (PR #748, 2025-01-06) Use most recent patch version of Python in CI/CD configuration
+- (PR #750, 2025-01-08) Really use latest patch version of Python in CI/CD configuration
+- (PR #751, 2025-01-08) Improve dependency caching in CI/CD configuration
+- (PR #749, 2025-01-08) deps: Update dependency constraints of Python package `cl-sii`
+- (PR #747, 2025-01-08) chore: Bump the production-dependencies group with 3 updates
+- (PR #737, 2025-01-08) chore(deps): Bump setuptools from 70.3.0 to 75.3.0
+- (PR #745, 2025-01-08) chore(deps): Bump pydantic from 2.10.3 to 2.10.4
+- (PR #746, 2025-01-08) chore(deps): Bump the development-dependencies group with 6 updates
+
 ## 0.39.0 (2024-12-12)
 
 - (PR #729, 2024-10-30) extras: Fix serialization of `None` in Pydantic `Rut` type
