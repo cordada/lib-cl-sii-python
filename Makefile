@@ -45,25 +45,24 @@ help:
 clean: clean-build clean-pyc clean-test ## remove all build, test, lint, coverage and Python artifacts
 
 clean-build: ## remove build artifacts
-	rm -rf .eggs/
-	rm -rf build/
-	rm -rf dist/
-	find . -name '*.egg-info' -exec rm -rf {} +
-	find . -name '*.egg' -exec rm -f {} +
+	${RM} -r .eggs/
+	${RM} -r build/
+	${RM} -r dist/
+	find . -iname '*.egg-info' -type d -prune -exec ${RM} -r {} \;
+	find . -iname '*.egg' -prune -exec ${RM} -r {} \;
 
 clean-pyc: ## remove Python file artifacts
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -rf {} +
+	find . -iname '*.py[cod]' -delete
+	find . -iname '*~' -exec ${RM} {} +
+	find . -iname __pycache__ -type d -prune -exec ${RM} -r {} \;
 
 clean-test: ## remove test, lint and coverage artifacts
-	rm -rf .cache/
-	rm -rf .tox/
-	rm -f .coverage
-	rm -rf htmlcov/
-	rm -rf test-reports/
-	rm -rf .mypy_cache/
+	${RM} -r .cache/
+	${RM} -r .tox/
+	${RM} .coverage
+	${RM} -r htmlcov/
+	${RM} -r test-reports/
+	${RM} -r .mypy_cache/
 
 install-dev: install-deps-dev
 install-dev: ## Install for development
