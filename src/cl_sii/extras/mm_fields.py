@@ -229,6 +229,6 @@ class RcvPeriodoTributarioField(marshmallow.fields.Field):
             except TypeError as exc:
                 raise self.make_error('type') from exc
 
-            validated = RcvPeriodoTributario.from_date(value)  # type: ignore
+            validated = RcvPeriodoTributario.from_date(value)
 
         return validated

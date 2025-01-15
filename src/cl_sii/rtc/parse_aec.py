@@ -236,7 +236,7 @@ class _Cesionario(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    _validate_rut = pydantic.field_validator(  # type: ignore[pydantic-field]
+    _validate_rut = pydantic.field_validator(
         'rut',
         mode='before',
     )(_validate_rut)
@@ -281,12 +281,12 @@ class _RutAutorizado(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    _empty_str_to_none = pydantic.field_validator(  # type: ignore[pydantic-field]
+    _empty_str_to_none = pydantic.field_validator(
         'nombre',
         mode='before',
     )(_empty_str_to_none)
 
-    _validate_rut = pydantic.field_validator(  # type: ignore[pydantic-field]
+    _validate_rut = pydantic.field_validator(
         'rut',
         mode='before',
     )(_validate_rut)
@@ -425,12 +425,12 @@ class _IdDte(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    _validate_rut_emisor = pydantic.field_validator(  # type: ignore[pydantic-field]
+    _validate_rut_emisor = pydantic.field_validator(
         'rut_emisor',
         mode='before',
     )(_validate_rut)
 
-    _validate_rut_receptor = pydantic.field_validator(  # type: ignore[pydantic-field]
+    _validate_rut_receptor = pydantic.field_validator(
         'rut_receptor',
         mode='before',
     )(_validate_rut)
@@ -776,19 +776,19 @@ class _Caratula(pydantic.BaseModel):
     # Validators
     ###########################################################################
 
-    _empty_str_to_none = pydantic.field_validator(  # type: ignore[pydantic-field]
+    _empty_str_to_none = pydantic.field_validator(
         'nmb_contacto',
         'fono_contacto',
         'mail_contacto',
         mode='before',
     )(_empty_str_to_none)
 
-    _validate_rut_cedente = pydantic.field_validator(  # type: ignore[pydantic-field]
+    _validate_rut_cedente = pydantic.field_validator(
         'rut_cedente',
         mode='before',
     )(_validate_rut)
 
-    _validate_rut_cesionario = pydantic.field_validator(  # type: ignore[pydantic-field]
+    _validate_rut_cesionario = pydantic.field_validator(
         'rut_cesionario',
         mode='before',
     )(_validate_rut)

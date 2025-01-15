@@ -23,7 +23,7 @@ PytzTimezone = Union[
     pytz.tzinfo.BaseTzInfo,
     pytz.tzinfo.StaticTzInfo,
     pytz.tzinfo.DstTzInfo,
-    pytz._FixedOffset,  # type: ignore
+    pytz._FixedOffset,
 ]
 
 
