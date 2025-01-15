@@ -633,16 +633,16 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
 
     def to_detalle_entry(self, data: dict) -> RvDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']  # type: ignore
-            tipo_docto = data['tipo_docto']  # type: ignore
-            folio: int = data['folio']  # type: ignore
-            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
-            receptor_rut: Rut = data['receptor_rut']  # type: ignore
-            monto_total: int = data['monto_total']  # type: ignore
-            receptor_razon_social: str = data['receptor_razon_social']  # type: ignore
-            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
-            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']  # type: ignore
-            fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']  # type: ignore
+            emisor_rut: Rut = data['emisor_rut']
+            tipo_docto = data['tipo_docto']
+            folio: int = data['folio']
+            fecha_emision_date: date = data['fecha_emision_date']
+            receptor_rut: Rut = data['receptor_rut']
+            monto_total: int = data['monto_total']
+            receptor_razon_social: str = data['receptor_razon_social']
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
+            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']
+            fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -765,15 +765,15 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
 
     def to_detalle_entry(self, data: dict) -> RcRegistroDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']  # type: ignore
-            tipo_docto = data['tipo_docto']  # type: ignore
-            folio: int = data['folio']  # type: ignore
-            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
-            receptor_rut: Rut = data['receptor_rut']  # type: ignore
-            monto_total: int = data['monto_total']  # type: ignore
-            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
-            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
-            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']  # type: ignore
+            emisor_rut: Rut = data['emisor_rut']
+            tipo_docto = data['tipo_docto']
+            folio: int = data['folio']
+            fecha_emision_date: date = data['fecha_emision_date']
+            receptor_rut: Rut = data['receptor_rut']
+            monto_total: int = data['monto_total']
+            emisor_razon_social: str = data['emisor_razon_social']
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
+            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -798,15 +798,15 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
 class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
     def to_detalle_entry(self, data: dict) -> RcNoIncluirDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']  # type: ignore
-            tipo_docto = data['tipo_docto']  # type: ignore
-            folio: int = data['folio']  # type: ignore
-            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
-            receptor_rut: Rut = data['receptor_rut']  # type: ignore
-            monto_total: int = data['monto_total']  # type: ignore
-            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
-            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
-            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']  # type: ignore
+            emisor_rut: Rut = data['emisor_rut']
+            tipo_docto = data['tipo_docto']
+            folio: int = data['folio']
+            fecha_emision_date: date = data['fecha_emision_date']
+            receptor_rut: Rut = data['receptor_rut']
+            monto_total: int = data['monto_total']
+            emisor_razon_social: str = data['emisor_razon_social']
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
+            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -934,15 +934,15 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
 
     def to_detalle_entry(self, data: dict) -> RcReclamadoDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']  # type: ignore
-            tipo_docto = data['tipo_docto']  # type: ignore
-            folio: int = data['folio']  # type: ignore
-            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
-            receptor_rut: Rut = data['receptor_rut']  # type: ignore
-            monto_total: int = data['monto_total']  # type: ignore
-            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
-            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
-            fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']  # type: ignore
+            emisor_rut: Rut = data['emisor_rut']
+            tipo_docto = data['tipo_docto']
+            folio: int = data['folio']
+            fecha_emision_date: date = data['fecha_emision_date']
+            receptor_rut: Rut = data['receptor_rut']
+            monto_total: int = data['monto_total']
+            emisor_razon_social: str = data['emisor_razon_social']
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
+            fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -1053,14 +1053,14 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
 
     def to_detalle_entry(self, data: dict) -> RcPendienteDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']  # type: ignore
-            tipo_docto = data['tipo_docto']  # type: ignore
-            folio: int = data['folio']  # type: ignore
-            fecha_emision_date: date = data['fecha_emision_date']  # type: ignore
-            receptor_rut: Rut = data['receptor_rut']  # type: ignore
-            monto_total: int = data['monto_total']  # type: ignore
-            emisor_razon_social: str = data['emisor_razon_social']  # type: ignore
-            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']  # type: ignore
+            emisor_rut: Rut = data['emisor_rut']
+            tipo_docto = data['tipo_docto']
+            folio: int = data['folio']
+            fecha_emision_date: date = data['fecha_emision_date']
+            receptor_rut: Rut = data['receptor_rut']
+            monto_total: int = data['monto_total']
+            emisor_razon_social: str = data['emisor_razon_social']
+            fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
