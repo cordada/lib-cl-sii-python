@@ -81,6 +81,7 @@ sqlparse==0.5.0
     # via django
 typing-extensions==4.12.2
     # via
+    #   -r requirements.in
     #   annotated-types
     #   asgiref
     #   pydantic
