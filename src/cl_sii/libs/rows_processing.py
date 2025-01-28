@@ -55,11 +55,7 @@ def csv_rows_mm_deserialization_iterator(
         on CSV error when iterating over ``csv_reader``
 
     """
-    # note: mypy complaint is wrong because a 'csv.DictReader' object can be iterated over
-    #   and yields instances of 'Dict[str, object]'.
-    #   > Incompatible types in assignment (expression has type "DictReader", variable has type
-    #   > "Iterable[Dict[str, object]]")
-    rows_iterator: Iterable[Dict[str, object]] = csv_reader  # type: ignore
+    rows_iterator: Iterable[Dict[str, object]] = csv_reader
     iterator = rows_mm_deserialization_iterator(
         rows_iterator, row_schema, n_rows_offset, max_n_rows, fields_to_remove_names
     )

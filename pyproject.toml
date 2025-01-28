@@ -27,6 +27,7 @@ dependencies = [
   "pyOpenSSL>=24.0.0",
   "pytz>=2019.3",
   "signxml>=4.0.0",
+  "typing-extensions>=4.0.1",
 ]
 requires-python = ">=3.8, <3.11"
 authors = [
@@ -49,7 +50,7 @@ classifiers = [
 dynamic = ["version"]
 
 [project.optional-dependencies]
-django = ["Django>=2.2.24"]
+django = ["Django>=4.2"]
 django-filter = ["django-filter>=24.2"]
 djangorestframework = ["djangorestframework>=3.10.3,<3.16"]
 pydantic = ["pydantic>=2.0"]
