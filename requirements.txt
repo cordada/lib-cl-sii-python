@@ -28,7 +28,7 @@ cryptography==44.0.0
     #   signxml
 defusedxml==0.7.1
     # via -r requirements.in
-django==4.2.17
+django==4.2.18
     # via
     #   -r requirements.in
     #   django-filter
