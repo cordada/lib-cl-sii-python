@@ -9,7 +9,7 @@ backports-zoneinfo==0.2.1 ; python_version < "3.9" # Used by `djangorestframewor
 cryptography==44.0.0
 defusedxml==0.7.1
 django-filter>=24.2
-Django>=2.2.24
+Django>=4.2
 djangorestframework>=3.10.3,<3.16
 importlib-metadata==8.5.0
 jsonschema==4.23.0
