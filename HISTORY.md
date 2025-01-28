@@ -1,5 +1,12 @@
 # History
 
+## 0.42.0 (2025-01-28)
+
+- (PR #758, 2025-01-15) Enable `warn_unused_ignores` in Mypy configuration
+- (PR #759, 2025-01-28) Annotate method return types with `typing.Self` where appropriate
+- (PR #761, 2025-01-28) deps: Increase minimum version of Python package `Django` to 4.2
+- (PR #760, 2025-01-28) rut: Add constant with lowest RUT for personas jurídicas
+
 ## 0.41.0 (2025-01-08)
 
 - (PR #753, 2025-01-08) Exclude only individual test files in Mypy configuration
