@@ -24,6 +24,7 @@ from datetime import date, datetime
 from typing import Mapping, Optional, Sequence
 
 import pydantic
+from typing_extensions import Self
 
 import cl_sii.contribuyente.constants
 import cl_sii.rut.constants
@@ -854,7 +855,7 @@ class DteXmlData(DteDataL1):
     @pydantic.model_validator(mode='after')
     def validate_referencias_rut_otro_is_consistent_with_tipo_dte(
         self, info: pydantic.ValidationInfo
-    ) -> DteXmlData:
+    ) -> Self:
         referencias = self.referencias
         tipo_dte = self.tipo_dte
 
@@ -880,7 +881,7 @@ class DteXmlData(DteDataL1):
     @pydantic.model_validator(mode='after')
     def validate_referencias_rut_otro_is_consistent_with_emisor_rut(
         self, info: pydantic.ValidationInfo
-    ) -> DteXmlData:
+    ) -> Self:
         referencias = self.referencias
         emisor_rut = self.emisor_rut
 
@@ -900,7 +901,7 @@ class DteXmlData(DteDataL1):
         return self
 
     @pydantic.model_validator(mode='after')
-    def validate_referencias_codigo_ref_is_consistent_with_tipo_dte(self) -> DteXmlData:
+    def validate_referencias_codigo_ref_is_consistent_with_tipo_dte(self) -> Self:
         referencias = self.referencias
         tipo_dte = self.tipo_dte
 

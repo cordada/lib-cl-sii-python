@@ -24,6 +24,7 @@ from datetime import date, datetime
 from typing import ClassVar, Mapping, Optional
 
 import pydantic
+from typing_extensions import Self
 
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.dte import data_models as dte_data_models
@@ -508,7 +509,7 @@ class CesionL1(CesionL0):
         return v
 
     @pydantic.model_validator(mode='after')
-    def validate_monto_cedido_does_not_exceed_dte_monto_total(self) -> CesionL1:
+    def validate_monto_cedido_does_not_exceed_dte_monto_total(self) -> Self:
         monto_cedido = self.monto_cedido
         dte_monto_total = self.dte_monto_total
 
@@ -705,7 +706,7 @@ class CesionL2(CesionL1):
         return v
 
     @pydantic.model_validator(mode='after')
-    def validate_dte_data_l2(self) -> CesionL2:
+    def validate_dte_data_l2(self) -> Self:
         dte_key = self.dte_key
         try:
             # Note: Delegate some validation to 'dte_data_models.DteDataL2'.

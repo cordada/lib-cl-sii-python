@@ -12,6 +12,7 @@ from datetime import date, datetime
 from typing import ClassVar, Optional
 
 import pydantic
+from typing_extensions import Self
 
 import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
@@ -174,7 +175,7 @@ class RcvDetalleEntry:
         return v
 
     @pydantic.model_validator(mode='after')
-    def validate_rcv_kind_is_consistent_with_rc_estado_contable(self) -> RcvDetalleEntry:
+    def validate_rcv_kind_is_consistent_with_rc_estado_contable(self) -> Self:
         rcv_kind = self.RCV_KIND
         rc_estado_contable = self.RC_ESTADO_CONTABLE
 

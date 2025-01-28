@@ -10,6 +10,7 @@ from datetime import date, datetime
 from typing import ClassVar, Mapping, Optional, Sequence, Tuple
 
 import pydantic
+from typing_extensions import Self
 
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.dte import data_models as dte_data_models
@@ -342,7 +343,7 @@ class CesionAecXml:
         return v
 
     @pydantic.model_validator(mode='after')
-    def validate_fecha_cesion_dt_is_consistent_with_dte(self) -> CesionAecXml:
+    def validate_fecha_cesion_dt_is_consistent_with_dte(self) -> Self:
         fecha_cesion_dt = self.fecha_cesion_dt
         dte = self.dte
 
@@ -352,7 +353,7 @@ class CesionAecXml:
         return self
 
     @pydantic.model_validator(mode='after')
-    def validate_monto_cesion_does_not_exceed_dte_monto_total(self) -> CesionAecXml:
+    def validate_monto_cesion_does_not_exceed_dte_monto_total(self) -> Self:
         monto_cesion = self.monto_cesion
         dte = self.dte
 
@@ -365,7 +366,7 @@ class CesionAecXml:
         return self
 
     @pydantic.model_validator(mode='after')
-    def validate_fecha_ultimo_vencimiento_is_consistent_with_dte(self) -> CesionAecXml:
+    def validate_fecha_ultimo_vencimiento_is_consistent_with_dte(self) -> Self:
         fecha_ultimo_vencimiento = self.fecha_ultimo_vencimiento
         dte = self.dte
 
@@ -732,7 +733,7 @@ class AecXml:
     #     return v
 
     @pydantic.model_validator(mode='after')
-    def validate_dte_matches_cesiones_dtes(self) -> AecXml:
+    def validate_dte_matches_cesiones_dtes(self) -> Self:
         dte = self.dte
         cesiones = self.cesiones
 
@@ -751,7 +752,7 @@ class AecXml:
         return self
 
     @pydantic.model_validator(mode='after')
-    def validate_last_cesion_matches_some_fields(self) -> AecXml:
+    def validate_last_cesion_matches_some_fields(self) -> Self:
         field_validations: Sequence[Tuple[str, str]] = [
             # (AecXml field, CesionAecXml field):
             # Even though it seems reasonable to expect that the date in `fecha_firma_dt`
@@ -784,7 +785,7 @@ class AecXml:
     @pydantic.model_validator(mode='after')
     def validate_signature_value_and_signature_x509_cert_der_may_only_be_none_together(
         self,
-    ) -> AecXml:
+    ) -> Self:
         signature_value = self.signature_value
         signature_x509_cert_der = self.signature_x509_cert_der
 
