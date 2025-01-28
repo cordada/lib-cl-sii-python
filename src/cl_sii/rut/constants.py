@@ -40,3 +40,18 @@ SII_CERT_TITULAR_RUT_OID = cryptography.x509.oid.ObjectIdentifier("1.3.6.1.4.1.8
 #   Type-id = 1.3.6.1.4.1.8321.1
 #   Value ='xx.xxx.xx-v'
 # > El campo Value es un IA5String con el RUT del individuo titular del certificado.
+
+PERSONA_JURIDICA_MIN_RUT_DIGITS: int = 50000000
+"""
+Lowest RUT digits for “personas jurídicas”.
+"""
+# Why must “personas jurídicas” have RUT ≥ 50000000-7?
+#
+# > ¿Qué es una Persona Jurídica?
+# >
+# > […] persona ficticia, capaz de ejercer derechos y contraer obligaciones civiles, y de ser
+# > representada judicial y extrajudicialmente. Además de esto, poseen Rut sobre 50 millones.
+#
+# Source:
+# [BancoEstado Microempresas → Información general sobre personas jurídicas](https://www.bancoestado.cl/content/bancoestado-public/cl/es/home/home-microempresa/servicios/informacion-general-sobre-personas-juridicas---bancoestado-micro.html#/) # noqa: E501
+# (retrieved on 2025-01-28)
