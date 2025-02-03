@@ -13,7 +13,7 @@ isort==5.13.2
 mypy==1.14.1
 pip-tools==7.4.1
 tox==4.23.2
-twine==6.0.1
+twine==6.1.0
 types-jsonschema==4.23.0.20241208
 types-lxml==2024.12.13
 types-pyOpenSSL==24.1.0.20240722
