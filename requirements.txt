@@ -63,7 +63,7 @@ pydantic==2.10.6
     # via -r requirements.in
 pydantic-core==2.27.2
     # via pydantic
-pyopenssl==24.3.0
+pyopenssl==25.0.0
     # via -r requirements.in
 pytz==2024.2
     # via -r requirements.in
@@ -86,6 +86,7 @@ typing-extensions==4.12.2
     #   asgiref
     #   pydantic
     #   pydantic-core
+    #   pyopenssl
 zipp==3.20.2
     # via
     #   importlib-metadata
