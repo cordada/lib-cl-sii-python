@@ -28,7 +28,6 @@ jobs:
     strategy:
       matrix:
         python_version:
-          - "3.8"
           - "3.9"
           - "3.10"
 
@@ -73,7 +72,6 @@ jobs:
     strategy:
       matrix:
         python_version:
-          - "3.8"
           - "3.9"
           - "3.10"
 
@@ -138,7 +136,7 @@ jobs:
 
       - name: Check that compiled Python dependency manifests are up-to-date with their sources
         # FIXME: There are issues related to testing with multiple Python versions.
-        if: ${{ startsWith(steps.set_up_python.outputs.python-version, '3.8.') }}
+        if: ${{ startsWith(steps.set_up_python.outputs.python-version, '3.9.') }}
         run: |
           source "$PYTHON_VIRTUALENV_ACTIVATE"
           make python-deps-sync-check
