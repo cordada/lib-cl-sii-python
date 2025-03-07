@@ -8,7 +8,9 @@ attrs==23.2.0
     # via
     #   -c requirements.txt
     #   referencing
-black==24.8.0
+beautifulsoup4==4.13.3
+    # via types-lxml
+black==25.1.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -38,7 +40,7 @@ click==8.0.3
     #   pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.6.1
+coverage==7.6.12
     # via -r requirements-dev.in
 cryptography==44.0.1
     # via
@@ -55,18 +57,13 @@ filelock==3.16.1
     # via
     #   tox
     #   virtualenv
-flake8==7.1.1
+flake8==7.1.2
     # via -r requirements-dev.in
 id==1.5.0
     # via twine
 idna==3.7
     # via requests
-importlib-metadata==8.5.0
-    # via
-    #   -c requirements.txt
-    #   build
-    #   twine
-isort==5.13.2
+isort==6.0.1
     # via -r requirements-dev.in
 jeepney==0.8.0
     # via
@@ -80,7 +77,7 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-mypy==1.14.1
+mypy==1.15.0
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
@@ -148,6 +145,8 @@ secretstorage==3.3.3
     # via keyring
 six==1.16.0
     # via bleach
+soupsieve==2.6
+    # via beautifulsoup4
 tomli==2.0.1
     # via
     #   black
@@ -161,28 +160,26 @@ tox==4.23.2
     # via -r requirements-dev.in
 twine==6.1.0
     # via -r requirements-dev.in
-types-beautifulsoup4==4.12.0.20240907
-    # via types-lxml
 types-cffi==1.16.0.20240331
     # via types-pyopenssl
-types-html5lib==1.1.11.20240806
-    # via types-beautifulsoup4
+types-html5lib==1.1.11.20241018
+    # via types-lxml
 types-jsonschema==4.23.0.20241208
     # via -r requirements-dev.in
-types-lxml==2024.12.13
+types-lxml==2025.3.4
     # via -r requirements-dev.in
 types-pyopenssl==24.1.0.20240722
     # via -r requirements-dev.in
-types-pytz==2024.2.0.20241221
+types-pytz==2025.1.0.20250204
     # via -r requirements-dev.in
 types-setuptools==75.3.0.20241112
     # via types-cffi
 typing-extensions==4.12.2
     # via
     #   -c requirements.txt
+    #   beautifulsoup4
     #   black
     #   mypy
-    #   rich
     #   tox
     #   types-lxml
 urllib3==1.26.19
@@ -197,10 +194,6 @@ wheel==0.45.1
     # via
     #   -r requirements-dev.in
     #   pip-tools
-zipp==3.20.2
-    # via
-    #   -c requirements.txt
-    #   importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 pip==24.2
