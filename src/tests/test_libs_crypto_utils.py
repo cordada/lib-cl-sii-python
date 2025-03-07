@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 from binascii import a2b_hex
 from datetime import datetime
@@ -11,6 +13,7 @@ from cl_sii.libs.crypto_utils import (  # noqa: F401
     add_pem_cert_header_footer,
     load_der_x509_cert,
     load_pem_x509_cert,
+    load_pfx_x509_cert,
     remove_pem_cert_header_footer,
     x509_cert_der_to_pem,
     x509_cert_pem_to_der,
@@ -1098,3 +1101,9 @@ class LoadPemX509CertTest(unittest.TestCase):
     def test_remove_pem_cert_header_footer(self) -> None:
         # TODO: implement for 'remove_pem_cert_header_footer'
         pass
+
+
+class LoadPfxX509CertTest(unittest.TestCase):
+    @unittest.skip("TODO: Implement for 'load_pfx_x509_cert'")
+    def test_load_pfx_x509_cert_ok(self) -> None:
+        assert bool(load_pfx_x509_cert)

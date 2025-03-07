@@ -36,6 +36,13 @@ PEM stands for "Privacy Enhanced Mail".
 > In the case that it encodes a certificate it would simply contain the
 > base64 encoding of the DER certificate [plus the header and footer].
 
+PKCS12
+--------
+
+PKCS12 stands for "Public Key Cryptography Standard #12".
+
+> […] a binary format described in RFC 7292. It can contain certificates, keys, and more.
+> PKCS12 files commonly have a `pfx` or `p12` file suffix.
 """
 
 __all__ = [
@@ -44,9 +51,10 @@ __all__ = [
 ]
 
 import base64
-from typing import Union
+from typing import Optional, Union
 
 import cryptography.hazmat.backends.openssl.backend as _crypto_x509_backend
+import cryptography.hazmat.primitives.serialization.pkcs12
 import cryptography.x509
 import signxml.util
 from cryptography.x509 import Certificate as X509Cert
@@ -170,3 +178,38 @@ def remove_pem_cert_header_footer(pem_cert: bytes) -> bytes:
     mod_pem_value_str = signxml.util.strip_pem_header(pem_value_str)
     mod_pem_value: bytes = mod_pem_value_str.encode('ascii').strip()
     return mod_pem_value
+
+
+def load_pfx_x509_cert(pfx_value: bytes, password: Union[bytes, str, None]) -> Optional[X509Cert]:
+    """
+    Load an X.509 certificate from PKCS12-encoded data.
+
+    :raises TypeError:
+    :raises ValueError:
+    """
+    if isinstance(password, str):
+        password = password.encode()
+
+    try:
+        p12 = cryptography.hazmat.primitives.serialization.pkcs12.load_pkcs12(
+            data=pfx_value, password=password
+        )
+    except TypeError:
+        # Examples:
+        # - "TypeError: argument 'data': a bytes-like object is required, not 'NoneType'"
+        # - "argument 'password': from_buffer() cannot return the address of a unicode object"
+        raise
+    except ValueError:
+        # Examples:
+        # - "Invalid password or PKCS12 data"
+        # - "Could not deserialize PKCS12 data"
+        raise
+
+    pkcs12_cert = p12.cert
+    x509_cert = pkcs12_cert.certificate if pkcs12_cert is not None else None
+    return x509_cert
+
+
+# Aliases for `load_pfx_x509_cert()`:
+load_pkcs12_x509_cert = load_pfx_x509_cert
+load_p12_x509_cert = load_pfx_x509_cert
