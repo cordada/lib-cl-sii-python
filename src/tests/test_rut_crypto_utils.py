@@ -120,14 +120,17 @@ class FunctionsTest(unittest.TestCase):
             value=certificate_extension_value,
         )
 
-        with patch.object(
-            cryptography.hazmat.primitives.serialization.pkcs12,
-            'load_key_and_certificates',
-            Mock(return_value=(None, x509_cert, None)),
-        ), patch.object(
-            x509_cert.extensions,
-            'get_extension_for_class',
-            Mock(return_value=certificate_extension),
+        with (
+            patch.object(
+                cryptography.hazmat.primitives.serialization.pkcs12,
+                'load_key_and_certificates',
+                Mock(return_value=(None, x509_cert, None)),
+            ),
+            patch.object(
+                x509_cert.extensions,
+                'get_extension_for_class',
+                Mock(return_value=certificate_extension),
+            ),
         ):
             pfx_file_bytes = b'hello'
             password = 'fake_password'

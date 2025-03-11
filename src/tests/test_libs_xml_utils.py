@@ -306,11 +306,14 @@ class FunctionVerifyXmlSignatureTest(unittest.TestCase):
             )
 
         # Without cert: fails because the issuer of the cert in the signature is not a known CA.
-        with self.assertRaises(XmlSignatureInvalidCertificate) as cm, mock.patch.object(
-            signxml.verifier.XMLVerifier,
-            'get_cert_chain_verifier',
-            side_effect=_get_cert_chain_verifier,
-        ) as mock_get_cert_chain_verifier:
+        with (
+            self.assertRaises(XmlSignatureInvalidCertificate) as cm,
+            mock.patch.object(
+                signxml.verifier.XMLVerifier,
+                'get_cert_chain_verifier',
+                side_effect=_get_cert_chain_verifier,
+            ) as mock_get_cert_chain_verifier,
+        ):
             verify_xml_signature(xml_doc, trusted_x509_cert=None)
         self.assertEqual(
             cm.exception.args,
