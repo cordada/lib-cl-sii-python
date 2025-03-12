@@ -1,5 +1,21 @@
 # History
 
+## 0.43.0 (2025-03-12)
+
+- (PR #764, 2025-01-28) Python dependency sync check is never executed in CI/CD workflow
+- (PR #765, 2025-02-03) chore: Bump the production-dependencies group with 3 updates
+- (PR #766, 2025-02-03) chore(deps-dev): Bump twine from 6.0.1 to 6.1.0 in the
+  development-dependencies group
+- (PR #767, 2025-02-07) chore(deps): Bump pydantic from 2.10.4 to 2.10.6
+- (PR #769, 2025-02-18) chore(deps): Bump pyopenssl from 24.3.0 to 25.0.0
+- (PR #768, 2025-02-18) chore(deps): Bump pytz from 2024.2 to 2025.1
+- (PR #770, 2025-02-18) chore(deps): Bump cryptography from 44.0.0 to 44.0.1 in the pip group
+- (PR #777, 2025-03-06) chore: Bump the production-dependencies group with 4 updates
+- (PR #779, 2025-03-07) libs: Add utility to get X.509 certificate from PKCS12 (PFX) file
+- (PR #778, 2025-03-07) chore(deps): Bump django from 4.2.18 to 4.2.20
+- (PR #775, 2025-03-07) chore(deps): Bump lxml from 5.3.0 to 5.3.1
+- (PR #771, 2025-03-11) Drop support for Python 3.8
+
 ## 0.42.0 (2025-01-28)
 
 - (PR #758, 2025-01-15) Enable `warn_unused_ignores` in Mypy configuration

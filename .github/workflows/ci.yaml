@@ -28,7 +28,6 @@ jobs:
     strategy:
       matrix:
         python_version:
-          - "3.8"
           - "3.9"
           - "3.10"
 
@@ -38,7 +37,7 @@ jobs:
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v5.3.0
+        uses: actions/setup-python@v5.4.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
@@ -47,7 +46,7 @@ jobs:
         run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v4.2.0
+        uses: actions/cache@v4.2.2
         with:
           path: |
             .tox
@@ -73,7 +72,6 @@ jobs:
     strategy:
       matrix:
         python_version:
-          - "3.8"
           - "3.9"
           - "3.10"
 
@@ -83,13 +81,13 @@ jobs:
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v5.3.0
+        uses: actions/setup-python@v5.4.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v4.2.0
+        uses: actions/cache@v4.2.2
         with:
           path: |
             .tox
@@ -130,7 +128,7 @@ jobs:
           make test-coverage-report
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5.1.2
+        uses: codecov/codecov-action@v5.4.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./test-reports/coverage/
@@ -138,14 +136,14 @@ jobs:
 
       - name: Check that compiled Python dependency manifests are up-to-date with their sources
         # FIXME: There are issues related to testing with multiple Python versions.
-        if: ${{ startsWith(matrix.python_version, '3.8.') }}
+        if: ${{ startsWith(steps.set_up_python.outputs.python-version, '3.9.') }}
         run: |
           source "$PYTHON_VIRTUALENV_ACTIVATE"
           make python-deps-sync-check
 
       - name: Store Artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: test_reports_${{ matrix.python_version }}
           path: test-reports/
