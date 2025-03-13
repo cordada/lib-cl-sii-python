@@ -1,5 +1,9 @@
 # History
 
+## 0.44.0 (2025-03-13)
+
+- (PR #783, 2025-03-13) deps: Update `packaging` from 24.1 to 24.2
+
 ## 0.43.0 (2025-03-12)
 
 - (PR #764, 2025-01-28) Python dependency sync check is never executed in CI/CD workflow
