@@ -86,7 +86,7 @@ mypy-extensions==1.0.0
     # via
     #   black
     #   mypy
-packaging==24.1
+packaging==24.2
     # via
     #   -c requirements.txt
     #   black

@@ -44,7 +44,7 @@ lxml==5.3.1
     #   signxml
 marshmallow==3.22.0
     # via -r requirements.in
-packaging==24.1
+packaging==24.2
     # via marshmallow
 pycparser==2.22
     # via cffi
