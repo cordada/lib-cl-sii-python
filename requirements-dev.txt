@@ -63,11 +63,6 @@ id==1.5.0
     # via twine
 idna==3.7
     # via requests
-importlib-metadata==8.5.0
-    # via
-    #   -c requirements.txt
-    #   build
-    #   twine
 isort==6.0.1
     # via -r requirements-dev.in
 jeepney==0.8.0
@@ -199,10 +194,6 @@ wheel==0.45.1
     # via
     #   -r requirements-dev.in
     #   pip-tools
-zipp==3.20.2
-    # via
-    #   -c requirements.txt
-    #   importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 pip==24.2
