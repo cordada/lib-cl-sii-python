@@ -96,7 +96,9 @@ class CustomMarshmallowDateField(marshmallow.fields.Field):
         # TODO: for 'marshmallow 3', rename 'dateformat' to 'datetimeformat'.
         self.dateformat = format
 
-    def _bind_to_schema(self, field_name: str, schema: marshmallow.Schema) -> None:
+    def _bind_to_schema(
+        self, field_name: str, schema: marshmallow.Schema | marshmallow.Field
+    ) -> None:
         super()._bind_to_schema(field_name, schema)
         self.dateformat = self.dateformat or schema.opts.dateformat
 
