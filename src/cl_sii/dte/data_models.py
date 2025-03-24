@@ -111,7 +111,7 @@ Key for the validation context to indicate that the input data is trusted.
 
 
 def is_input_trusted_according_to_validation_context(
-    validation_context: Optional[Mapping[str, object]]
+    validation_context: Optional[Mapping[str, object]],
 ) -> bool:
     """
     Return whether the input data is trusted according to the validation context.
