@@ -1,5 +1,13 @@
 # History
 
+## 0.45.0 (2025-03-24)
+
+- (PR #784, 2025-03-13) chore(deps): Bump the development-dependencies group with 8 updates
+- (PR #773, 2025-03-13) chore(deps): Bump django-filter from 24.3 to 25.1
+- (PR #774, 2025-03-17) chore(deps): Bump marshmallow from 3.22.0 to 3.26.1
+- (PR #776, 2025-03-17) chore(deps): Bump importlib-metadata from 8.5.0 to 8.6.1
+- (PR #787, 2025-03-24) Require Python ≥3.9
+
 ## 0.44.0 (2025-03-13)
 
 - (PR #783, 2025-03-13) deps: Update `packaging` from 24.1 to 24.2
