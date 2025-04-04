@@ -48,9 +48,9 @@ packaging==24.2
     # via marshmallow
 pycparser==2.22
     # via cffi
-pydantic==2.10.6
+pydantic==2.11.2
     # via -r requirements.in
-pydantic-core==2.27.2
+pydantic-core==2.33.1
     # via pydantic
 pyopenssl==25.0.0
     # via -r requirements.in
@@ -75,5 +75,8 @@ typing-extensions==4.12.2
     #   pydantic
     #   pydantic-core
     #   pyopenssl
+    #   typing-inspection
+typing-inspection==0.4.0
+    # via pydantic
 zipp==3.20.2
     # via importlib-metadata
