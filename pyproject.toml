@@ -51,7 +51,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 django = ["Django>=4.2"]
 django-filter = ["django-filter>=24.2"]
-djangorestframework = ["djangorestframework>=3.10.3,<3.16"]
+djangorestframework = ["djangorestframework>=3.10.3,<3.17"]
 pydantic = ["pydantic>=2.0"]
 
 [project.urls]
