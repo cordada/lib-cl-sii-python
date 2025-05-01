@@ -32,7 +32,7 @@ django-filter==25.1
     # via -r requirements.in
 djangorestframework==3.15.2
     # via -r requirements.in
-importlib-metadata==8.6.1
+importlib-metadata==8.7.0
     # via -r requirements.in
 jsonschema==4.23.0
     # via -r requirements.in
