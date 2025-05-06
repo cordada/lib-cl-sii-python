@@ -37,7 +37,7 @@ jobs:
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v5.5.0
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
@@ -81,7 +81,7 @@ jobs:
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v5.5.0
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
@@ -128,7 +128,7 @@ jobs:
           make test-coverage-report
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5.4.0
+        uses: codecov/codecov-action@v5.4.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./test-reports/coverage/
