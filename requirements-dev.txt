@@ -63,7 +63,7 @@ id==1.5.0
     # via twine
 idna==3.7
     # via requests
-importlib-metadata==8.6.1
+importlib-metadata==8.7.0
     # via
     #   -c requirements.txt
     #   build
