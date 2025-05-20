@@ -11,7 +11,7 @@ defusedxml==0.7.1
 django-filter>=24.2
 Django>=4.2
 djangorestframework>=3.10.3,<3.17
-importlib-metadata==8.6.1
+importlib-metadata==8.7.0
 jsonschema==4.23.0
 lxml==5.3.1
 marshmallow==3.26.1
