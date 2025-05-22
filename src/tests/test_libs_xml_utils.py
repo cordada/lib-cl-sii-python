@@ -60,7 +60,7 @@ class FunctionParseUntrustedXmlTests(unittest.TestCase):
             (
                 "XML syntax error."
                 " Maximum entity amplification factor exceeded, see xmlCtxtSetMaxAmplification.,"
-                " line 1, column 25.",
+                " line 1, column 7.",
             ),
         )
 
