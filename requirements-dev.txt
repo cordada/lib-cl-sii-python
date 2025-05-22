@@ -46,7 +46,6 @@ cryptography==44.0.1
     # via
     #   -c requirements.txt
     #   secretstorage
-    #   types-pyopenssl
 cssselect==1.2.0
     # via types-lxml
 distlib==0.3.7
@@ -165,20 +164,16 @@ tox==4.25.0
     # via -r requirements-dev.in
 twine==6.1.0
     # via -r requirements-dev.in
-types-cffi==1.16.0.20240331
-    # via types-pyopenssl
 types-html5lib==1.1.11.20241018
     # via types-lxml
 types-jsonschema==4.23.0.20241208
     # via -r requirements-dev.in
 types-lxml==2025.3.30
     # via -r requirements-dev.in
-types-pyopenssl==24.1.0.20240722
-    # via -r requirements-dev.in
 types-pytz==2025.2.0.20250326
     # via -r requirements-dev.in
-types-setuptools==75.3.0.20241112
-    # via types-cffi
+types-setuptools==78.1.0.20250329
+    # via -r requirements-dev.in
 typing-extensions==4.12.2
     # via
     #   -c requirements.txt
@@ -208,4 +203,6 @@ zipp==3.20.2
 pip==24.2
     # via pip-tools
 setuptools==78.1.1
-    # via pip-tools
+    # via
+    #   pip-tools
+    #   types-setuptools
