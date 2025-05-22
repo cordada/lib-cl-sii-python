@@ -1,5 +1,23 @@
 # History
 
+## 0.46.0 (2025-05-22)
+
+- (PR #790, 2025-03-26) Add GitHub Actions workflow to release and deploy; Etc.
+- (PR #792, 2025-04-02) deps: Bump the development-dependencies group with 5 updates
+- (PR #794, 2025-04-02) chore(deps): Bump setuptools from 75.3.0 to 78.1.0
+- (PR #797, 2025-04-03) chore: Bump the production-dependencies group with 5 updates
+- (PR #793, 2025-04-04) chore(deps): Bump djangorestframework from 3.15.2 to 3.16.0
+- (PR #795, 2025-04-07) chore(deps): Bump pytz from 2025.1 to 2025.2
+- (PR #796, 2025-04-07) chore(deps): Bump pydantic from 2.10.6 to 2.11.2
+- (PR #798, 2025-05-06) chore: Bump the production-dependencies group with 3 updates
+- (PR #804, 2025-05-14) chore: Bump django from 4.2.20 to 4.2.21
+- (PR #805, 2025-05-19) chore: Bump setuptools from 78.1.0 to 78.1.1
+- (PR #802, 2025-05-19) chore(deps): Bump importlib-metadata from 8.6.1 to 8.7.0
+- (PR #799, 2025-05-22) chore(deps): Bump djangorestframework from 3.15.2 to 3.16.0
+- (PR #803, 2025-05-22) chore(deps): Bump lxml from 5.3.1 to 5.4.0
+- (PR #806, 2025-05-22) deps: Uninstall Python package `types-pyOpenSSL`
+- (PR #801, 2025-05-22) chore(deps): Bump cryptography from 44.0.1 to 44.0.3
+
 ## 0.45.0 (2025-03-24)
 
 - (PR #784, 2025-03-13) chore(deps): Bump the development-dependencies group with 8 updates
