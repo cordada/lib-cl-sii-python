@@ -16,29 +16,29 @@ certifi==2024.7.4
     # via signxml
 cffi==1.16.0
     # via cryptography
-cryptography==44.0.1
+cryptography==44.0.3
     # via
     #   -r requirements.in
     #   pyopenssl
     #   signxml
 defusedxml==0.7.1
     # via -r requirements.in
-django==4.2.20
+django==4.2.21
     # via
     #   -r requirements.in
     #   django-filter
     #   djangorestframework
 django-filter==25.1
     # via -r requirements.in
-djangorestframework==3.15.2
+djangorestframework==3.16.0
     # via -r requirements.in
-importlib-metadata==8.6.1
+importlib-metadata==8.7.0
     # via -r requirements.in
 jsonschema==4.23.0
     # via -r requirements.in
 jsonschema-specifications==2023.12.1
     # via jsonschema
-lxml==5.3.1
+lxml==5.4.0
     # via
     #   -r requirements.in
     #   signxml
@@ -48,13 +48,13 @@ packaging==24.2
     # via marshmallow
 pycparser==2.22
     # via cffi
-pydantic==2.10.6
+pydantic==2.11.2
     # via -r requirements.in
-pydantic-core==2.27.2
+pydantic-core==2.33.1
     # via pydantic
 pyopenssl==25.0.0
     # via -r requirements.in
-pytz==2025.1
+pytz==2025.2
     # via -r requirements.in
 referencing==0.35.1
     # via
@@ -75,5 +75,8 @@ typing-extensions==4.12.2
     #   pydantic
     #   pydantic-core
     #   pyopenssl
+    #   typing-inspection
+typing-inspection==0.4.0
+    # via pydantic
 zipp==3.20.2
     # via importlib-metadata

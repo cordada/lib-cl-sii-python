@@ -10,7 +10,7 @@
 
 [build-system]
 requires = [
-  "setuptools==75.3.0",
+  "setuptools==78.1.1",
   "wheel==0.45.1",
 ]
 build-backend = "setuptools.build_meta"
@@ -51,7 +51,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 django = ["Django>=4.2"]
 django-filter = ["django-filter>=24.2"]
-djangorestframework = ["djangorestframework>=3.10.3,<3.16"]
+djangorestframework = ["djangorestframework>=3.10.3,<3.17"]
 pydantic = ["pydantic>=2.0"]
 
 [project.urls]

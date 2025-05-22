@@ -1,0 +1,75 @@
+# GitHub Actions Workflow for 'Release and Deploy' Task
+
+name: "Task: Release and Deploy"
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches: # Base reference
+      - develop
+
+permissions: {}
+
+jobs:
+  deploy:
+    name: Deploy
+    if: ${{ github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') }}
+    runs-on: ubuntu-22.04
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    env:
+      CREATE_RELEASE_VCS_REVISION_ID: ${{ github.sha }} # Merge commit in base branch.
+      PREPARE_RELEASE_GITHUB_PULL_REQUEST_HTML_URL: ${{ github.event.pull_request.html_url }}
+      PREPARE_RELEASE_GITHUB_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+      PREPARE_RELEASE_GITHUB_VCS_REF: ${{ github.event.pull_request.head.ref }}
+      RELEASE_ASSIGNEE: ${{ github.event.pull_request.assignee.login }}
+      RELEASE_VCS_REF: refs/heads/master
+
+    steps:
+      - name: Check Out VCS Repository
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ env.CREATE_RELEASE_VCS_REVISION_ID }}
+
+      - name: Prepare Git
+        run: |
+          echo 'Adding Git aliases…'
+          git config alias.publish \
+            'push --set-upstream origin HEAD'
+
+      - name: Prepare Pull Request for Deployment
+        run: |
+          create_release_vcs_branch_name="${PREPARE_RELEASE_GITHUB_VCS_REF:?}"
+          create_release_vcs_branch_name="${create_release_vcs_branch_name/release/deploy}"
+          echo "Creating release creation VCS branch '$create_release_vcs_branch_name'…"
+          git checkout -b "${create_release_vcs_branch_name:?}" --
+          git publish --verbose
+
+          create_release_vcs_ref="refs/heads/${create_release_vcs_branch_name:?}"
+          echo "CREATE_RELEASE_VCS_REF=${create_release_vcs_ref:?}" >> "$GITHUB_ENV"
+
+          create_release_github_pull_request_title="${PREPARE_RELEASE_GITHUB_PULL_REQUEST_TITLE:?}"
+          create_release_github_pull_request_title="deploy ${create_release_github_pull_request_title,,}"
+          create_release_github_pull_request_title="${create_release_github_pull_request_title@u}"
+          echo "CREATE_RELEASE_GITHUB_PULL_REQUEST_TITLE=${create_release_github_pull_request_title:?}" >> "$GITHUB_ENV"
+
+          create_release_github_pull_request_description="Ref: ${PREPARE_RELEASE_GITHUB_PULL_REQUEST_HTML_URL:?}"
+          echo "CREATE_RELEASE_GITHUB_PULL_REQUEST_DESCRIPTION=${create_release_github_pull_request_description:?}" >> "$GITHUB_ENV"
+
+      - name: Create GitHub Pull Request for Deployment
+        run: |
+          gh pr create \
+            --base "$RELEASE_VCS_REF" \
+            --head "$CREATE_RELEASE_VCS_REF" \
+            --draft \
+            --title "$CREATE_RELEASE_GITHUB_PULL_REQUEST_TITLE" \
+            --body "$CREATE_RELEASE_GITHUB_PULL_REQUEST_DESCRIPTION" \
+            --assignee "$RELEASE_ASSIGNEE" \
+            --label 'task' \
+            --label 'kind: deploy'
+        env:
+          GH_TOKEN: ${{ github.token }}
