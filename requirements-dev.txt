@@ -40,7 +40,7 @@ click==8.0.3
     #   pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.8.0
+coverage==7.8.2
     # via -r requirements-dev.in
 cryptography==44.0.3
     # via
@@ -81,7 +81,7 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-mypy==1.15.0
+mypy==1.16.0
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
@@ -96,7 +96,9 @@ packaging==24.2
     #   tox
     #   twine
 pathspec==0.9.0
-    # via black
+    # via
+    #   black
+    #   mypy
 pip-tools==7.4.1
     # via -r requirements-dev.in
 platformdirs==4.3.6
@@ -160,19 +162,19 @@ tomli==2.2.1
     #   pyproject-api
     #   pyproject-hooks
     #   tox
-tox==4.25.0
+tox==4.26.0
     # via -r requirements-dev.in
 twine==6.1.0
     # via -r requirements-dev.in
 types-html5lib==1.1.11.20241018
     # via types-lxml
-types-jsonschema==4.23.0.20241208
+types-jsonschema==4.24.0.20250528
     # via -r requirements-dev.in
 types-lxml==2025.3.30
     # via -r requirements-dev.in
-types-pytz==2025.2.0.20250326
+types-pytz==2025.2.0.20250516
     # via -r requirements-dev.in
-types-setuptools==78.1.0.20250329
+types-setuptools==80.9.0.20250529
     # via -r requirements-dev.in
 typing-extensions==4.12.2
     # via
@@ -186,7 +188,7 @@ urllib3==1.26.19
     # via
     #   requests
     #   twine
-virtualenv==20.29.3
+virtualenv==20.31.2
     # via tox
 webencodings==0.5.1
     # via bleach
@@ -203,6 +205,4 @@ zipp==3.20.2
 pip==24.2
     # via pip-tools
 setuptools==78.1.1
-    # via
-    #   pip-tools
-    #   types-setuptools
+    # via pip-tools
