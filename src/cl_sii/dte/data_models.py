@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import dataclasses
 import logging
+import random
 from datetime import date, datetime
 from typing import Mapping, Optional, Sequence
 
@@ -205,6 +206,34 @@ class DteNaturalKey:
         if isinstance(v, int):
             validate_dte_folio(v)
         return v
+
+    ############################################################################
+    # class methods
+    ############################################################################
+
+    @classmethod
+    def random(
+        cls,
+        emisor_rut: Optional[Rut] = None,
+        tipo_dte: TipoDte | Sequence[TipoDte] = tuple(TipoDte),
+        folio: Optional[int] = None,
+    ) -> Self:
+        """
+        Generate random DTE natural key within valid ranges.
+
+        :param emisor_rut: RUT of the "emisor" of the DTE. If `None`, a random RUT is generated.
+        :param tipo_dte: The kind of DTE. If a sequence is provided, a random one is chosen.
+        :param folio: The sequential number of the DTE. If `None`, a random folio is generated.
+        """
+        if emisor_rut is None:
+            emisor_rut = Rut.random()
+        if isinstance(tipo_dte, Sequence):
+            tipo_dte = random.choice(tipo_dte)
+        if folio is None:
+            folio = random.randint(
+                constants.DTE_FOLIO_FIELD_MIN_VALUE, constants.DTE_FOLIO_FIELD_MAX_VALUE
+            )
+        return cls(emisor_rut, tipo_dte, folio)
 
 
 @pydantic.dataclasses.dataclass(
