@@ -93,6 +93,68 @@ class DteNaturalKeyTest(unittest.TestCase):
     def test_slug(self) -> None:
         self.assertEqual(self.dte_nk_1.slug, '76354771-K--33--170')
 
+    def test_random(self) -> None:
+        # Test that random() returns a DteNaturalKey instance
+        random_dte_nk = DteNaturalKey.random()
+        self.assertIsInstance(random_dte_nk, DteNaturalKey)
+
+        # Test with default parameters -
+        #   tipo_dte should be randomly selected from all TipoDte values
+        random_dte_nk_default = DteNaturalKey.random()
+        self.assertIsInstance(random_dte_nk_default.tipo_dte, TipoDte)
+        self.assertIn(random_dte_nk_default.tipo_dte, TipoDte)
+
+        # Test that each call to random() returns different values
+        random_dte_nk_1 = DteNaturalKey.random()
+        random_dte_nk_2 = DteNaturalKey.random()
+        self.assertNotEqual(random_dte_nk_1, random_dte_nk_2)
+
+        # Test that the generated folio values are within valid ranges
+        self.assertGreaterEqual(random_dte_nk.folio, DTE_FOLIO_FIELD_MIN_VALUE)
+        self.assertLessEqual(random_dte_nk.folio, DTE_FOLIO_FIELD_MAX_VALUE)
+
+        # Test that emisor_rut is a valid Rut instance
+        self.assertIsInstance(random_dte_nk.emisor_rut, Rut)
+
+        # Test that tipo_dte is a valid TipoDte enum value
+        self.assertIsInstance(random_dte_nk.tipo_dte, TipoDte)
+        self.assertIn(random_dte_nk.tipo_dte, TipoDte)
+
+        # Test with custom parameters
+        custom_rut = Rut('12345678-9')
+        custom_tipo = TipoDte.NOTA_CREDITO_ELECTRONICA
+        custom_folio = 12345
+
+        custom_dte_nk = DteNaturalKey.random(
+            emisor_rut=custom_rut, tipo_dte=custom_tipo, folio=custom_folio
+        )
+
+        self.assertEqual(custom_dte_nk.emisor_rut, custom_rut)
+        self.assertEqual(custom_dte_nk.tipo_dte, custom_tipo)
+        self.assertEqual(custom_dte_nk.folio, custom_folio)
+
+        # Test with specific tipo_dte (single value, not sequence)
+        specific_tipo = TipoDte.FACTURA_ELECTRONICA
+        specific_dte_nk = DteNaturalKey.random(tipo_dte=specific_tipo)
+        self.assertEqual(specific_dte_nk.tipo_dte, specific_tipo)
+
+        # Test with partial custom parameters
+        partial_custom = DteNaturalKey.random(emisor_rut=custom_rut)
+        self.assertEqual(partial_custom.emisor_rut, custom_rut)
+        self.assertIsInstance(partial_custom.tipo_dte, TipoDte)
+        self.assertGreaterEqual(partial_custom.folio, DTE_FOLIO_FIELD_MIN_VALUE)
+        self.assertLessEqual(partial_custom.folio, DTE_FOLIO_FIELD_MAX_VALUE)
+
+        # Test that multiple calls generate different combinations
+        generated_combinations = set()
+        for _ in range(10):
+            dte_nk = DteNaturalKey.random()
+            combination = (dte_nk.emisor_rut, dte_nk.tipo_dte, dte_nk.folio)
+            generated_combinations.add(combination)
+
+        # Should generate mostly unique combinations (allow some duplicates due to randomness)
+        self.assertGreater(len(generated_combinations), 1)
+
 
 class DteDataL0Test(unittest.TestCase):
     def setUp(self) -> None:
