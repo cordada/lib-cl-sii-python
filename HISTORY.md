@@ -1,5 +1,21 @@
 # History
 
+## 0.47.0 (2025-06-30)
+
+- (PR #809, 2025-05-22) Trigger GitHub Dependency Review when draft pull request is ready for review
+- (PR #817, 2025-06-11) chore(deps): Bump django from 4.2.21 to 4.2.22
+- (PR #818, 2025-06-11) chore(deps): Bump requests from 2.32.2 to 2.32.4
+- (PR #820, 2025-06-30) dte: Generate random `DteNaturalKeys`
+- (PR #819, 2025-06-30) chore(deps): Bump urllib3 from 1.26.19 to 2.5.0
+- (PR #821, 2025-06-30) Update Dependabot configuration
+- (PR #822, 2025-06-30) deps: Update `signxml` from 4.0.3 to 4.0.5
+- (PR #812, 2025-06-30) chore(deps): Bump jsonschema from 4.23.0 to 4.24.0
+- (PR #814, 2025-06-30) chore(deps): Bump pyopenssl from 25.0.0 to 25.1.0
+- (PR #813, 2025-06-30) chore(deps): Bump pydantic from 2.11.2 to 2.11.5
+- (PR #826, 2025-06-30) chore(deps): Bump the github-actions-production group with 2 updates
+- (PR #824, 2025-06-30) deps: Bump the development-dependencies group across 1 directory with 7 updates
+- (PR #825, 2025-06-30) chore(deps): Bump pydantic from 2.11.2 to 2.11.7
+
 ## 0.46.0 (2025-05-22)
 
 - (PR #790, 2025-03-26) Add GitHub Actions workflow to release and deploy; Etc.
