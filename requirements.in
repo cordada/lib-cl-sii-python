@@ -19,4 +19,4 @@ pydantic==2.11.7
 pyOpenSSL==25.1.0
 pytz==2025.2
 signxml==4.0.5
-typing-extensions==4.12.2
+typing-extensions==4.14.0
