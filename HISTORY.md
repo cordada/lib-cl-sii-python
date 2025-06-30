@@ -1,5 +1,12 @@
 # History
 
+## 0.48.0 (2025-06-30)
+
+- (PR #823, 2025-06-30) chore(deps): Bump typing-extensions from 4.12.2 to 4.14.0
+- (PR #829, 2025-06-30) deps: Update `requests-toolbelt` from 0.9.1 to 1.0.0
+- (PR #830, 2025-06-30) chore(deps): Bump setuptools from 78.1.1 to 80.9.0
+- (PR #831, 2025-06-30) chore(deps): Bump django from 4.2.22 to 4.2.23
+
 ## 0.47.0 (2025-06-30)
 
 - (PR #809, 2025-05-22) Trigger GitHub Dependency Review when draft pull request is ready for review
