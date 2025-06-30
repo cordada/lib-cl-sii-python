@@ -15,7 +15,7 @@ importlib-metadata==8.7.0
 jsonschema==4.24.0
 lxml==5.4.0
 marshmallow==3.26.1
-pydantic==2.11.5
+pydantic==2.11.7
 pyOpenSSL==25.1.0
 pytz==2025.2
 signxml==4.0.5
