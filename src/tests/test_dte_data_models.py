@@ -138,6 +138,12 @@ class DteNaturalKeyTest(unittest.TestCase):
         specific_dte_nk = DteNaturalKey.random(tipo_dte=specific_tipo)
         self.assertEqual(specific_dte_nk.tipo_dte, specific_tipo)
 
+        # Test with custom folio range
+        custom_folio_range = (1000, 2000)
+        range_dte_nk = DteNaturalKey.random(folio=custom_folio_range)
+        self.assertGreaterEqual(range_dte_nk.folio, custom_folio_range[0])
+        self.assertLessEqual(range_dte_nk.folio, custom_folio_range[1])
+
         # Test with partial custom parameters
         partial_custom = DteNaturalKey.random(emisor_rut=custom_rut)
         self.assertEqual(partial_custom.emisor_rut, custom_rut)

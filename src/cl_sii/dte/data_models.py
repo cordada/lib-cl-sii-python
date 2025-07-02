@@ -216,23 +216,25 @@ class DteNaturalKey:
         cls,
         emisor_rut: Optional[Rut] = None,
         tipo_dte: TipoDte | Sequence[TipoDte] = tuple(TipoDte),
-        folio: Optional[int] = None,
+        folio: int | tuple[int, int] = (
+            constants.DTE_FOLIO_FIELD_MIN_VALUE,
+            constants.DTE_FOLIO_FIELD_MAX_VALUE,
+        ),
     ) -> Self:
         """
         Generate random DTE natural key within valid ranges.
 
         :param emisor_rut: RUT of the "emisor" of the DTE. If `None`, a random RUT is generated.
         :param tipo_dte: The kind of DTE. If a sequence is provided, a random one is chosen.
-        :param folio: The sequential number of the DTE. If `None`, a random folio is generated.
+        :param folio: The sequential number of the DTE. If a 2-tuple of integers is provided,
+            a random one is chosen within the range defined by the tuple.
         """
         if emisor_rut is None:
             emisor_rut = Rut.random()
         if isinstance(tipo_dte, Sequence):
             tipo_dte = random.choice(tipo_dte)
-        if folio is None:
-            folio = random.randint(
-                constants.DTE_FOLIO_FIELD_MIN_VALUE, constants.DTE_FOLIO_FIELD_MAX_VALUE
-            )
+        if isinstance(folio, tuple):
+            folio = random.randint(*folio)
         return cls(emisor_rut, tipo_dte, folio)
 
 
