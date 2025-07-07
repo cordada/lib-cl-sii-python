@@ -518,6 +518,22 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
     def to_detalle_entry(self, data: dict) -> RcvDetalleEntry:
         raise NotImplementedError
 
+    @marshmallow.pre_load
+    def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
+        # Get required field names from the schema
+        required_fields = {
+            field.data_key
+            for name, field in self.fields.items()
+            if field.required and field.allow_none is False
+        }
+        # Remove only required fields that are None or empty string
+        for field in required_fields:
+            if field in in_data.keys() and (
+                in_data[field] is None or str(in_data[field]).strip() == ''
+            ):
+                del in_data[field]
+        return in_data
+
 
 class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
@@ -586,6 +602,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
 
     @marshmallow.pre_load
     def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
+        in_data = super().preprocess(in_data, **kwargs)
         # note: required fields checks are run later on automatically thus we may not assume that
         #   values of required fields (`required=True`) exist.
 
@@ -725,6 +742,7 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
 
     @marshmallow.pre_load
     def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
+        in_data = super().preprocess(in_data, **kwargs)
         # note: required fields checks are run later on automatically thus we may not assume that
         #   values of required fields (`required=True`) exist.
 
@@ -891,6 +909,7 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
 
     @marshmallow.pre_load
     def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
+        in_data = super().preprocess(in_data, **kwargs)
         # note: required fields checks are run later on automatically thus we may not assume that
         #   values of required fields (`required=True`) exist.
 
@@ -1018,6 +1037,7 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
 
     @marshmallow.pre_load
     def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
+        in_data = super().preprocess(in_data, **kwargs)
         # note: required fields checks are run later on automatically thus we may not assume that
         #   values of required fields (`required=True`) exist.
 
@@ -1168,14 +1188,16 @@ def _parse_rcv_csv_file(
                 except Exception as exc:
                     conversion_error = str(exc)
                     logger.exception(
-                        "Deserialized data to data model instance conversion failed "
-                        "(probably a programming error)."
+                        "Deserialized row data conversion failed for row %d: %s",
+                        row_ix,
+                        conversion_error,
+                        extra={'deserialized_row_data': deserialized_row_data},
                     )
 
             # Instead of empty dicts, lists, str, etc, we want to have None.
             if validation_errors:
                 row_errors['validation'] = validation_errors
             if conversion_error:
-                row_errors['other'] = conversion_error
+                row_errors['conversion_errors'] = conversion_error
 
             yield entry, row_ix, row_data, row_errors
