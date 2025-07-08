@@ -1,5 +1,14 @@
 # History
 
+## 0.49.0 (2025-07-08)
+
+- (PR #837, 2025-07-02) dte: Customize range of random folio in `DteNaturalKey.random()`
+- (PR #838, 2025-07-07) rcv: Improve CSV parsing preprocessing and logging
+- (PR #836, 2025-07-07) chore(deps): Bump cryptography from 44.0.3 to 45.0.4
+- (PR #839, 2025-07-07) deps: Install Python package `setuptools`
+- (PR #840, 2025-07-07) deps: Uninstall Python package `wheel`
+- (PR #834, 2025-07-07) chore(deps): Bump signxml from 4.0.3 to 4.1.0
+
 ## 0.48.0 (2025-06-30)
 
 - (PR #823, 2025-06-30) chore(deps): Bump typing-extensions from 4.12.2 to 4.14.0
