@@ -98,6 +98,19 @@ class RcEstadoContable(enum.Enum):
 
 
 @enum.unique
+class RcTipoCompra(enum.Enum):
+    """
+    Enum of "Tipo de Compra" for the RCV domain.
+    """
+
+    DEL_GIRO = "DEL_GIRO"
+    """Del Giro"""
+
+    NO_CORRESPONDE_INCLUIR = "NO_CORRESPONDE_INCLUIR"
+    """No corresponde incluir"""
+
+
+@enum.unique
 class RcvTipoDocto(enum.IntEnum):
     """
     Enum of "Tipo de Documento" for the RCV domain.

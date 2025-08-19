@@ -2,7 +2,7 @@ import unittest
 
 from cl_sii.dte.constants import TipoDte  # noqa: F401
 from cl_sii.rcv import constants  # noqa: F401
-from cl_sii.rcv.constants import RcEstadoContable, RcvKind, RcvTipoDocto  # noqa: F401
+from cl_sii.rcv.constants import RcEstadoContable, RcTipoCompra, RcvKind, RcvTipoDocto  # noqa: F401
 
 
 class RcvKindTest(unittest.TestCase):
@@ -46,6 +46,20 @@ class RcEstadoContableTest(unittest.TestCase):
 
     def test_values_type(self) -> None:
         self.assertSetEqual({type(x.value) for x in RcEstadoContable}, {str})
+
+
+class RcTipoCompraTest(unittest.TestCase):
+    def test_members(self) -> None:
+        self.assertSetEqual(
+            {x for x in RcTipoCompra},
+            {
+                RcTipoCompra.DEL_GIRO,
+                RcTipoCompra.NO_CORRESPONDE_INCLUIR,
+            },
+        )
+
+    def test_values_type(self) -> None:
+        self.assertSetEqual({type(x.value) for x in RcTipoCompra}, {str})
 
 
 class RcvTipoDoctoTest(unittest.TestCase):
