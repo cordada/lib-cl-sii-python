@@ -1,5 +1,11 @@
 # History
 
+## 0.50.0 (2025-08-20)
+
+- (PR #843, 2025-07-30) chore(task): Update editorconfig checker
+- (PR #844, 2025-08-01) Pin GitHub Action `codecov/codecov-action` to commit hash
+- (PR #848, 2025-08-20) rcv: Add RcTipoCompra enum to represent "Tipo de Compra" in RCV
+
 ## 0.49.0 (2025-07-08)
 
 - (PR #837, 2025-07-02) dte: Customize range of random folio in `DteNaturalKey.random()`
