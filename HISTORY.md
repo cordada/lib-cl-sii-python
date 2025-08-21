@@ -1,5 +1,10 @@
 # History
 
+## 0.51.0 (2025-08-21)
+
+- (PR #852, 2025-08-21) rcv: Add RvTipoVenta enum to represent "Tipo de Venta" in RCV
+- (PR #853, 2025-08-21) rcv: Extend RcTipoCompra enum with new purchase types
+
 ## 0.50.0 (2025-08-20)
 
 - (PR #843, 2025-07-30) chore(task): Update editorconfig checker

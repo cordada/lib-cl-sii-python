@@ -2,7 +2,7 @@ import unittest
 
 from cl_sii.dte.constants import TipoDte  # noqa: F401
 from cl_sii.rcv import constants  # noqa: F401
-from cl_sii.rcv.constants import RcEstadoContable, RcTipoCompra, RcvKind, RcvTipoDocto  # noqa: F401
+from cl_sii.rcv.constants import RcEstadoContable, RcTipoCompra, RcvKind, RcvTipoDocto, RvTipoVenta
 
 
 class RcvKindTest(unittest.TestCase):
@@ -54,6 +54,11 @@ class RcTipoCompraTest(unittest.TestCase):
             {x for x in RcTipoCompra},
             {
                 RcTipoCompra.DEL_GIRO,
+                RcTipoCompra.SUPERMERCADOS,
+                RcTipoCompra.BIENES_RAICES,
+                RcTipoCompra.ACTIVO_FIJO,
+                RcTipoCompra.IVA_USO_COMUN,
+                RcTipoCompra.IVA_NO_RECUPERABLE,
                 RcTipoCompra.NO_CORRESPONDE_INCLUIR,
             },
         )
@@ -139,3 +144,18 @@ class RcvTipoDoctoTest(unittest.TestCase):
         self.assertEqual(
             cm.exception.args, ("There is no equivalent 'TipoDte' for 'RcvTipoDocto.FACTURA'.",)
         )
+
+
+class RvTipoVentaTest(unittest.TestCase):
+    def test_members(self) -> None:
+        self.assertSetEqual(
+            {x for x in RvTipoVenta},
+            {
+                RvTipoVenta.DEL_GIRO,
+                RvTipoVenta.BIENES_RAICES,
+                RvTipoVenta.ACTIVO_FIJO,
+            },
+        )
+
+    def test_values_type(self) -> None:
+        self.assertSetEqual({type(x.value) for x in RvTipoVenta}, {str})
