@@ -318,3 +318,19 @@ class RcvTipoDocto(enum.IntEnum):
             ) from exc
 
         return value
+
+
+@enum.unique
+class RvTipoVenta(enum.Enum):
+    """
+    Enum of "Tipo de Venta" for the RCV domain.
+    """
+
+    DEL_GIRO = "DEL_GIRO"
+    """Del Giro"""
+
+    BIENES_RAICES = "BIENES_RAICES"
+    """Bienes Raíces"""
+
+    ACTIVO_FIJO = "ACTIVO_FIJO"
+    """Activo Fijo"""
