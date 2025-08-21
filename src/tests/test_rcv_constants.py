@@ -54,6 +54,11 @@ class RcTipoCompraTest(unittest.TestCase):
             {x for x in RcTipoCompra},
             {
                 RcTipoCompra.DEL_GIRO,
+                RcTipoCompra.SUPERMERCADOS,
+                RcTipoCompra.BIENES_RAICES,
+                RcTipoCompra.ACTIVO_FIJO,
+                RcTipoCompra.IVA_USO_COMUN,
+                RcTipoCompra.IVA_NO_RECUPERABLE,
                 RcTipoCompra.NO_CORRESPONDE_INCLUIR,
             },
         )
