@@ -106,8 +106,23 @@ class RcTipoCompra(enum.Enum):
     DEL_GIRO = "DEL_GIRO"
     """Del Giro"""
 
+    SUPERMERCADOS = "SUPERMERCADOS"
+    """Supermercados"""
+
+    BIENES_RAICES = "BIENES_RAICES"
+    """Bienes Raíces"""
+
+    ACTIVO_FIJO = "ACTIVO_FIJO"
+    """Activo Fijo"""
+
+    IVA_USO_COMUN = "IVA_USO_COMUN"
+    """IVA Uso Común"""
+
+    IVA_NO_RECUPERABLE = "IVA_NO_RECUPERABLE"
+    """IVA no Recuperable"""
+
     NO_CORRESPONDE_INCLUIR = "NO_CORRESPONDE_INCLUIR"
-    """No corresponde incluir"""
+    """No Corresp. Incluir"""
 
 
 @enum.unique
