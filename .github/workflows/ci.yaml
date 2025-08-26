@@ -66,6 +66,17 @@ jobs:
   test:
     name: Test
     needs:
+      - test-
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Do Nothing
+        run: |
+          echo "This job is only to have a common 'needs' for future jobs after 'test'."
+
+  test-:
+    name: Test
+    needs:
       - build
     runs-on: ubuntu-22.04
 
@@ -148,12 +159,3 @@ jobs:
           name: test_reports_${{ matrix.python_version }}
           path: test-reports/
           if-no-files-found: warn
-
-  post-test:
-    name: Post-Test
-    needs:
-      - test
-    runs-on: ubuntu-22.04
-
-    steps:
-      - run: "true"
