@@ -19,7 +19,7 @@ RUT_CANONICAL_MIN_LENGTH = 3
 """RUT min length for canonical format."""
 RUT_DIGITS_MAX_VALUE = 99999999
 """RUT digits max value."""
-RUT_DIGITS_MIN_VALUE = 50000000
+RUT_DIGITS_MIN_VALUE = 1
 """RUT digits min value."""
 
 SII_CERT_TITULAR_RUT_OID = cryptography.x509.oid.ObjectIdentifier("1.3.6.1.4.1.8321.1")
