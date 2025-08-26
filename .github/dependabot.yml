@@ -23,6 +23,7 @@ updates:
           - "pip"
           - "pip-tools"
           - "setuptools"
+          - "types-*"
     schedule:
       interval: monthly
     commit-message:
