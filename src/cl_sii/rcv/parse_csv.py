@@ -432,17 +432,20 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
         for name, field_item in self.fields.items():
             data_key = field_item.data_key
             if data_key is not None and data_key in in_data.keys():
-                if isinstance(
-                    field_item,
-                    (
-                        marshmallow.fields.Integer,
-                        marshmallow.fields.Decimal,
-                        marshmallow.fields.Float,
-                        marshmallow.fields.Date,
-                        marshmallow.fields.DateTime,
-                        mm_fields.RutField,
-                    ),
-                ) and in_data[data_key] in ('', '-'):
+                if in_data[data_key] == '' or (
+                    isinstance(
+                        field_item,
+                        (
+                            marshmallow.fields.Integer,
+                            marshmallow.fields.Decimal,
+                            marshmallow.fields.Float,
+                            marshmallow.fields.Date,
+                            marshmallow.fields.DateTime,
+                            mm_fields.RutField,
+                        ),
+                    )
+                    and in_data[data_key] == '-'
+                ):
                     in_data[data_key] = None
         return in_data
 

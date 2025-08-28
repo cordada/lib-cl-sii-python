@@ -5,6 +5,7 @@ from unittest import mock
 
 import cl_sii.rcv.constants
 from cl_sii.base.constants import SII_OFFICIAL_TZ
+from cl_sii.libs.tz_utils import convert_naive_dt_to_tz_aware
 from cl_sii.rcv.data_models import (
     RcNoIncluirDetalleEntry,
     RcPendienteDetalleEntry,
@@ -399,8 +400,70 @@ class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
 
 class FunctionsTest(unittest.TestCase):
     def test_parse_rcv_venta_csv_file(self) -> None:
-        # TODO: implement for 'parse_rcv_venta_csv_file'.
-        pass
+        rcv_file_path = get_test_file_path(
+            'test_data/sii-rcv/RCV-venta-rz_leading_trailing_whitespace.csv',
+        )
+
+        items = parse_rcv_venta_csv_file(
+            rut=Rut('1-9'),
+            input_file_path=rcv_file_path,
+            n_rows_offset=0,
+            max_n_rows=None,
+        )
+
+        expected_entry_struct = RvDetalleEntry(
+            emisor_rut=Rut('1-9'),
+            tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            folio=506,
+            fecha_emision_date=datetime.date(2019, 6, 4),
+            receptor_rut=Rut('12345678-5'),
+            monto_total=2082715,
+            fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                dt=datetime.datetime(2019, 6, 18, 17, 1, 6),
+                tz=SII_OFFICIAL_TZ,
+            ),
+            tipo_venta='DEL_GIRO',
+            receptor_razon_social='Fake Company S.A.',
+            fecha_acuse_dt=None,
+            fecha_reclamo_dt=None,
+            monto_exento=0,
+            monto_neto=1750181,
+            monto_iva=332534,
+            iva_retenido_total=0,
+            iva_retenido_parcial=0,
+            iva_no_retenido=0,
+            iva_propio=0,
+            iva_terceros=0,
+            liquidacion_factura_emisor_rut=None,
+            neto_comision_liquidacion_factura=0,
+            exento_comision_liquidacion_factura=0,
+            iva_comision_liquidacion_factura=0,
+            iva_fuera_de_plazo=0,
+            tipo_documento_referencia=None,
+            folio_documento_referencia=None,
+            num_ident_receptor_extranjero=None,
+            nacionalidad_receptor_extranjero=None,
+            credito_empresa_constructora=0,
+            impuesto_zona_franca_ley_18211=None,
+            garantia_dep_envases=0,
+            indicador_venta_sin_costo=2,
+            indicador_servicio_periodico=0,
+            monto_no_facturable=0,
+            total_monto_periodo=0,
+            venta_pasajes_transporte_nacional=None,
+            venta_pasajes_transporte_internacional=None,
+            numero_interno=None,
+            codigo_sucursal='0',
+            nce_o_nde_sobre_factura_de_compra=None,
+            codigo_otro_imp=None,
+            valor_otro_imp=None,
+            tasa_otro_imp=None,
+        )
+        # First row:
+        entry_struct, row_ix, row_data, row_parsing_errors = next(items)
+        self.assertEqual(row_ix, 1)
+        self.assertEqual(row_data['Razon Social'], 'Fake Company S.A. ')
+        self.assertEqual(entry_struct, expected_entry_struct)
 
     def test_parse_rcv_venta_csv_file_receptor_rz_leading_trailing_whitespace(self) -> None:
         rcv_file_path = get_test_file_path(
