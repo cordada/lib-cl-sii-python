@@ -1,7 +1,11 @@
+import datetime
 import unittest
 from typing import Callable
 from unittest import mock
 
+import cl_sii.rcv.constants
+from cl_sii.base.constants import SII_OFFICIAL_TZ
+from cl_sii.rcv.data_models import RvDetalleEntry
 from cl_sii.rcv.parse_csv import (  # noqa: F401
     RcvCompraNoIncluirCsvRowSchema,
     RcvCompraPendienteCsvRowSchema,
@@ -20,8 +24,106 @@ from .utils import get_test_file_path
 
 
 class RcvVentaCsvRowSchemaTest(unittest.TestCase):
-    # TODO: implement for 'RcvVentaCsvRowSchema'.
-    pass
+    def test_parse_rcv_ventas_row(self) -> None:
+        schema_context = dict(
+            emisor_rut=Rut('1-9'),
+        )
+        input_csv_row_schema = RcvVentaCsvRowSchema(context=schema_context)
+
+        data = {
+            'tipo_docto': cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            'tipo_venta': cl_sii.rcv.constants.RvTipoVenta.DEL_GIRO,
+            'receptor_rut': Rut('12345678-5'),
+            'receptor_razon_social': 'Fake Company S.A.',
+            'folio': 506,
+            'fecha_emision_date': datetime.date(2019, 6, 4),
+            'fecha_acuse_dt': None,
+            'fecha_recepcion_dt': datetime.datetime(2019, 6, 18, 17, 1, 6, tzinfo=SII_OFFICIAL_TZ),
+            'fecha_reclamo_dt': None,
+            'monto_exento': 0,
+            'monto_neto': 1750181,
+            'monto_iva': 332534,
+            'monto_total': 2082715,
+            'iva_retenido_total': 0,
+            'iva_retenido_parcial': 0,
+            'iva_no_retenido': 0,
+            'iva_propio': 0,
+            'iva_terceros': 0,
+            'liquidacion_factura_emisor_rut': None,
+            'neto_comision_liquidacion_factura': 0,
+            'exento_comision_liquidacion_factura': 0,
+            'iva_comision_liquidacion_factura': 0,
+            'iva_fuera_de_plazo': 0,
+            'tipo_documento_referencia': None,
+            'folio_documento_referencia': None,
+            'num_ident_receptor_extranjero': '',
+            'nacionalidad_receptor_extranjero': '',
+            'credito_empresa_constructora': 0,
+            'impuesto_zona_franca_ley_18211': None,
+            'garantia_dep_envases': 0,
+            'indicador_venta_sin_costo': 2,
+            'indicador_servicio_periodico': 0,
+            'monto_no_facturable': 0,
+            'total_monto_periodo': 0,
+            'venta_pasajes_transporte_nacional': None,
+            'venta_pasajes_transporte_internacional': None,
+            'numero_interno': '',
+            'codigo_sucursal': '0',
+            'nce_o_nde_sobre_factura_de_compra': '',
+            'codigo_otro_imp': '',
+            'valor_otro_imp': None,
+            'tasa_otro_imp': None,
+            'emisor_rut': Rut('1-9'),
+        }
+
+        result = input_csv_row_schema.to_detalle_entry(data)
+        expected_result = RvDetalleEntry(
+            emisor_rut=Rut('1-9'),
+            tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            folio=506,
+            fecha_emision_date=datetime.date(2019, 6, 4),
+            receptor_rut=Rut('12345678-5'),
+            monto_total=2082715,
+            fecha_recepcion_dt=datetime.datetime(2019, 6, 18, 17, 1, 6, tzinfo=SII_OFFICIAL_TZ),
+            tipo_venta='DEL_GIRO',
+            receptor_razon_social='Fake Company S.A.',
+            fecha_acuse_dt=None,
+            fecha_reclamo_dt=None,
+            monto_exento=0,
+            monto_neto=1750181,
+            monto_iva=332534,
+            iva_retenido_total=0,
+            iva_retenido_parcial=0,
+            iva_no_retenido=0,
+            iva_propio=0,
+            iva_terceros=0,
+            liquidacion_factura_emisor_rut=None,
+            neto_comision_liquidacion_factura=0,
+            exento_comision_liquidacion_factura=0,
+            iva_comision_liquidacion_factura=0,
+            iva_fuera_de_plazo=0,
+            tipo_documento_referencia=None,
+            folio_documento_referencia=None,
+            num_ident_receptor_extranjero='',
+            nacionalidad_receptor_extranjero='',
+            credito_empresa_constructora=0,
+            impuesto_zona_franca_ley_18211=None,
+            garantia_dep_envases=0,
+            indicador_venta_sin_costo=2,
+            indicador_servicio_periodico=0,
+            monto_no_facturable=0,
+            total_monto_periodo=0,
+            venta_pasajes_transporte_nacional=None,
+            venta_pasajes_transporte_internacional=None,
+            numero_interno='',
+            codigo_sucursal='0',
+            nce_o_nde_sobre_factura_de_compra='',
+            codigo_otro_imp='',
+            valor_otro_imp=None,
+            tasa_otro_imp=None,
+        )
+
+        self.assertEqual(result, expected_result)
 
 
 class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
@@ -211,3 +313,54 @@ class FunctionsTest(unittest.TestCase):
     def test__parse_rcv_csv_file(self) -> None:
         # TODO: implement for '_parse_rcv_csv_file'.
         pass
+
+    def test_get_rcv_csv_file_parser_returns_correct_parser(self):
+        from cl_sii.rcv.constants import RcEstadoContable, RcvKind
+        from cl_sii.rcv.parse_csv import (
+            get_rcv_csv_file_parser,
+            parse_rcv_compra_no_incluir_csv_file,
+            parse_rcv_compra_pendiente_csv_file,
+            parse_rcv_compra_reclamado_csv_file,
+            parse_rcv_compra_registro_csv_file,
+            parse_rcv_venta_csv_file,
+        )
+
+        # VENTAS: estado_contable must be None
+        parser = get_rcv_csv_file_parser(RcvKind.VENTAS, None)
+        self.assertIs(parser, parse_rcv_venta_csv_file)
+        with self.assertRaises(ValueError):
+            get_rcv_csv_file_parser(RcvKind.VENTAS, RcEstadoContable.REGISTRO)
+
+        # COMPRAS: estado_contable must not be None
+        self.assertIs(
+            get_rcv_csv_file_parser(RcvKind.COMPRAS, RcEstadoContable.REGISTRO),
+            parse_rcv_compra_registro_csv_file,
+        )
+        self.assertIs(
+            get_rcv_csv_file_parser(RcvKind.COMPRAS, RcEstadoContable.NO_INCLUIR),
+            parse_rcv_compra_no_incluir_csv_file,
+        )
+        self.assertIs(
+            get_rcv_csv_file_parser(RcvKind.COMPRAS, RcEstadoContable.RECLAMADO),
+            parse_rcv_compra_reclamado_csv_file,
+        )
+        self.assertIs(
+            get_rcv_csv_file_parser(RcvKind.COMPRAS, RcEstadoContable.PENDIENTE),
+            parse_rcv_compra_pendiente_csv_file,
+        )
+        with self.assertRaises(ValueError):
+            get_rcv_csv_file_parser(RcvKind.COMPRAS, None)
+
+        # Test unknown estado_contable
+        class DummyEstadoContable:
+            pass
+
+        with self.assertRaises(Exception):
+            get_rcv_csv_file_parser(RcvKind.COMPRAS, DummyEstadoContable())
+
+        # Test unknown rcv_kind
+        class DummyRcvKind:
+            pass
+
+        with self.assertRaises(Exception):
+            get_rcv_csv_file_parser(DummyRcvKind(), None)

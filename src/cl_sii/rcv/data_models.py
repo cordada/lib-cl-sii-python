@@ -246,22 +246,187 @@ class RvDetalleEntry(RcvDetalleEntry):
     # constants
     ###########################################################################
 
-    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
+    RCV_KIND: ClassVar[RcvKind] = RcvKind.VENTAS
 
-    RCV_KIND = RcvKind.VENTAS
-    RC_ESTADO_CONTABLE = None
+    tipo_venta: str
+    """
+    Tipo Venta
+    """
 
-    # TODO: docstring
-    # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
     receptor_razon_social: str
+    """
+    Razon Social
+    """
 
-    # TODO: docstring
-    # note: must be timezone-aware.
     fecha_acuse_dt: Optional[datetime]
+    """
+    Fecha Acuse Recibo (must be timezone aware)
+    """
 
-    # TODO: docstring
-    # note: must be timezone-aware.
     fecha_reclamo_dt: Optional[datetime]
+    """
+    Fecha Reclamo (must be timezone aware)
+    """
+
+    monto_exento: int
+    """
+    Monto Exento
+    """
+
+    monto_neto: int
+    """
+    Monto Neto
+    """
+
+    monto_iva: int
+    """
+    Monto IVA
+    """
+
+    iva_retenido_total: int
+    """
+    IVA Retenido Total
+    """
+
+    iva_retenido_parcial: int
+    """
+    IVA Retenido Parcial
+    """
+
+    iva_no_retenido: int
+    """
+    IVA no retenido
+    """
+
+    iva_propio: int
+    """
+    IVA propio
+    """
+
+    iva_terceros: int
+    """
+    IVA Terceros
+    """
+
+    liquidacion_factura_emisor_rut: Optional[Rut]
+    """
+    RUT Emisor Liquid. Factura
+    """
+
+    neto_comision_liquidacion_factura: int
+    """
+    Neto Comision Liquid. Factura
+    """
+
+    exento_comision_liquidacion_factura: int
+    """
+    Exento Comision Liquid. Factura
+    """
+
+    iva_comision_liquidacion_factura: int
+    """
+    IVA Comision Liquid. Factura
+    """
+
+    iva_fuera_de_plazo: int
+    """
+    IVA fuera de plazo
+    """
+
+    tipo_documento_referencia: Optional[int]
+    """
+    Tipo Docto. Referencia
+    """
+
+    folio_documento_referencia: Optional[int]
+    """
+    Folio Docto. Referencia
+    """
+
+    num_ident_receptor_extranjero: Optional[str]
+    """
+    Num. Ident. Receptor Extranjero
+    """
+
+    nacionalidad_receptor_extranjero: Optional[str]
+    """
+    Nacionalidad Receptor Extranjero
+    """
+
+    credito_empresa_constructora: int
+    """
+    Credito empresa constructora
+    """
+
+    impuesto_zona_franca_ley_18211: Optional[int]
+    """
+    Impto. Zona Franca (Ley 18211)
+    """
+
+    garantia_dep_envases: int
+    """
+    Garantia Dep. Envases
+    """
+
+    indicador_venta_sin_costo: int
+    """
+    Indicador Venta sin Costo
+    """
+
+    indicador_servicio_periodico: int
+    """
+    Indicador Servicio Periodico
+    """
+
+    monto_no_facturable: int
+    """
+    Monto No facturable
+    """
+
+    total_monto_periodo: int
+    """
+    Total Monto Periodo
+    """
+
+    venta_pasajes_transporte_nacional: Optional[int]
+    """
+    Venta Pasajes Transporte Nacional
+    """
+
+    venta_pasajes_transporte_internacional: Optional[int]
+    """
+    Venta Pasajes Transporte Internacional
+    """
+
+    numero_interno: Optional[str]
+    """
+    Numero Interno
+    """
+
+    codigo_sucursal: Optional[str]
+    """
+    Codigo Sucursal
+    """
+
+    nce_o_nde_sobre_factura_de_compra: Optional[str]
+    """
+    NCE o NDE sobre Fact. de Compra
+    """
+
+    codigo_otro_imp: Optional[str]
+    """
+    Codigo Otro Imp.
+    """
+
+    valor_otro_imp: Optional[int]
+    """
+    Valor Otro Imp.
+    """
+
+    tasa_otro_imp: Optional[float]
+    """
+    Tasa Otro Imp.
+    """
 
     ###########################################################################
     # Validators

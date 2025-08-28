@@ -16,7 +16,7 @@ from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.extras import mm_fields
 from cl_sii.libs import csv_utils, mm_utils, rows_processing, tz_utils
 from cl_sii.rut import Rut
-from .constants import RcEstadoContable, RcvKind
+from .constants import RcEstadoContable, RcvKind, RvTipoVenta
 from .data_models import (
     RcNoIncluirDetalleEntry,
     RcPendienteDetalleEntry,
@@ -147,42 +147,7 @@ def parse_rcv_venta_csv_file(
         'Tasa Otro Imp.',
     )
 
-    fields_to_remove_names = (
-        'Nro',
-        'Tipo Venta',
-        'Monto Exento',
-        'Monto Neto',
-        'Monto IVA',
-        'IVA Retenido Total',
-        'IVA Retenido Parcial',
-        'IVA no retenido',
-        'IVA propio',
-        'IVA Terceros',
-        'RUT Emisor Liquid. Factura',
-        'Neto Comision Liquid. Factura',
-        'Exento Comision Liquid. Factura',
-        'IVA Comision Liquid. Factura',
-        'IVA fuera de plazo',
-        'Tipo Docto. Referencia',
-        'Folio Docto. Referencia',
-        'Num. Ident. Receptor Extranjero',
-        'Nacionalidad Receptor Extranjero',
-        'Credito empresa constructora',
-        'Impto. Zona Franca (Ley 18211)',
-        'Garantia Dep. Envases',
-        'Indicador Venta sin Costo',
-        'Indicador Servicio Periodico',
-        'Monto No facturable',
-        'Total Monto Periodo',
-        'Venta Pasajes Transporte Nacional',
-        'Venta Pasajes Transporte Internacional',
-        'Numero Interno',
-        'Codigo Sucursal',
-        'NCE o NDE sobre Fact. de Compra',
-        'Codigo Otro Imp.',
-        'Valor Otro Imp.',
-        'Tasa Otro Imp.',
-    )
+    fields_to_remove_names = ('Nro',)
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
@@ -532,6 +497,22 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
                 in_data[field] is None or str(in_data[field]).strip() == ''
             ):
                 del in_data[field]
+
+        for name, field_item in self.fields.items():
+            data_key = field_item.data_key
+            if data_key is not None and data_key in in_data.keys():
+                if isinstance(
+                    field_item,
+                    (
+                        marshmallow.fields.Integer,
+                        marshmallow.fields.Decimal,
+                        marshmallow.fields.Float,
+                        marshmallow.fields.Date,
+                        marshmallow.fields.DateTime,
+                        mm_fields.RutField,
+                    ),
+                ) and in_data[data_key] in ('', '-'):
+                    in_data[data_key] = None
         return in_data
 
 
@@ -548,6 +529,19 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         required=True,
         data_key='Tipo Doc',
     )
+    tipo_venta = marshmallow.fields.Enum(
+        RvTipoVenta,
+        required=True,
+        data_key='Tipo Venta',
+    )
+    receptor_rut = mm_fields.RutField(
+        required=True,
+        data_key='Rut cliente',
+    )
+    receptor_razon_social = marshmallow.fields.String(
+        required=True,
+        data_key='Razon Social',
+    )
     folio = marshmallow.fields.Integer(
         required=True,
         data_key='Folio',
@@ -557,47 +551,175 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         required=True,
         data_key='Fecha Docto',
     )
-    receptor_rut = mm_fields.RutField(
-        required=True,
-        data_key='Rut cliente',
-    )
-    monto_total = marshmallow.fields.Integer(
-        required=True,
-        data_key='Monto total',
-    )
-    receptor_razon_social = marshmallow.fields.String(
-        required=True,
-        data_key='Razon Social',
-    )
-
-    ###########################################################################
-    # fields whose value is set using data passed in the schema context
-    ###########################################################################
-
-    emisor_rut = mm_fields.RutField(
-        required=True,
-    )
-
-    ###########################################################################
-    # extra fields: not included in the returned struct
-    ###########################################################################
-
-    fecha_recepcion_dt = marshmallow.fields.DateTime(
-        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
-        required=True,
-        data_key='Fecha Recepcion',
-    )
     fecha_acuse_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=False,
         allow_none=True,
         data_key='Fecha Acuse Recibo',
     )
+    fecha_recepcion_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        data_key='Fecha Recepcion',
+    )
     fecha_reclamo_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
         required=False,
         allow_none=True,
         data_key='Fecha Reclamo',
+    )
+    monto_exento = marshmallow.fields.Integer(
+        required=True,
+        data_key='Monto Exento',
+    )
+    monto_neto = marshmallow.fields.Integer(
+        required=True,
+        data_key='Monto Neto',
+    )
+    monto_iva = marshmallow.fields.Integer(
+        required=True,
+        data_key='Monto IVA',
+    )
+    monto_total = marshmallow.fields.Integer(
+        required=True,
+        data_key='Monto total',
+    )
+    iva_retenido_total = marshmallow.fields.Integer(
+        required=True,
+        data_key='IVA Retenido Total',
+    )
+    iva_retenido_parcial = marshmallow.fields.Integer(
+        required=True,
+        data_key='IVA Retenido Parcial',
+    )
+    iva_no_retenido = marshmallow.fields.Integer(
+        required=True,
+        data_key='IVA no retenido',
+    )
+    iva_propio = marshmallow.fields.Integer(
+        required=True,
+        data_key='IVA propio',
+    )
+    iva_terceros = marshmallow.fields.Integer(
+        required=True,
+        data_key='IVA Terceros',
+    )
+    liquidacion_factura_emisor_rut = mm_fields.RutField(
+        required=False,
+        allow_none=True,
+        data_key='RUT Emisor Liquid. Factura',
+    )
+    neto_comision_liquidacion_factura = marshmallow.fields.Integer(
+        required=True,
+        data_key='Neto Comision Liquid. Factura',
+    )
+    exento_comision_liquidacion_factura = marshmallow.fields.Integer(
+        required=True,
+        data_key='Exento Comision Liquid. Factura',
+    )
+    iva_comision_liquidacion_factura = marshmallow.fields.Integer(
+        required=True,
+        data_key='IVA Comision Liquid. Factura',
+    )
+    iva_fuera_de_plazo = marshmallow.fields.Integer(
+        required=True,
+        data_key='IVA fuera de plazo',
+    )
+    tipo_documento_referencia = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Tipo Docto. Referencia',
+    )
+    folio_documento_referencia = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Folio Docto. Referencia',
+    )
+    num_ident_receptor_extranjero = marshmallow.fields.String(
+        required=False,
+        allow_none=True,
+        data_key='Num. Ident. Receptor Extranjero',
+    )
+    nacionalidad_receptor_extranjero = marshmallow.fields.String(
+        required=False,
+        allow_none=True,
+        data_key='Nacionalidad Receptor Extranjero',
+    )
+    credito_empresa_constructora = marshmallow.fields.Integer(
+        required=True,
+        data_key='Credito empresa constructora',
+    )
+    impuesto_zona_franca_ley_18211 = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Impto. Zona Franca (Ley 18211)',
+    )
+    garantia_dep_envases = marshmallow.fields.Integer(
+        required=True,
+        data_key='Garantia Dep. Envases',
+    )
+    indicador_venta_sin_costo = marshmallow.fields.Integer(
+        required=True,
+        data_key='Indicador Venta sin Costo',
+    )
+    indicador_servicio_periodico = marshmallow.fields.Integer(
+        required=True,
+        data_key='Indicador Servicio Periodico',
+    )
+    monto_no_facturable = marshmallow.fields.Integer(
+        required=True,
+        data_key='Monto No facturable',
+    )
+    total_monto_periodo = marshmallow.fields.Integer(
+        required=True,
+        data_key='Total Monto Periodo',
+    )
+    venta_pasajes_transporte_nacional = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Venta Pasajes Transporte Nacional',
+    )
+    venta_pasajes_transporte_internacional = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Venta Pasajes Transporte Internacional',
+    )
+    numero_interno = marshmallow.fields.String(
+        required=False,
+        allow_none=True,
+        data_key='Numero Interno',
+    )
+    codigo_sucursal = marshmallow.fields.String(
+        required=False,
+        allow_none=True,
+        data_key='Codigo Sucursal',
+    )
+    nce_o_nde_sobre_factura_de_compra = marshmallow.fields.String(
+        required=False,
+        allow_none=True,
+        data_key='NCE o NDE sobre Fact. de Compra',
+    )
+    codigo_otro_imp = marshmallow.fields.String(
+        required=False,
+        allow_none=True,
+        data_key='Codigo Otro Imp.',
+    )
+    valor_otro_imp = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Valor Otro Imp.',
+    )
+    tasa_otro_imp = marshmallow.fields.Decimal(
+        required=False,
+        allow_none=True,
+        data_key='Tasa Otro Imp.',
+    )
+    ###########################################################################
+    # fields whose value is set using data passed in the schema context
+    ###########################################################################
+
+    emisor_rut = mm_fields.RutField(
+        required=True,
     )
 
     @marshmallow.pre_load
@@ -609,6 +731,15 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         # Set field value only if it was not in the input data.
         in_data.setdefault('emisor_rut', self.context['emisor_rut'])
 
+        # Set tipo_venta from string to enum value.
+        if 'Tipo Venta' in in_data:
+            if in_data['Tipo Venta'] == 'Del Giro':
+                in_data['Tipo Venta'] = RvTipoVenta.DEL_GIRO.value
+            elif in_data['Tipo Venta'] == 'Bienes Raíces':
+                in_data['Tipo Venta'] = RvTipoVenta.BIENES_RAICES.value
+            elif in_data['Tipo Venta'] == 'Activo Fijo':
+                in_data['Tipo Venta'] = RvTipoVenta.ACTIVO_FIJO.value
+
         # Fix missing/default values.
         if 'Fecha Acuse Recibo' in in_data:
             if in_data['Fecha Acuse Recibo'] == '':
@@ -616,7 +747,9 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         if 'Fecha Reclamo' in in_data:
             if in_data['Fecha Reclamo'] == '':
                 in_data['Fecha Reclamo'] = None
-
+        if 'RUT Emisor Liquid. Factura' in in_data:
+            if in_data['RUT Emisor Liquid. Factura'] in (None, '', '-'):
+                in_data['RUT Emisor Liquid. Factura'] = None
         return in_data
 
     @marshmallow.post_load
@@ -652,14 +785,47 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         try:
             emisor_rut: Rut = data['emisor_rut']
             tipo_docto = data['tipo_docto']
+            tipo_venta = data['tipo_venta']
             folio: int = data['folio']
             fecha_emision_date: date = data['fecha_emision_date']
             receptor_rut: Rut = data['receptor_rut']
-            monto_total: int = data['monto_total']
             receptor_razon_social: str = data['receptor_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
             fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']
             fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']
+            monto_exento = data['monto_exento']
+            monto_neto = data['monto_neto']
+            monto_iva = data['monto_iva']
+            monto_total: int = data['monto_total']
+            iva_retenido_total = data['iva_retenido_total']
+            iva_retenido_parcial = data['iva_retenido_parcial']
+            iva_no_retenido = data['iva_no_retenido']
+            iva_propio = data['iva_propio']
+            iva_terceros = data['iva_terceros']
+            liquidacion_factura_emisor_rut = data['liquidacion_factura_emisor_rut']
+            neto_comision_liquidacion_factura = data['neto_comision_liquidacion_factura']
+            exento_comision_liquidacion_factura = data['exento_comision_liquidacion_factura']
+            iva_comision_liquidacion_factura = data['iva_comision_liquidacion_factura']
+            iva_fuera_de_plazo = data['iva_fuera_de_plazo']
+            tipo_documento_referencia = data['tipo_documento_referencia']
+            folio_documento_referencia = data['folio_documento_referencia']
+            num_ident_receptor_extranjero = data['num_ident_receptor_extranjero']
+            nacionalidad_receptor_extranjero = data['nacionalidad_receptor_extranjero']
+            credito_empresa_constructora = data['credito_empresa_constructora']
+            impuesto_zona_franca_ley_18211 = data['impuesto_zona_franca_ley_18211']
+            garantia_dep_envases = data['garantia_dep_envases']
+            indicador_venta_sin_costo = data['indicador_venta_sin_costo']
+            indicador_servicio_periodico = data['indicador_servicio_periodico']
+            monto_no_facturable = data['monto_no_facturable']
+            total_monto_periodo = data['total_monto_periodo']
+            venta_pasajes_transporte_nacional = data['venta_pasajes_transporte_nacional']
+            venta_pasajes_transporte_internacional = data['venta_pasajes_transporte_internacional']
+            numero_interno = data['numero_interno']
+            codigo_sucursal = data['codigo_sucursal']
+            nce_o_nde_sobre_factura_de_compra = data['nce_o_nde_sobre_factura_de_compra']
+            codigo_otro_imp = data['codigo_otro_imp']
+            valor_otro_imp = data['valor_otro_imp']
+            tasa_otro_imp = data['tasa_otro_imp']
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -667,14 +833,47 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
             detalle_entry = RvDetalleEntry(
                 emisor_rut=emisor_rut,
                 tipo_docto=tipo_docto,
+                tipo_venta=tipo_venta,
                 folio=folio,
                 fecha_emision_date=fecha_emision_date,
                 receptor_rut=receptor_rut,
-                monto_total=monto_total,
                 receptor_razon_social=receptor_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_acuse_dt=fecha_acuse_dt,
                 fecha_reclamo_dt=fecha_reclamo_dt,
+                monto_exento=monto_exento,
+                monto_neto=monto_neto,
+                monto_iva=monto_iva,
+                monto_total=monto_total,
+                iva_retenido_total=iva_retenido_total,
+                iva_retenido_parcial=iva_retenido_parcial,
+                iva_no_retenido=iva_no_retenido,
+                iva_propio=iva_propio,
+                iva_terceros=iva_terceros,
+                liquidacion_factura_emisor_rut=liquidacion_factura_emisor_rut,
+                neto_comision_liquidacion_factura=neto_comision_liquidacion_factura,
+                exento_comision_liquidacion_factura=exento_comision_liquidacion_factura,
+                iva_comision_liquidacion_factura=iva_comision_liquidacion_factura,
+                iva_fuera_de_plazo=iva_fuera_de_plazo,
+                tipo_documento_referencia=tipo_documento_referencia,
+                folio_documento_referencia=folio_documento_referencia,
+                num_ident_receptor_extranjero=num_ident_receptor_extranjero,
+                nacionalidad_receptor_extranjero=nacionalidad_receptor_extranjero,
+                credito_empresa_constructora=credito_empresa_constructora,
+                impuesto_zona_franca_ley_18211=impuesto_zona_franca_ley_18211,
+                garantia_dep_envases=garantia_dep_envases,
+                indicador_venta_sin_costo=indicador_venta_sin_costo,
+                indicador_servicio_periodico=indicador_servicio_periodico,
+                monto_no_facturable=monto_no_facturable,
+                total_monto_periodo=total_monto_periodo,
+                venta_pasajes_transporte_nacional=venta_pasajes_transporte_nacional,
+                venta_pasajes_transporte_internacional=venta_pasajes_transporte_internacional,
+                numero_interno=numero_interno,
+                codigo_sucursal=codigo_sucursal,
+                nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
+                codigo_otro_imp=codigo_otro_imp,
+                valor_otro_imp=valor_otro_imp,
+                tasa_otro_imp=tasa_otro_imp,
             )
         except (TypeError, ValueError):
             raise
@@ -1147,7 +1346,7 @@ def _parse_rcv_csv_file(
     for field_to_remove_name in fields_to_remove_names:
         if field_to_remove_name not in expected_input_field_names:
             raise Exception(
-                "Programming error: field to remove is not one of the expected ones.",
+                "Programming error: field to remove is not one of the expected.",
                 field_to_remove_name,
             )
 
