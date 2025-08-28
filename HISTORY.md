@@ -1,5 +1,14 @@
 # History
 
+## 0.52.0 (2025-08-28)
+
+- (PR #850, 2025-08-21) chore(deps): Bump the python-development group across 1 directory with 6 updates
+- (PR #856, 2025-08-26) Update Dependabot configuration
+- (PR #847, 2025-08-26) chore(deps): Bump jsonschema from 4.24.0 to 4.25.0
+- (PR #857, 2025-08-26) Minor improvement of CI workflow
+- (PR #858, 2025-08-26) rut: Constant `RUT_DIGITS_MIN_VALUE` should be for the whole range of RUTs
+- (PR #859, 2025-08-27) rcv: Enhance "RCV Ventas" CSV parsing and add schema fields
+
 ## 0.51.0 (2025-08-21)
 
 - (PR #852, 2025-08-21) rcv: Add RvTipoVenta enum to represent "Tipo de Venta" in RCV
