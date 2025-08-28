@@ -8,7 +8,7 @@ Parse RCV files (CSV)
 import csv
 import logging
 from datetime import date, datetime
-from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, TypeVar
 
 import marshmallow
 
@@ -30,12 +30,13 @@ from .data_models import (
 
 logger = logging.getLogger(__name__)
 
+RcvDetalleEntryType = TypeVar('RcvDetalleEntryType', bound=RcvDetalleEntry)
 
 RcvCsvFileParserType = Callable[
     [Rut, str, int, Optional[int]],
     Iterable[
         Tuple[
-            Optional[RcvDetalleEntry],
+            Optional[RcvDetalleEntryType],
             int,
             Dict[str, object],
             Dict[str, object],
