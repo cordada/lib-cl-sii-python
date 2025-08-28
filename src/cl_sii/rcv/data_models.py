@@ -453,9 +453,10 @@ class RvDetalleEntry(RcvDetalleEntry):
         arbitrary_types_allowed=True,
     ),
 )
-class RcRegistroDetalleEntry(RcvDetalleEntry):
+class RcDetalleEntry(RcvDetalleEntry):
     """
-    Entry of the "detalle" of an RC ("Registro de Compras") / "registro".
+    Base class for entries of the "detalle" of an RC ("Registro de Compras").
+    Contains all common fields from RcvCompraCsvRowSchema.
     """
 
     ###########################################################################
@@ -465,16 +466,90 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
     DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
 
     RCV_KIND = RcvKind.COMPRAS
-    RC_ESTADO_CONTABLE = RcEstadoContable.REGISTRO
+
+    ###########################################################################
+    # fields - all common fields from RcvCompraCsvRowSchema
+    ###########################################################################
+
+    tipo_compra: str
+    """
+    Tipo Compra
+    """
 
     emisor_razon_social: str
     """
     "Razón social" (legal name) of the "emisor" of the "documento".
     """
 
-    # TODO: docstring
-    # note: must be timezone-aware.
-    fecha_acuse_dt: Optional[datetime]
+    monto_exento: int
+    """
+    Monto Exento
+    """
+
+    monto_neto: int
+    """
+    Monto Neto
+    """
+
+    monto_iva_recuperable: Optional[int]
+    """
+    Monto IVA Recuperable
+    """
+
+    monto_iva_no_recuperable: Optional[int]
+    """
+    Monto Iva No Recuperable
+    """
+
+    codigo_iva_no_rec: Optional[str]
+    """
+    Codigo IVA No Rec.
+    """
+
+    monto_neto_activo_fijo: Optional[int]
+    """
+    Monto Neto Activo Fijo
+    """
+
+    iva_activo_fijo: Optional[int]
+    """
+    IVA Activo Fijo
+    """
+
+    iva_uso_comun: Optional[int]
+    """
+    IVA uso Comun
+    """
+
+    impto_sin_derecho_a_credito: Optional[int]
+    """
+    Impto. Sin Derecho a Credito
+    """
+
+    iva_no_retenido: int
+    """
+    IVA No Retenido
+    """
+
+    nce_o_nde_sobre_factura_de_compra: Optional[str]
+    """
+    NCE o NDE sobre Fact. de Compra
+    """
+
+    codigo_otro_impuesto: Optional[str]
+    """
+    Codigo Otro Impuesto
+    """
+
+    valor_otro_impuesto: Optional[int]
+    """
+    Valor Otro Impuesto
+    """
+
+    tasa_otro_impuesto: Optional[float]
+    """
+    Tasa Otro Impuesto
+    """
 
     ###########################################################################
     # Validators
@@ -486,6 +561,52 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
         if isinstance(v, str):
             cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
         return v
+
+
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+    config=pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
+    ),
+)
+class RcRegistroDetalleEntry(RcDetalleEntry):
+    """
+    Entry of the "detalle" of an RC ("Registro de Compras") / "registro".
+    """
+
+    ###########################################################################
+    # constants
+    ###########################################################################
+
+    RC_ESTADO_CONTABLE: ClassVar[RcEstadoContable] = RcEstadoContable.REGISTRO
+
+    ###########################################################################
+    # Unique fields
+    ###########################################################################
+
+    fecha_acuse_dt: Optional[datetime]
+    """
+    Fecha Acuse (must be timezone aware)
+    """
+
+    tabacos_puros: Optional[int]
+    """
+    Tabacos Puros
+    """
+
+    tabacos_cigarrillos: Optional[int]
+    """
+    Tabacos Cigarrillos
+    """
+
+    tabacos_elaborados: Optional[int]
+    """
+    Tabacos Elaborados
+    """
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
 
     @pydantic.field_validator('fecha_acuse_dt')
     @classmethod
@@ -501,13 +622,36 @@ class RcRegistroDetalleEntry(RcvDetalleEntry):
         arbitrary_types_allowed=True,
     ),
 )
-class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
+class RcNoIncluirDetalleEntry(RcDetalleEntry):
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "no incluir".
     """
 
-    RCV_KIND = RcvKind.COMPRAS
-    RC_ESTADO_CONTABLE = RcEstadoContable.NO_INCLUIR
+    ###########################################################################
+    # constants
+    ###########################################################################
+
+    RC_ESTADO_CONTABLE: ClassVar[RcEstadoContable] = RcEstadoContable.NO_INCLUIR
+
+    ###########################################################################
+    # Unique fields
+    ###########################################################################
+
+    fecha_acuse_dt: Optional[datetime]
+    """
+    Fecha Acuse (must be timezone aware)
+    """
+
+    ###########################################################################
+    # Validators
+    ###########################################################################
+
+    @pydantic.field_validator('fecha_acuse_dt')
+    @classmethod
+    def validate_datetime_tz(cls, v: object) -> object:
+        if isinstance(v, datetime):
+            tz_utils.validate_dt_tz(v, cls.DATETIME_FIELDS_TZ)
+        return v
 
 
 @pydantic.dataclasses.dataclass(
@@ -516,7 +660,7 @@ class RcNoIncluirDetalleEntry(RcRegistroDetalleEntry):
         arbitrary_types_allowed=True,
     ),
 )
-class RcReclamadoDetalleEntry(RcvDetalleEntry):
+class RcReclamadoDetalleEntry(RcDetalleEntry):
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "reclamado".
     """
@@ -525,34 +669,20 @@ class RcReclamadoDetalleEntry(RcvDetalleEntry):
     # constants
     ###########################################################################
 
-    DATETIME_FIELDS_TZ = SII_OFFICIAL_TZ
+    RC_ESTADO_CONTABLE: ClassVar[RcEstadoContable] = RcEstadoContable.RECLAMADO
 
     ###########################################################################
-    # fields
+    # Unique fields
     ###########################################################################
 
-    RCV_KIND = RcvKind.COMPRAS
-    RC_ESTADO_CONTABLE = RcEstadoContable.RECLAMADO
-
-    emisor_razon_social: str
-    """
-    "Razón social" (legal name) of the "emisor" of the "documento".
-    """
-
-    # TODO: docstring
-    # note: must be timezone-aware.
     fecha_reclamo_dt: Optional[datetime]
+    """
+    Fecha Reclamo (must be timezone aware)
+    """
 
     ###########################################################################
     # Validators
     ###########################################################################
-
-    @pydantic.field_validator('emisor_razon_social')
-    @classmethod
-    def validate_contribuyente_razon_social(cls, v: object) -> object:
-        if isinstance(v, str):
-            cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
-        return v
 
     @pydantic.field_validator('fecha_reclamo_dt')
     @classmethod
@@ -568,26 +698,15 @@ class RcReclamadoDetalleEntry(RcvDetalleEntry):
         arbitrary_types_allowed=True,
     ),
 )
-class RcPendienteDetalleEntry(RcvDetalleEntry):
+class RcPendienteDetalleEntry(RcDetalleEntry):
     """
     Entry of the "detalle" of an RC ("Registro de Compras") / "pendiente".
     """
 
-    RCV_KIND = RcvKind.COMPRAS
-    RC_ESTADO_CONTABLE = RcEstadoContable.PENDIENTE
-
-    emisor_razon_social: str
-    """
-    "Razón social" (legal name) of the "emisor" of the "documento".
-    """
-
     ###########################################################################
-    # Validators
+    # constants
     ###########################################################################
 
-    @pydantic.field_validator('emisor_razon_social')
-    @classmethod
-    def validate_contribuyente_razon_social(cls, v: object) -> object:
-        if isinstance(v, str):
-            cl_sii.dte.data_models.validate_contribuyente_razon_social(v)
-        return v
+    RC_ESTADO_CONTABLE: ClassVar[RcEstadoContable] = RcEstadoContable.PENDIENTE
+
+    # No unique fields for pendiente - it only has common fields from RcDetalleEntry

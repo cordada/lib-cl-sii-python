@@ -5,7 +5,13 @@ from unittest import mock
 
 import cl_sii.rcv.constants
 from cl_sii.base.constants import SII_OFFICIAL_TZ
-from cl_sii.rcv.data_models import RvDetalleEntry
+from cl_sii.rcv.data_models import (
+    RcNoIncluirDetalleEntry,
+    RcPendienteDetalleEntry,
+    RcReclamadoDetalleEntry,
+    RcRegistroDetalleEntry,
+    RvDetalleEntry,
+)
 from cl_sii.rcv.parse_csv import (  # noqa: F401
     RcvCompraNoIncluirCsvRowSchema,
     RcvCompraPendienteCsvRowSchema,
@@ -127,23 +133,268 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
 
 
 class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
-    # TODO: implement for 'RcvCompraRegistroCsvRowSchema'.
-    pass
+    def test_parse_rcv_compra_registro_row(self) -> None:
+        schema_context = dict(
+            emisor_rut=Rut('1-9'),
+        )
+        input_csv_row_schema = RcvCompraRegistroCsvRowSchema(context=schema_context)
+
+        data = {
+            'emisor_rut': Rut('12345678-5'),
+            'tipo_docto': cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            'tipo_compra': cl_sii.rcv.constants.RcTipoCompra.DEL_GIRO,
+            'folio': 23084,
+            'fecha_emision_date': datetime.date(2019, 6, 21),
+            'monto_total': 285801,
+            'emisor_razon_social': 'Fake Company S.A.',
+            'receptor_rut': Rut('1-9'),
+            'fecha_recepcion_dt': datetime.datetime(2019, 6, 24, 9, 55, 53, tzinfo=SII_OFFICIAL_TZ),
+            'monto_exento': 0,
+            'monto_neto': 240169,
+            'monto_iva_recuperable': 45632,
+            'monto_iva_no_recuperable': None,
+            'codigo_iva_no_rec': '',
+            'monto_neto_activo_fijo': None,
+            'iva_activo_fijo': None,
+            'iva_uso_comun': None,
+            'impto_sin_derecho_a_credito': None,
+            'iva_no_retenido': 0,
+            'nce_o_nde_sobre_factura_de_compra': '0',
+            'codigo_otro_impuesto': '',
+            'valor_otro_impuesto': None,
+            'tasa_otro_impuesto': None,
+            'fecha_acuse_dt': datetime.datetime(2019, 6, 30, 9, 55, 53, tzinfo=SII_OFFICIAL_TZ),
+            'tabacos_puros': None,
+            'tabacos_cigarrillos': None,
+            'tabacos_elaborados': None,
+        }
+
+        result = input_csv_row_schema.to_detalle_entry(data)
+        expected_result = RcRegistroDetalleEntry(
+            emisor_rut=Rut('12345678-5'),
+            tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            folio=23084,
+            fecha_emision_date=datetime.date(2019, 6, 21),
+            receptor_rut=Rut('1-9'),
+            monto_total=285801,
+            fecha_recepcion_dt=datetime.datetime(2019, 6, 24, 9, 55, 53, tzinfo=SII_OFFICIAL_TZ),
+            tipo_compra='DEL_GIRO',
+            emisor_razon_social='Fake Company S.A.',
+            monto_exento=0,
+            monto_neto=240169,
+            monto_iva_recuperable=45632,
+            monto_iva_no_recuperable=None,
+            codigo_iva_no_rec='',
+            monto_neto_activo_fijo=None,
+            iva_activo_fijo=None,
+            iva_uso_comun=None,
+            impto_sin_derecho_a_credito=None,
+            iva_no_retenido=0,
+            nce_o_nde_sobre_factura_de_compra='0',
+            codigo_otro_impuesto='',
+            valor_otro_impuesto=None,
+            tasa_otro_impuesto=None,
+            fecha_acuse_dt=datetime.datetime(2019, 6, 30, 9, 55, 53, tzinfo=SII_OFFICIAL_TZ),
+            tabacos_puros=None,
+            tabacos_cigarrillos=None,
+            tabacos_elaborados=None,
+        )
+        self.assertEqual(result, expected_result)
 
 
 class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
-    # TODO: implement for 'RcvCompraNoIncluirCsvRowSchema'.
-    pass
+    def test_parse_rcv_compra_no_incluir_row(self) -> None:
+        schema_context = dict(
+            emisor_rut=Rut('1-9'),
+        )
+        input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema(context=schema_context)
+
+        data = {
+            'emisor_rut': Rut('12345678-5'),
+            'tipo_docto': cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            'tipo_compra': cl_sii.rcv.constants.RcTipoCompra.NO_CORRESPONDE_INCLUIR,
+            'folio': 19000035,
+            'fecha_emision_date': datetime.date(2019, 12, 13),
+            'monto_total': 104362,
+            'emisor_razon_social': 'Fake Company S.A.',
+            'receptor_rut': Rut('1-9'),
+            'fecha_recepcion_dt': datetime.datetime(
+                2019, 12, 14, 15, 56, 27, tzinfo=SII_OFFICIAL_TZ
+            ),
+            'monto_exento': 0,
+            'monto_neto': 87699,
+            'monto_iva_recuperable': None,
+            'monto_iva_no_recuperable': 16663,
+            'codigo_iva_no_rec': '9',
+            'monto_neto_activo_fijo': None,
+            'iva_activo_fijo': None,
+            'iva_uso_comun': None,
+            'impto_sin_derecho_a_credito': None,
+            'iva_no_retenido': 0,
+            'nce_o_nde_sobre_factura_de_compra': '0',
+            'codigo_otro_impuesto': '',
+            'valor_otro_impuesto': None,
+            'tasa_otro_impuesto': None,
+            'fecha_acuse_dt': None,
+        }
+
+        result = input_csv_row_schema.to_detalle_entry(data)
+        expected_result = RcNoIncluirDetalleEntry(
+            emisor_rut=Rut('12345678-5'),
+            tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            folio=19000035,
+            fecha_emision_date=datetime.date(2019, 12, 13),
+            receptor_rut=Rut('1-9'),
+            monto_total=104362,
+            fecha_recepcion_dt=datetime.datetime(2019, 12, 14, 15, 56, 27, tzinfo=SII_OFFICIAL_TZ),
+            tipo_compra='NO_CORRESPONDE_INCLUIR',
+            emisor_razon_social='Fake Company S.A.',
+            monto_exento=0,
+            monto_neto=87699,
+            monto_iva_recuperable=None,
+            monto_iva_no_recuperable=16663,
+            codigo_iva_no_rec='9',
+            monto_neto_activo_fijo=None,
+            iva_activo_fijo=None,
+            iva_uso_comun=None,
+            impto_sin_derecho_a_credito=None,
+            iva_no_retenido=0,
+            nce_o_nde_sobre_factura_de_compra='0',
+            codigo_otro_impuesto='',
+            valor_otro_impuesto=None,
+            tasa_otro_impuesto=None,
+            fecha_acuse_dt=None,
+        )
+
+        self.assertEqual(result, expected_result)
 
 
 class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
-    # TODO: implement for 'RcvCompraReclamadoCsvRowSchema'.
-    pass
+    def test_parse_rcv_compra_reclamado_row(self) -> None:
+        schema_context = dict(
+            emisor_rut=Rut('1-9'),
+        )
+        input_csv_row_schema = RcvCompraReclamadoCsvRowSchema(context=schema_context)
+
+        data = {
+            'emisor_rut': Rut('12345678-5'),
+            'tipo_docto': cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            'tipo_compra': cl_sii.rcv.constants.RcTipoCompra.DEL_GIRO,
+            'folio': 1000055,
+            'fecha_emision_date': datetime.date(2019, 6, 5),
+            'monto_total': 1155364,
+            'emisor_razon_social': 'Fake Company S.A.',
+            'receptor_rut': Rut('1-9'),
+            'fecha_recepcion_dt': datetime.datetime(2019, 6, 5, 21, 58, 49, tzinfo=SII_OFFICIAL_TZ),
+            'monto_exento': 0,
+            'monto_neto': 970894,
+            'monto_iva_recuperable': 184470,
+            'monto_iva_no_recuperable': None,
+            'codigo_iva_no_rec': '',
+            'monto_neto_activo_fijo': None,
+            'iva_activo_fijo': None,
+            'iva_uso_comun': None,
+            'impto_sin_derecho_a_credito': None,
+            'iva_no_retenido': 0,
+            'nce_o_nde_sobre_factura_de_compra': '0',
+            'codigo_otro_impuesto': '',
+            'valor_otro_impuesto': None,
+            'tasa_otro_impuesto': None,
+            'fecha_reclamo_dt': datetime.datetime(2019, 6, 12, 9, 47, 23, tzinfo=SII_OFFICIAL_TZ),
+        }
+
+        result = input_csv_row_schema.to_detalle_entry(data)
+        expected_result = RcReclamadoDetalleEntry(
+            emisor_rut=Rut('12345678-5'),
+            tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            folio=1000055,
+            fecha_emision_date=datetime.date(2019, 6, 5),
+            receptor_rut=Rut('1-9'),
+            monto_total=1155364,
+            fecha_recepcion_dt=datetime.datetime(2019, 6, 5, 21, 58, 49, tzinfo=SII_OFFICIAL_TZ),
+            tipo_compra='DEL_GIRO',
+            emisor_razon_social='Fake Company S.A.',
+            monto_exento=0,
+            monto_neto=970894,
+            monto_iva_recuperable=184470,
+            monto_iva_no_recuperable=None,
+            codigo_iva_no_rec='',
+            monto_neto_activo_fijo=None,
+            iva_activo_fijo=None,
+            iva_uso_comun=None,
+            impto_sin_derecho_a_credito=None,
+            iva_no_retenido=0,
+            nce_o_nde_sobre_factura_de_compra='0',
+            codigo_otro_impuesto='',
+            valor_otro_impuesto=None,
+            tasa_otro_impuesto=None,
+            fecha_reclamo_dt=datetime.datetime(2019, 6, 12, 9, 47, 23, tzinfo=SII_OFFICIAL_TZ),
+        )
+
+        self.assertEqual(result, expected_result)
 
 
 class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
-    # TODO: implement for 'RcvCompraPendienteCsvRowSchema'.
-    pass
+    def test_parse_rcv_compra_pendiente_row(self) -> None:
+        schema_context = dict(
+            emisor_rut=Rut('1-9'),
+        )
+        input_csv_row_schema = RcvCompraPendienteCsvRowSchema(context=schema_context)
+
+        data = {
+            'emisor_rut': Rut('12345678-5'),
+            'tipo_docto': cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            'tipo_compra': cl_sii.rcv.constants.RcTipoCompra.DEL_GIRO,
+            'folio': 9800042,
+            'fecha_emision_date': datetime.date(2019, 6, 28),
+            'monto_total': 49787,
+            'emisor_razon_social': 'Fake Company S.A.',
+            'receptor_rut': Rut('1-9'),
+            'fecha_recepcion_dt': datetime.datetime(2019, 7, 1, 13, 21, 32, tzinfo=SII_OFFICIAL_TZ),
+            'monto_exento': 0,
+            'monto_neto': 41838,
+            'monto_iva_recuperable': 7949,
+            'monto_iva_no_recuperable': None,
+            'codigo_iva_no_rec': '',
+            'monto_neto_activo_fijo': None,
+            'iva_activo_fijo': None,
+            'iva_uso_comun': None,
+            'impto_sin_derecho_a_credito': None,
+            'iva_no_retenido': 0,
+            'nce_o_nde_sobre_factura_de_compra': '0',
+            'codigo_otro_impuesto': '',
+            'valor_otro_impuesto': None,
+            'tasa_otro_impuesto': None,
+        }
+
+        result = input_csv_row_schema.to_detalle_entry(data)
+        expected_result = RcPendienteDetalleEntry(
+            emisor_rut=Rut('12345678-5'),
+            tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            folio=9800042,
+            fecha_emision_date=datetime.date(2019, 6, 28),
+            receptor_rut=Rut('1-9'),
+            monto_total=49787,
+            fecha_recepcion_dt=datetime.datetime(2019, 7, 1, 13, 21, 32, tzinfo=SII_OFFICIAL_TZ),
+            tipo_compra='DEL_GIRO',
+            emisor_razon_social='Fake Company S.A.',
+            monto_exento=0,
+            monto_neto=41838,
+            monto_iva_recuperable=7949,
+            monto_iva_no_recuperable=None,
+            codigo_iva_no_rec='',
+            monto_neto_activo_fijo=None,
+            iva_activo_fijo=None,
+            iva_uso_comun=None,
+            impto_sin_derecho_a_credito=None,
+            iva_no_retenido=0,
+            nce_o_nde_sobre_factura_de_compra='0',
+            codigo_otro_impuesto='',
+            valor_otro_impuesto=None,
+            tasa_otro_impuesto=None,
+        )
+
+        self.assertEqual(result, expected_result)
 
 
 class FunctionsTest(unittest.TestCase):
