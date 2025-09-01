@@ -40,7 +40,7 @@ click==8.0.3
     #   pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.10.4
+coverage==7.10.6
     # via -r requirements-dev.in
 cryptography==45.0.4
     # via
