@@ -8,7 +8,7 @@ Parse RCV files (CSV)
 import csv
 import logging
 from datetime import date, datetime
-from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, TypeVar
 
 import marshmallow
 
@@ -16,8 +16,9 @@ from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.extras import mm_fields
 from cl_sii.libs import csv_utils, mm_utils, rows_processing, tz_utils
 from cl_sii.rut import Rut
-from .constants import RcEstadoContable, RcvKind, RvTipoVenta
+from .constants import RcEstadoContable, RcTipoCompra, RcvKind, RvTipoVenta
 from .data_models import (
+    RcDetalleEntry,
     RcNoIncluirDetalleEntry,
     RcPendienteDetalleEntry,
     RcReclamadoDetalleEntry,
@@ -29,12 +30,13 @@ from .data_models import (
 
 logger = logging.getLogger(__name__)
 
+RcvDetalleEntryType = TypeVar('RcvDetalleEntryType', bound=RcvDetalleEntry)
 
 RcvCsvFileParserType = Callable[
     [Rut, str, int, Optional[int]],
     Iterable[
         Tuple[
-            Optional[RcvDetalleEntry],
+            Optional[RcvDetalleEntryType],
             int,
             Dict[str, object],
             Dict[str, object],
@@ -208,27 +210,7 @@ def parse_rcv_compra_registro_csv_file(
         'Tasa Otro Impuesto',
     )
 
-    fields_to_remove_names = (
-        'Nro',
-        'Tipo Compra',
-        'Monto Exento',
-        'Monto Neto',
-        'Monto IVA Recuperable',
-        'Monto Iva No Recuperable',
-        'Codigo IVA No Rec.',
-        'Monto Neto Activo Fijo',
-        'IVA Activo Fijo',
-        'IVA uso Comun',
-        'Impto. Sin Derecho a Credito',
-        'IVA No Retenido',
-        'Tabacos Puros',
-        'Tabacos Cigarrillos',
-        'Tabacos Elaborados',
-        'NCE o NDE sobre Fact. de Compra',
-        'Codigo Otro Impuesto',
-        'Valor Otro Impuesto',
-        'Tasa Otro Impuesto',
-    )
+    fields_to_remove_names = ('Nro',)
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
@@ -286,24 +268,7 @@ def parse_rcv_compra_no_incluir_csv_file(
         'Tasa Otro Impuesto',
     )
 
-    fields_to_remove_names = (
-        'Nro',
-        'Tipo Compra',
-        'Monto Exento',
-        'Monto Neto',
-        'Monto IVA Recuperable',
-        'Monto Iva No Recuperable',
-        'Codigo IVA No Rec.',
-        'Monto Neto Activo Fijo',
-        'IVA Activo Fijo',
-        'IVA uso Comun',
-        'Impto. Sin Derecho a Credito',
-        'IVA No Retenido',
-        'NCE o NDE sobre Fact. de Compra',
-        'Codigo Otro Impuesto',
-        'Valor Otro Impuesto',
-        'Tasa Otro Impuesto',
-    )
+    fields_to_remove_names = ('Nro',)
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
@@ -361,24 +326,7 @@ def parse_rcv_compra_reclamado_csv_file(
         'Tasa Otro Impuesto',
     )
 
-    fields_to_remove_names = (
-        'Nro',
-        'Tipo Compra',
-        'Monto Exento',
-        'Monto Neto',
-        'Monto IVA Recuperable',
-        'Monto Iva No Recuperable',
-        'Codigo IVA No Rec.',
-        'Monto Neto Activo Fijo',
-        'IVA Activo Fijo',
-        'IVA uso Comun',
-        'Impto. Sin Derecho a Credito',
-        'IVA No Retenido',
-        'NCE o NDE sobre Fact. de Compra',
-        'Codigo Otro Impuesto',
-        'Valor Otro Impuesto',
-        'Tasa Otro Impuesto',
-    )
+    fields_to_remove_names = ('Nro',)
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
@@ -435,24 +383,7 @@ def parse_rcv_compra_pendiente_csv_file(
         'Tasa Otro Impuesto',
     )
 
-    fields_to_remove_names = (
-        'Nro',
-        'Tipo Compra',
-        'Monto Exento',
-        'Monto Neto',
-        'Monto IVA Recuperable',
-        'Monto Iva No Recuperable',
-        'Codigo IVA No Rec.',
-        'Monto Neto Activo Fijo',
-        'IVA Activo Fijo',
-        'IVA uso Comun',
-        'Impto. Sin Derecho a Credito',
-        'IVA No Retenido',
-        'NCE o NDE sobre Fact. de Compra',
-        'Codigo Otro Impuesto',
-        'Valor Otro Impuesto',
-        'Tasa Otro Impuesto',
-    )
+    fields_to_remove_names = ('Nro',)
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
@@ -501,17 +432,20 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
         for name, field_item in self.fields.items():
             data_key = field_item.data_key
             if data_key is not None and data_key in in_data.keys():
-                if isinstance(
-                    field_item,
-                    (
-                        marshmallow.fields.Integer,
-                        marshmallow.fields.Decimal,
-                        marshmallow.fields.Float,
-                        marshmallow.fields.Date,
-                        marshmallow.fields.DateTime,
-                        mm_fields.RutField,
-                    ),
-                ) and in_data[data_key] in ('', '-'):
+                if in_data[data_key] == '' or (
+                    isinstance(
+                        field_item,
+                        (
+                            marshmallow.fields.Integer,
+                            marshmallow.fields.Decimal,
+                            marshmallow.fields.Float,
+                            marshmallow.fields.Date,
+                            marshmallow.fields.DateTime,
+                            mm_fields.RutField,
+                        ),
+                    )
+                    and in_data[data_key] == '-'
+                ):
                     in_data[data_key] = None
         return in_data
 
@@ -881,12 +815,12 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         return detalle_entry
 
 
-class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
+class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
 
     ###########################################################################
-    # basic fields
+    # Fields
     ###########################################################################
 
     emisor_rut = mm_fields.RutField(
@@ -896,6 +830,11 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
     tipo_docto = mm_fields.RcvTipoDoctoField(
         required=True,
         data_key='Tipo Doc',
+    )
+    tipo_compra = marshmallow.fields.Enum(
+        RcTipoCompra,
+        required=True,
+        data_key='Tipo Compra',
     )
     folio = marshmallow.fields.Integer(
         required=True,
@@ -914,6 +853,82 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
         required=True,
         data_key='Razon Social',
     )
+    receptor_rut = mm_fields.RutField(
+        required=True,
+    )
+    fecha_recepcion_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',
+        required=True,
+        data_key='Fecha Recepcion',
+    )
+    monto_exento = marshmallow.fields.Integer(
+        required=True,
+        data_key='Monto Exento',
+    )
+    monto_neto = marshmallow.fields.Integer(
+        required=True,
+        data_key='Monto Neto',
+    )
+    monto_iva_recuperable = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Monto IVA Recuperable',
+    )
+    monto_iva_no_recuperable = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Monto Iva No Recuperable',
+    )
+    codigo_iva_no_rec = marshmallow.fields.String(
+        required=False,
+        allow_none=True,
+        data_key='Codigo IVA No Rec.',
+    )
+    monto_neto_activo_fijo = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Monto Neto Activo Fijo',
+    )
+    iva_activo_fijo = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='IVA Activo Fijo',
+    )
+    iva_uso_comun = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='IVA uso Comun',
+    )
+    impto_sin_derecho_a_credito = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Impto. Sin Derecho a Credito',
+    )
+    iva_no_retenido = marshmallow.fields.Integer(
+        required=True,
+        allow_none=True,
+        data_key='IVA No Retenido',
+    )
+    nce_o_nde_sobre_factura_de_compra = marshmallow.fields.String(
+        required=False,
+        allow_none=True,
+        data_key='NCE o NDE sobre Fact. de Compra',
+    )
+    codigo_otro_impuesto = marshmallow.fields.String(
+        required=False,
+        allow_none=True,
+        data_key='Codigo Otro Impuesto',
+    )
+    valor_otro_impuesto = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Valor Otro Impuesto',
+    )
+    tasa_otro_impuesto = marshmallow.fields.Decimal(
+        required=False,
+        allow_none=True,
+        data_key='Tasa Otro Impuesto',
+    )
 
     ###########################################################################
     # fields whose value is set using data passed in the schema context
@@ -921,22 +936,6 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
 
     receptor_rut = mm_fields.RutField(
         required=True,
-    )
-
-    ###########################################################################
-    # extra fields: not included in the returned struct
-    ###########################################################################
-
-    fecha_recepcion_dt = marshmallow.fields.DateTime(
-        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
-        required=True,
-        data_key='Fecha Recepcion',
-    )
-    fecha_acuse_dt = marshmallow.fields.DateTime(
-        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
-        required=True,
-        allow_none=True,
-        data_key='Fecha Acuse',
     )
 
     @marshmallow.pre_load
@@ -947,6 +946,81 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
 
         # Set field value only if it was not in the input data.
         in_data.setdefault('receptor_rut', self.context['receptor_rut'])
+
+        # Set tipo_compra from string to enum value.
+        if 'Tipo Compra' in in_data:
+            if in_data['Tipo Compra'] == 'Del Giro':
+                in_data['Tipo Compra'] = RcTipoCompra.DEL_GIRO.value
+            elif in_data['Tipo Compra'] == 'Supermercados':
+                in_data['Tipo Compra'] = RcTipoCompra.SUPERMERCADOS.value
+            elif in_data['Tipo Compra'] == 'Bienes Raíces':
+                in_data['Tipo Compra'] = RcTipoCompra.BIENES_RAICES.value
+            elif in_data['Tipo Compra'] == 'Activo Fijo':
+                in_data['Tipo Compra'] = RcTipoCompra.ACTIVO_FIJO.value
+            elif in_data['Tipo Compra'] == 'IVA Uso Común':
+                in_data['Tipo Compra'] = RcTipoCompra.IVA_USO_COMUN.value
+            elif in_data['Tipo Compra'] == 'IVA no Recuperable':
+                in_data['Tipo Compra'] = RcTipoCompra.IVA_NO_RECUPERABLE.value
+            elif in_data['Tipo Compra'] == 'No Corresp. Incluir':
+                in_data['Tipo Compra'] = RcTipoCompra.NO_CORRESPONDE_INCLUIR.value
+
+        return in_data
+
+    @marshmallow.post_load
+    def postprocess(self, data: dict, **kwargs: Any) -> dict:
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13'
+        data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ
+        )
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13-03:00'
+        # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
+        # '2018-10-23T04:54:13+00:00'
+        # note: to express this value in another timezone (but the value does not change), do
+        #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
+
+        # Remove leading and trailing whitespace.
+        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
+
+        return data
+
+    def to_detalle_entry(self, data: dict) -> RcDetalleEntry:
+        raise NotImplementedError("Set Entry subclass in derived class.")
+
+
+class RcvCompraRegistroCsvRowSchema(RcvCompraCsvRowSchema):
+    ###########################################################################
+    # Fields
+    ###########################################################################
+
+    fecha_acuse_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        allow_none=True,
+        data_key='Fecha Acuse',
+    )
+    tabacos_puros = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Tabacos Puros',
+    )
+    tabacos_cigarrillos = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Tabacos Cigarrillos',
+    )
+    tabacos_elaborados = marshmallow.fields.Integer(
+        required=False,
+        allow_none=True,
+        data_key='Tabacos Elaborados',
+    )
+
+    @marshmallow.pre_load
+    def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
+        in_data = super().preprocess(in_data, **kwargs)
+        # note: required fields checks are run later on automatically thus we may not assume that
+        #   values of required fields (`required=True`) exist.
 
         # Fix missing/default values.
         if 'Fecha Acuse' in in_data:
@@ -985,12 +1059,32 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
             emisor_rut: Rut = data['emisor_rut']
             tipo_docto = data['tipo_docto']
             folio: int = data['folio']
+            tipo_compra: str = data['tipo_compra']
             fecha_emision_date: date = data['fecha_emision_date']
             receptor_rut: Rut = data['receptor_rut']
             monto_total: int = data['monto_total']
             emisor_razon_social: str = data['emisor_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
-            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']
+            monto_exento: int = data['monto_exento']
+            monto_neto: int = data['monto_neto']
+            monto_iva_recuperable: Optional[int] = data.get('monto_iva_recuperable')
+            monto_iva_no_recuperable: Optional[int] = data.get('monto_iva_no_recuperable')
+            codigo_iva_no_rec: Optional[str] = data.get('codigo_iva_no_rec')
+            monto_neto_activo_fijo: Optional[int] = data.get('monto_neto_activo_fijo')
+            iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
+            iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
+            impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
+            iva_no_retenido: int = data['iva_no_retenido']
+            nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
+                'nce_o_nde_sobre_factura_de_compra'
+            )
+            codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
+            valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
+            tasa_otro_impuesto: Optional[float] = data.get('tasa_otro_impuesto')
+            fecha_acuse_dt: Optional[datetime] = data.get('fecha_acuse_dt')
+            tabacos_puros: Optional[int] = data.get('tabacos_puros')
+            tabacos_cigarrillos: Optional[int] = data.get('tabacos_cigarrillos')
+            tabacos_elaborados: Optional[int] = data.get('tabacos_elaborados')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -999,12 +1093,30 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
                 emisor_rut=emisor_rut,
                 tipo_docto=tipo_docto,
                 folio=folio,
+                tipo_compra=tipo_compra,
                 fecha_emision_date=fecha_emision_date,
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
+                monto_exento=monto_exento,
+                monto_neto=monto_neto,
+                monto_iva_recuperable=monto_iva_recuperable,
+                monto_iva_no_recuperable=monto_iva_no_recuperable,
+                codigo_iva_no_rec=codigo_iva_no_rec,
+                monto_neto_activo_fijo=monto_neto_activo_fijo,
+                iva_activo_fijo=iva_activo_fijo,
+                iva_uso_comun=iva_uso_comun,
+                impto_sin_derecho_a_credito=impto_sin_derecho_a_credito,
+                iva_no_retenido=iva_no_retenido,
+                nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
+                codigo_otro_impuesto=codigo_otro_impuesto,
+                valor_otro_impuesto=valor_otro_impuesto,
+                tasa_otro_impuesto=tasa_otro_impuesto,
                 fecha_acuse_dt=fecha_acuse_dt,
+                tabacos_puros=tabacos_puros,
+                tabacos_cigarrillos=tabacos_cigarrillos,
+                tabacos_elaborados=tabacos_elaborados,
             )
         except (TypeError, ValueError):
             raise
@@ -1012,18 +1124,84 @@ class RcvCompraRegistroCsvRowSchema(_RcvCsvRowSchemaBase):
         return detalle_entry
 
 
-class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
+class RcvCompraNoIncluirCsvRowSchema(RcvCompraCsvRowSchema):
+    ###########################################################################
+    # Fields
+    ###########################################################################
+
+    fecha_acuse_dt = marshmallow.fields.DateTime(
+        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
+        required=True,
+        allow_none=True,
+        data_key='Fecha Acuse',
+    )
+
+    @marshmallow.pre_load
+    def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
+        in_data = super().preprocess(in_data, **kwargs)
+        # note: required fields checks are run later on automatically thus we may not assume that
+        #   values of required fields (`required=True`) exist.
+
+        # Fix missing/default values.
+        if 'Fecha Acuse' in in_data:
+            if in_data['Fecha Acuse'] == '':
+                in_data['Fecha Acuse'] = None
+
+        return in_data
+
+    @marshmallow.post_load
+    def postprocess(self, data: dict, **kwargs: Any) -> dict:
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13'
+        data['fecha_recepcion_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+            dt=data['fecha_recepcion_dt'], tz=self.FIELD_FECHA_RECEPCION_DT_TZ
+        )
+        # >>> data['fecha_recepcion_dt'].isoformat()
+        # '2018-10-23T01:54:13-03:00'
+        # >>> data['fecha_recepcion_dt'].astimezone(pytz.UTC).isoformat()
+        # '2018-10-23T04:54:13+00:00'
+
+        if data['fecha_acuse_dt']:
+            data['fecha_acuse_dt'] = tz_utils.convert_naive_dt_to_tz_aware(
+                dt=data['fecha_acuse_dt'], tz=self.FIELD_FECHA_ACUSE_DT_TZ
+            )
+
+        # note: to express this value in another timezone (but the value does not change), do
+        #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
+
+        # Remove leading and trailing whitespace.
+        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
+
+        return data
+
     def to_detalle_entry(self, data: dict) -> RcNoIncluirDetalleEntry:
         try:
             emisor_rut: Rut = data['emisor_rut']
             tipo_docto = data['tipo_docto']
             folio: int = data['folio']
+            tipo_compra: str = data['tipo_compra']
             fecha_emision_date: date = data['fecha_emision_date']
             receptor_rut: Rut = data['receptor_rut']
             monto_total: int = data['monto_total']
             emisor_razon_social: str = data['emisor_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
-            fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']
+            monto_exento: int = data['monto_exento']
+            monto_neto: int = data['monto_neto']
+            monto_iva_recuperable: Optional[int] = data.get('monto_iva_recuperable')
+            monto_iva_no_recuperable: Optional[int] = data.get('monto_iva_no_recuperable')
+            codigo_iva_no_rec: Optional[str] = data.get('codigo_iva_no_rec')
+            monto_neto_activo_fijo: Optional[int] = data.get('monto_neto_activo_fijo')
+            iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
+            iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
+            impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
+            iva_no_retenido: int = data['iva_no_retenido']
+            nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
+                'nce_o_nde_sobre_factura_de_compra'
+            )
+            codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
+            valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
+            tasa_otro_impuesto: Optional[float] = data.get('tasa_otro_impuesto')
+            fecha_acuse_dt: Optional[datetime] = data.get('fecha_acuse_dt')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -1032,11 +1210,26 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
                 emisor_rut=emisor_rut,
                 tipo_docto=tipo_docto,
                 folio=folio,
+                tipo_compra=tipo_compra,
                 fecha_emision_date=fecha_emision_date,
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
+                monto_exento=monto_exento,
+                monto_neto=monto_neto,
+                monto_iva_recuperable=monto_iva_recuperable,
+                monto_iva_no_recuperable=monto_iva_no_recuperable,
+                codigo_iva_no_rec=codigo_iva_no_rec,
+                monto_neto_activo_fijo=monto_neto_activo_fijo,
+                iva_activo_fijo=iva_activo_fijo,
+                iva_uso_comun=iva_uso_comun,
+                impto_sin_derecho_a_credito=impto_sin_derecho_a_credito,
+                iva_no_retenido=iva_no_retenido,
+                nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
+                codigo_otro_impuesto=codigo_otro_impuesto,
+                valor_otro_impuesto=valor_otro_impuesto,
+                tasa_otro_impuesto=tasa_otro_impuesto,
                 fecha_acuse_dt=fecha_acuse_dt,
             )
         except (TypeError, ValueError):
@@ -1045,57 +1238,13 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraRegistroCsvRowSchema):
         return detalle_entry
 
 
-class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
-    FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
+class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
     FIELD_FECHA_RECLAMO_DT_TZ = SII_OFFICIAL_TZ
-
-    ###########################################################################
-    # basic fields
-    ###########################################################################
-
-    emisor_rut = mm_fields.RutField(
-        required=True,
-        data_key='RUT Proveedor',
-    )
-    tipo_docto = mm_fields.RcvTipoDoctoField(
-        required=True,
-        data_key='Tipo Doc',
-    )
-    folio = marshmallow.fields.Integer(
-        required=True,
-        data_key='Folio',
-    )
-    fecha_emision_date = mm_utils.CustomMarshmallowDateField(
-        format='%d/%m/%Y',  # e.g. '22/10/2018'
-        required=True,
-        data_key='Fecha Docto',
-    )
-    monto_total = marshmallow.fields.Integer(
-        required=True,
-        data_key='Monto Total',
-    )
-    emisor_razon_social = marshmallow.fields.String(
-        required=True,
-        data_key='Razon Social',
-    )
-
-    ###########################################################################
-    # fields whose value is set using data passed in the schema context
-    ###########################################################################
-
-    receptor_rut = mm_fields.RutField(
-        required=True,
-    )
 
     ###########################################################################
     # extra fields: not included in the returned struct
     ###########################################################################
 
-    fecha_recepcion_dt = marshmallow.fields.DateTime(
-        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
-        required=True,
-        data_key='Fecha Recepcion',
-    )
     fecha_reclamo_dt = marshmallow.fields.DateTime(
         # note: for some reason the rows with 'tipo_docto' equal to
         #   '<RcvTipoDocto.NOTA_CREDITO_ELECTRONICA: 61>' (and maybe others as well) do not
@@ -1109,11 +1258,6 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
     @marshmallow.pre_load
     def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
         in_data = super().preprocess(in_data, **kwargs)
-        # note: required fields checks are run later on automatically thus we may not assume that
-        #   values of required fields (`required=True`) exist.
-
-        # Set field value only if it was not in the input data.
-        in_data.setdefault('receptor_rut', self.context['receptor_rut'])
 
         # Fix missing/default values.
         # note: for some reason the rows with 'tipo_docto' equal to
@@ -1155,12 +1299,29 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
             emisor_rut: Rut = data['emisor_rut']
             tipo_docto = data['tipo_docto']
             folio: int = data['folio']
+            tipo_compra: str = data['tipo_compra']
             fecha_emision_date: date = data['fecha_emision_date']
             receptor_rut: Rut = data['receptor_rut']
             monto_total: int = data['monto_total']
             emisor_razon_social: str = data['emisor_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
-            fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']
+            monto_exento: int = data['monto_exento']
+            monto_neto: int = data['monto_neto']
+            monto_iva_recuperable: Optional[int] = data.get('monto_iva_recuperable')
+            monto_iva_no_recuperable: Optional[int] = data.get('monto_iva_no_recuperable')
+            codigo_iva_no_rec: Optional[str] = data.get('codigo_iva_no_rec')
+            monto_neto_activo_fijo: Optional[int] = data.get('monto_neto_activo_fijo')
+            iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
+            iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
+            impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
+            iva_no_retenido: int = data['iva_no_retenido']
+            nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
+                'nce_o_nde_sobre_factura_de_compra'
+            )
+            codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
+            valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
+            tasa_otro_impuesto: Optional[float] = data.get('tasa_otro_impuesto')
+            fecha_reclamo_dt: Optional[datetime] = data.get('fecha_reclamo_dt')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -1169,11 +1330,26 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
                 emisor_rut=emisor_rut,
                 tipo_docto=tipo_docto,
                 folio=folio,
+                tipo_compra=tipo_compra,
                 fecha_emision_date=fecha_emision_date,
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
+                monto_exento=monto_exento,
+                monto_neto=monto_neto,
+                monto_iva_recuperable=monto_iva_recuperable,
+                monto_iva_no_recuperable=monto_iva_no_recuperable,
+                codigo_iva_no_rec=codigo_iva_no_rec,
+                monto_neto_activo_fijo=monto_neto_activo_fijo,
+                iva_activo_fijo=iva_activo_fijo,
+                iva_uso_comun=iva_uso_comun,
+                impto_sin_derecho_a_credito=impto_sin_derecho_a_credito,
+                iva_no_retenido=iva_no_retenido,
+                nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
+                codigo_otro_impuesto=codigo_otro_impuesto,
+                valor_otro_impuesto=valor_otro_impuesto,
+                tasa_otro_impuesto=tasa_otro_impuesto,
                 fecha_reclamo_dt=fecha_reclamo_dt,
             )
         except (TypeError, ValueError):
@@ -1182,74 +1358,7 @@ class RcvCompraReclamadoCsvRowSchema(_RcvCsvRowSchemaBase):
         return detalle_entry
 
 
-class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
-    FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
-    FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
-
-    ###########################################################################
-    # basic fields
-    ###########################################################################
-
-    emisor_rut = mm_fields.RutField(
-        required=True,
-        data_key='RUT Proveedor',
-    )
-    tipo_docto = mm_fields.RcvTipoDoctoField(
-        required=True,
-        data_key='Tipo Doc',
-    )
-    folio = marshmallow.fields.Integer(
-        required=True,
-        data_key='Folio',
-    )
-    fecha_emision_date = mm_utils.CustomMarshmallowDateField(
-        format='%d/%m/%Y',  # e.g. '22/10/2018'
-        required=True,
-        data_key='Fecha Docto',
-    )
-    monto_total = marshmallow.fields.Integer(
-        required=True,
-        data_key='Monto Total',
-    )
-    emisor_razon_social = marshmallow.fields.String(
-        required=True,
-        data_key='Razon Social',
-    )
-
-    ###########################################################################
-    # fields whose value is set using data passed in the schema context
-    ###########################################################################
-
-    receptor_rut = mm_fields.RutField(
-        required=True,
-    )
-
-    ###########################################################################
-    # extra fields: not included in the returned struct
-    ###########################################################################
-
-    fecha_recepcion_dt = marshmallow.fields.DateTime(
-        format='%d/%m/%Y %H:%M:%S',  # e.g. '23/10/2018 01:54:13'
-        required=True,
-        data_key='Fecha Recepcion',
-    )
-
-    @marshmallow.pre_load
-    def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
-        in_data = super().preprocess(in_data, **kwargs)
-        # note: required fields checks are run later on automatically thus we may not assume that
-        #   values of required fields (`required=True`) exist.
-
-        # Set field value only if it was not in the input data.
-        in_data.setdefault('receptor_rut', self.context['receptor_rut'])
-
-        # Fix missing/default values.
-        if 'Fecha Acuse' in in_data:
-            if in_data['Fecha Acuse'] == '':
-                in_data['Fecha Acuse'] = None
-
-        return in_data
-
+class RcvCompraPendienteCsvRowSchema(RcvCompraCsvRowSchema):
     @marshmallow.post_load
     def postprocess(self, data: dict, **kwargs: Any) -> dict:
         # >>> data['fecha_recepcion_dt'].isoformat()
@@ -1275,11 +1384,28 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
             emisor_rut: Rut = data['emisor_rut']
             tipo_docto = data['tipo_docto']
             folio: int = data['folio']
+            tipo_compra: str = data['tipo_compra']
             fecha_emision_date: date = data['fecha_emision_date']
             receptor_rut: Rut = data['receptor_rut']
             monto_total: int = data['monto_total']
             emisor_razon_social: str = data['emisor_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
+            monto_exento: int = data['monto_exento']
+            monto_neto: int = data['monto_neto']
+            monto_iva_recuperable: Optional[int] = data.get('monto_iva_recuperable')
+            monto_iva_no_recuperable: Optional[int] = data.get('monto_iva_no_recuperable')
+            codigo_iva_no_rec: Optional[str] = data.get('codigo_iva_no_rec')
+            monto_neto_activo_fijo: Optional[int] = data.get('monto_neto_activo_fijo')
+            iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
+            iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
+            impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
+            iva_no_retenido: int = data['iva_no_retenido']
+            nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
+                'nce_o_nde_sobre_factura_de_compra'
+            )
+            codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
+            valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
+            tasa_otro_impuesto: Optional[float] = data.get('tasa_otro_impuesto')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -1288,11 +1414,26 @@ class RcvCompraPendienteCsvRowSchema(_RcvCsvRowSchemaBase):
                 emisor_rut=emisor_rut,
                 tipo_docto=tipo_docto,
                 folio=folio,
+                tipo_compra=tipo_compra,
                 fecha_emision_date=fecha_emision_date,
                 receptor_rut=receptor_rut,
                 monto_total=monto_total,
                 emisor_razon_social=emisor_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
+                monto_exento=monto_exento,
+                monto_neto=monto_neto,
+                monto_iva_recuperable=monto_iva_recuperable,
+                monto_iva_no_recuperable=monto_iva_no_recuperable,
+                codigo_iva_no_rec=codigo_iva_no_rec,
+                monto_neto_activo_fijo=monto_neto_activo_fijo,
+                iva_activo_fijo=iva_activo_fijo,
+                iva_uso_comun=iva_uso_comun,
+                impto_sin_derecho_a_credito=impto_sin_derecho_a_credito,
+                iva_no_retenido=iva_no_retenido,
+                nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
+                codigo_otro_impuesto=codigo_otro_impuesto,
+                valor_otro_impuesto=valor_otro_impuesto,
+                tasa_otro_impuesto=tasa_otro_impuesto,
             )
         except (TypeError, ValueError):
             raise
