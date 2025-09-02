@@ -8,7 +8,7 @@ Parse RCV files (CSV)
 import csv
 import logging
 from datetime import date, datetime
-from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, TypeVar
 
 import marshmallow
 
@@ -30,12 +30,13 @@ from .data_models import (
 
 logger = logging.getLogger(__name__)
 
+RcvDetalleEntryType = TypeVar('RcvDetalleEntryType', bound=RcvDetalleEntry)
 
 RcvCsvFileParserType = Callable[
     [Rut, str, int, Optional[int]],
     Iterable[
         Tuple[
-            Optional[RcvDetalleEntry],
+            Optional[RcvDetalleEntryType],
             int,
             Dict[str, object],
             Dict[str, object],
@@ -431,17 +432,20 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
         for name, field_item in self.fields.items():
             data_key = field_item.data_key
             if data_key is not None and data_key in in_data.keys():
-                if isinstance(
-                    field_item,
-                    (
-                        marshmallow.fields.Integer,
-                        marshmallow.fields.Decimal,
-                        marshmallow.fields.Float,
-                        marshmallow.fields.Date,
-                        marshmallow.fields.DateTime,
-                        mm_fields.RutField,
-                    ),
-                ) and in_data[data_key] in ('', '-'):
+                if in_data[data_key] == '' or (
+                    isinstance(
+                        field_item,
+                        (
+                            marshmallow.fields.Integer,
+                            marshmallow.fields.Decimal,
+                            marshmallow.fields.Float,
+                            marshmallow.fields.Date,
+                            marshmallow.fields.DateTime,
+                            mm_fields.RutField,
+                        ),
+                    )
+                    and in_data[data_key] == '-'
+                ):
                     in_data[data_key] = None
         return in_data
 
