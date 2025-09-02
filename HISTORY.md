@@ -1,5 +1,11 @@
 # History
 
+## 0.53.0 (2025-09-02)
+
+- (PR #862, 2025-08-28) chore(deps): Bump the github-actions-production group with 5 updates
+- (PR #864, 2025-08-28) rcv: Expand "RCV Compras" CSV schemas and update field mappings
+- (PR #867, 2025-09-02) rcv: Update RCV CSV typing and RCV Ventas preprocessing
+
 ## 0.52.0 (2025-08-28)
 
 - (PR #850, 2025-08-21) chore(deps): Bump the python-development group across 1 directory with 6 updates
