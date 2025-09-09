@@ -1,5 +1,13 @@
 # History
 
+## 0.54.0 (2025-09-09)
+
+- (PR #871, 2025-09-09) rut: Use class variables for exception messages raised by `Rut`
+- (PR #873, 2025-09-09) chore(deps): Bump the python-development group across 1 directory with 2 updates
+- (PR #874, 2025-09-09) extras: Add option to validate RUT DV to Django model field `RutField`
+- (PR #875, 2025-09-09) extras: Refactor `dj_form_fields.RutField.to_python()`
+- (PR #872, 2025-09-09) chore(deps): Bump django from 4.2.23 to 4.2.24
+
 ## 0.53.0 (2025-09-02)
 
 - (PR #862, 2025-08-28) chore(deps): Bump the github-actions-production group with 5 updates
