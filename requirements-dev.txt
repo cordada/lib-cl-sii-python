@@ -40,7 +40,7 @@ click==8.0.3
     #   pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.10.4
+coverage==7.10.6
     # via -r requirements-dev.in
 cryptography==45.0.4
     # via
@@ -164,7 +164,7 @@ tomli==2.2.1
     #   tox
 tox==4.27.0
     # via -r requirements-dev.in
-twine==6.1.0
+twine==6.2.0
     # via -r requirements-dev.in
 types-html5lib==1.1.11.20241018
     # via types-lxml
