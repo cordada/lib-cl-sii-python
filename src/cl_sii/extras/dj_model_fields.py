@@ -8,7 +8,7 @@ try:
 except ImportError as exc:  # pragma: no cover
     raise ImportError("Package 'Django' is required to use this module.") from exc
 
-from typing import Any, Optional, Tuple
+from typing import Any, ClassVar, Optional, Tuple
 
 import django.core.exceptions
 import django.db.models
@@ -41,7 +41,6 @@ class RutField(django.db.models.Field):
 
     """
 
-    # TODO: add option to validate that "digito verificador" is correct.
     # TODO: implement method 'formfield'. Probably a copy of 'CharField.formfield' is fine.
 
     description = 'RUT for SII (Chile)'
@@ -50,8 +49,18 @@ class RutField(django.db.models.Field):
         'invalid_dv': "\"digito verificador\" of RUT '%(value)s' is incorrect.",
     }
     empty_strings_allowed = False
+    validate_dv_by_default: ClassVar[bool] = False
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        verbose_name: Optional[str] = None,
+        name: Optional[str] = None,
+        validate_dv: bool = validate_dv_by_default,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
+        self.validate_dv = validate_dv
+
         # note: the value saved to the DB will always be in canonical format.
         db_column_max_length = cl_sii.rut.constants.RUT_CANONICAL_MAX_LENGTH
 
@@ -62,7 +71,7 @@ class RutField(django.db.models.Field):
             raise ValueError("This field does not allow customization of 'max_length'.")
 
         kwargs['max_length'] = db_column_max_length
-        super().__init__(*args, **kwargs)
+        super().__init__(verbose_name, name, *args, **kwargs)
 
     def deconstruct(self) -> Tuple[str, str, Any, Any]:
         """
@@ -71,6 +80,10 @@ class RutField(django.db.models.Field):
         # note: this override is necessary because we have a custom constructor.
 
         name, path, args, kwargs = super().deconstruct()
+
+        if self.validate_dv != self.validate_dv_by_default:
+            kwargs['validate_dv'] = self.validate_dv
+
         del kwargs['max_length']
 
         return name, path, args, kwargs
@@ -144,8 +157,19 @@ class RutField(django.db.models.Field):
             converted_value = value
         else:
             try:
-                converted_value = Rut(value, validate_dv=False)  # type: ignore
-            except (AttributeError, TypeError, ValueError):
+                converted_value = Rut(value, validate_dv=self.validate_dv)  # type: ignore
+            except (AttributeError, TypeError, ValueError) as exc:
+                if (
+                    isinstance(exc, ValueError)
+                    and exc.args
+                    and exc.args[0] == Rut.INVALID_DV_ERROR_MESSAGE
+                ):
+                    raise django.core.exceptions.ValidationError(
+                        self.error_messages['invalid_dv'],
+                        code='invalid_dv',
+                        params={'value': value},
+                    )
+
                 raise django.core.exceptions.ValidationError(
                     self.error_messages['invalid'],
                     code='invalid',
