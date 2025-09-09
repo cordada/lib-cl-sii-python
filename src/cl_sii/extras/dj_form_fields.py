@@ -66,7 +66,7 @@ class RutField(django.forms.CharField):
         if (
             converted_value is not None
             and self.validate_dv
-            and Rut.calc_dv(converted_value.digits) != converted_value.dv
+            and not converted_value.validate_dv(raise_exception=False)
         ):
             raise django.core.exceptions.ValidationError(
                 self.error_messages['invalid_dv'],

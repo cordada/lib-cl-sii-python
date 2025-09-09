@@ -15,6 +15,7 @@ from __future__ import annotations
 import itertools
 import random
 import re
+from typing import ClassVar
 
 from . import constants
 
@@ -52,6 +53,21 @@ class Rut:
 
     """
 
+    INVALID_TYPE_ERROR_MESSAGE: ClassVar[str] = "Invalid type."
+    """
+    Error message used when the input type is not one of the accepted ones.
+    """
+
+    INVALID_RUT_ERROR_MESSAGE: ClassVar[str] = "Syntactically invalid RUT."
+    """
+    Error message used when the input is not a syntactically valid RUT.
+    """
+
+    INVALID_DV_ERROR_MESSAGE: ClassVar[str] = "RUT's \"digito verificador\" is incorrect."
+    """
+    Error message used when the RUT's "digito verificador" is incorrect.
+    """
+
     def __init__(self, value: str | Rut, validate_dv: bool = False) -> None:
         """
         Constructor.
@@ -64,17 +80,15 @@ class Rut:
         :raises TypeError:
 
         """
-        invalid_rut_msg = "Syntactically invalid RUT."
-
         if isinstance(value, Rut):
             value = value.canonical
         if not isinstance(value, str):
-            raise TypeError("Invalid type.")
+            raise TypeError(self.INVALID_TYPE_ERROR_MESSAGE)
 
         clean_value = Rut.clean_str(value)
         match_obj = constants.RUT_CANONICAL_STRICT_REGEX.match(clean_value)
         if match_obj is None:
-            raise ValueError(invalid_rut_msg, value)
+            raise ValueError(self.INVALID_RUT_ERROR_MESSAGE, value)
 
         match_groups = match_obj.groupdict()
         self._digits = match_groups['digits']
@@ -151,7 +165,7 @@ class Rut:
         """
         is_valid = self.calc_dv(self._digits) == self._dv
         if not is_valid and raise_exception:
-            raise ValueError("RUT's \"digito verificador\" is incorrect.", self.canonical)
+            raise ValueError(self.INVALID_DV_ERROR_MESSAGE, self.canonical)
         return is_valid
 
     ############################################################################
