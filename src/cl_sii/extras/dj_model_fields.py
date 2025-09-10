@@ -153,28 +153,36 @@ class RutField(django.db.models.Field):
             if the data can't be converted
 
         """
-        if value is None or isinstance(value, Rut):
+        if value is None:
             converted_value = value
-        else:
-            try:
-                converted_value = Rut(value, validate_dv=self.validate_dv)  # type: ignore
-            except (AttributeError, TypeError, ValueError) as exc:
-                if (
-                    isinstance(exc, ValueError)
-                    and exc.args
-                    and exc.args[0] == Rut.INVALID_DV_ERROR_MESSAGE
-                ):
-                    raise django.core.exceptions.ValidationError(
-                        self.error_messages['invalid_dv'],
-                        code='invalid_dv',
-                        params={'value': value},
-                    )
+            return converted_value
+        elif isinstance(value, Rut):
+            if not self.validate_dv:
+                converted_value = value
+                return converted_value
+            elif self.validate_dv and value.validate_dv(raise_exception=False):
+                converted_value = value
+                return converted_value
 
+        try:
+            converted_value = Rut(value, validate_dv=self.validate_dv)  # type: ignore
+        except (AttributeError, TypeError, ValueError) as exc:
+            if (
+                isinstance(exc, ValueError)
+                and exc.args
+                and exc.args[0] == Rut.INVALID_DV_ERROR_MESSAGE
+            ):
                 raise django.core.exceptions.ValidationError(
-                    self.error_messages['invalid'],
-                    code='invalid',
+                    self.error_messages['invalid_dv'],
+                    code='invalid_dv',
                     params={'value': value},
                 )
+
+            raise django.core.exceptions.ValidationError(
+                self.error_messages['invalid'],
+                code='invalid',
+                params={'value': value},
+            )
 
         return converted_value
 
