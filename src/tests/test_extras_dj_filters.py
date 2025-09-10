@@ -42,6 +42,10 @@ class RutFilterTest(unittest.TestCase):
         for lookup_expr in [
             'contains',
             'icontains',
+            'startswith',
+            'istartswith',
+            'endswith',
+            'iendswith',
         ]:
             with self.subTest(field_class=expected_field_class, lookup_expr=lookup_expr):
                 filter_instance = RutFilter(lookup_expr=lookup_expr)
@@ -88,6 +92,10 @@ class SiiFilterSetTest(unittest.TestCase):
         for lookup_type in [
             'contains',
             'icontains',
+            'startswith',
+            'istartswith',
+            'endswith',
+            'iendswith',
         ]:
             with self.subTest(field_class=expected_field_class, lookup_type=lookup_type):
                 filter_class, params = SiiFilterSet.filter_for_lookup(field, lookup_type)

@@ -47,6 +47,10 @@ class RutFilter(django_filters.filters.CharFilter):
     lookup_expressions_for_substrings: Sequence[str] = [
         'contains',
         'icontains',
+        'startswith',
+        'istartswith',
+        'endswith',
+        'iendswith',
     ]
 
     def __init__(
