@@ -1,5 +1,12 @@
 # History
 
+## 0.56.0 (2025-09-10)
+
+- (PR #883, 2025-09-10) extras: Add more tests for Django form field for `Rut`
+- (PR #884, 2025-09-10) extras: Improve Django filters `FILTER_FOR_DBFIELD_DEFAULTS`
+- (PR #882, 2025-09-10) extras: Django model field `RutField` does not validate DV of `Rut`
+- (PR #885, 2025-09-10) deps: Update `cryptography` from 45.0.4 to 45.0.7
+
 ## 0.55.0 (2025-09-10)
 
 - (PR #878, 2025-09-10) extras: Improve Django filter for `Rut`

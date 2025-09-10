@@ -23,8 +23,7 @@ import cl_sii.extras.dj_form_fields
 import cl_sii.extras.dj_model_fields
 
 
-FILTER_FOR_DBFIELD_DEFAULTS: Mapping[Type[django.db.models.Field], Mapping[str, object]]
-FILTER_FOR_DBFIELD_DEFAULTS = deepcopy(django_filters.filterset.FILTER_FOR_DBFIELD_DEFAULTS)
+FILTER_FOR_DBFIELD_DEFAULTS: Mapping[Type[django.db.models.Field], Mapping[str, object]] = {}
 
 
 class RutFilter(django_filters.filters.CharFilter):
@@ -90,4 +89,7 @@ class SiiFilterSet(django_filters.filterset.FilterSet):
     """
 
     FILTER_DEFAULTS: ClassVar[Mapping[Type[django.db.models.Field], Mapping[str, object]]]
-    FILTER_DEFAULTS = FILTER_FOR_DBFIELD_DEFAULTS
+    FILTER_DEFAULTS = {
+        **deepcopy(django_filters.FilterSet.FILTER_DEFAULTS),
+        **FILTER_FOR_DBFIELD_DEFAULTS,
+    }
