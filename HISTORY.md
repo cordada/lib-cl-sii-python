@@ -1,5 +1,10 @@
 # History
 
+## 0.55.0 (2025-09-10)
+
+- (PR #878, 2025-09-10) extras: Improve Django filter for `Rut`
+- (PR #879, 2025-09-10) chore(deps): Bump the github-actions-production group with 2 updates
+
 ## 0.54.0 (2025-09-09)
 
 - (PR #871, 2025-09-09) rut: Use class variables for exception messages raised by `Rut`

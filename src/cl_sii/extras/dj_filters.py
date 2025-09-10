@@ -12,8 +12,9 @@ try:
 except ImportError as exc:  # pragma: no cover
     raise ImportError("Package 'django-filter' is required to use this module.") from exc
 
+from collections.abc import Sequence
 from copy import deepcopy
-from typing import ClassVar, Mapping, Tuple, Type
+from typing import Any, ClassVar, Mapping, Type
 
 import django.db.models
 import django.forms
@@ -37,8 +38,36 @@ class RutFilter(django_filters.filters.CharFilter):
         - https://github.com/carltongibson/django-filter/blob/24.2/docs/ref/filters.txt
     """
 
-    field_class: ClassVar[Type[django.forms.Field]]
+    field_class: Type[django.forms.Field]
     field_class = cl_sii.extras.dj_form_fields.RutField
+
+    field_class_for_substrings: Type[django.forms.Field]
+    field_class_for_substrings = django_filters.filters.CharFilter.field_class
+
+    lookup_expressions_for_substrings: Sequence[str] = [
+        'contains',
+        'icontains',
+        'startswith',
+        'istartswith',
+        'endswith',
+        'iendswith',
+    ]
+
+    def __init__(
+        self,
+        field_name: Any = None,
+        lookup_expr: Any = None,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
+        if lookup_expr in self.lookup_expressions_for_substrings:
+            # Lookups that can be used to search for substrings will not always
+            # work with the default field class because some substrings cannot
+            # be converted to instances of class `Rut`. For example,
+            # `…__contains="803"` fails because `Rut("803")` raises a `ValueError`.
+            self.field_class = self.field_class_for_substrings
+
+        super().__init__(field_name, lookup_expr, *args, **kwargs)
 
 
 FILTER_FOR_DBFIELD_DEFAULTS = {
@@ -62,18 +91,3 @@ class SiiFilterSet(django_filters.filterset.FilterSet):
 
     FILTER_DEFAULTS: ClassVar[Mapping[Type[django.db.models.Field], Mapping[str, object]]]
     FILTER_DEFAULTS = FILTER_FOR_DBFIELD_DEFAULTS
-
-    @classmethod
-    def filter_for_lookup(
-        cls, field: django.db.models.Field, lookup_type: str
-    ) -> Tuple[Type[django_filters.filters.Filter], Mapping[str, object]]:
-        filter_class, params = super().filter_for_lookup(field, lookup_type)
-
-        # Override RUT containment lookups.
-        if isinstance(field, cl_sii.extras.dj_model_fields.RutField) and lookup_type in (
-            'contains',
-            'icontains',
-        ):
-            filter_class, params = django_filters.filters.CharFilter, {}
-
-        return filter_class, params
