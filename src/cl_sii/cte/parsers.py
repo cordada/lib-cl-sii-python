@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 
-from .data_models import LegalRepresentative, TaxpayerProvidedInfo
+from .data_models import LastFiledDocument, LegalRepresentative, TaxpayerData, TaxpayerProvidedInfo
 
 
 def parse_taxpayer_provided_info(html_content: str) -> TaxpayerProvidedInfo:
@@ -88,4 +90,89 @@ def parse_taxpayer_provided_info(html_content: str) -> TaxpayerProvidedInfo:
         legal_representatives=legal_representatives,
         company_formation=company_formation,
         participation_in_existing_companies=participation_in_companies,
+    )
+
+
+def parse_taxpayer_data(html_content: str) -> TaxpayerData:
+    """
+    Parse the CTE HTML content to extract the content of the section:
+    "Datos del Contribuyente"
+
+    Args:
+        html_content: HTML string containing the taxpayer information table
+
+    Returns:
+        TaxpayerData instance with the parsed data
+    """
+    soup = BeautifulSoup(html_content, 'html.parser')
+    table = soup.find('table', id='tbl_dbcontribuyente')
+    if not table:
+        raise ValueError("Could not find 'Datos del Contribuyente' table in HTML")
+
+    fecha_inicio_elem = table.find(id='td_fecha_inicio')  # type: ignore[attr-defined]
+    if fecha_inicio_elem:
+        start_of_activities_date = (
+            datetime.strptime(fecha_inicio_elem.get_text(strip=True), "%d-%m-%Y").date()
+            if fecha_inicio_elem.get_text(strip=True)
+            else None
+        )
+    else:
+        start_of_activities_date = None
+
+    actividades_elem = table.find(id='td_actividades')  # type: ignore[attr-defined]
+    if actividades_elem:
+        economic_activities = actividades_elem.get_text(separator="\n", strip=True)
+    else:
+        economic_activities = ""
+
+    categoria_elem = table.find(id='td_categoria')  # type: ignore[attr-defined]
+    if categoria_elem:
+        tax_category = categoria_elem.get_text(strip=True)
+    else:
+        tax_category = ""
+
+    domicilio_elem = table.find(id='td_domicilio')  # type: ignore[attr-defined]
+    if domicilio_elem:
+        address = domicilio_elem.get_text(strip=True)
+    else:
+        address = ""
+
+    # Sucursales
+    branches = []
+    sucursales_row = table.find(  # type: ignore[attr-defined]
+        'td',
+        string=lambda s: s and 'Sucursales:' in s,
+    )
+    if sucursales_row:
+        sucursales_td = sucursales_row.find_next_sibling('td')
+        if sucursales_td:
+            branches_text = sucursales_td.get_text(separator="\n", strip=True)
+            branches = [b for b in branches_text.split("\n") if b]
+
+    # Últimos documentos timbrados
+    last_filed_documents = []
+    tim_nombre_elem = table.find(id='td_tim_nombre')  # type: ignore[attr-defined]
+    tim_fecha_elem = table.find(id='td_tim_fecha')  # type: ignore[attr-defined]
+    if tim_nombre_elem and tim_fecha_elem:
+        names = tim_nombre_elem.get_text(separator="\n", strip=True).split("\n")
+        dates = tim_fecha_elem.get_text(separator="\n", strip=True).split("\n")
+        for name, date_str in zip(names, dates):
+            if name and date_str:
+                doc_date = datetime.strptime(date_str, "%d-%m-%Y").date()
+                last_filed_documents.append(LastFiledDocument(name=name, date=doc_date))
+
+    # Observaciones tributarias
+    tax_observations = None
+    observaciones_elem = table.find(id='td_observaciones')  # type: ignore[attr-defined]
+    if observaciones_elem:
+        tax_observations = observaciones_elem.get_text(strip=True)
+
+    return TaxpayerData(
+        start_of_activities_date=start_of_activities_date,
+        economic_activities=economic_activities,
+        tax_category=tax_category,
+        address=address,
+        branches=branches,
+        last_filed_documents=last_filed_documents,
+        tax_observations=tax_observations,
     )
