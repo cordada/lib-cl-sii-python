@@ -1263,8 +1263,9 @@ class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
         # note: for some reason the rows with 'tipo_docto' equal to
         #   '<RcvTipoDocto.NOTA_CREDITO_ELECTRONICA: 61>' (and maybe others as well) do not
         #   have this field set (always? we do not know).
-        if 'Fecha Reclamo' in in_data:
-            if in_data['Fecha Reclamo'] == '' or 'null' in in_data['Fecha Reclamo']:
+        if 'Fecha Reclamo' in in_data and in_data['Fecha Reclamo'] is not None:
+            value = in_data['Fecha Reclamo']
+            if isinstance(value, str) and (value == '' or 'null' in value):
                 in_data['Fecha Reclamo'] = None
 
         return in_data
