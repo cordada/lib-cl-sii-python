@@ -1074,7 +1074,7 @@ class RcvCompraRegistroCsvRowSchema(RcvCompraCsvRowSchema):
             iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
             iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
             impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
-            iva_no_retenido: int = data['iva_no_retenido']
+            iva_no_retenido: Optional[int] = data.get('iva_no_retenido')
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
@@ -1194,7 +1194,7 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraCsvRowSchema):
             iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
             iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
             impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
-            iva_no_retenido: int = data['iva_no_retenido']
+            iva_no_retenido: Optional[int] = data.get('iva_no_retenido')
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
@@ -1314,7 +1314,7 @@ class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
             iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
             iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
             impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
-            iva_no_retenido: int = data['iva_no_retenido']
+            iva_no_retenido: Optional[int] = data.get('iva_no_retenido')
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
@@ -1399,7 +1399,7 @@ class RcvCompraPendienteCsvRowSchema(RcvCompraCsvRowSchema):
             iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
             iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
             impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
-            iva_no_retenido: int = data['iva_no_retenido']
+            iva_no_retenido: Optional[int] = data.get('iva_no_retenido')
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
