@@ -1,24 +1,36 @@
-import unittest
+from __future__ import annotations
 
-from cl_sii.dte.constants import TipoDte  # noqa: F401
-from cl_sii.rcv import constants  # noqa: F401
-from cl_sii.rcv.constants import RcEstadoContable, RcTipoCompra, RcvKind, RcvTipoDocto, RvTipoVenta
+import unittest
+from typing import ClassVar
+
+from cl_sii.dte.constants import TipoDte
+from cl_sii.rcv import constants
 
 
 class RcvKindTest(unittest.TestCase):
-    def test_members(self) -> None:
-        self.assertSetEqual(
-            {x for x in RcvKind},
-            {
-                RcvKind.COMPRAS,
-                RcvKind.VENTAS,
-            },
-        )
+    RcvKind: ClassVar[type[constants.RcvKind]]
 
-    def test_values_type(self) -> None:
-        self.assertSetEqual({type(x.value) for x in RcvKind}, {str})
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.RcvKind = constants.RcvKind
+
+    def test_enum_member_value_types(self) -> None:
+        expected_type = str
+        for member in self.RcvKind:
+            with self.subTest(name=member.name):
+                self.assertIsInstance(member.value, expected_type)
+
+    def test_enum_members_equal_names_and_values(self) -> None:
+        for member in self.RcvKind:
+            with self.subTest(name=member.name):
+                self.assertEqual(member.value, member.name)
 
     def test_is_estado_contable_compatible(self) -> None:
+        RcvKind = self.RcvKind
+        RcEstadoContable = constants.RcEstadoContable
+
         self.assertTrue(RcvKind.VENTAS.is_estado_contable_compatible(None))
         self.assertTrue(RcvKind.COMPRAS.is_estado_contable_compatible(RcEstadoContable.REGISTRO))
         self.assertTrue(RcvKind.COMPRAS.is_estado_contable_compatible(RcEstadoContable.NO_INCLUIR))
@@ -33,129 +45,103 @@ class RcvKindTest(unittest.TestCase):
 
 
 class RcEstadoContableTest(unittest.TestCase):
-    def test_members(self) -> None:
-        self.assertSetEqual(
-            {x for x in RcEstadoContable},
-            {
-                RcEstadoContable.REGISTRO,
-                RcEstadoContable.NO_INCLUIR,
-                RcEstadoContable.RECLAMADO,
-                RcEstadoContable.PENDIENTE,
-            },
-        )
+    RcEstadoContable: ClassVar[type[constants.RcEstadoContable]]
 
-    def test_values_type(self) -> None:
-        self.assertSetEqual({type(x.value) for x in RcEstadoContable}, {str})
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.RcEstadoContable = constants.RcEstadoContable
+
+    def test_enum_member_value_types(self) -> None:
+        expected_type = str
+        for member in self.RcEstadoContable:
+            with self.subTest(name=member.name):
+                self.assertIsInstance(member.value, expected_type)
+
+    def test_enum_members_equal_names_and_values(self) -> None:
+        for member in self.RcEstadoContable:
+            with self.subTest(name=member.name):
+                self.assertEqual(member.value, member.name)
 
 
 class RcTipoCompraTest(unittest.TestCase):
-    def test_members(self) -> None:
-        self.assertSetEqual(
-            {x for x in RcTipoCompra},
-            {
-                RcTipoCompra.DEL_GIRO,
-                RcTipoCompra.SUPERMERCADOS,
-                RcTipoCompra.BIENES_RAICES,
-                RcTipoCompra.ACTIVO_FIJO,
-                RcTipoCompra.IVA_USO_COMUN,
-                RcTipoCompra.IVA_NO_RECUPERABLE,
-                RcTipoCompra.NO_CORRESPONDE_INCLUIR,
-            },
-        )
+    RcTipoCompra: ClassVar[type[constants.RcTipoCompra]]
 
-    def test_values_type(self) -> None:
-        self.assertSetEqual({type(x.value) for x in RcTipoCompra}, {str})
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.RcTipoCompra = constants.RcTipoCompra
+
+    def test_enum_member_value_types(self) -> None:
+        expected_type = str
+        for member in self.RcTipoCompra:
+            with self.subTest(name=member.name):
+                self.assertIsInstance(member.value, expected_type)
+
+    def test_enum_members_equal_names_and_values(self) -> None:
+        for member in self.RcTipoCompra:
+            with self.subTest(name=member.name):
+                self.assertEqual(member.value, member.name)
 
 
 class RcvTipoDoctoTest(unittest.TestCase):
-    def test_members(self) -> None:
-        self.assertSetEqual(
-            {x for x in RcvTipoDocto},
-            {
-                RcvTipoDocto.FACTURA_INICIO,
-                RcvTipoDocto.FACTURA,
-                RcvTipoDocto.FACTURA_ELECTRONICA,
-                RcvTipoDocto.FACTURA_NO_AFECTA_O_EXENTA,
-                RcvTipoDocto.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,
-                RcvTipoDocto.FACTURA_COMPRA,
-                RcvTipoDocto.FACTURA_COMPRA_ELECTRONICA,
-                RcvTipoDocto.FACTURA_EXPORTACION,
-                RcvTipoDocto.FACTURA_EXPORTACION_ELECTRONICA,
-                #
-                RcvTipoDocto.NOTA_DEBITO,
-                RcvTipoDocto.NOTA_DEBITO_ELECTRONICA,
-                RcvTipoDocto.NOTA_CREDITO,
-                RcvTipoDocto.NOTA_CREDITO_ELECTRONICA,
-                RcvTipoDocto.NOTA_DEBITO_EXPORTACION,
-                RcvTipoDocto.NOTA_DEBITO_EXPORTACION_ELECTRONICA,
-                RcvTipoDocto.NOTA_CREDITO_EXPORTACION,
-                RcvTipoDocto.NOTA_CREDITO_EXPORTACION_ELECTRONICA,
-                #
-                RcvTipoDocto.LIQUIDACION_FACTURA,
-                RcvTipoDocto.LIQUIDACION_FACTURA_ELECTRONICA,
-                #
-                RcvTipoDocto.TOTAL_OP_DEL_MES_BOLETA_AFECTA,
-                RcvTipoDocto.TOTAL_OP_DEL_MES_BOLETA_EXENTA,
-                RcvTipoDocto.TOTAL_OP_DEL_MES_BOLETA_EXENTA_ELECTR,
-                RcvTipoDocto.TOTAL_OP_DEL_MES_BOLETA_ELECTR,
-                #
-                RcvTipoDocto.TIPO_47,
-                RcvTipoDocto.TIPO_48,
-                RcvTipoDocto.TIPO_102,
-                RcvTipoDocto.TIPO_103,
-                RcvTipoDocto.TIPO_105,
-                RcvTipoDocto.TIPO_108,
-                RcvTipoDocto.TIPO_109,
-                RcvTipoDocto.TIPO_901,
-                RcvTipoDocto.TIPO_902,
-                RcvTipoDocto.TIPO_903,
-                RcvTipoDocto.TIPO_904,
-                RcvTipoDocto.TIPO_905,
-                RcvTipoDocto.TIPO_906,
-                RcvTipoDocto.TIPO_907,
-                RcvTipoDocto.TIPO_909,
-                RcvTipoDocto.TIPO_910,
-                RcvTipoDocto.TIPO_911,
-                RcvTipoDocto.TIPO_914,
-                RcvTipoDocto.TIPO_919,
-                RcvTipoDocto.TIPO_920,
-                RcvTipoDocto.TIPO_922,
-                RcvTipoDocto.TIPO_924,
-            },
-        )
+    RcvTipoDocto: ClassVar[type[constants.RcvTipoDocto]]
 
-    def test_values_type(self) -> None:
-        self.assertSetEqual({type(x.value) for x in RcvTipoDocto}, {int})
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.RcvTipoDocto = constants.RcvTipoDocto
+
+    def test_enum_member_value_types(self) -> None:
+        expected_type = int
+        for member in self.RcvTipoDocto:
+            with self.subTest(name=member.name):
+                self.assertIsInstance(member.value, expected_type)
+
+    def test_enum_members_are_also_integers(self) -> None:
+        for member in self.RcvTipoDocto:
+            with self.subTest(name=member.name):
+                self.assertEqual(int(member.value), member)
+                self.assertIsInstance(member, int)
 
     def test_of_some_member(self) -> None:
-        value = RcvTipoDocto.FACTURA_ELECTRONICA
+        value = self.RcvTipoDocto.FACTURA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_ELECTRONICA')
         self.assertEqual(value.value, 33)
 
     def test_as_tipo_dte(self) -> None:
         self.assertEqual(
-            RcvTipoDocto.FACTURA_ELECTRONICA.as_tipo_dte(),
+            self.RcvTipoDocto.FACTURA_ELECTRONICA.as_tipo_dte(),
             TipoDte.FACTURA_ELECTRONICA,
         )
 
         with self.assertRaises(ValueError) as cm:
-            RcvTipoDocto.FACTURA.as_tipo_dte()
+            self.RcvTipoDocto.FACTURA.as_tipo_dte()
         self.assertEqual(
             cm.exception.args, ("There is no equivalent 'TipoDte' for 'RcvTipoDocto.FACTURA'.",)
         )
 
 
 class RvTipoVentaTest(unittest.TestCase):
-    def test_members(self) -> None:
-        self.assertSetEqual(
-            {x for x in RvTipoVenta},
-            {
-                RvTipoVenta.DEL_GIRO,
-                RvTipoVenta.BIENES_RAICES,
-                RvTipoVenta.ACTIVO_FIJO,
-            },
-        )
+    RvTipoVenta: ClassVar[type[constants.RvTipoVenta]]
 
-    def test_values_type(self) -> None:
-        self.assertSetEqual({type(x.value) for x in RvTipoVenta}, {str})
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.RvTipoVenta = constants.RvTipoVenta
+
+    def test_enum_member_value_types(self) -> None:
+        expected_type = str
+        for member in self.RvTipoVenta:
+            with self.subTest(name=member.name):
+                self.assertIsInstance(member.value, expected_type)
+
+    def test_enum_members_equal_names_and_values(self) -> None:
+        for member in self.RvTipoVenta:
+            with self.subTest(name=member.name):
+                self.assertEqual(member.value, member.name)

@@ -526,7 +526,7 @@ class RcDetalleEntry(RcvDetalleEntry):
     Impto. Sin Derecho a Credito
     """
 
-    iva_no_retenido: int
+    iva_no_retenido: Optional[int]
     """
     IVA No Retenido
     """

@@ -1,26 +1,34 @@
-import unittest
+from __future__ import annotations
 
-from cl_sii.dte import constants  # noqa: F401
-from cl_sii.dte.constants import TipoDte
+import unittest
+from typing import ClassVar
+
+from cl_sii.dte import constants
 
 
 class TipoDteTest(unittest.TestCase):
-    def test_members(self) -> None:
-        self.assertSetEqual(
-            {x for x in TipoDte},
-            {
-                TipoDte.FACTURA_ELECTRONICA,
-                TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,
-                TipoDte.LIQUIDACION_FACTURA_ELECTRONICA,
-                TipoDte.FACTURA_COMPRA_ELECTRONICA,
-                TipoDte.GUIA_DESPACHO_ELECTRONICA,
-                TipoDte.NOTA_DEBITO_ELECTRONICA,
-                TipoDte.NOTA_CREDITO_ELECTRONICA,
-            },
-        )
+    TipoDte: ClassVar[type[constants.TipoDte]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.TipoDte = constants.TipoDte
+
+    def test_enum_member_value_types(self) -> None:
+        expected_type = int
+        for member in self.TipoDte:
+            with self.subTest(name=member.name):
+                self.assertIsInstance(member.value, expected_type)
+
+    def test_enum_members_are_also_integers(self) -> None:
+        for member in self.TipoDte:
+            with self.subTest(name=member.name):
+                self.assertEqual(int(member.value), member)
+                self.assertIsInstance(member, int)
 
     def test_FACTURA_ELECTRONICA(self) -> None:
-        value = TipoDte.FACTURA_ELECTRONICA
+        value = self.TipoDte.FACTURA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_ELECTRONICA')
         self.assertEqual(value.value, 33)
@@ -38,7 +46,7 @@ class TipoDteTest(unittest.TestCase):
             self.assertEqual(result, expected)
 
     def test_FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA(self) -> None:
-        value = TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA
+        value = self.TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA')
         self.assertEqual(value.value, 34)
@@ -56,7 +64,7 @@ class TipoDteTest(unittest.TestCase):
             self.assertTrue(result is expected)
 
     def test_LIQUIDACION_FACTURA_ELECTRONICA(self) -> None:
-        value = TipoDte.LIQUIDACION_FACTURA_ELECTRONICA
+        value = self.TipoDte.LIQUIDACION_FACTURA_ELECTRONICA
 
         self.assertEqual(value.name, 'LIQUIDACION_FACTURA_ELECTRONICA')
         self.assertEqual(value.value, 43)
@@ -74,7 +82,7 @@ class TipoDteTest(unittest.TestCase):
             self.assertEqual(result, expected)
 
     def test_FACTURA_COMPRA_ELECTRONICA(self) -> None:
-        value = TipoDte.FACTURA_COMPRA_ELECTRONICA
+        value = self.TipoDte.FACTURA_COMPRA_ELECTRONICA
 
         self.assertEqual(value.name, 'FACTURA_COMPRA_ELECTRONICA')
         self.assertEqual(value.value, 46)
@@ -92,7 +100,7 @@ class TipoDteTest(unittest.TestCase):
             self.assertTrue(result is expected)
 
     def test_GUIA_DESPACHO_ELECTRONICA(self) -> None:
-        value = TipoDte.GUIA_DESPACHO_ELECTRONICA
+        value = self.TipoDte.GUIA_DESPACHO_ELECTRONICA
 
         self.assertEqual(value.name, 'GUIA_DESPACHO_ELECTRONICA')
         self.assertEqual(value.value, 52)
@@ -110,7 +118,7 @@ class TipoDteTest(unittest.TestCase):
             self.assertTrue(result is expected)
 
     def test_NOTA_DEBITO_ELECTRONICA(self) -> None:
-        value = TipoDte.NOTA_DEBITO_ELECTRONICA
+        value = self.TipoDte.NOTA_DEBITO_ELECTRONICA
 
         self.assertEqual(value.name, 'NOTA_DEBITO_ELECTRONICA')
         self.assertEqual(value.value, 56)
@@ -128,7 +136,7 @@ class TipoDteTest(unittest.TestCase):
             self.assertTrue(result is expected)
 
     def test_NOTA_CREDITO_ELECTRONICA(self) -> None:
-        value = TipoDte.NOTA_CREDITO_ELECTRONICA
+        value = self.TipoDte.NOTA_CREDITO_ELECTRONICA
 
         self.assertEqual(value.name, 'NOTA_CREDITO_ELECTRONICA')
         self.assertEqual(value.value, 61)

@@ -1074,7 +1074,7 @@ class RcvCompraRegistroCsvRowSchema(RcvCompraCsvRowSchema):
             iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
             iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
             impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
-            iva_no_retenido: int = data['iva_no_retenido']
+            iva_no_retenido: Optional[int] = data.get('iva_no_retenido')
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
@@ -1194,7 +1194,7 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraCsvRowSchema):
             iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
             iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
             impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
-            iva_no_retenido: int = data['iva_no_retenido']
+            iva_no_retenido: Optional[int] = data.get('iva_no_retenido')
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
@@ -1263,8 +1263,9 @@ class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
         # note: for some reason the rows with 'tipo_docto' equal to
         #   '<RcvTipoDocto.NOTA_CREDITO_ELECTRONICA: 61>' (and maybe others as well) do not
         #   have this field set (always? we do not know).
-        if 'Fecha Reclamo' in in_data:
-            if in_data['Fecha Reclamo'] == '' or 'null' in in_data['Fecha Reclamo']:
+        if 'Fecha Reclamo' in in_data and in_data['Fecha Reclamo'] is not None:
+            value = in_data['Fecha Reclamo']
+            if isinstance(value, str) and (value == '' or 'null' in value):
                 in_data['Fecha Reclamo'] = None
 
         return in_data
@@ -1314,7 +1315,7 @@ class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
             iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
             iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
             impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
-            iva_no_retenido: int = data['iva_no_retenido']
+            iva_no_retenido: Optional[int] = data.get('iva_no_retenido')
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
@@ -1399,7 +1400,7 @@ class RcvCompraPendienteCsvRowSchema(RcvCompraCsvRowSchema):
             iva_activo_fijo: Optional[int] = data.get('iva_activo_fijo')
             iva_uso_comun: Optional[int] = data.get('iva_uso_comun')
             impto_sin_derecho_a_credito: Optional[int] = data.get('impto_sin_derecho_a_credito')
-            iva_no_retenido: int = data['iva_no_retenido']
+            iva_no_retenido: Optional[int] = data.get('iva_no_retenido')
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
