@@ -1,5 +1,12 @@
 # History
 
+## 0.57.0 (2025-09-15)
+
+- (PR #888, 2025-09-10) tests: Refactor and improve constants tests
+- (PR #889, 2025-09-12) cte: Add parser for "Carpeta Tributaria Electrónica"
+- (PR #891, 2025-09-15) rcv: Make `iva_no_retenido` optional in data models and parsers
+- (PR #892, 2025-09-15) rcv: Improve checks for RCV Reclamado parser workaround
+
 ## 0.56.0 (2025-09-10)
 
 - (PR #883, 2025-09-10) extras: Add more tests for Django form field for `Rut`
