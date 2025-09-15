@@ -440,7 +440,7 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             iva_activo_fijo=0,
             iva_uso_comun=0,
             impto_sin_derecho_a_credito=0,
-            iva_no_retenido=0,
+            iva_no_retenido=None,
             tabacos_puros=0,
             tabacos_cigarrillos=0,
             tabacos_elaborados=0,
