@@ -4,7 +4,14 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-from .data_models import LastFiledDocument, LegalRepresentative, TaxpayerData, TaxpayerProvidedInfo
+from .data_models import (
+    LastFiledDocument,
+    LegalRepresentative,
+    Property,
+    TaxpayerData,
+    TaxpayerProperties,
+    TaxpayerProvidedInfo,
+)
 
 
 def parse_taxpayer_provided_info(html_content: str) -> TaxpayerProvidedInfo:
@@ -176,3 +183,54 @@ def parse_taxpayer_data(html_content: str) -> TaxpayerData:
         last_filed_documents=last_filed_documents,
         tax_observations=tax_observations,
     )
+
+
+def parse_taxpayer_properties(html_content: str) -> TaxpayerProperties:
+    """
+    Parse the CTE HTML content to extract the content of the section:
+    "Propiedades y Bienes Raíces (3)"
+
+    Args:
+        html_content: HTML string containing the taxpayer properties table
+
+    Returns:
+        TaxpayerProperties instance with the parsed data
+    """
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    # Find the main table with id="tbl_propiedades"
+    table = soup.find('table', id='tbl_propiedades')
+    if not table:
+        raise ValueError("Could not find taxpayer information table in HTML")
+
+    properties = []
+    rows = table.find_all('tr')  # type: ignore[attr-defined]
+    for row in rows[2:]:  # Skip headers rows
+
+        # Skip rows without useful data
+        cells = row.find_all('td')
+        if len(cells) < 8:
+            continue
+
+        commune = cells[0].get_text(strip=True) or None
+        role = cells[1].get_text(strip=True) or None
+        address = cells[2].get_text(strip=True) or None
+        purpose = cells[3].get_text(strip=True) or None
+        fiscal_valuation = cells[4].get_text(strip=True) or None
+        overdue_installments = cells[5].get_text(strip=True) or None
+        current_installments = cells[6].get_text(strip=True) or None
+        condition = cells[7].get_text(strip=True) or None
+
+        properties.append(
+            Property(
+                commune=commune,
+                role=role,
+                address=address,
+                purpose=purpose,
+                fiscal_valuation=fiscal_valuation,
+                overdue_installments=overdue_installments,
+                current_installments=current_installments,
+                condition=condition,
+            )
+        )
+    return TaxpayerProperties(properties=properties)
