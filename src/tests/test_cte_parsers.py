@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date
+from decimal import Decimal
 from unittest import TestCase
 
 from cl_sii.cte import data_models, parsers
@@ -42,7 +43,7 @@ class ParsersTest(TestCase):
             )
             self.assertEqual(result, expected_obj)
 
-        with self.subTest("Parsing emtpy content"):
+        with self.subTest("Parsing empty content"):
             with self.assertRaises(ValueError) as assert_raises_cm:
                 parsers.parse_taxpayer_provided_info("")
 
@@ -105,3 +106,53 @@ class ParsersTest(TestCase):
                 tax_observations=None,
             )
             self.assertEqual(result, expected_obj)
+
+    def test_parse_taxpayer_properties(self) -> None:
+        html_content = read_test_file_str_utf8('test_data/sii-cte/cte_empty_f29.html')
+
+        with self.subTest("Parsing ok"):
+            result = parsers.parse_taxpayer_properties(html_content)
+            expected_obj = data_models.TaxpayerProperties(
+                properties=[
+                    data_models.Property(
+                        commune="LAS CONDES",
+                        role="123-4",
+                        address="Av. Apoquindo 1234",
+                        purpose="HABITACIONAL",
+                        fiscal_valuation=Decimal('46550332'),
+                        overdue_installments=True,
+                        current_installments=True,
+                        condition="AFECTO",
+                    ),
+                    data_models.Property(
+                        commune="PROVIDENCIA",
+                        role="567-8",
+                        address="Calle 10 #456",
+                        purpose="COMERCIAL",
+                        fiscal_valuation=None,
+                        overdue_installments=False,
+                        current_installments=False,
+                        condition="EXENTO",
+                    ),
+                    data_models.Property(
+                        commune="ÑUÑOA",
+                        role=None,
+                        address=None,
+                        purpose="INDUSTRIAL",
+                        fiscal_valuation=Decimal('78456789'),
+                        overdue_installments=False,
+                        current_installments=False,
+                        condition="AFECTO",
+                    ),
+                ],
+            )
+            self.assertEqual(result, expected_obj)
+
+        with self.subTest("Parsing empty content"):
+            with self.assertRaises(ValueError) as assert_raises_cm:
+                parsers.parse_taxpayer_properties("")
+
+            self.assertEqual(
+                assert_raises_cm.exception.args,
+                ("Could not find taxpayer information table in HTML",),
+            )
