@@ -4,7 +4,6 @@ cl_sii "extras" / Pydantic types.
 
 from __future__ import annotations
 
-import re
 import sys
 from typing import Any, ClassVar, Pattern
 
@@ -79,12 +78,8 @@ class _RutPydanticAnnotation:
     >>> example_json_schema = example_type_adapter.json_schema()
     """
 
-    RUT_CANONICAL_STRICT_REGEX: ClassVar[Pattern] = re.compile(
-        re.sub(
-            pattern=r'\?P<\w+>',
-            repl='',
-            string=cl_sii.rut.constants.RUT_CANONICAL_STRICT_REGEX.pattern,
-        )
+    RUT_CANONICAL_STRICT_REGEX: ClassVar[Pattern] = (
+        cl_sii.rut.constants.RUT_CANONICAL_STRICT_JSON_SCHEMA_REGEX
     )
     """
     RUT (strict) regex for canonical format, without named groups.
