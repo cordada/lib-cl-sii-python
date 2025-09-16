@@ -7,6 +7,7 @@ https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura
 """
 
 import re
+from typing import Pattern
 
 import cryptography.x509
 
@@ -21,6 +22,17 @@ RUT_DIGITS_MAX_VALUE = 99999999
 """RUT digits max value."""
 RUT_DIGITS_MIN_VALUE = 1
 """RUT digits min value."""
+
+RUT_CANONICAL_STRICT_JSON_SCHEMA_REGEX: Pattern[str] = re.compile("^(\\d{1,8})-([\\dK])$")
+"""
+RUT (strict) JSON Schema regex for canonical format.
+
+This regex is compatible with JSON Schema and OpenAPI, which use the regular expression syntax from
+JavaScript (ECMA 262), which does not support Python’s named groups.
+
+.. tip:: If you need the regex as a string, for example to use it in a JSON Schema or
+    OpenAPI schema, use ``RUT_CANONICAL_STRICT_JSON_SCHEMA_REGEX.pattern``.
+"""
 
 SII_CERT_TITULAR_RUT_OID = cryptography.x509.oid.ObjectIdentifier("1.3.6.1.4.1.8321.1")
 """OID of the RUT of the certificate holder"""
