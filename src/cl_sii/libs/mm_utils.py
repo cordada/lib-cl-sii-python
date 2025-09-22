@@ -5,7 +5,6 @@ from typing import Any, Mapping, Optional, Union
 
 import marshmallow
 import marshmallow.fields
-import marshmallow.utils
 
 
 ###############################################################################
@@ -49,7 +48,7 @@ def validate_no_unexpected_input_fields(
 ###############################################################################
 
 
-class CustomMarshmallowDateField(marshmallow.fields.Field):
+class CustomMarshmallowDateField(marshmallow.fields.Field[date]):
     """
     A formatted date string.
 
@@ -70,11 +69,13 @@ class CustomMarshmallowDateField(marshmallow.fields.Field):
 
     # note: function's return type must be 'datetime.date'.
     DATEFORMAT_DESERIALIZATION_FUNCS = {
-        'iso': marshmallow.utils.from_iso_date,
-        'iso8601': marshmallow.utils.from_iso_date,
+        'iso': date.fromisoformat,
+        'iso8601': date.fromisoformat,
     }
 
     DEFAULT_FORMAT = 'iso'
+
+    SCHEMA_OPTS_VAR_NAME = 'dateformat'
 
     default_error_messages = {
         'invalid': 'Not a valid date.',
@@ -97,13 +98,15 @@ class CustomMarshmallowDateField(marshmallow.fields.Field):
         self.dateformat = format
 
     def _bind_to_schema(
-        self, field_name: str, schema: marshmallow.Schema | marshmallow.Field
+        self, field_name: str, parent: marshmallow.Schema | marshmallow.fields.Field
     ) -> None:
-        super()._bind_to_schema(field_name, schema)
-        self.dateformat = self.dateformat or schema.opts.dateformat
+        super()._bind_to_schema(field_name, parent)
+        self.dateformat = self.dateformat or getattr(
+            self.root.opts, self.SCHEMA_OPTS_VAR_NAME  # type: ignore[union-attr]
+        )
 
     def _serialize(
-        self, value: date, attr: str | None, obj: object, **kwargs: Any
+        self, value: date | None, attr: str | None, obj: object, **kwargs: Any
     ) -> Union[str, None]:
         if value is None:
             return None

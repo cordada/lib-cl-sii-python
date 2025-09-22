@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import unittest
 from typing import Callable
@@ -20,6 +22,10 @@ from cl_sii.rcv.parse_csv import (  # noqa: F401
     RcvCompraRegistroCsvRowSchema,
     RcvVentaCsvRowSchema,
     _parse_rcv_csv_file,
+    _RcvCompraCsvRowContext,
+    _RcvCompraCsvRowSchemaContext,
+    _RcvVentaCsvRowContext,
+    _RcvVentaCsvRowSchemaContext,
     parse_rcv_compra_no_incluir_csv_file,
     parse_rcv_compra_pendiente_csv_file,
     parse_rcv_compra_reclamado_csv_file,
@@ -32,10 +38,10 @@ from .utils import get_test_file_path
 
 class RcvVentaCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_ventas_row(self) -> None:
-        schema_context = dict(
-            emisor_rut=Rut('1-9'),
-        )
-        input_csv_row_schema = RcvVentaCsvRowSchema(context=schema_context)
+        schema_context: _RcvVentaCsvRowContext = {
+            'emisor_rut': Rut('1-9'),
+        }
+        input_csv_row_schema = RcvVentaCsvRowSchema()
 
         raw_data = {
             'Tipo Doc': '33',
@@ -82,7 +88,9 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
             'Tasa Otro Imp.': '',
         }
 
-        deserialized_data = input_csv_row_schema.load(raw_data)
+        with _RcvVentaCsvRowSchemaContext(schema_context):
+            deserialized_data = input_csv_row_schema.load(raw_data)
+
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RvDetalleEntry(
             emisor_rut=Rut('1-9'),
@@ -137,10 +145,10 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
 
 class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_compra_registro_row(self) -> None:
-        schema_context = dict(
-            receptor_rut=Rut('1-9'),
-        )
-        input_csv_row_schema = RcvCompraRegistroCsvRowSchema(context=schema_context)
+        schema_context: _RcvCompraCsvRowContext = {
+            'receptor_rut': Rut('1-9'),
+        }
+        input_csv_row_schema = RcvCompraRegistroCsvRowSchema()
 
         raw_data = {
             'Tipo Doc': '33',
@@ -171,7 +179,9 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
             'Tasa Otro Impuesto': '',
         }
 
-        deserialized_data = input_csv_row_schema.load(raw_data)
+        with _RcvCompraCsvRowSchemaContext(schema_context):
+            deserialized_data = input_csv_row_schema.load(raw_data)
+
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RcRegistroDetalleEntry(
             emisor_rut=Rut('12345678-5'),
@@ -212,10 +222,10 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
 
 class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_compra_no_incluir_row(self) -> None:
-        schema_context = dict(
-            receptor_rut=Rut('1-9'),
-        )
-        input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema(context=schema_context)
+        schema_context: _RcvCompraCsvRowContext = {
+            'receptor_rut': Rut('1-9'),
+        }
+        input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema()
 
         raw_data = {
             'Tipo Doc': '33',
@@ -243,7 +253,9 @@ class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
             'Tasa Otro Impuesto': '',
         }
 
-        deserialized_data = input_csv_row_schema.load(raw_data)
+        with _RcvCompraCsvRowSchemaContext(schema_context):
+            deserialized_data = input_csv_row_schema.load(raw_data)
+
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RcNoIncluirDetalleEntry(
             emisor_rut=Rut('12345678-5'),
@@ -279,10 +291,10 @@ class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
 
 class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_compra_reclamado_row(self) -> None:
-        schema_context = dict(
-            receptor_rut=Rut('1-9'),
-        )
-        input_csv_row_schema = RcvCompraReclamadoCsvRowSchema(context=schema_context)
+        schema_context: _RcvCompraCsvRowContext = {
+            'receptor_rut': Rut('1-9'),
+        }
+        input_csv_row_schema = RcvCompraReclamadoCsvRowSchema()
 
         raw_data = {
             'Tipo Doc': '33',
@@ -310,7 +322,9 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
             'Tasa Otro Impuesto': '',
         }
 
-        deserialized_data = input_csv_row_schema.load(raw_data)
+        with _RcvCompraCsvRowSchemaContext(schema_context):
+            deserialized_data = input_csv_row_schema.load(raw_data)
+
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RcReclamadoDetalleEntry(
             emisor_rut=Rut('12345678-5'),
@@ -348,10 +362,10 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
 
 class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_compra_pendiente_row(self) -> None:
-        schema_context = dict(
-            receptor_rut=Rut('1-9'),
-        )
-        input_csv_row_schema = RcvCompraPendienteCsvRowSchema(context=schema_context)
+        schema_context: _RcvCompraCsvRowContext = {
+            'receptor_rut': Rut('1-9'),
+        }
+        input_csv_row_schema = RcvCompraPendienteCsvRowSchema()
 
         raw_data = {
             'Tipo Doc': '33',
@@ -378,7 +392,9 @@ class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
             'Tasa Otro Impuesto': '',
         }
 
-        deserialized_data = input_csv_row_schema.load(raw_data)
+        with _RcvCompraCsvRowSchemaContext(schema_context):
+            deserialized_data = input_csv_row_schema.load(raw_data)
+
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RcPendienteDetalleEntry(
             emisor_rut=Rut('12345678-5'),
