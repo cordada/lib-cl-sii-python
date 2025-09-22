@@ -89,7 +89,6 @@ mypy-extensions==1.0.0
     #   mypy
 packaging==24.2
     # via
-    #   -c requirements.txt
     #   black
     #   build
     #   pyproject-api
