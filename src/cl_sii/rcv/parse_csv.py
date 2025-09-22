@@ -416,6 +416,12 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
 
     @marshmallow.pre_load
     def preprocess(self, in_data: dict, **kwargs: Any) -> dict:
+        # Convert empty strings to None for fields that allow None.
+        for field_name, field in self.fields.items():
+            data_key = field.data_key if field.data_key is not None else field_name
+            if field.allow_none and data_key in in_data and in_data[data_key] == '':
+                in_data[data_key] = None
+
         # Get required field names from the schema
         required_fields = {
             field.data_key
@@ -423,14 +429,14 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
             if field.required and field.allow_none is False
         }
         # Remove only required fields that are None or empty string
-        for field in required_fields:
+        for field in required_fields:  # type: ignore[assignment]
             if field in in_data.keys() and (
                 in_data[field] is None or str(in_data[field]).strip() == ''
             ):
                 del in_data[field]
 
         for name, field_item in self.fields.items():
-            data_key = field_item.data_key
+            data_key = field_item.data_key  # type: ignore[assignment]
             if data_key is not None and data_key in in_data.keys():
                 if in_data[data_key] == '' or (
                     isinstance(
