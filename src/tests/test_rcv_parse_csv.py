@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import unittest
+from collections.abc import Iterable, Iterator
 from typing import Callable
 from unittest import mock
 
@@ -439,6 +440,7 @@ class FunctionsTest(unittest.TestCase):
             n_rows_offset=0,
             max_n_rows=None,
         )
+        assert isinstance(items, Iterable) and isinstance(items, Iterator)
 
         expected_entry_struct = RvDetalleEntry(
             emisor_rut=Rut('1-9'),
@@ -505,6 +507,7 @@ class FunctionsTest(unittest.TestCase):
             n_rows_offset=0,
             max_n_rows=None,
         )
+        assert isinstance(items, Iterable) and isinstance(items, Iterator)
 
         # Test trailing whitespace
         entry_struct, row_ix, row_data, row_parsing_errors = next(items)
@@ -518,7 +521,7 @@ class FunctionsTest(unittest.TestCase):
         self.assertEqual(entry_struct.receptor_razon_social, 'Fake Company S.A.')
         self.assertEqual(len(row_parsing_errors), 0)
 
-    def test_parse_rcv_venta_csv_file_missing_required_fields(self):
+    def test_parse_rcv_venta_csv_file_missing_required_fields(self) -> None:
         # This CSV should have a required field (e.g., 'Folio') as an empty string
         rcv_file_path = get_test_file_path(
             'test_data/sii-rcv/RCV-venta-missing-required-fields.csv',
@@ -530,6 +533,7 @@ class FunctionsTest(unittest.TestCase):
             n_rows_offset=0,
             max_n_rows=None,
         )
+        assert isinstance(items, Iterable) and isinstance(items, Iterator)
 
         entry_struct, row_ix, row_data, row_parsing_errors = next(items)
         self.assertIsNone(entry_struct)
@@ -554,6 +558,7 @@ class FunctionsTest(unittest.TestCase):
             n_rows_offset=0,
             max_n_rows=None,
         )
+        assert isinstance(items, Iterable) and isinstance(items, Iterator)
 
         # Test trailing whitespace
         entry_struct, row_ix, row_data, row_parsing_errors = next(items)
@@ -567,7 +572,7 @@ class FunctionsTest(unittest.TestCase):
         self.assertEqual(entry_struct.emisor_razon_social, 'Fake Company S.A.')
         self.assertEqual(len(row_parsing_errors), 0)
 
-    def test_parse_rcv_venta_csv_file_conversion_error(self):
+    def test_parse_rcv_venta_csv_file_conversion_error(self) -> None:
         rcv_file_path = get_test_file_path(
             'test_data/sii-rcv/RCV-venta-rz_leading_trailing_whitespace.csv',
         )
@@ -587,6 +592,7 @@ class FunctionsTest(unittest.TestCase):
                 n_rows_offset=0,
                 max_n_rows=1,
             )
+            assert isinstance(items, Iterable) and isinstance(items, Iterator)
             entry_struct, row_ix, row_data, row_parsing_errors = next(items)
             self.assertIsNone(entry_struct)
             self.assertIn('conversion_errors', row_parsing_errors)
@@ -934,7 +940,7 @@ class FunctionsTest(unittest.TestCase):
         # TODO: implement for '_parse_rcv_csv_file'.
         pass
 
-    def test_get_rcv_csv_file_parser_returns_correct_parser(self):
+    def test_get_rcv_csv_file_parser_returns_correct_parser(self) -> None:
         from cl_sii.rcv.constants import RcEstadoContable, RcvKind
         from cl_sii.rcv.parse_csv import (
             get_rcv_csv_file_parser,
@@ -976,11 +982,11 @@ class FunctionsTest(unittest.TestCase):
             pass
 
         with self.assertRaises(Exception):
-            get_rcv_csv_file_parser(RcvKind.COMPRAS, DummyEstadoContable())
+            get_rcv_csv_file_parser(RcvKind.COMPRAS, DummyEstadoContable())  # type: ignore[arg-type] # noqa: E501
 
         # Test unknown rcv_kind
         class DummyRcvKind:
             pass
 
         with self.assertRaises(Exception):
-            get_rcv_csv_file_parser(DummyRcvKind(), None)
+            get_rcv_csv_file_parser(DummyRcvKind(), None)  # type: ignore[arg-type]
