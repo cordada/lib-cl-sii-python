@@ -424,7 +424,7 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
 
         # Get required field names from the schema
         required_fields = {
-            field.data_key
+            field.data_key if field.data_key is not None else name
             for name, field in self.fields.items()
             if field.required and field.allow_none is False
         }
@@ -436,8 +436,8 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
                 del in_data[field]
 
         for name, field_item in self.fields.items():
-            data_key = field_item.data_key  # type: ignore[assignment]
-            if data_key is not None and data_key in in_data.keys():
+            data_key = field_item.data_key if field_item.data_key is not None else name
+            if data_key in in_data.keys():
                 if in_data[data_key] == '' or (
                     isinstance(
                         field_item,
