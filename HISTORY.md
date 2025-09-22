@@ -1,5 +1,11 @@
 # History
 
+## 0.58.0 (2025-09-22)
+
+- (PR #890, 2025-09-16) cte: Add parser for "Datos del Contribuyente"
+- (PR #896, 2025-09-16) rut: Add regex for canonical RUT that is compatible with JSON Schema
+- (PR #895, 2025-09-16) cte: Add parser for "Propiedades y Bienes Raíces"
+
 ## 0.57.0 (2025-09-15)
 
 - (PR #888, 2025-09-10) tests: Refactor and improve constants tests
