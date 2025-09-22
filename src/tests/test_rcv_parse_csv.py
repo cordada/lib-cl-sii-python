@@ -45,7 +45,9 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
             'folio': 506,
             'fecha_emision_date': datetime.date(2019, 6, 4),
             'fecha_acuse_dt': None,
-            'fecha_recepcion_dt': datetime.datetime(2019, 6, 18, 17, 1, 6, tzinfo=SII_OFFICIAL_TZ),
+            'fecha_recepcion_dt': convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 18, 17, 1, 6), tz=SII_OFFICIAL_TZ
+            ),
             'fecha_reclamo_dt': None,
             'monto_exento': 0,
             'monto_neto': 1750181,
@@ -91,7 +93,9 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
             fecha_emision_date=datetime.date(2019, 6, 4),
             receptor_rut=Rut('12345678-5'),
             monto_total=2082715,
-            fecha_recepcion_dt=datetime.datetime(2019, 6, 18, 17, 1, 6, tzinfo=SII_OFFICIAL_TZ),
+            fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 18, 17, 1, 6), tz=SII_OFFICIAL_TZ
+            ),
             tipo_venta='DEL_GIRO',
             receptor_razon_social='Fake Company S.A.',
             fecha_acuse_dt=None,
@@ -149,7 +153,9 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
             'monto_total': 285801,
             'emisor_razon_social': 'Fake Company S.A.',
             'receptor_rut': Rut('1-9'),
-            'fecha_recepcion_dt': datetime.datetime(2019, 6, 24, 9, 55, 53, tzinfo=SII_OFFICIAL_TZ),
+            'fecha_recepcion_dt': convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 24, 9, 55, 53), tz=SII_OFFICIAL_TZ
+            ),
             'monto_exento': 0,
             'monto_neto': 240169,
             'monto_iva_recuperable': 45632,
@@ -164,7 +170,9 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
             'codigo_otro_impuesto': '',
             'valor_otro_impuesto': None,
             'tasa_otro_impuesto': None,
-            'fecha_acuse_dt': datetime.datetime(2019, 6, 30, 9, 55, 53, tzinfo=SII_OFFICIAL_TZ),
+            'fecha_acuse_dt': convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 30, 9, 55, 53), tz=SII_OFFICIAL_TZ
+            ),
             'tabacos_puros': None,
             'tabacos_cigarrillos': None,
             'tabacos_elaborados': None,
@@ -178,7 +186,10 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
             fecha_emision_date=datetime.date(2019, 6, 21),
             receptor_rut=Rut('1-9'),
             monto_total=285801,
-            fecha_recepcion_dt=datetime.datetime(2019, 6, 24, 9, 55, 53, tzinfo=SII_OFFICIAL_TZ),
+            fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 24, 9, 55, 53),
+                tz=SII_OFFICIAL_TZ,
+            ),
             tipo_compra='DEL_GIRO',
             emisor_razon_social='Fake Company S.A.',
             monto_exento=0,
@@ -195,7 +206,9 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
             codigo_otro_impuesto='',
             valor_otro_impuesto=None,
             tasa_otro_impuesto=None,
-            fecha_acuse_dt=datetime.datetime(2019, 6, 30, 9, 55, 53, tzinfo=SII_OFFICIAL_TZ),
+            fecha_acuse_dt=convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 30, 9, 55, 53), tz=SII_OFFICIAL_TZ
+            ),
             tabacos_puros=None,
             tabacos_cigarrillos=None,
             tabacos_elaborados=None,
@@ -219,8 +232,8 @@ class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
             'monto_total': 104362,
             'emisor_razon_social': 'Fake Company S.A.',
             'receptor_rut': Rut('1-9'),
-            'fecha_recepcion_dt': datetime.datetime(
-                2019, 12, 14, 15, 56, 27, tzinfo=SII_OFFICIAL_TZ
+            'fecha_recepcion_dt': convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 12, 14, 15, 56, 27), tz=SII_OFFICIAL_TZ
             ),
             'monto_exento': 0,
             'monto_neto': 87699,
@@ -247,7 +260,9 @@ class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
             fecha_emision_date=datetime.date(2019, 12, 13),
             receptor_rut=Rut('1-9'),
             monto_total=104362,
-            fecha_recepcion_dt=datetime.datetime(2019, 12, 14, 15, 56, 27, tzinfo=SII_OFFICIAL_TZ),
+            fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 12, 14, 15, 56, 27), tz=SII_OFFICIAL_TZ
+            ),
             tipo_compra='NO_CORRESPONDE_INCLUIR',
             emisor_razon_social='Fake Company S.A.',
             monto_exento=0,
@@ -286,7 +301,9 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
             'monto_total': 1155364,
             'emisor_razon_social': 'Fake Company S.A.',
             'receptor_rut': Rut('1-9'),
-            'fecha_recepcion_dt': datetime.datetime(2019, 6, 5, 21, 58, 49, tzinfo=SII_OFFICIAL_TZ),
+            'fecha_recepcion_dt': convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 5, 21, 58, 49), tz=SII_OFFICIAL_TZ
+            ),
             'monto_exento': 0,
             'monto_neto': 970894,
             'monto_iva_recuperable': 184470,
@@ -301,7 +318,9 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
             'codigo_otro_impuesto': '',
             'valor_otro_impuesto': None,
             'tasa_otro_impuesto': None,
-            'fecha_reclamo_dt': datetime.datetime(2019, 6, 12, 9, 47, 23, tzinfo=SII_OFFICIAL_TZ),
+            'fecha_reclamo_dt': convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 12, 9, 47, 23), tz=SII_OFFICIAL_TZ
+            ),
         }
 
         result = input_csv_row_schema.to_detalle_entry(data)
@@ -312,7 +331,9 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
             fecha_emision_date=datetime.date(2019, 6, 5),
             receptor_rut=Rut('1-9'),
             monto_total=1155364,
-            fecha_recepcion_dt=datetime.datetime(2019, 6, 5, 21, 58, 49, tzinfo=SII_OFFICIAL_TZ),
+            fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 5, 21, 58, 49), tz=SII_OFFICIAL_TZ
+            ),
             tipo_compra='DEL_GIRO',
             emisor_razon_social='Fake Company S.A.',
             monto_exento=0,
@@ -329,7 +350,9 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
             codigo_otro_impuesto='',
             valor_otro_impuesto=None,
             tasa_otro_impuesto=None,
-            fecha_reclamo_dt=datetime.datetime(2019, 6, 12, 9, 47, 23, tzinfo=SII_OFFICIAL_TZ),
+            fecha_reclamo_dt=convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 6, 12, 9, 47, 23), tz=SII_OFFICIAL_TZ
+            ),
         )
 
         self.assertEqual(result, expected_result)
@@ -351,7 +374,9 @@ class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
             'monto_total': 49787,
             'emisor_razon_social': 'Fake Company S.A.',
             'receptor_rut': Rut('1-9'),
-            'fecha_recepcion_dt': datetime.datetime(2019, 7, 1, 13, 21, 32, tzinfo=SII_OFFICIAL_TZ),
+            'fecha_recepcion_dt': convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 7, 1, 13, 21, 32), tz=SII_OFFICIAL_TZ
+            ),
             'monto_exento': 0,
             'monto_neto': 41838,
             'monto_iva_recuperable': 7949,
@@ -376,7 +401,9 @@ class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
             fecha_emision_date=datetime.date(2019, 6, 28),
             receptor_rut=Rut('1-9'),
             monto_total=49787,
-            fecha_recepcion_dt=datetime.datetime(2019, 7, 1, 13, 21, 32, tzinfo=SII_OFFICIAL_TZ),
+            fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                datetime.datetime(2019, 7, 1, 13, 21, 32), tz=SII_OFFICIAL_TZ
+            ),
             tipo_compra='DEL_GIRO',
             emisor_razon_social='Fake Company S.A.',
             monto_exento=0,
