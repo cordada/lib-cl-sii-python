@@ -8,9 +8,10 @@ Parse RCV files (CSV)
 import csv
 import logging
 from datetime import date, datetime
-from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, TypeVar
+from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, TypedDict, TypeVar
 
 import marshmallow
+import marshmallow.experimental.context
 
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.extras import mm_fields
@@ -98,10 +99,10 @@ def parse_rcv_venta_csv_file(
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
-    schema_context = dict(
-        emisor_rut=rut,
-    )
-    input_csv_row_schema = RcvVentaCsvRowSchema(context=schema_context)
+    schema_context: _RcvVentaCsvRowContext = {
+        'emisor_rut': rut,
+    }
+    input_csv_row_schema = RcvVentaCsvRowSchema()
 
     expected_input_field_names = (
         'Nro',
@@ -153,14 +154,15 @@ def parse_rcv_venta_csv_file(
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
-    yield from _parse_rcv_csv_file(  # type: ignore
-        input_csv_row_schema,
-        expected_input_field_names,
-        fields_to_remove_names,
-        input_file_path,
-        n_rows_offset,
-        max_n_rows,
-    )
+    with _RcvVentaCsvRowSchemaContext(schema_context):
+        yield from _parse_rcv_csv_file(  # type: ignore
+            input_csv_row_schema,
+            expected_input_field_names,
+            fields_to_remove_names,
+            input_file_path,
+            n_rows_offset,
+            max_n_rows,
+        )
 
 
 def parse_rcv_compra_registro_csv_file(
@@ -175,10 +177,10 @@ def parse_rcv_compra_registro_csv_file(
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
-    schema_context = dict(
-        receptor_rut=rut,
-    )
-    input_csv_row_schema = RcvCompraRegistroCsvRowSchema(context=schema_context)
+    schema_context: _RcvCompraCsvRowContext = {
+        'receptor_rut': rut,
+    }
+    input_csv_row_schema = RcvCompraRegistroCsvRowSchema()
 
     expected_input_field_names = (
         'Nro',
@@ -214,14 +216,15 @@ def parse_rcv_compra_registro_csv_file(
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
-    yield from _parse_rcv_csv_file(  # type: ignore
-        input_csv_row_schema,
-        expected_input_field_names,
-        fields_to_remove_names,
-        input_file_path,
-        n_rows_offset,
-        max_n_rows,
-    )
+    with _RcvCompraCsvRowSchemaContext(schema_context):
+        yield from _parse_rcv_csv_file(  # type: ignore
+            input_csv_row_schema,
+            expected_input_field_names,
+            fields_to_remove_names,
+            input_file_path,
+            n_rows_offset,
+            max_n_rows,
+        )
 
 
 def parse_rcv_compra_no_incluir_csv_file(
@@ -236,10 +239,10 @@ def parse_rcv_compra_no_incluir_csv_file(
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
-    schema_context = dict(
-        receptor_rut=rut,
-    )
-    input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema(context=schema_context)
+    schema_context: _RcvCompraCsvRowContext = {
+        'receptor_rut': rut,
+    }
+    input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema()
 
     expected_input_field_names = (
         'Nro',
@@ -272,14 +275,15 @@ def parse_rcv_compra_no_incluir_csv_file(
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
-    yield from _parse_rcv_csv_file(  # type: ignore
-        input_csv_row_schema,
-        expected_input_field_names,
-        fields_to_remove_names,
-        input_file_path,
-        n_rows_offset,
-        max_n_rows,
-    )
+    with _RcvCompraCsvRowSchemaContext(schema_context):
+        yield from _parse_rcv_csv_file(  # type: ignore
+            input_csv_row_schema,
+            expected_input_field_names,
+            fields_to_remove_names,
+            input_file_path,
+            n_rows_offset,
+            max_n_rows,
+        )
 
 
 def parse_rcv_compra_reclamado_csv_file(
@@ -294,10 +298,10 @@ def parse_rcv_compra_reclamado_csv_file(
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
-    schema_context = dict(
-        receptor_rut=rut,
-    )
-    input_csv_row_schema = RcvCompraReclamadoCsvRowSchema(context=schema_context)
+    schema_context: _RcvCompraCsvRowContext = {
+        'receptor_rut': rut,
+    }
+    input_csv_row_schema = RcvCompraReclamadoCsvRowSchema()
 
     expected_input_field_names = (
         'Nro',
@@ -330,14 +334,15 @@ def parse_rcv_compra_reclamado_csv_file(
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
-    yield from _parse_rcv_csv_file(  # type: ignore
-        input_csv_row_schema,
-        expected_input_field_names,
-        fields_to_remove_names,
-        input_file_path,
-        n_rows_offset,
-        max_n_rows,
-    )
+    with _RcvCompraCsvRowSchemaContext(schema_context):
+        yield from _parse_rcv_csv_file(  # type: ignore
+            input_csv_row_schema,
+            expected_input_field_names,
+            fields_to_remove_names,
+            input_file_path,
+            n_rows_offset,
+            max_n_rows,
+        )
 
 
 def parse_rcv_compra_pendiente_csv_file(
@@ -352,10 +357,10 @@ def parse_rcv_compra_pendiente_csv_file(
     """
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
-    schema_context = dict(
-        receptor_rut=rut,
-    )
-    input_csv_row_schema = RcvCompraPendienteCsvRowSchema(context=schema_context)
+    schema_context: _RcvCompraCsvRowContext = {
+        'receptor_rut': rut,
+    }
+    input_csv_row_schema = RcvCompraPendienteCsvRowSchema()
 
     expected_input_field_names = (
         'Nro',
@@ -387,14 +392,15 @@ def parse_rcv_compra_pendiente_csv_file(
 
     # note: mypy will complain about returned dataclass type mismatch (and it is right to do so)
     #   but we know from logic which subclass of 'RcvDetalleEntry' will be yielded.
-    yield from _parse_rcv_csv_file(  # type: ignore
-        input_csv_row_schema,
-        expected_input_field_names,
-        fields_to_remove_names,
-        input_file_path,
-        n_rows_offset,
-        max_n_rows,
-    )
+    with _RcvCompraCsvRowSchemaContext(schema_context):
+        yield from _parse_rcv_csv_file(  # type: ignore
+            input_csv_row_schema,
+            expected_input_field_names,
+            fields_to_remove_names,
+            input_file_path,
+            n_rows_offset,
+            max_n_rows,
+        )
 
 
 ###############################################################################
@@ -454,6 +460,13 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
                 ):
                     in_data[data_key] = None
         return in_data
+
+
+class _RcvVentaCsvRowContext(TypedDict):
+    emisor_rut: Rut
+
+
+_RcvVentaCsvRowSchemaContext = marshmallow.experimental.context.Context[_RcvVentaCsvRowContext]
 
 
 class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
@@ -669,7 +682,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         #   values of required fields (`required=True`) exist.
 
         # Set field value only if it was not in the input data.
-        in_data.setdefault('emisor_rut', self.context['emisor_rut'])
+        in_data.setdefault('emisor_rut', _RcvVentaCsvRowSchemaContext.get()['emisor_rut'])
 
         # Set tipo_venta from string to enum value.
         if 'Tipo Venta' in in_data:
@@ -821,6 +834,13 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         return detalle_entry
 
 
+class _RcvCompraCsvRowContext(TypedDict):
+    receptor_rut: Rut
+
+
+_RcvCompraCsvRowSchemaContext = marshmallow.experimental.context.Context[_RcvCompraCsvRowContext]
+
+
 class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
     FIELD_FECHA_RECEPCION_DT_TZ = SII_OFFICIAL_TZ
     FIELD_FECHA_ACUSE_DT_TZ = SII_OFFICIAL_TZ
@@ -951,7 +971,7 @@ class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
         #   values of required fields (`required=True`) exist.
 
         # Set field value only if it was not in the input data.
-        in_data.setdefault('receptor_rut', self.context['receptor_rut'])
+        in_data.setdefault('receptor_rut', _RcvCompraCsvRowSchemaContext.get()['receptor_rut'])
 
         # Set tipo_compra from string to enum value.
         if 'Tipo Compra' in in_data:
