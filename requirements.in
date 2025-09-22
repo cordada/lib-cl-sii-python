@@ -13,7 +13,7 @@ Django>=4.2
 djangorestframework>=3.10.3,<3.17
 importlib-metadata==8.7.0
 jsonschema==4.25.0
-lxml==5.4.0
+lxml==6.0.2
 marshmallow==4.0.1
 pydantic==2.11.7
 pyOpenSSL==25.1.0
