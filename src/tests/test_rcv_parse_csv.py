@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import unittest
 from collections.abc import Iterable, Iterator
+from decimal import Decimal
 from typing import Callable
 from unittest import mock
 
@@ -671,7 +672,7 @@ class FunctionsTest(unittest.TestCase):
                     nce_o_nde_sobre_factura_de_compra='0',
                     codigo_otro_impuesto=None,
                     valor_otro_impuesto=None,
-                    tasa_otro_impuesto=None,
+                    tasa_otro_impuesto=Decimal('2.967999999'),
                     fecha_reclamo_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2019, 6, 12, 9, 47, 23),
                         tz=SII_OFFICIAL_TZ,
@@ -701,7 +702,7 @@ class FunctionsTest(unittest.TestCase):
                     'NCE o NDE sobre Fact. de Compra': '0',
                     'Codigo Otro Impuesto': None,
                     'Valor Otro Impuesto': None,
-                    'Tasa Otro Impuesto': None,
+                    'Tasa Otro Impuesto': '2.967999999',
                     'receptor_rut': Rut('1-9'),
                 },
                 {},

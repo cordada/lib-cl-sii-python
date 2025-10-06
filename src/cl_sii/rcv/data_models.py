@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 from datetime import date, datetime
+from decimal import Decimal
 from typing import ClassVar, Optional
 
 import pydantic
@@ -546,7 +547,7 @@ class RcDetalleEntry(RcvDetalleEntry):
     Valor Otro Impuesto
     """
 
-    tasa_otro_impuesto: Optional[float]
+    tasa_otro_impuesto: Optional[Decimal]
     """
     Tasa Otro Impuesto
     """
