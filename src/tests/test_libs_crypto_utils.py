@@ -8,9 +8,11 @@ import cryptography.hazmat.primitives.hashes
 import cryptography.x509
 from cryptography.x509 import oid
 
+import cl_sii.libs.tz_utils
 from cl_sii.libs.crypto_utils import (  # noqa: F401
     X509Cert,
     add_pem_cert_header_footer,
+    get_expiration_date_from_x509_certificate,
     load_der_x509_cert,
     load_pem_x509_cert,
     load_pfx_x509_cert,
@@ -44,6 +46,20 @@ class FunctionsTest(unittest.TestCase):
     def test_remove_pem_cert_header_footer(self) -> None:
         # TODO: implement for function 'remove_pem_cert_header_footer'.
         pass
+
+    def test_get_expiration_date_from_x509_certificate(self) -> None:
+        cert_der: bytes = utils.read_test_file_bytes(
+            'test_data/crypto/wildcard-google-com-cert.der'
+        )
+        x509_cert = load_der_x509_cert(cert_der)
+        expected_expiration_date = datetime.fromisoformat('2019-06-18T09:24-04:00')
+
+        actual_expiration_date = get_expiration_date_from_x509_certificate(certificate=x509_cert)
+
+        with self.subTest('Check value'):
+            self.assertEqual(expected_expiration_date, actual_expiration_date)
+        with self.subTest('Check timezone awareness'):
+            self.assertTrue(cl_sii.libs.tz_utils.dt_is_aware(actual_expiration_date))
 
 
 class LoadPemX509CertTest(unittest.TestCase):

@@ -51,6 +51,7 @@ __all__ = [
 ]
 
 import base64
+from datetime import datetime
 from typing import Optional, Union
 
 import cryptography.hazmat.backends.openssl.backend as _crypto_x509_backend
@@ -213,3 +214,29 @@ def load_pfx_x509_cert(pfx_value: bytes, password: Union[bytes, str, None]) -> O
 # Aliases for `load_pfx_x509_cert()`:
 load_pkcs12_x509_cert = load_pfx_x509_cert
 load_p12_x509_cert = load_pfx_x509_cert
+
+
+def get_expiration_date_from_x509_certificate(certificate: X509Cert) -> datetime:
+    """
+    Return the expiration date-time of a digital certificate.
+
+    :param certificate: X.509 certificate
+    """
+    cert_expires_at = certificate.not_valid_after_utc
+    return cert_expires_at
+
+
+def get_expiration_date_from_pfx_x509_certificate(
+    pfx_file: bytes, password: Optional[str]
+) -> Optional[datetime]:
+    """
+    Return the expiration date-time of a digital certificate. If the PKCS12 file
+    does not contain a X.509 certificate, return ``None``.
+
+    :param pfx_file: X.509 certificate in PKCS12 format
+    :param password: (Optional) The password to use to decrypt the certificate.
+    """
+    if (cert_x509 := load_pfx_x509_cert(pfx_value=pfx_file, password=password)) is not None:
+        return get_expiration_date_from_x509_certificate(cert_x509)
+    else:
+        return None
