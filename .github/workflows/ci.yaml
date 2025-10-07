@@ -46,7 +46,7 @@ jobs:
         run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v4.2.4
+        uses: actions/cache@v4.3.0
         with:
           path: |
             .tox
@@ -98,7 +98,7 @@ jobs:
           check-latest: true
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v4.2.4
+        uses: actions/cache@v4.3.0
         with:
           path: |
             .tox
