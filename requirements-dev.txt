@@ -10,7 +10,7 @@ attrs==23.2.0
     #   referencing
 beautifulsoup4==4.13.3
     # via types-lxml
-black==25.1.0
+black==25.9.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -40,7 +40,7 @@ click==8.0.3
     #   pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.10.6
+coverage==7.10.7
     # via -r requirements-dev.in
 cryptography==45.0.7
     # via
@@ -81,7 +81,7 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-mypy==1.17.1
+mypy==1.18.2
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
@@ -89,7 +89,6 @@ mypy-extensions==1.0.0
     #   mypy
 packaging==24.2
     # via
-    #   -c requirements.txt
     #   black
     #   build
     #   pyproject-api
@@ -126,6 +125,8 @@ pyproject-hooks==1.0.0
     # via
     #   build
     #   pip-tools
+pytokens==0.1.10
+    # via black
 readme-renderer==35.0
     # via twine
 referencing==0.35.1

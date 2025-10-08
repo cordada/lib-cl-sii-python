@@ -74,6 +74,7 @@ class FunctionsTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(AssertionError, expected_error_message):
             validate_dt_tz(dt_with_tzinfo_utc_pytz, tzinfo_utc_stdlib)
+        expected_error_message = re.compile(r"^Object UTC must have 'zone' attribute.$")
         with self.assertRaisesRegex(AssertionError, expected_error_message):
             validate_dt_tz(dt_with_tzinfo_utc_stdlib, tzinfo_utc_pytz)
 
@@ -85,5 +86,8 @@ class FunctionsTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(AssertionError, expected_error_message):
             validate_dt_tz(dt_with_tzinfo_not_utc_pytz, tzinfo_not_utc_stdlib)  # type: ignore
+        expected_error_message = re.compile(
+            r"^Object" r" UTC-03:00" r" must have 'zone' attribute.$"
+        )
         with self.assertRaisesRegex(AssertionError, expected_error_message):
             validate_dt_tz(dt_with_tzinfo_not_utc_stdlib, tzinfo_not_utc_pytz)

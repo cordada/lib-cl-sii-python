@@ -12,6 +12,8 @@ attrs==23.2.0
     # via
     #   jsonschema
     #   referencing
+backports-datetime-fromisoformat==2.0.3
+    # via marshmallow
 certifi==2024.7.4
     # via signxml
 cffi==1.16.0
@@ -23,7 +25,7 @@ cryptography==45.0.7
     #   signxml
 defusedxml==0.7.1
     # via -r requirements.in
-django==4.2.24
+django==4.2.25
     # via
     #   -r requirements.in
     #   django-filter
@@ -42,10 +44,8 @@ lxml==5.4.0
     # via
     #   -r requirements.in
     #   signxml
-marshmallow==3.26.1
+marshmallow==4.0.1
     # via -r requirements.in
-packaging==24.2
-    # via marshmallow
 pycparser==2.22
     # via cffi
 pydantic==2.11.7
@@ -64,7 +64,7 @@ rpds-py==0.19.0
     # via
     #   jsonschema
     #   referencing
-signxml==4.1.0
+signxml==4.2.0
     # via -r requirements.in
 sqlparse==0.5.0
     # via django
@@ -72,6 +72,7 @@ typing-extensions==4.14.0
     # via
     #   -r requirements.in
     #   asgiref
+    #   marshmallow
     #   pydantic
     #   pydantic-core
     #   pyopenssl
