@@ -1,5 +1,20 @@
 # History
 
+## 0.59.0 (2025-10-08)
+
+- (PR #899, 2025-09-22) rcv: Convert empty strings to `None` for fields that allow `None`
+- (PR #900, 2025-09-22) rcv: Fields without `data_key` were not correctly preprocessed when parsing CSV
+- (PR #901, 2025-09-22) rcv: TZ-aware date-times were not constructed correctly in tests
+- (PR #902, 2025-09-22) rcv: CSV parser tests for Compras use emisor RUT instead of receptor RUT
+- (PR #868, 2025-09-22) chore(deps): Bump marshmallow from 3.26.1 to 4.0.1
+- (PR #903, 2025-09-22) rcv: Fix Mypy errors in `test_rcv_parse_csv`
+- (PR #905, 2025-10-07) chore(deps): Bump the github-actions-production group with 2 updates
+- (PR #906, 2025-10-07) chore(deps): Bump the python-development group with 3 updates
+- (PR #908, 2025-10-07) chore(deps): Bump django from 4.2.24 to 4.2.25
+- (PR #910, 2025-10-07) libs: Add functions to get expiration date from X.509 certificates
+- (PR #909, 2025-10-08) rcv: Replace `float` with `Decimal` for `tasa_otro_impuesto`
+- (PR #863, 2025-10-08) chore(deps): Bump signxml from 4.1.0 to 4.2.0
+
 ## 0.58.0 (2025-09-22)
 
 - (PR #890, 2025-09-16) cte: Add parser for "Datos del Contribuyente"
