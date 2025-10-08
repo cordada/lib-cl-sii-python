@@ -8,6 +8,7 @@ Parse RCV files (CSV)
 import csv
 import logging
 from datetime import date, datetime
+from decimal import Decimal
 from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, TypedDict, TypeVar
 
 import marshmallow
@@ -1106,7 +1107,7 @@ class RcvCompraRegistroCsvRowSchema(RcvCompraCsvRowSchema):
             )
             codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
             valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
-            tasa_otro_impuesto: Optional[float] = data.get('tasa_otro_impuesto')
+            tasa_otro_impuesto: Optional[Decimal] = data.get('tasa_otro_impuesto')
             fecha_acuse_dt: Optional[datetime] = data.get('fecha_acuse_dt')
             tabacos_puros: Optional[int] = data.get('tabacos_puros')
             tabacos_cigarrillos: Optional[int] = data.get('tabacos_cigarrillos')
@@ -1226,7 +1227,7 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraCsvRowSchema):
             )
             codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
             valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
-            tasa_otro_impuesto: Optional[float] = data.get('tasa_otro_impuesto')
+            tasa_otro_impuesto: Optional[Decimal] = data.get('tasa_otro_impuesto')
             fecha_acuse_dt: Optional[datetime] = data.get('fecha_acuse_dt')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
@@ -1347,7 +1348,7 @@ class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
             )
             codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
             valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
-            tasa_otro_impuesto: Optional[float] = data.get('tasa_otro_impuesto')
+            tasa_otro_impuesto: Optional[Decimal] = data.get('tasa_otro_impuesto')
             fecha_reclamo_dt: Optional[datetime] = data.get('fecha_reclamo_dt')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
@@ -1432,7 +1433,7 @@ class RcvCompraPendienteCsvRowSchema(RcvCompraCsvRowSchema):
             )
             codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
             valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
-            tasa_otro_impuesto: Optional[float] = data.get('tasa_otro_impuesto')
+            tasa_otro_impuesto: Optional[Decimal] = data.get('tasa_otro_impuesto')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
