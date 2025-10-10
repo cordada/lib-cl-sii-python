@@ -261,9 +261,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             numero_interno=None,
             codigo_sucursal=None,
             nce_o_nde_sobre_factura_de_compra=None,
-            codigo_otro_imp=None,
-            valor_otro_imp=None,
-            tasa_otro_imp=None,
+            otros_impuestos=None,
         )
 
     def test_constants_match(self) -> None:
@@ -445,9 +443,7 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             tabacos_cigarrillos=0,
             tabacos_elaborados=0,
             nce_o_nde_sobre_factura_de_compra=None,
-            codigo_otro_impuesto=None,
-            valor_otro_impuesto=None,
-            tasa_otro_impuesto=None,
+            otros_impuestos=None,
         )
 
     def test_constants_match(self) -> None:
@@ -569,9 +565,7 @@ class RcNoIncluirDetalleEntryTest(unittest.TestCase):
             impto_sin_derecho_a_credito=0,
             iva_no_retenido=0,
             nce_o_nde_sobre_factura_de_compra=None,
-            codigo_otro_impuesto=None,
-            valor_otro_impuesto=None,
-            tasa_otro_impuesto=None,
+            otros_impuestos=None,
         )
 
 
@@ -607,9 +601,7 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
             impto_sin_derecho_a_credito=0,
             iva_no_retenido=0,
             nce_o_nde_sobre_factura_de_compra=None,
-            codigo_otro_impuesto=None,
-            valor_otro_impuesto=None,
-            tasa_otro_impuesto=None,
+            otros_impuestos=None,
         )
 
     def test_constants_match(self) -> None:
@@ -727,9 +719,7 @@ class RcPendienteDetalleEntryTest(unittest.TestCase):
             impto_sin_derecho_a_credito=0,
             iva_no_retenido=0,
             nce_o_nde_sobre_factura_de_compra=None,
-            codigo_otro_impuesto=None,
-            valor_otro_impuesto=None,
-            tasa_otro_impuesto=None,
+            otros_impuestos=None,
         )
 
     def test_validate_emisor_razon_social_empty(self) -> None:
