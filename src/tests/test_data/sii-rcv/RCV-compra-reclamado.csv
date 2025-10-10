@@ -1,5 +1,5 @@
 Nro;Tipo Doc;Tipo Compra;RUT Proveedor;Razon Social;Folio;Fecha Docto;Fecha Recepcion;Fecha Reclamo;Monto Exento;Monto Neto;Monto IVA Recuperable;Monto Iva No Recuperable;Codigo IVA No Rec.;Monto Total;Monto Neto Activo Fijo;IVA Activo Fijo;IVA uso Comun;Impto. Sin Derecho a Credito;IVA No Retenido;NCE o NDE sobre Fact. de Compra;Codigo Otro Impuesto;Valor Otro Impuesto;Tasa Otro Impuesto
-1;33;Del Giro;12345678-5;Fake Company S.A. ;1000055;05/06/2019;05/06/2019 21:58:49;12/06/2019 09:47:23;0;970894;184470;;;1155364;;;;;0;0;;;2.967999999;
+1;33;Del Giro;12345678-5;Fake Company S.A. ;1000055;05/06/2019;05/06/2019 21:58:49;12/06/2019 09:47:23;0;970894;184470;;;1155364;;;;;0;0;23;12000;2.967999999;
 2;61;Del Giro;12345678-5;  Fake Company S.A.;70013;24/06/2019;24/06/2019 15:24:41;null;0;1652840;314040;;;1966880;;;;;0;0;;;;
 3;33;Del Giro;76354771-K;Fake Company S.A. ;789456;05/06/2019;05/06/2019 21:58:49;;0;970894;184470;;;1155364;;;;;0;0;;;;
 4;33;Del Giro;INVALID-RUT;Fake Company S.A.;notanumber;invalid-date;invalid-datetime;invalid-datetime;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber;notanumber

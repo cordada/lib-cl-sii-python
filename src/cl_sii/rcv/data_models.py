@@ -8,12 +8,13 @@ RCV data models
 from __future__ import annotations
 
 import logging
+from collections.abc import Sequence
 from datetime import date, datetime
 from decimal import Decimal
 from typing import ClassVar, Optional
 
 import pydantic
-from typing_extensions import Self
+from typing_extensions import Self, TypedDict
 
 import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
@@ -100,6 +101,23 @@ class PeriodoTributario:
             datetime(self.year, self.month, day=1, hour=0, minute=0, second=0),
             self.DATETIME_FIELDS_TZ,
         )
+
+
+class OtrosImpuestos(TypedDict):
+    codigo_otro_impuesto: Optional[str]
+    """
+    Codigo Otro Imp.
+    """
+
+    valor_otro_impuesto: Optional[int]
+    """
+    Valor Otro Imp.
+    """
+
+    tasa_otro_impuesto: Optional[Decimal]
+    """
+    Tasa Otro Imp.
+    """
 
 
 @pydantic.dataclasses.dataclass(
@@ -414,20 +432,7 @@ class RvDetalleEntry(RcvDetalleEntry):
     NCE o NDE sobre Fact. de Compra
     """
 
-    codigo_otro_imp: Optional[str]
-    """
-    Codigo Otro Imp.
-    """
-
-    valor_otro_imp: Optional[int]
-    """
-    Valor Otro Imp.
-    """
-
-    tasa_otro_imp: Optional[float]
-    """
-    Tasa Otro Imp.
-    """
+    otros_impuestos: Optional[Sequence[OtrosImpuestos]]
 
     ###########################################################################
     # Validators
@@ -537,20 +542,7 @@ class RcDetalleEntry(RcvDetalleEntry):
     NCE o NDE sobre Fact. de Compra
     """
 
-    codigo_otro_impuesto: Optional[str]
-    """
-    Codigo Otro Impuesto
-    """
-
-    valor_otro_impuesto: Optional[int]
-    """
-    Valor Otro Impuesto
-    """
-
-    tasa_otro_impuesto: Optional[Decimal]
-    """
-    Tasa Otro Impuesto
-    """
+    otros_impuestos: Optional[Sequence[OtrosImpuestos]]
 
     ###########################################################################
     # Validators
