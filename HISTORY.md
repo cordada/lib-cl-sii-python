@@ -1,5 +1,9 @@
 # History
 
+## 0.60.0 (2025-10-20)
+
+- (PR #913, 2025-10-15) rcv: Refactor and extend parsing for "Otros Impuestos" field
+
 ## 0.59.0 (2025-10-08)
 
 - (PR #899, 2025-09-22) rcv: Convert empty strings to `None` for fields that allow `None`
