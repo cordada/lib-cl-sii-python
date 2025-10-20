@@ -11,6 +11,7 @@ import cl_sii.rcv.constants
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs.tz_utils import convert_naive_dt_to_tz_aware
 from cl_sii.rcv.data_models import (
+    OtrosImpuestos,
     RcNoIncluirDetalleEntry,
     RcPendienteDetalleEntry,
     RcReclamadoDetalleEntry,
@@ -85,9 +86,13 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
             'Numero Interno': '',
             'Codigo Sucursal': '0',
             'NCE o NDE sobre Fact. de Compra': '',
-            'Codigo Otro Imp.': '',
-            'Valor Otro Imp.': '',
-            'Tasa Otro Imp.': '',
+            'Otros Impuestos': [
+                {
+                    'codigo_otro_impuesto': '',
+                    'valor_otro_impuesto': '',
+                    'tasa_otro_impuesto': '',
+                }
+            ],
         }
 
         with _RcvVentaCsvRowSchemaContext(schema_context):
@@ -137,9 +142,7 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
             numero_interno=None,
             codigo_sucursal='0',
             nce_o_nde_sobre_factura_de_compra=None,
-            codigo_otro_imp=None,
-            valor_otro_imp=None,
-            tasa_otro_imp=None,
+            otros_impuestos=None,
         )
 
         self.assertEqual(result, expected_result)
@@ -209,9 +212,7 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
             impto_sin_derecho_a_credito=None,
             iva_no_retenido=0,
             nce_o_nde_sobre_factura_de_compra='0',
-            codigo_otro_impuesto=None,
-            valor_otro_impuesto=None,
-            tasa_otro_impuesto=None,
+            otros_impuestos=None,
             fecha_acuse_dt=convert_naive_dt_to_tz_aware(
                 datetime.datetime(2019, 6, 30, 9, 55, 53), tz=SII_OFFICIAL_TZ
             ),
@@ -250,9 +251,9 @@ class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
             'Impto. Sin Derecho a Credito': '',
             'IVA No Retenido': '0',
             'NCE o NDE sobre Fact. de Compra': '0',
-            'Codigo Otro Impuesto': '',
-            'Valor Otro Impuesto': '',
-            'Tasa Otro Impuesto': '',
+            'Codigo Otro Impuesto': '23',
+            'Valor Otro Impuesto': '1200',
+            'Tasa Otro Impuesto': '31.5',
         }
 
         with _RcvCompraCsvRowSchemaContext(schema_context):
@@ -282,9 +283,7 @@ class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
             impto_sin_derecho_a_credito=None,
             iva_no_retenido=0,
             nce_o_nde_sobre_factura_de_compra='0',
-            codigo_otro_impuesto=None,
-            valor_otro_impuesto=None,
-            tasa_otro_impuesto=None,
+            otros_impuestos=None,
             fecha_acuse_dt=None,
         )
 
@@ -351,9 +350,7 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
             impto_sin_derecho_a_credito=None,
             iva_no_retenido=0,
             nce_o_nde_sobre_factura_de_compra='0',
-            codigo_otro_impuesto=None,
-            valor_otro_impuesto=None,
-            tasa_otro_impuesto=None,
+            otros_impuestos=None,
             fecha_reclamo_dt=convert_naive_dt_to_tz_aware(
                 datetime.datetime(2019, 6, 12, 9, 47, 23), tz=SII_OFFICIAL_TZ
             ),
@@ -421,9 +418,7 @@ class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
             impto_sin_derecho_a_credito=None,
             iva_no_retenido=0,
             nce_o_nde_sobre_factura_de_compra='0',
-            codigo_otro_impuesto=None,
-            valor_otro_impuesto=None,
-            tasa_otro_impuesto=None,
+            otros_impuestos=None,
         )
 
         self.assertEqual(result, expected_result)
@@ -487,9 +482,7 @@ class FunctionsTest(unittest.TestCase):
             numero_interno=None,
             codigo_sucursal='0',
             nce_o_nde_sobre_factura_de_compra=None,
-            codigo_otro_imp=None,
-            valor_otro_imp=None,
-            tasa_otro_imp=None,
+            otros_impuestos=None,
         )
         # First row:
         entry_struct, row_ix, row_data, row_parsing_errors = next(items)
@@ -591,7 +584,7 @@ class FunctionsTest(unittest.TestCase):
                 rut=Rut('1-9'),
                 input_file_path=rcv_file_path,
                 n_rows_offset=0,
-                max_n_rows=1,
+                max_n_rows=2,
             )
             assert isinstance(items, Iterable) and isinstance(items, Iterator)
             entry_struct, row_ix, row_data, row_parsing_errors = next(items)
@@ -605,6 +598,136 @@ class FunctionsTest(unittest.TestCase):
                     'Deserialized row data conversion failed for row 1: Mocked conversion error'
                 ),
             )
+
+    def test_parse_rcv_venta_csv_file_empty_otros_impuestos_rows(self) -> None:
+        rcv_file_path = get_test_file_path(
+            'test_data/sii-rcv/RCV-venta-extra-empty-impuestos-rows.csv',
+        )
+
+        items = parse_rcv_venta_csv_file(
+            rut=Rut('1-9'),
+            input_file_path=rcv_file_path,
+        )
+        assert isinstance(items, Iterable) and isinstance(items, Iterator)
+        entry_struct, row_ix, row_data, row_parsing_errors = next(items)
+
+        expected_entry_struct = RvDetalleEntry(
+            emisor_rut=Rut('1-9'),
+            tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+            folio=6541,
+            fecha_emision_date=datetime.date(2025, 9, 1),
+            receptor_rut=Rut('54213736-3'),
+            monto_total=9565862,
+            fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                dt=datetime.datetime(2025, 9, 1, 10, 9),
+                tz=SII_OFFICIAL_TZ,
+            ),
+            tipo_venta='DEL_GIRO',
+            receptor_razon_social='CHILE SPA',
+            fecha_acuse_dt=convert_naive_dt_to_tz_aware(
+                dt=datetime.datetime(2025, 9, 8, 14, 15, 23),
+                tz=SII_OFFICIAL_TZ,
+            ),
+            fecha_reclamo_dt=None,
+            monto_exento=0,
+            monto_neto=7217280,
+            monto_iva=1371283,
+            iva_retenido_total=0,
+            iva_retenido_parcial=0,
+            iva_no_retenido=0,
+            iva_propio=0,
+            iva_terceros=0,
+            liquidacion_factura_emisor_rut=None,
+            neto_comision_liquidacion_factura=0,
+            exento_comision_liquidacion_factura=0,
+            iva_comision_liquidacion_factura=0,
+            iva_fuera_de_plazo=0,
+            tipo_documento_referencia=0,
+            folio_documento_referencia=None,
+            num_ident_receptor_extranjero=None,
+            nacionalidad_receptor_extranjero=None,
+            credito_empresa_constructora=0,
+            impuesto_zona_franca_ley_18211=None,
+            garantia_dep_envases=0,
+            indicador_venta_sin_costo=2,
+            indicador_servicio_periodico=0,
+            monto_no_facturable=0,
+            total_monto_periodo=0,
+            venta_pasajes_transporte_nacional=None,
+            venta_pasajes_transporte_internacional=None,
+            numero_interno=None,
+            codigo_sucursal='12354',
+            nce_o_nde_sobre_factura_de_compra=None,
+            otros_impuestos=[
+                OtrosImpuestos(
+                    codigo_otro_impuesto='27',
+                    valor_otro_impuesto=275904,
+                    tasa_otro_impuesto=Decimal('10'),
+                ),
+                OtrosImpuestos(
+                    codigo_otro_impuesto='271',
+                    valor_otro_impuesto=701395,
+                    tasa_otro_impuesto=Decimal('18'),
+                ),
+            ],
+        )
+        expected_row_data = {
+            'Tipo Doc': '33',
+            'Tipo Venta': 'DEL_GIRO',
+            'Rut cliente': '54213736-3',
+            'Razon Social': 'CHILE SPA',
+            'Folio': '6541',
+            'Fecha Docto': '01/09/2025',
+            'Fecha Recepcion': '01/09/2025 10:09:00',
+            'Fecha Acuse Recibo': '08/09/2025 14:15:23',
+            'Fecha Reclamo': None,
+            'Monto Exento': '0',
+            'Monto Neto': '7217280',
+            'Monto IVA': '1371283',
+            'Monto total': '9565862',
+            'IVA Retenido Total': '0',
+            'IVA Retenido Parcial': '0',
+            'IVA no retenido': '0',
+            'IVA propio': '0',
+            'IVA Terceros': '0',
+            'RUT Emisor Liquid. Factura': None,
+            'Neto Comision Liquid. Factura': '0',
+            'Exento Comision Liquid. Factura': '0',
+            'IVA Comision Liquid. Factura': '0',
+            'IVA fuera de plazo': '0',
+            'Tipo Docto. Referencia': '0',
+            'Folio Docto. Referencia': None,
+            'Num. Ident. Receptor Extranjero': None,
+            'Nacionalidad Receptor Extranjero': None,
+            'Credito empresa constructora': '0',
+            'Impto. Zona Franca (Ley 18211)': None,
+            'Garantia Dep. Envases': '0',
+            'Indicador Venta sin Costo': '2',
+            'Indicador Servicio Periodico': '0',
+            'Monto No facturable': '0',
+            'Total Monto Periodo': '0',
+            'Venta Pasajes Transporte Nacional': None,
+            'Venta Pasajes Transporte Internacional': None,
+            'Numero Interno': None,
+            'Codigo Sucursal': '12354',
+            'NCE o NDE sobre Fact. de Compra': None,
+            'Otros Impuestos': [
+                {
+                    'codigo_otro_impuesto': '27',
+                    'valor_otro_impuesto': '275904',
+                    'tasa_otro_impuesto': '10',
+                },
+                {
+                    'codigo_otro_impuesto': '271',
+                    'valor_otro_impuesto': '701395',
+                    'tasa_otro_impuesto': '18',
+                },
+            ],
+            'emisor_rut': Rut('1-9'),
+        }
+
+        self.assertEqual(row_data, expected_row_data)
+        self.assertEqual(entry_struct, expected_entry_struct)
 
     def test_parse_rcv_compra_registro_csv_file(self) -> None:
         # TODO: implement for 'parse_rcv_compra_registro_csv_file'.
@@ -670,9 +793,13 @@ class FunctionsTest(unittest.TestCase):
                     impto_sin_derecho_a_credito=None,
                     iva_no_retenido=0,
                     nce_o_nde_sobre_factura_de_compra='0',
-                    codigo_otro_impuesto=None,
-                    valor_otro_impuesto=None,
-                    tasa_otro_impuesto=Decimal('2.967999999'),
+                    otros_impuestos=[
+                        OtrosImpuestos(
+                            codigo_otro_impuesto='23',
+                            valor_otro_impuesto=12000,
+                            tasa_otro_impuesto=Decimal('2.967999999'),
+                        )
+                    ],
                     fecha_reclamo_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2019, 6, 12, 9, 47, 23),
                         tz=SII_OFFICIAL_TZ,
@@ -700,9 +827,13 @@ class FunctionsTest(unittest.TestCase):
                     'Impto. Sin Derecho a Credito': None,
                     'IVA No Retenido': '0',
                     'NCE o NDE sobre Fact. de Compra': '0',
-                    'Codigo Otro Impuesto': None,
-                    'Valor Otro Impuesto': None,
-                    'Tasa Otro Impuesto': '2.967999999',
+                    'Otros Impuestos': [
+                        {
+                            'codigo_otro_impuesto': '23',
+                            'valor_otro_impuesto': '12000',
+                            'tasa_otro_impuesto': '2.967999999',
+                        },
+                    ],
                     'receptor_rut': Rut('1-9'),
                 },
                 {},
@@ -732,9 +863,7 @@ class FunctionsTest(unittest.TestCase):
                     impto_sin_derecho_a_credito=None,
                     iva_no_retenido=0,
                     nce_o_nde_sobre_factura_de_compra='0',
-                    codigo_otro_impuesto=None,
-                    valor_otro_impuesto=None,
-                    tasa_otro_impuesto=None,
+                    otros_impuestos=None,
                     fecha_reclamo_dt=None,
                 ),
                 2,
@@ -759,9 +888,7 @@ class FunctionsTest(unittest.TestCase):
                     'Impto. Sin Derecho a Credito': None,
                     'IVA No Retenido': '0',
                     'NCE o NDE sobre Fact. de Compra': '0',
-                    'Codigo Otro Impuesto': None,
-                    'Valor Otro Impuesto': None,
-                    'Tasa Otro Impuesto': None,
+                    'Otros Impuestos': None,
                     'receptor_rut': Rut('1-9'),
                 },
                 {},
@@ -791,9 +918,7 @@ class FunctionsTest(unittest.TestCase):
                     impto_sin_derecho_a_credito=None,
                     iva_no_retenido=0,
                     nce_o_nde_sobre_factura_de_compra='0',
-                    codigo_otro_impuesto=None,
-                    valor_otro_impuesto=None,
-                    tasa_otro_impuesto=None,
+                    otros_impuestos=None,
                     fecha_reclamo_dt=None,
                 ),
                 3,
@@ -818,9 +943,7 @@ class FunctionsTest(unittest.TestCase):
                     'Impto. Sin Derecho a Credito': None,
                     'IVA No Retenido': '0',
                     'NCE o NDE sobre Fact. de Compra': '0',
-                    'Codigo Otro Impuesto': None,
-                    'Valor Otro Impuesto': None,
-                    'Tasa Otro Impuesto': None,
+                    'Otros Impuestos': None,
                     'receptor_rut': Rut('1-9'),
                 },
                 {},
@@ -849,9 +972,13 @@ class FunctionsTest(unittest.TestCase):
                     'Impto. Sin Derecho a Credito': 'notanumber',
                     'IVA No Retenido': 'notanumber',
                     'NCE o NDE sobre Fact. de Compra': 'notanumber',
-                    'Codigo Otro Impuesto': 'notanumber',
-                    'Valor Otro Impuesto': 'notanumber',
-                    'Tasa Otro Impuesto': 'notanumber',
+                    'Otros Impuestos': [
+                        {
+                            'codigo_otro_impuesto': 'notanumber',
+                            'tasa_otro_impuesto': 'notanumber',
+                            'valor_otro_impuesto': 'notanumber',
+                        }
+                    ],
                     'receptor_rut': Rut('1-9'),
                 },
                 {
@@ -870,8 +997,6 @@ class FunctionsTest(unittest.TestCase):
                         'IVA uso Comun': ['Not a valid integer.'],
                         'Impto. Sin Derecho a Credito': ['Not a valid integer.'],
                         'IVA No Retenido': ['Not a valid integer.'],
-                        'Valor Otro Impuesto': ['Not a valid integer.'],
-                        'Tasa Otro Impuesto': ['Not a valid number.'],
                         'Fecha Reclamo': ['Not a valid datetime.'],
                     }
                 },
@@ -890,9 +1015,7 @@ class FunctionsTest(unittest.TestCase):
                     'Impto. Sin Derecho a Credito': None,
                     'IVA No Retenido': None,
                     'NCE o NDE sobre Fact. de Compra': None,
-                    'Codigo Otro Impuesto': None,
-                    'Valor Otro Impuesto': None,
-                    'Tasa Otro Impuesto': None,
+                    'Otros Impuestos': None,
                     'receptor_rut': Rut('1-9'),
                 },
                 {

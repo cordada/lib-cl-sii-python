@@ -7,8 +7,8 @@ Parse RCV files (CSV)
 
 import csv
 import logging
+from collections.abc import MutableMapping
 from datetime import date, datetime
-from decimal import Decimal
 from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, TypedDict, TypeVar
 
 import marshmallow
@@ -653,21 +653,29 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         allow_none=True,
         data_key='NCE o NDE sobre Fact. de Compra',
     )
-    codigo_otro_imp = marshmallow.fields.String(
+
+    otros_impuestos = marshmallow.fields.List(
         required=False,
         allow_none=True,
-        data_key='Codigo Otro Imp.',
+        data_key='Otros Impuestos',
+        cls_or_instance=marshmallow.fields.Dict(
+            keys=marshmallow.fields.String(),
+            values=marshmallow.fields.Raw(
+                required=True,
+                allow_none=True,
+            ),
+        ),
     )
-    valor_otro_imp = marshmallow.fields.Integer(
-        required=False,
-        allow_none=True,
-        data_key='Valor Otro Imp.',
-    )
-    tasa_otro_imp = marshmallow.fields.Decimal(
-        required=False,
-        allow_none=True,
-        data_key='Tasa Otro Imp.',
-    )
+    """
+    Represents the 'Otros Impuestos' group in the CSV as three separate fields:
+    'Codigo Otro Impuesto', 'Valor Otro Impuesto', and 'Tasa Otro Impuesto'.
+    These fields are stored as a list of mappings, each mapping corresponding to a related invoice
+    with the following keys:
+    - Codigo Otro Imp.: String
+    - Valor Otro Imp.: Integer
+    - Tasa Otro Imp.: Decimal
+    """
+
     ###########################################################################
     # fields whose value is set using data passed in the schema context
     ###########################################################################
@@ -704,6 +712,38 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         if 'RUT Emisor Liquid. Factura' in in_data:
             if in_data['RUT Emisor Liquid. Factura'] in (None, '', '-'):
                 in_data['RUT Emisor Liquid. Factura'] = None
+
+        # Remove Otros Impuestos individual fields if they exist
+        in_data.pop('Codigo Otro Imp.', None)
+        in_data.pop('Valor Otro Imp.', None)
+        in_data.pop('Tasa Otro Imp.', None)
+
+        if 'Otros Impuestos' in in_data and in_data['Otros Impuestos']:
+            otros_impuestos_list = [
+                {
+                    'codigo_otro_impuesto': item.get('codigo_otro_impuesto') or None,
+                    'valor_otro_impuesto': (
+                        item['valor_otro_impuesto']
+                        if item.get('valor_otro_impuesto') not in (None, '', '-')
+                        else None
+                    ),
+                    'tasa_otro_impuesto': (
+                        item['tasa_otro_impuesto']
+                        if item.get('tasa_otro_impuesto') not in (None, '', '-')
+                        else None
+                    ),
+                }
+                for item in in_data['Otros Impuestos']
+                if any(
+                    [
+                        item.get('codigo_otro_impuesto') not in (None, ''),
+                        item.get('valor_otro_impuesto') not in (None, '', '-'),
+                        item.get('tasa_otro_impuesto') not in (None, '', '-'),
+                    ]
+                )
+            ]
+            in_data['Otros Impuestos'] = otros_impuestos_list or None
+
         return in_data
 
     @marshmallow.post_load
@@ -777,9 +817,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
             numero_interno = data['numero_interno']
             codigo_sucursal = data['codigo_sucursal']
             nce_o_nde_sobre_factura_de_compra = data['nce_o_nde_sobre_factura_de_compra']
-            codigo_otro_imp = data['codigo_otro_imp']
-            valor_otro_imp = data['valor_otro_imp']
-            tasa_otro_imp = data['tasa_otro_imp']
+            otros_impuestos = data.get('otros_impuestos', None)
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -825,9 +863,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
                 numero_interno=numero_interno,
                 codigo_sucursal=codigo_sucursal,
                 nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
-                codigo_otro_imp=codigo_otro_imp,
-                valor_otro_imp=valor_otro_imp,
-                tasa_otro_imp=tasa_otro_imp,
+                otros_impuestos=otros_impuestos,
             )
         except (TypeError, ValueError):
             raise
@@ -879,9 +915,6 @@ class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
     emisor_razon_social = marshmallow.fields.String(
         required=True,
         data_key='Razon Social',
-    )
-    receptor_rut = mm_fields.RutField(
-        required=True,
     )
     fecha_recepcion_dt = marshmallow.fields.DateTime(
         format='%d/%m/%Y %H:%M:%S',
@@ -941,21 +974,27 @@ class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
         allow_none=True,
         data_key='NCE o NDE sobre Fact. de Compra',
     )
-    codigo_otro_impuesto = marshmallow.fields.String(
+    otros_impuestos = marshmallow.fields.List(
         required=False,
         allow_none=True,
-        data_key='Codigo Otro Impuesto',
+        data_key='Otros Impuestos',
+        cls_or_instance=marshmallow.fields.Dict(
+            keys=marshmallow.fields.String(),
+            values=marshmallow.fields.Raw(
+                required=True,
+                allow_none=True,
+            ),
+        ),
     )
-    valor_otro_impuesto = marshmallow.fields.Integer(
-        required=False,
-        allow_none=True,
-        data_key='Valor Otro Impuesto',
-    )
-    tasa_otro_impuesto = marshmallow.fields.Decimal(
-        required=False,
-        allow_none=True,
-        data_key='Tasa Otro Impuesto',
-    )
+    """
+    Represents the 'Otros Impuestos' group in the CSV as three separate fields:
+    'Codigo Otro Impuesto', 'Valor Otro Impuesto', and 'Tasa Otro Impuesto'.
+    These fields are stored as a list of mappings, each mapping corresponding to a related invoice
+    with the following keys:
+    - Codigo Otro Impuesto: String
+    - Valor Otro Impuesto: Integer
+    - Tasa Otro Impuesto: Decimal
+    """
 
     ###########################################################################
     # fields whose value is set using data passed in the schema context
@@ -991,6 +1030,36 @@ class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
             elif in_data['Tipo Compra'] == 'No Corresp. Incluir':
                 in_data['Tipo Compra'] = RcTipoCompra.NO_CORRESPONDE_INCLUIR.value
 
+        # remove Otros Impuestos individual fields if they exist
+        in_data.pop('Codigo Otro Impuesto', None)
+        in_data.pop('Valor Otro Impuesto', None)
+        in_data.pop('Tasa Otro Impuesto', None)
+
+        if 'Otros Impuestos' in in_data and in_data['Otros Impuestos']:
+            otros_impuestos_list = [
+                {
+                    'codigo_otro_impuesto': item.get('codigo_otro_impuesto') or None,
+                    'valor_otro_impuesto': (
+                        item['valor_otro_impuesto']
+                        if item.get('valor_otro_impuesto') not in (None, '', '-')
+                        else None
+                    ),
+                    'tasa_otro_impuesto': (
+                        item['tasa_otro_impuesto']
+                        if item.get('tasa_otro_impuesto') not in (None, '', '-')
+                        else None
+                    ),
+                }
+                for item in in_data['Otros Impuestos']
+                if any(
+                    [
+                        item.get('codigo_otro_impuesto') not in (None, ''),
+                        item.get('valor_otro_impuesto') not in (None, '', '-'),
+                        item.get('tasa_otro_impuesto') not in (None, '', '-'),
+                    ]
+                )
+            ]
+            in_data['Otros Impuestos'] = otros_impuestos_list or None
         return in_data
 
     @marshmallow.post_load
@@ -1105,9 +1174,7 @@ class RcvCompraRegistroCsvRowSchema(RcvCompraCsvRowSchema):
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
-            codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
-            valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
-            tasa_otro_impuesto: Optional[Decimal] = data.get('tasa_otro_impuesto')
+            otros_impuestos = data.get('otros_impuestos', None)
             fecha_acuse_dt: Optional[datetime] = data.get('fecha_acuse_dt')
             tabacos_puros: Optional[int] = data.get('tabacos_puros')
             tabacos_cigarrillos: Optional[int] = data.get('tabacos_cigarrillos')
@@ -1137,9 +1204,7 @@ class RcvCompraRegistroCsvRowSchema(RcvCompraCsvRowSchema):
                 impto_sin_derecho_a_credito=impto_sin_derecho_a_credito,
                 iva_no_retenido=iva_no_retenido,
                 nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
-                codigo_otro_impuesto=codigo_otro_impuesto,
-                valor_otro_impuesto=valor_otro_impuesto,
-                tasa_otro_impuesto=tasa_otro_impuesto,
+                otros_impuestos=otros_impuestos,
                 fecha_acuse_dt=fecha_acuse_dt,
                 tabacos_puros=tabacos_puros,
                 tabacos_cigarrillos=tabacos_cigarrillos,
@@ -1225,9 +1290,7 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraCsvRowSchema):
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
-            codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
-            valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
-            tasa_otro_impuesto: Optional[Decimal] = data.get('tasa_otro_impuesto')
+            otros_impuestos = data.get('otros_impuestos', None)
             fecha_acuse_dt: Optional[datetime] = data.get('fecha_acuse_dt')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
@@ -1254,9 +1317,7 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraCsvRowSchema):
                 impto_sin_derecho_a_credito=impto_sin_derecho_a_credito,
                 iva_no_retenido=iva_no_retenido,
                 nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
-                codigo_otro_impuesto=codigo_otro_impuesto,
-                valor_otro_impuesto=valor_otro_impuesto,
-                tasa_otro_impuesto=tasa_otro_impuesto,
+                otros_impuestos=otros_impuestos,
                 fecha_acuse_dt=fecha_acuse_dt,
             )
         except (TypeError, ValueError):
@@ -1346,9 +1407,7 @@ class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
-            codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
-            valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
-            tasa_otro_impuesto: Optional[Decimal] = data.get('tasa_otro_impuesto')
+            otros_impuestos = data.get('otros_impuestos')
             fecha_reclamo_dt: Optional[datetime] = data.get('fecha_reclamo_dt')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
@@ -1375,9 +1434,7 @@ class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
                 impto_sin_derecho_a_credito=impto_sin_derecho_a_credito,
                 iva_no_retenido=iva_no_retenido,
                 nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
-                codigo_otro_impuesto=codigo_otro_impuesto,
-                valor_otro_impuesto=valor_otro_impuesto,
-                tasa_otro_impuesto=tasa_otro_impuesto,
+                otros_impuestos=otros_impuestos,
                 fecha_reclamo_dt=fecha_reclamo_dt,
             )
         except (TypeError, ValueError):
@@ -1431,9 +1488,7 @@ class RcvCompraPendienteCsvRowSchema(RcvCompraCsvRowSchema):
             nce_o_nde_sobre_factura_de_compra: Optional[str] = data.get(
                 'nce_o_nde_sobre_factura_de_compra'
             )
-            codigo_otro_impuesto: Optional[str] = data.get('codigo_otro_impuesto')
-            valor_otro_impuesto: Optional[int] = data.get('valor_otro_impuesto')
-            tasa_otro_impuesto: Optional[Decimal] = data.get('tasa_otro_impuesto')
+            otros_impuestos = data.get('otros_impuestos')
         except KeyError as exc:
             raise ValueError("Programming error: a referenced field is missing.") from exc
 
@@ -1459,9 +1514,7 @@ class RcvCompraPendienteCsvRowSchema(RcvCompraCsvRowSchema):
                 impto_sin_derecho_a_credito=impto_sin_derecho_a_credito,
                 iva_no_retenido=iva_no_retenido,
                 nce_o_nde_sobre_factura_de_compra=nce_o_nde_sobre_factura_de_compra,
-                codigo_otro_impuesto=codigo_otro_impuesto,
-                valor_otro_impuesto=valor_otro_impuesto,
-                tasa_otro_impuesto=tasa_otro_impuesto,
+                otros_impuestos=otros_impuestos,
             )
         except (TypeError, ValueError):
             raise
@@ -1537,35 +1590,106 @@ def _parse_rcv_csv_file(
             expected_field_names=expected_input_field_names,
         )
 
-        g = rows_processing.csv_rows_mm_deserialization_iterator(
-            csv_reader,
-            row_schema=input_csv_row_schema,
-            n_rows_offset=n_rows_offset,
-            max_n_rows=max_n_rows,
-            fields_to_remove_names=fields_to_remove_names,
-        )
+        # Group rows by folio and handle "Otros Impuestos" logic
+        folio_groups: MutableMapping[str, Any] = {}
 
-        for row_ix, row_data, deserialized_row_data, validation_errors in g:
-            entry: Optional[RcvDetalleEntry] = None
-            row_errors: Dict[str, object] = {}
-            conversion_error = None
+        # Otros Impuestos field names
+        if isinstance(input_csv_row_schema, RcvVentaCsvRowSchema):
+            codigo_otro_impuesto_key = "Codigo Otro Imp."
+            valor_otro_impuesto_key = "Valor Otro Imp."
+            tasa_otro_impuesto_key = "Tasa Otro Imp."
+        else:
+            codigo_otro_impuesto_key = "Codigo Otro Impuesto"
+            valor_otro_impuesto_key = "Valor Otro Impuesto"
+            tasa_otro_impuesto_key = "Tasa Otro Impuesto"
 
-            if not validation_errors:
+        # First pass: collect all rows and group by folio
+        for row_ix, row_data in enumerate(csv_reader, start=1):
+            if max_n_rows is not None and row_ix > max_n_rows + n_rows_offset:
+                raise rows_processing.MaxRowsExceeded(f"Exceeded 'max_n_rows' limit: {max_n_rows}.")
+
+            if row_ix <= n_rows_offset:
+                continue
+
+            for _field_name in fields_to_remove_names:
+                row_data.pop(_field_name, None)
+
+            folio = str(row_data.get('Folio')) if row_data.get('Folio') is not None else ''
+
+            # If both fields are None, it's an "otros impuestos" row
+            is_main = not (
+                (
+                    row_data.get("Nro") in (None, "")
+                    and row_data.get("Fecha Recepcion") in (None, "")
+                )
+                and (row_data.get("Monto Total") in (None, ""))
+            )
+            otros_impuestos_data = {
+                'codigo_otro_impuesto': (
+                    None
+                    if row_data.get(codigo_otro_impuesto_key) == ''
+                    else row_data.get(codigo_otro_impuesto_key)
+                ),
+                'valor_otro_impuesto': (
+                    None
+                    if row_data.get(valor_otro_impuesto_key) == ''
+                    else row_data.get(valor_otro_impuesto_key)
+                ),
+                'tasa_otro_impuesto': (
+                    None
+                    if row_data.get(tasa_otro_impuesto_key) == ''
+                    else row_data.get(tasa_otro_impuesto_key)
+                ),
+            }
+
+            if folio not in folio_groups:
+                folio_groups[folio] = {
+                    'row': (row_ix, row_data),
+                    'otros_impuestos': [otros_impuestos_data],
+                }
+            if not is_main and folio in folio_groups:
+                if any(otros_impuestos_data.values()):
+                    folio_groups[folio]['otros_impuestos'].append(otros_impuestos_data)
+
+        # Second pass: yield grouped rows
+        for folio, group in folio_groups.items():
+            if group['row']:
+                row_ix, row_data = group['row']
+                row_data['Otros Impuestos'] = group['otros_impuestos']
+
+                # Remove individual "Otros Impuestos" fields
+                row_data.pop(codigo_otro_impuesto_key, None)
+                row_data.pop(tasa_otro_impuesto_key, None)
+                row_data.pop(valor_otro_impuesto_key, None)
+
+                # Deserialize the row
                 try:
-                    entry = input_csv_row_schema.to_detalle_entry(deserialized_row_data)
-                except Exception as exc:
-                    conversion_error = str(exc)
-                    logger.exception(
-                        "Deserialized row data conversion failed for row %d: %s",
-                        row_ix,
-                        conversion_error,
-                        extra={'deserialized_row_data': deserialized_row_data},
-                    )
+                    deserialized_row_data: dict = input_csv_row_schema.load(row_data)
+                    validation_errors: dict = {}
+                except marshmallow.ValidationError as exc:
+                    deserialized_row_data = {}
+                    validation_errors = dict(exc.normalized_messages())
 
-            # Instead of empty dicts, lists, str, etc, we want to have None.
-            if validation_errors:
-                row_errors['validation'] = validation_errors
-            if conversion_error:
-                row_errors['conversion_errors'] = conversion_error
+                entry: Optional[RcvDetalleEntry] = None
+                row_errors: Dict[str, object] = {}
+                conversion_error = None
 
-            yield entry, row_ix, row_data, row_errors
+                if not validation_errors:
+                    try:
+                        entry = input_csv_row_schema.to_detalle_entry(deserialized_row_data)
+                    except Exception as exc:
+                        conversion_error = str(exc)
+                        logger.exception(
+                            "Deserialized row data conversion failed for row %d: %s",
+                            row_ix,
+                            conversion_error,
+                            extra={'deserialized_row_data': deserialized_row_data},
+                        )
+
+                # Instead of empty dicts, lists, str, etc, we want to have None.
+                if validation_errors:
+                    row_errors['validation'] = validation_errors
+                if conversion_error:
+                    row_errors['conversion_errors'] = conversion_error
+
+                yield entry, row_ix, row_data, row_errors
