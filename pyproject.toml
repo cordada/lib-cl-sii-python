@@ -28,7 +28,7 @@ dependencies = [
   "signxml>=4.0.0",
   "typing-extensions>=4.0.1",
 ]
-requires-python = ">=3.9, <3.13"
+requires-python = ">=3.9, <3.14"
 authors = [
   {name = "Fyntex TI SpA", email = "no-reply@fyntex.ai"},
 ]
@@ -46,6 +46,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
 dynamic = ["version"]
 
