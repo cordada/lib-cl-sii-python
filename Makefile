@@ -10,10 +10,6 @@ PYTHON_PIP_VERSION_SPECIFIER = $(shell \
 	grep -E '^pip==.+' --no-filename --only-matching --no-messages -- requirements{,-dev}.{txt,in} \
 	| head -n 1 | sed 's/^pip//' \
 )
-PYTHON_SETUPTOOLS_VERSION_SPECIFIER = $(shell \
-	grep -E '^setuptools==.+' --no-filename --only-matching --no-messages -- requirements{,-dev}.{txt,in} \
-	| head -n 1 | sed 's/^setuptools//' \
-)
 PYTHON_VIRTUALENV_DIR = venv
 PYTHON_PIP_TOOLS_VERSION_SPECIFIER = $(shell \
 	grep -E '^pip-tools==.+' --no-filename --only-matching --no-messages -- requirements{,-dev}.{txt,in} \
@@ -37,7 +33,7 @@ TOXENV ?= py310
 .PHONY: build dist deploy upload-release
 .PHONE: python-virtualenv
 .PHONY: python-deps-compile python-deps-sync-check python-pip-tools-install
-.PHONY: python-pip-install python-setuptools-install
+.PHONY: python-pip-install
 
 help:
 	@grep '^[a-zA-Z]' $(MAKEFILE_LIST) | sort | awk -F ':.*?## ' 'NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
@@ -69,7 +65,7 @@ install-dev: ## Install for development
 	python -m pip install --editable .
 	python -m pip check
 
-install-deps-dev: python-pip-install python-setuptools-install
+install-deps-dev: python-pip-install
 install-deps-dev: python-pip-tools-install
 install-deps-dev: ## Install dependencies for development
 	python -m pip install -r requirements.txt
@@ -136,9 +132,6 @@ python-virtualenv: ## Create virtual Python environment
 
 python-pip-install: ## Install Pip
 	$(PYTHON_PIP) install 'pip$(PYTHON_PIP_VERSION_SPECIFIER)'
-
-python-setuptools-install: ## Install Setuptools
-	$(PYTHON_PIP) install 'setuptools$(PYTHON_SETUPTOOLS_VERSION_SPECIFIER)'
 
 python-deps-compile: $(patsubst %,python-deps-compile-%,$(PYTHON_PIP_TOOLS_SRC_FILES))
 python-deps-compile: ## Compile Python dependency manifests
