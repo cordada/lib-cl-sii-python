@@ -34,12 +34,12 @@ authors = [
 ]
 description = "Python library for Servicio de Impuestos Internos (SII) of Chile."
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE"]
 classifiers = [
   # See https://pypi.org/classifiers/
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
   "Natural Language :: English",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.9",
