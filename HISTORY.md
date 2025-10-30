@@ -1,5 +1,13 @@
 # History
 
+## 0.61.0 (2025-10-29)
+
+- (PR #916, 2025-10-29) Add support for Python 3.11
+- (PR #918, 2025-10-29) Add Python 3.11 to target versions of 'Black'
+- (PR #919, 2025-10-29) Add support for Python 3.12
+- (PR #920, 2025-10-29) deps: Update `cffi` from 1.16.0 to 1.17.1
+- (PR #921, 2025-10-29) Add support for Python 3.13
+
 ## 0.60.0 (2025-10-20)
 
 - (PR #913, 2025-10-15) rcv: Refactor and extend parsing for "Otros Impuestos" field
