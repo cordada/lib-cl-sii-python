@@ -1,5 +1,10 @@
 # History
 
+## 0.62.0 (2025-10-29)
+
+- (PR #924, 2025-10-29) deps: Update `keyring` from 21.4.0 to 25.6.0
+- (PR #925, 2025-10-29) Fix Python package license metadata deprecations
+
 ## 0.61.0 (2025-10-29)
 
 - (PR #916, 2025-10-29) Add support for Python 3.11
