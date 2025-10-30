@@ -8,6 +8,8 @@ attrs==23.2.0
     # via
     #   -c requirements.txt
     #   referencing
+backports-tarfile==1.2.0
+    # via jaraco-context
 beautifulsoup4==4.13.3
     # via types-lxml
 black==25.9.0
@@ -66,14 +68,21 @@ importlib-metadata==8.7.0
     # via
     #   -c requirements.txt
     #   build
+    #   keyring
     #   twine
 isort==6.0.1
     # via -r requirements-dev.in
+jaraco-classes==3.4.0
+    # via keyring
+jaraco-context==6.0.1
+    # via keyring
+jaraco-functools==4.3.0
+    # via keyring
 jeepney==0.8.0
     # via
     #   keyring
     #   secretstorage
-keyring==21.4.0
+keyring==25.6.0
     # via twine
 markdown-it-py==3.0.0
     # via rich
@@ -81,6 +90,10 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
+more-itertools==10.8.0
+    # via
+    #   jaraco-classes
+    #   jaraco-functools
 mypy==1.18.2
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
