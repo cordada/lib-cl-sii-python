@@ -30,6 +30,9 @@ jobs:
         python_version:
           - "3.9"
           - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
 
     steps:
       - name: Check Out VCS Repository
@@ -85,6 +88,9 @@ jobs:
         python_version:
           - "3.9"
           - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
 
     steps:
       - name: Check Out VCS Repository

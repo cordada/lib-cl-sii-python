@@ -44,7 +44,7 @@ jobs:
         id: set_up_python
         uses: actions/setup-python@v6.0.0
         with:
-          python-version: "3.10"
+          python-version: "3.13"
 
       - name: Restoring/Saving Cache
         uses: actions/cache@v4.3.0

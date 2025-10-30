@@ -1,5 +1,6 @@
 import datetime
 import re
+import sys
 import unittest
 
 from cl_sii.libs.tz_utils import (  # noqa: F401
@@ -74,7 +75,12 @@ class FunctionsTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(AssertionError, expected_error_message):
             validate_dt_tz(dt_with_tzinfo_utc_pytz, tzinfo_utc_stdlib)
-        expected_error_message = re.compile(r"^Object UTC must have 'zone' attribute.$")
+        if sys.version_info >= (3, 11):
+            expected_error_message = re.compile(
+                r"^Object datetime.timezone.utc must have 'zone' attribute.$"
+            )
+        else:
+            expected_error_message = re.compile(r"^Object UTC must have 'zone' attribute.$")
         with self.assertRaisesRegex(AssertionError, expected_error_message):
             validate_dt_tz(dt_with_tzinfo_utc_stdlib, tzinfo_utc_pytz)
 
@@ -86,8 +92,15 @@ class FunctionsTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(AssertionError, expected_error_message):
             validate_dt_tz(dt_with_tzinfo_not_utc_pytz, tzinfo_not_utc_stdlib)  # type: ignore
-        expected_error_message = re.compile(
-            r"^Object" r" UTC-03:00" r" must have 'zone' attribute.$"
-        )
+        if sys.version_info >= (3, 11):
+            expected_error_message = re.compile(
+                r"^Object"
+                r" datetime.timezone\(datetime.timedelta\(days=-1, seconds=75600\)\)"
+                r" must have 'zone' attribute.$"
+            )
+        else:
+            expected_error_message = re.compile(
+                r"^Object" r" UTC-03:00" r" must have 'zone' attribute.$"
+            )
         with self.assertRaisesRegex(AssertionError, expected_error_message):
             validate_dt_tz(dt_with_tzinfo_not_utc_stdlib, tzinfo_not_utc_pytz)
