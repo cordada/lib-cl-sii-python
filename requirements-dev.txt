@@ -68,9 +68,10 @@ importlib-metadata==8.7.0
     # via
     #   -c requirements.txt
     #   build
+    #   isort
     #   keyring
     #   twine
-isort==6.0.1
+isort==6.1.0
     # via -r requirements-dev.in
 jaraco-classes==3.4.0
     # via keyring
