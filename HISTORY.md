@@ -1,5 +1,17 @@
 # History
 
+## 0.63.0 (2025-11-13)
+
+- (PR #928, 2025-10-29) Do not install `setuptools` using Make tasks
+- (PR #929, 2025-10-29) Installing Pip version 24 in GitHub Actions fails when default's 25
+- (PR #907, 2025-10-29) chore(deps): Bump lxml from 5.4.0 to 6.0.2
+- (PR #934, 2025-11-03) chore(deps): Bump typing-extensions from 4.14.0 to 4.15.0
+- (PR #935, 2025-11-11) chore(deps): Bump django from 4.2.25 to 4.2.26
+- (PR #933, 2025-11-13) chore(deps): Bump pip-tools from 7.4.1 to 7.5.1
+- (PR #938, 2025-11-13) deps: Bump pip-tools from 7.5.1 to 7.5.2
+- (PR #917, 2025-11-13) chore(deps): Bump pip from 24.2 to 25.3
+- (PR #937, 2025-11-13) rcv: Refactor grouping logic for RCV parsing
+
 ## 0.62.0 (2025-10-29)
 
 - (PR #924, 2025-10-29) deps: Update `keyring` from 21.4.0 to 25.6.0

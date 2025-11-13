@@ -45,6 +45,9 @@ jobs:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
 
+      - name: Install Pip
+        run: make python-pip-install
+
       - name: Create Python Virtual Environment
         run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
 
