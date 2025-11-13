@@ -1590,20 +1590,22 @@ def _parse_rcv_csv_file(
             expected_field_names=expected_input_field_names,
         )
 
-        # Group rows by folio and handle "Otros Impuestos" logic
-        folio_groups: MutableMapping[str, Any] = {}
+        # Group rows by 'folio + tipo docto + rut' to handle "Otros Impuestos" logic
+        entry_key_groups: MutableMapping[str, Any] = {}
 
-        # Otros Impuestos field names
+        # Field names differ slightly between RCV Venta and RCV Compra
         if isinstance(input_csv_row_schema, RcvVentaCsvRowSchema):
             codigo_otro_impuesto_key = "Codigo Otro Imp."
             valor_otro_impuesto_key = "Valor Otro Imp."
             tasa_otro_impuesto_key = "Tasa Otro Imp."
+            rut_key = "Rut cliente"
         else:
             codigo_otro_impuesto_key = "Codigo Otro Impuesto"
             valor_otro_impuesto_key = "Valor Otro Impuesto"
             tasa_otro_impuesto_key = "Tasa Otro Impuesto"
+            rut_key = "Rut Proveedor"
 
-        # First pass: collect all rows and group by folio
+        # First pass: collect all rows and group by folio + tipo docto + rut
         for row_ix, row_data in enumerate(csv_reader, start=1):
             if max_n_rows is not None and row_ix > max_n_rows + n_rows_offset:
                 raise rows_processing.MaxRowsExceeded(f"Exceeded 'max_n_rows' limit: {max_n_rows}.")
@@ -1615,13 +1617,17 @@ def _parse_rcv_csv_file(
                 row_data.pop(_field_name, None)
 
             folio = str(row_data.get('Folio')) if row_data.get('Folio') is not None else ''
+            tipo_docto = row_data.get('Tipo Doc')
+            rut = row_data.get(rut_key)
 
-            # If both fields are None, it's an "otros impuestos" row
+            # Concatenate folio, tipo_docto, and rut to create unique entry key
+            entry_key = f"{folio}_{tipo_docto}_{rut}"
+
+            # If Nro, Fecha Recepcion, and Monto Total are all None or empty,
+            # it's an "otros impuestos" row
             is_main = not (
-                (
-                    row_data.get("Nro") in (None, "")
-                    and row_data.get("Fecha Recepcion") in (None, "")
-                )
+                row_data.get("Nro") in (None, "")
+                and row_data.get("Fecha Recepcion") in (None, "")
                 and (row_data.get("Monto Total") in (None, ""))
             )
             otros_impuestos_data = {
@@ -1642,17 +1648,21 @@ def _parse_rcv_csv_file(
                 ),
             }
 
-            if folio not in folio_groups:
-                folio_groups[folio] = {
+            if entry_key not in entry_key_groups:
+                entry_key_groups[entry_key] = {
                     'row': (row_ix, row_data),
                     'otros_impuestos': [otros_impuestos_data],
                 }
-            if not is_main and folio in folio_groups:
+            elif is_main:
+                # Update main row if this is a main entry
+                entry_key_groups[entry_key]['row'] = (row_ix, row_data)
+                entry_key_groups[entry_key]['otros_impuestos'].insert(0, otros_impuestos_data)
+            elif not is_main:
                 if any(otros_impuestos_data.values()):
-                    folio_groups[folio]['otros_impuestos'].append(otros_impuestos_data)
+                    entry_key_groups[entry_key]['otros_impuestos'].append(otros_impuestos_data)
 
         # Second pass: yield grouped rows
-        for folio, group in folio_groups.items():
+        for folio, group in entry_key_groups.items():
             if group['row']:
                 row_ix, row_data = group['row']
                 row_data['Otros Impuestos'] = group['otros_impuestos']
