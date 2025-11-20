@@ -302,27 +302,27 @@ class RvDetalleEntry(RcvDetalleEntry):
     Monto IVA
     """
 
-    iva_retenido_total: int
+    iva_retenido_total: Optional[int]
     """
     IVA Retenido Total
     """
 
-    iva_retenido_parcial: int
+    iva_retenido_parcial: Optional[int]
     """
     IVA Retenido Parcial
     """
 
-    iva_no_retenido: int
+    iva_no_retenido: Optional[int]
     """
     IVA no retenido
     """
 
-    iva_propio: int
+    iva_propio: Optional[int]
     """
     IVA propio
     """
 
-    iva_terceros: int
+    iva_terceros: Optional[int]
     """
     IVA Terceros
     """

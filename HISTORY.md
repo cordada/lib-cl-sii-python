@@ -1,5 +1,9 @@
 # History
 
+## 0.64.0 (2025-11-20)
+
+- (PR #941, 2025-11-20) rcv: Make IVA fields optional in schemas and data models
+
 ## 0.63.0 (2025-11-13)
 
 - (PR #928, 2025-10-29) Do not install `setuptools` using Make tasks

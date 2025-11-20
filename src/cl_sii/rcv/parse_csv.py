@@ -539,23 +539,28 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         data_key='Monto total',
     )
     iva_retenido_total = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='IVA Retenido Total',
     )
     iva_retenido_parcial = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='IVA Retenido Parcial',
     )
     iva_no_retenido = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='IVA no retenido',
     )
     iva_propio = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='IVA propio',
     )
     iva_terceros = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='IVA Terceros',
     )
     liquidacion_factura_emisor_rut = mm_fields.RutField(
