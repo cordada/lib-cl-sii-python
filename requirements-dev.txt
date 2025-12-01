@@ -12,7 +12,7 @@ backports-tarfile==1.2.0
     # via jaraco-context
 beautifulsoup4==4.13.3
     # via types-lxml
-black==25.9.0
+black==25.11.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -68,9 +68,10 @@ importlib-metadata==8.7.0
     # via
     #   -c requirements.txt
     #   build
+    #   isort
     #   keyring
     #   twine
-isort==6.0.1
+isort==6.1.0
     # via -r requirements-dev.in
 jaraco-classes==3.4.0
     # via keyring
@@ -84,6 +85,8 @@ jeepney==0.8.0
     #   secretstorage
 keyring==25.6.0
     # via twine
+librt==0.6.3
+    # via mypy
 markdown-it-py==3.0.0
     # via rich
 mccabe==0.7.0
@@ -94,7 +97,7 @@ more-itertools==10.8.0
     # via
     #   jaraco-classes
     #   jaraco-functools
-mypy==1.18.2
+mypy==1.19.0
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
@@ -138,7 +141,7 @@ pyproject-hooks==1.0.0
     # via
     #   build
     #   pip-tools
-pytokens==0.1.10
+pytokens==0.3.0
     # via black
 readme-renderer==35.0
     # via twine
