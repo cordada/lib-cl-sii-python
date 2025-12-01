@@ -22,9 +22,9 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v6.0.0
 
       - name: Dependency Review
-        uses: actions/dependency-review-action@v4.8.1
+        uses: actions/dependency-review-action@v4.8.2
         with:
           fail-on-severity: critical
