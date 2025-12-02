@@ -42,7 +42,7 @@ from .utils import get_test_file_path
 class RcvVentaCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_ventas_row(self) -> None:
         schema_context: _RcvVentaCsvRowContext = {
-            'emisor_rut': Rut('1-9'),
+            'contribuyente_rut': Rut('1-9'),
         }
         input_csv_row_schema = RcvVentaCsvRowSchema()
 
@@ -50,7 +50,7 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
             'Tipo Doc': '33',
             'Tipo Venta': 'Del Giro',
             'Rut cliente': '12345678-5',
-            'Razon Social': 'Fake Company S.A.',
+            'Razon Social': 'Fake Customer S.A.',
             'Folio': '506',
             'Fecha Docto': '04/06/2019',
             'Fecha Recepcion': '18/06/2019 17:01:06',
@@ -100,17 +100,17 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
 
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RvDetalleEntry(
-            emisor_rut=Rut('1-9'),
+            contribuyente_rut=Rut('1-9'),
             tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=506,
             fecha_emision_date=datetime.date(2019, 6, 4),
-            receptor_rut=Rut('12345678-5'),
+            cliente_rut=Rut('12345678-5'),
             monto_total=2082715,
             fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                 datetime.datetime(2019, 6, 18, 17, 1, 6), tz=SII_OFFICIAL_TZ
             ),
             tipo_venta='DEL_GIRO',
-            receptor_razon_social='Fake Company S.A.',
+            cliente_razon_social='Fake Customer S.A.',
             fecha_acuse_dt=None,
             fecha_reclamo_dt=None,
             monto_exento=0,
@@ -151,7 +151,7 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
 class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_compra_registro_row(self) -> None:
         schema_context: _RcvCompraCsvRowContext = {
-            'receptor_rut': Rut('1-9'),
+            'contribuyente_rut': Rut('1-9'),
         }
         input_csv_row_schema = RcvCompraRegistroCsvRowSchema()
 
@@ -159,7 +159,7 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
             'Tipo Doc': '33',
             'Tipo Compra': 'Del Giro',
             'RUT Proveedor': '12345678-5',
-            'Razon Social': 'Fake Company S.A.',
+            'Razon Social': 'Fake Seller S.A.',
             'Folio': '23084',
             'Fecha Docto': '21/06/2019',
             'Fecha Recepcion': '24/06/2019 09:55:53',
@@ -189,18 +189,18 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
 
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RcRegistroDetalleEntry(
-            emisor_rut=Rut('12345678-5'),
+            contribuyente_rut=Rut('1-9'),
             tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=23084,
             fecha_emision_date=datetime.date(2019, 6, 21),
-            receptor_rut=Rut('1-9'),
+            proveedor_rut=Rut('12345678-5'),
             monto_total=285801,
             fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                 datetime.datetime(2019, 6, 24, 9, 55, 53),
                 tz=SII_OFFICIAL_TZ,
             ),
             tipo_compra='DEL_GIRO',
-            emisor_razon_social='Fake Company S.A.',
+            proveedor_razon_social='Fake Seller S.A.',
             monto_exento=0,
             monto_neto=240169,
             monto_iva_recuperable=45632,
@@ -226,7 +226,7 @@ class RcvCompraRegistroCsvRowSchemaTest(unittest.TestCase):
 class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_compra_no_incluir_row(self) -> None:
         schema_context: _RcvCompraCsvRowContext = {
-            'receptor_rut': Rut('1-9'),
+            'contribuyente_rut': Rut('1-9'),
         }
         input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema()
 
@@ -234,7 +234,7 @@ class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
             'Tipo Doc': '33',
             'Tipo Compra': 'No Corresp. Incluir',
             'RUT Proveedor': '12345678-5',
-            'Razon Social': 'Fake Company S.A.',
+            'Razon Social': 'Fake Seller S.A.',
             'Folio': '19000035',
             'Fecha Docto': '13/12/2019',
             'Fecha Recepcion': '14/12/2019 15:56:27',
@@ -261,17 +261,17 @@ class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
 
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RcNoIncluirDetalleEntry(
-            emisor_rut=Rut('12345678-5'),
+            contribuyente_rut=Rut('1-9'),
             tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=19000035,
             fecha_emision_date=datetime.date(2019, 12, 13),
-            receptor_rut=Rut('1-9'),
+            proveedor_rut=Rut('12345678-5'),
             monto_total=104362,
             fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                 datetime.datetime(2019, 12, 14, 15, 56, 27), tz=SII_OFFICIAL_TZ
             ),
             tipo_compra='NO_CORRESPONDE_INCLUIR',
-            emisor_razon_social='Fake Company S.A.',
+            proveedor_razon_social='Fake Seller S.A.',
             monto_exento=0,
             monto_neto=87699,
             monto_iva_recuperable=None,
@@ -293,7 +293,7 @@ class RcvCompraNoIncluirCsvRowSchemaTest(unittest.TestCase):
 class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_compra_reclamado_row(self) -> None:
         schema_context: _RcvCompraCsvRowContext = {
-            'receptor_rut': Rut('1-9'),
+            'contribuyente_rut': Rut('1-9'),
         }
         input_csv_row_schema = RcvCompraReclamadoCsvRowSchema()
 
@@ -301,7 +301,7 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
             'Tipo Doc': '33',
             'Tipo Compra': 'Del Giro',
             'RUT Proveedor': '12345678-5',
-            'Razon Social': 'Fake Company S.A.',
+            'Razon Social': 'Fake Seller S.A.',
             'Folio': '1000055',
             'Fecha Docto': '05/06/2019',
             'Fecha Recepcion': '05/06/2019 21:58:49',
@@ -328,17 +328,17 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
 
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RcReclamadoDetalleEntry(
-            emisor_rut=Rut('12345678-5'),
+            contribuyente_rut=Rut('1-9'),
             tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=1000055,
             fecha_emision_date=datetime.date(2019, 6, 5),
-            receptor_rut=Rut('1-9'),
+            proveedor_rut=Rut('12345678-5'),
             monto_total=1155364,
             fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                 datetime.datetime(2019, 6, 5, 21, 58, 49), tz=SII_OFFICIAL_TZ
             ),
             tipo_compra='DEL_GIRO',
-            emisor_razon_social='Fake Company S.A.',
+            proveedor_razon_social='Fake Seller S.A.',
             monto_exento=0,
             monto_neto=970894,
             monto_iva_recuperable=184470,
@@ -362,7 +362,7 @@ class RcvCompraReclamadoCsvRowSchemaTest(unittest.TestCase):
 class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
     def test_parse_rcv_compra_pendiente_row(self) -> None:
         schema_context: _RcvCompraCsvRowContext = {
-            'receptor_rut': Rut('1-9'),
+            'contribuyente_rut': Rut('1-9'),
         }
         input_csv_row_schema = RcvCompraPendienteCsvRowSchema()
 
@@ -370,7 +370,7 @@ class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
             'Tipo Doc': '33',
             'Tipo Compra': 'Del Giro',
             'RUT Proveedor': '12345678-5',
-            'Razon Social': 'Fake Company S.A.',
+            'Razon Social': 'Fake Seller S.A.',
             'Folio': '9800042',
             'Fecha Docto': '28/06/2019',
             'Fecha Recepcion': '01/07/2019 13:21:32',
@@ -396,17 +396,17 @@ class RcvCompraPendienteCsvRowSchemaTest(unittest.TestCase):
 
         result = input_csv_row_schema.to_detalle_entry(deserialized_data)
         expected_result = RcPendienteDetalleEntry(
-            emisor_rut=Rut('12345678-5'),
+            contribuyente_rut=Rut('1-9'),
             tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=9800042,
             fecha_emision_date=datetime.date(2019, 6, 28),
-            receptor_rut=Rut('1-9'),
+            proveedor_rut=Rut('12345678-5'),
             monto_total=49787,
             fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                 datetime.datetime(2019, 7, 1, 13, 21, 32), tz=SII_OFFICIAL_TZ
             ),
             tipo_compra='DEL_GIRO',
-            emisor_razon_social='Fake Company S.A.',
+            proveedor_razon_social='Fake Seller S.A.',
             monto_exento=0,
             monto_neto=41838,
             monto_iva_recuperable=7949,
@@ -441,18 +441,18 @@ class FunctionsTest(unittest.TestCase):
         assert isinstance(items, Iterable) and isinstance(items, Iterator)
 
         expected_entry_struct = RvDetalleEntry(
-            emisor_rut=Rut('1-9'),
+            contribuyente_rut=Rut('1-9'),
             tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=506,
             fecha_emision_date=datetime.date(2019, 6, 4),
-            receptor_rut=Rut('12345678-5'),
+            cliente_rut=Rut('12345678-5'),
             monto_total=2082715,
             fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                 dt=datetime.datetime(2019, 6, 18, 17, 1, 6),
                 tz=SII_OFFICIAL_TZ,
             ),
             tipo_venta='DEL_GIRO',
-            receptor_razon_social='Fake Company S.A.',
+            cliente_razon_social='Fake Company S.A.',
             fecha_acuse_dt=None,
             fecha_reclamo_dt=None,
             monto_exento=0,
@@ -508,13 +508,13 @@ class FunctionsTest(unittest.TestCase):
         # Test trailing whitespace
         entry_struct, row_ix, row_data, row_parsing_errors = next(items)
         self.assertEqual(row_data['Razon Social'], 'Fake Company S.A. ')
-        self.assertEqual(entry_struct.receptor_razon_social, 'Fake Company S.A.')
+        self.assertEqual(entry_struct.cliente_razon_social, 'Fake Company S.A.')
         self.assertEqual(len(row_parsing_errors), 0)
 
         # Test leading whitespace
         entry_struct, row_ix, row_data, row_parsing_errors = next(items)
         self.assertEqual(row_data['Razon Social'], '  Fake Company S.A.')
-        self.assertEqual(entry_struct.receptor_razon_social, 'Fake Company S.A.')
+        self.assertEqual(entry_struct.cliente_razon_social, 'Fake Company S.A.')
         self.assertEqual(len(row_parsing_errors), 0)
 
     def test_parse_rcv_venta_csv_file_missing_required_fields(self) -> None:
@@ -541,7 +541,7 @@ class FunctionsTest(unittest.TestCase):
             ['Missing data for required field.'],
         )
 
-    def _test_parse_rcv_compra_csv_file_emisor_rz_leading_trailing_whitespace(
+    def _test_parse_rcv_compra_csv_file_proveedor_rz_leading_trailing_whitespace(
         self,
         parse_rcv_compra_csv_file_function: Callable,
         rcv_file_path: str,
@@ -559,13 +559,13 @@ class FunctionsTest(unittest.TestCase):
         # Test trailing whitespace
         entry_struct, row_ix, row_data, row_parsing_errors = next(items)
         self.assertEqual(row_data['Razon Social'], 'Fake Company S.A. ')
-        self.assertEqual(entry_struct.emisor_razon_social, 'Fake Company S.A.')
+        self.assertEqual(entry_struct.proveedor_razon_social, 'Fake Company S.A.')
         self.assertEqual(len(row_parsing_errors), 0)
 
         # Test leading whitespace
         entry_struct, row_ix, row_data, row_parsing_errors = next(items)
         self.assertEqual(row_data['Razon Social'], '  Fake Company S.A.')
-        self.assertEqual(entry_struct.emisor_razon_social, 'Fake Company S.A.')
+        self.assertEqual(entry_struct.proveedor_razon_social, 'Fake Company S.A.')
         self.assertEqual(len(row_parsing_errors), 0)
 
     def test_parse_rcv_venta_csv_file_conversion_error(self) -> None:
@@ -617,18 +617,18 @@ class FunctionsTest(unittest.TestCase):
         expected_entries_list = [
             (
                 RvDetalleEntry(
-                    emisor_rut=Rut('1-9'),
+                    contribuyente_rut=Rut('1-9'),
                     tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
                     folio=6541,
                     fecha_emision_date=datetime.date(2025, 9, 1),
-                    receptor_rut=Rut('54213736-3'),
+                    cliente_rut=Rut('54213736-3'),
                     monto_total=9565862,
                     fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2025, 9, 1, 10, 9),
                         tz=SII_OFFICIAL_TZ,
                     ),
                     tipo_venta='DEL_GIRO',
-                    receptor_razon_social='CHILE SPA',
+                    cliente_razon_social='CHILE SPA',
                     fecha_acuse_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2025, 9, 8, 14, 15, 23),
                         tz=SII_OFFICIAL_TZ,
@@ -729,24 +729,24 @@ class FunctionsTest(unittest.TestCase):
                             'tasa_otro_impuesto': '18',
                         },
                     ],
-                    'emisor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {},
             ),
             (
                 RvDetalleEntry(
-                    emisor_rut=Rut('1-9'),
+                    contribuyente_rut=Rut('1-9'),
                     tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
                     folio=9874,
                     fecha_emision_date=datetime.date(2025, 9, 1),
-                    receptor_rut=Rut('42509414-9'),
+                    cliente_rut=Rut('42509414-9'),
                     monto_total=13136156,
                     fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2025, 9, 1, 9, 53, 17),
                         tz=SII_OFFICIAL_TZ,
                     ),
                     tipo_venta='DEL_GIRO',
-                    receptor_razon_social='COMERCIAL SPA',
+                    cliente_razon_social='COMERCIAL SPA',
                     fecha_acuse_dt=None,
                     fecha_reclamo_dt=None,
                     monto_exento=0,
@@ -834,24 +834,24 @@ class FunctionsTest(unittest.TestCase):
                             'tasa_otro_impuesto': '31.5',
                         }
                     ],
-                    'emisor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {},
             ),
             (
                 RvDetalleEntry(
-                    emisor_rut=Rut('1-9'),
+                    contribuyente_rut=Rut('1-9'),
                     tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
                     folio=3210,
                     fecha_emision_date=datetime.date(2025, 9, 1),
-                    receptor_rut=Rut('68840666-8'),
+                    cliente_rut=Rut('68840666-8'),
                     monto_total=30471437,
                     fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2025, 9, 1, 10, 58, 51),
                         tz=SII_OFFICIAL_TZ,
                     ),
                     tipo_venta='DEL_GIRO',
-                    receptor_razon_social='TEXAS SPA',
+                    cliente_razon_social='TEXAS SPA',
                     fecha_acuse_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2025, 9, 8, 14, 15, 23),
                         tz=SII_OFFICIAL_TZ,
@@ -942,24 +942,24 @@ class FunctionsTest(unittest.TestCase):
                             'tasa_otro_impuesto': '31.5',
                         }
                     ],
-                    'emisor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {},
             ),
             (
                 RvDetalleEntry(
-                    emisor_rut=Rut('1-9'),
+                    contribuyente_rut=Rut('1-9'),
                     tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA,  # noqa: E501
                     folio=3210,
                     fecha_emision_date=datetime.date(2025, 9, 1),
-                    receptor_rut=Rut('68840666-8'),
+                    cliente_rut=Rut('68840666-8'),
                     monto_total=30471437,
                     fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2025, 9, 1, 10, 58, 51),
                         tz=SII_OFFICIAL_TZ,
                     ),
                     tipo_venta='DEL_GIRO',
-                    receptor_razon_social='TEXAS SPA',
+                    cliente_razon_social='TEXAS SPA',
                     fecha_acuse_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2025, 9, 8, 14, 15, 23),
                         tz=SII_OFFICIAL_TZ,
@@ -1050,24 +1050,24 @@ class FunctionsTest(unittest.TestCase):
                             'tasa_otro_impuesto': '31.5',
                         }
                     ],
-                    'emisor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {},
             ),
             (
                 RvDetalleEntry(
-                    emisor_rut=Rut('1-9'),
+                    contribuyente_rut=Rut('1-9'),
                     tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
                     folio=3210,
                     fecha_emision_date=datetime.date(2025, 9, 1),
-                    receptor_rut=Rut('54213736-3'),
+                    cliente_rut=Rut('54213736-3'),
                     monto_total=30471437,
                     fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2025, 9, 1, 10, 58, 51),
                         tz=SII_OFFICIAL_TZ,
                     ),
                     tipo_venta='DEL_GIRO',
-                    receptor_razon_social='THE COMPANY SPA',
+                    cliente_razon_social='THE COMPANY SPA',
                     fecha_acuse_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2025, 9, 8, 14, 15, 23),
                         tz=SII_OFFICIAL_TZ,
@@ -1168,7 +1168,7 @@ class FunctionsTest(unittest.TestCase):
                             'tasa_otro_impuesto': '18',
                         },
                     ],
-                    'emisor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {},
             ),
@@ -1179,8 +1179,10 @@ class FunctionsTest(unittest.TestCase):
         # TODO: implement for 'parse_rcv_compra_registro_csv_file'.
         pass
 
-    def test_parse_rcv_compra_registro_csv_file_emisor_rz_leading_trailing_whitespace(self) -> None:
-        self._test_parse_rcv_compra_csv_file_emisor_rz_leading_trailing_whitespace(
+    def test_parse_rcv_compra_registro_csv_file_proveedor_rz_leading_trailing_whitespace(
+        self,
+    ) -> None:
+        self._test_parse_rcv_compra_csv_file_proveedor_rz_leading_trailing_whitespace(
             parse_rcv_compra_csv_file_function=parse_rcv_compra_registro_csv_file,
             rcv_file_path=(
                 'test_data/sii-rcv/RCV-compra-registro-rz_leading_trailing_whitespace.csv'
@@ -1191,10 +1193,10 @@ class FunctionsTest(unittest.TestCase):
         # TODO: implement for 'parse_rcv_compra_no_incluir_csv_file'.
         pass
 
-    def test_parse_rcv_compra_no_incluir_csv_file_emisor_rz_leading_trailing_whitespace(
+    def test_parse_rcv_compra_no_incluir_csv_file_proveedor_rz_leading_trailing_whitespace(
         self,
     ) -> None:
-        self._test_parse_rcv_compra_csv_file_emisor_rz_leading_trailing_whitespace(
+        self._test_parse_rcv_compra_csv_file_proveedor_rz_leading_trailing_whitespace(
             parse_rcv_compra_csv_file_function=parse_rcv_compra_no_incluir_csv_file,
             rcv_file_path=(
                 'test_data/sii-rcv/RCV-compra-no_incluir-rz_leading_trailing_whitespace.csv'
@@ -1216,18 +1218,18 @@ class FunctionsTest(unittest.TestCase):
         expected_result = [
             (
                 RcReclamadoDetalleEntry(
-                    emisor_rut=Rut('12345678-5'),
+                    contribuyente_rut=Rut('1-9'),
                     tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
                     folio=1000055,
                     fecha_emision_date=datetime.date(2019, 6, 5),
-                    receptor_rut=Rut('1-9'),
+                    proveedor_rut=Rut('12345678-5'),
                     monto_total=1155364,
                     fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2019, 6, 5, 21, 58, 49),
                         tz=SII_OFFICIAL_TZ,
                     ),
                     tipo_compra='DEL_GIRO',
-                    emisor_razon_social='Fake Company S.A.',
+                    proveedor_razon_social='Fake Company S.A.',
                     monto_exento=0,
                     monto_neto=970894,
                     monto_iva_recuperable=184470,
@@ -1280,24 +1282,24 @@ class FunctionsTest(unittest.TestCase):
                             'tasa_otro_impuesto': '2.967999999',
                         },
                     ],
-                    'receptor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {},
             ),
             (
                 RcReclamadoDetalleEntry(
-                    emisor_rut=Rut('12345678-5'),
+                    contribuyente_rut=Rut('1-9'),
                     tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.NOTA_CREDITO_ELECTRONICA,
                     folio=70013,
                     fecha_emision_date=datetime.date(2019, 6, 24),
-                    receptor_rut=Rut('1-9'),
+                    proveedor_rut=Rut('12345678-5'),
                     monto_total=1966880,
                     fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2019, 6, 24, 15, 24, 41),
                         tz=SII_OFFICIAL_TZ,
                     ),
                     tipo_compra='DEL_GIRO',
-                    emisor_razon_social='Fake Company S.A.',
+                    proveedor_razon_social='Fake Company S.A.',
                     monto_exento=0,
                     monto_neto=1652840,
                     monto_iva_recuperable=314040,
@@ -1335,24 +1337,24 @@ class FunctionsTest(unittest.TestCase):
                     'IVA No Retenido': '0',
                     'NCE o NDE sobre Fact. de Compra': '0',
                     'Otros Impuestos': None,
-                    'receptor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {},
             ),
             (
                 RcReclamadoDetalleEntry(
-                    emisor_rut=Rut('76354771-K'),
+                    contribuyente_rut=Rut('1-9'),
                     tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
                     folio=789456,
                     fecha_emision_date=datetime.date(2019, 6, 5),
-                    receptor_rut=Rut('1-9'),
+                    proveedor_rut=Rut('76354771-K'),
                     monto_total=1155364,
                     fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
                         dt=datetime.datetime(2019, 6, 5, 21, 58, 49),
                         tz=SII_OFFICIAL_TZ,
                     ),
                     tipo_compra='DEL_GIRO',
-                    emisor_razon_social='Fake Company S.A.',
+                    proveedor_razon_social='Fake Company S.A.',
                     monto_exento=0,
                     monto_neto=970894,
                     monto_iva_recuperable=184470,
@@ -1390,7 +1392,7 @@ class FunctionsTest(unittest.TestCase):
                     'IVA No Retenido': '0',
                     'NCE o NDE sobre Fact. de Compra': '0',
                     'Otros Impuestos': None,
-                    'receptor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {},
             ),
@@ -1425,7 +1427,7 @@ class FunctionsTest(unittest.TestCase):
                             'valor_otro_impuesto': 'notanumber',
                         }
                     ],
-                    'receptor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {
                     'validation': {
@@ -1462,7 +1464,7 @@ class FunctionsTest(unittest.TestCase):
                     'IVA No Retenido': None,
                     'NCE o NDE sobre Fact. de Compra': None,
                     'Otros Impuestos': None,
-                    'receptor_rut': Rut('1-9'),
+                    'contribuyente_rut': Rut('1-9'),
                 },
                 {
                     'validation': {
@@ -1482,10 +1484,10 @@ class FunctionsTest(unittest.TestCase):
         ]
         self.assertEqual(result, expected_result)
 
-    def test_parse_rcv_compra_reclamado_csv_file_emisor_rz_leading_trailing_whitespace(
+    def test_parse_rcv_compra_reclamado_csv_file_proveedor_rz_leading_trailing_whitespace(
         self,
     ) -> None:
-        self._test_parse_rcv_compra_csv_file_emisor_rz_leading_trailing_whitespace(
+        self._test_parse_rcv_compra_csv_file_proveedor_rz_leading_trailing_whitespace(
             parse_rcv_compra_csv_file_function=parse_rcv_compra_reclamado_csv_file,
             rcv_file_path=(
                 'test_data/sii-rcv/RCV-compra-reclamado-rz_leading_trailing_whitespace.csv'
@@ -1496,10 +1498,10 @@ class FunctionsTest(unittest.TestCase):
         # TODO: implement for 'parse_rcv_compra_pendiente_csv_file'.
         pass
 
-    def test_parse_rcv_compra_pendiente_csv_file_emisor_rz_leading_trailing_whitespace(
+    def test_parse_rcv_compra_pendiente_csv_file_proveedor_rz_leading_trailing_whitespace(
         self,
     ) -> None:
-        self._test_parse_rcv_compra_csv_file_emisor_rz_leading_trailing_whitespace(
+        self._test_parse_rcv_compra_csv_file_proveedor_rz_leading_trailing_whitespace(
             parse_rcv_compra_csv_file_function=parse_rcv_compra_pendiente_csv_file,
             rcv_file_path=(
                 'test_data/sii-rcv/RCV-compra-pendiente-rz_leading_trailing_whitespace.csv'
