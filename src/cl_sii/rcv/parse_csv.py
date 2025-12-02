@@ -101,7 +101,7 @@ def parse_rcv_venta_csv_file(
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
     schema_context: _RcvVentaCsvRowContext = {
-        'emisor_rut': rut,
+        'contribuyente_rut': rut,
     }
     input_csv_row_schema = RcvVentaCsvRowSchema()
 
@@ -109,8 +109,8 @@ def parse_rcv_venta_csv_file(
         'Nro',
         'Tipo Doc',  # 'tipo_docto'
         'Tipo Venta',
-        'Rut cliente',  # 'receptor_rut'
-        'Razon Social',  # 'receptor_razon_social'
+        'Rut cliente',  # 'cliente_rut'
+        'Razon Social',  # 'cliente_razon_social'
         'Folio',  # 'folio'
         'Fecha Docto',  # 'fecha_emision_date'
         'Fecha Recepcion',  # 'fecha_recepcion_dt'
@@ -179,7 +179,7 @@ def parse_rcv_compra_registro_csv_file(
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
     schema_context: _RcvCompraCsvRowContext = {
-        'receptor_rut': rut,
+        'contribuyente_rut': rut,
     }
     input_csv_row_schema = RcvCompraRegistroCsvRowSchema()
 
@@ -187,8 +187,8 @@ def parse_rcv_compra_registro_csv_file(
         'Nro',
         'Tipo Doc',  # 'tipo_docto'
         'Tipo Compra',
-        'RUT Proveedor',  # 'emisor_rut'
-        'Razon Social',  # 'emisor_razon_social'
+        'RUT Proveedor',  # 'proveedor_rut'
+        'Razon Social',  # 'proveedor_razon_social'
         'Folio',  # 'folio'
         'Fecha Docto',  # 'fecha_emision_date'
         'Fecha Recepcion',  # 'fecha_recepcion_dt'
@@ -241,7 +241,7 @@ def parse_rcv_compra_no_incluir_csv_file(
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
     schema_context: _RcvCompraCsvRowContext = {
-        'receptor_rut': rut,
+        'contribuyente_rut': rut,
     }
     input_csv_row_schema = RcvCompraNoIncluirCsvRowSchema()
 
@@ -249,8 +249,8 @@ def parse_rcv_compra_no_incluir_csv_file(
         'Nro',
         'Tipo Doc',  # 'tipo_docto'
         'Tipo Compra',
-        'RUT Proveedor',  # 'emisor_rut'
-        'Razon Social',  # 'emisor_razon_social'
+        'RUT Proveedor',  # 'proveedor_rut'
+        'Razon Social',  # 'proveedor_razon_social'
         'Folio',  # 'folio'
         'Fecha Docto',  # 'fecha_emision_date'
         'Fecha Recepcion',  # 'fecha_recepcion_dt'
@@ -300,7 +300,7 @@ def parse_rcv_compra_reclamado_csv_file(
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
     schema_context: _RcvCompraCsvRowContext = {
-        'receptor_rut': rut,
+        'contribuyente_rut': rut,
     }
     input_csv_row_schema = RcvCompraReclamadoCsvRowSchema()
 
@@ -308,8 +308,8 @@ def parse_rcv_compra_reclamado_csv_file(
         'Nro',
         'Tipo Doc',  # 'tipo_docto'
         'Tipo Compra',
-        'RUT Proveedor',  # 'emisor_rut'
-        'Razon Social',  # 'emisor_razon_social'
+        'RUT Proveedor',  # 'proveedor_rut'
+        'Razon Social',  # 'proveedor_razon_social'
         'Folio',  # 'folio'
         'Fecha Docto',  # 'fecha_emision_date'
         'Fecha Recepcion',  # 'fecha_recepcion_dt'
@@ -359,7 +359,7 @@ def parse_rcv_compra_pendiente_csv_file(
     # warning: this looks like it would be executed before the iteration begins but it is not.
 
     schema_context: _RcvCompraCsvRowContext = {
-        'receptor_rut': rut,
+        'contribuyente_rut': rut,
     }
     input_csv_row_schema = RcvCompraPendienteCsvRowSchema()
 
@@ -367,8 +367,8 @@ def parse_rcv_compra_pendiente_csv_file(
         'Nro',
         'Tipo Doc',  # 'tipo_docto'
         'Tipo Compra',
-        'RUT Proveedor',  # 'emisor_rut'
-        'Razon Social',  # 'emisor_razon_social'
+        'RUT Proveedor',  # 'proveedor_rut'
+        'Razon Social',  # 'proveedor_razon_social'
         'Folio',  # 'folio'
         'Fecha Docto',  # 'fecha_emision_date'
         'Fecha Recepcion',  # 'fecha_recepcion_dt'
@@ -464,7 +464,7 @@ class _RcvCsvRowSchemaBase(marshmallow.Schema):
 
 
 class _RcvVentaCsvRowContext(TypedDict):
-    emisor_rut: Rut
+    contribuyente_rut: Rut
 
 
 _RcvVentaCsvRowSchemaContext = marshmallow.experimental.context.Context[_RcvVentaCsvRowContext]
@@ -488,11 +488,11 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         required=True,
         data_key='Tipo Venta',
     )
-    receptor_rut = mm_fields.RutField(
+    cliente_rut = mm_fields.RutField(
         required=True,
         data_key='Rut cliente',
     )
-    receptor_razon_social = marshmallow.fields.String(
+    cliente_razon_social = marshmallow.fields.String(
         required=True,
         data_key='Razon Social',
     )
@@ -685,7 +685,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
     # fields whose value is set using data passed in the schema context
     ###########################################################################
 
-    emisor_rut = mm_fields.RutField(
+    contribuyente_rut = mm_fields.RutField(
         required=True,
     )
 
@@ -696,7 +696,9 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         #   values of required fields (`required=True`) exist.
 
         # Set field value only if it was not in the input data.
-        in_data.setdefault('emisor_rut', _RcvVentaCsvRowSchemaContext.get()['emisor_rut'])
+        in_data.setdefault(
+            'contribuyente_rut', _RcvVentaCsvRowSchemaContext.get()['contribuyente_rut']
+        )
 
         # Set tipo_venta from string to enum value.
         if 'Tipo Venta' in in_data:
@@ -776,19 +778,19 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
             )
 
         # Remove leading and trailing whitespace.
-        data['receptor_razon_social'] = data['receptor_razon_social'].strip()
+        data['cliente_razon_social'] = data['cliente_razon_social'].strip()
 
         return data
 
     def to_detalle_entry(self, data: dict) -> RvDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']
+            contribuyente_rut: Rut = data['contribuyente_rut']
             tipo_docto = data['tipo_docto']
             tipo_venta = data['tipo_venta']
             folio: int = data['folio']
             fecha_emision_date: date = data['fecha_emision_date']
-            receptor_rut: Rut = data['receptor_rut']
-            receptor_razon_social: str = data['receptor_razon_social']
+            cliente_rut: Rut = data['cliente_rut']
+            cliente_razon_social: str = data['cliente_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
             fecha_acuse_dt: Optional[datetime] = data['fecha_acuse_dt']
             fecha_reclamo_dt: Optional[datetime] = data['fecha_reclamo_dt']
@@ -828,13 +830,13 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
 
         try:
             detalle_entry = RvDetalleEntry(
-                emisor_rut=emisor_rut,
+                contribuyente_rut=contribuyente_rut,
                 tipo_docto=tipo_docto,
                 tipo_venta=tipo_venta,
                 folio=folio,
                 fecha_emision_date=fecha_emision_date,
-                receptor_rut=receptor_rut,
-                receptor_razon_social=receptor_razon_social,
+                cliente_rut=cliente_rut,
+                cliente_razon_social=cliente_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 fecha_acuse_dt=fecha_acuse_dt,
                 fecha_reclamo_dt=fecha_reclamo_dt,
@@ -877,7 +879,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
 
 
 class _RcvCompraCsvRowContext(TypedDict):
-    receptor_rut: Rut
+    contribuyente_rut: Rut
 
 
 _RcvCompraCsvRowSchemaContext = marshmallow.experimental.context.Context[_RcvCompraCsvRowContext]
@@ -891,7 +893,7 @@ class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
     # Fields
     ###########################################################################
 
-    emisor_rut = mm_fields.RutField(
+    proveedor_rut = mm_fields.RutField(
         required=True,
         data_key='RUT Proveedor',
     )
@@ -917,7 +919,7 @@ class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
         required=True,
         data_key='Monto Total',
     )
-    emisor_razon_social = marshmallow.fields.String(
+    proveedor_razon_social = marshmallow.fields.String(
         required=True,
         data_key='Razon Social',
     )
@@ -1005,7 +1007,7 @@ class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
     # fields whose value is set using data passed in the schema context
     ###########################################################################
 
-    receptor_rut = mm_fields.RutField(
+    contribuyente_rut = mm_fields.RutField(
         required=True,
     )
 
@@ -1016,7 +1018,9 @@ class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
         #   values of required fields (`required=True`) exist.
 
         # Set field value only if it was not in the input data.
-        in_data.setdefault('receptor_rut', _RcvCompraCsvRowSchemaContext.get()['receptor_rut'])
+        in_data.setdefault(
+            'contribuyente_rut', _RcvCompraCsvRowSchemaContext.get()['contribuyente_rut']
+        )
 
         # Set tipo_compra from string to enum value.
         if 'Tipo Compra' in in_data:
@@ -1082,7 +1086,7 @@ class RcvCompraCsvRowSchema(_RcvCsvRowSchemaBase):
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
 
         # Remove leading and trailing whitespace.
-        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
+        data['proveedor_razon_social'] = data['proveedor_razon_social'].strip()
 
         return data
 
@@ -1151,20 +1155,20 @@ class RcvCompraRegistroCsvRowSchema(RcvCompraCsvRowSchema):
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
 
         # Remove leading and trailing whitespace.
-        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
+        data['proveedor_razon_social'] = data['proveedor_razon_social'].strip()
 
         return data
 
     def to_detalle_entry(self, data: dict) -> RcRegistroDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']
+            contribuyente_rut: Rut = data['contribuyente_rut']
             tipo_docto = data['tipo_docto']
             folio: int = data['folio']
             tipo_compra: str = data['tipo_compra']
             fecha_emision_date: date = data['fecha_emision_date']
-            receptor_rut: Rut = data['receptor_rut']
+            proveedor_rut: Rut = data['proveedor_rut']
             monto_total: int = data['monto_total']
-            emisor_razon_social: str = data['emisor_razon_social']
+            proveedor_razon_social: str = data['proveedor_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
             monto_exento: int = data['monto_exento']
             monto_neto: int = data['monto_neto']
@@ -1189,14 +1193,14 @@ class RcvCompraRegistroCsvRowSchema(RcvCompraCsvRowSchema):
 
         try:
             detalle_entry = RcRegistroDetalleEntry(
-                emisor_rut=emisor_rut,
+                contribuyente_rut=contribuyente_rut,
                 tipo_docto=tipo_docto,
                 folio=folio,
                 tipo_compra=tipo_compra,
                 fecha_emision_date=fecha_emision_date,
-                receptor_rut=receptor_rut,
+                proveedor_rut=proveedor_rut,
                 monto_total=monto_total,
-                emisor_razon_social=emisor_razon_social,
+                proveedor_razon_social=proveedor_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 monto_exento=monto_exento,
                 monto_neto=monto_neto,
@@ -1267,20 +1271,20 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraCsvRowSchema):
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
 
         # Remove leading and trailing whitespace.
-        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
+        data['proveedor_razon_social'] = data['proveedor_razon_social'].strip()
 
         return data
 
     def to_detalle_entry(self, data: dict) -> RcNoIncluirDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']
+            contribuyente_rut: Rut = data['contribuyente_rut']
             tipo_docto = data['tipo_docto']
             folio: int = data['folio']
             tipo_compra: str = data['tipo_compra']
             fecha_emision_date: date = data['fecha_emision_date']
-            receptor_rut: Rut = data['receptor_rut']
+            proveedor_rut: Rut = data['proveedor_rut']
             monto_total: int = data['monto_total']
-            emisor_razon_social: str = data['emisor_razon_social']
+            proveedor_razon_social: str = data['proveedor_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
             monto_exento: int = data['monto_exento']
             monto_neto: int = data['monto_neto']
@@ -1302,14 +1306,14 @@ class RcvCompraNoIncluirCsvRowSchema(RcvCompraCsvRowSchema):
 
         try:
             detalle_entry = RcNoIncluirDetalleEntry(
-                emisor_rut=emisor_rut,
+                contribuyente_rut=contribuyente_rut,
                 tipo_docto=tipo_docto,
                 folio=folio,
                 tipo_compra=tipo_compra,
                 fecha_emision_date=fecha_emision_date,
-                receptor_rut=receptor_rut,
+                proveedor_rut=proveedor_rut,
                 monto_total=monto_total,
-                emisor_razon_social=emisor_razon_social,
+                proveedor_razon_social=proveedor_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 monto_exento=monto_exento,
                 monto_neto=monto_neto,
@@ -1384,20 +1388,20 @@ class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
 
         # Remove leading and trailing whitespace.
-        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
+        data['proveedor_razon_social'] = data['proveedor_razon_social'].strip()
 
         return data
 
     def to_detalle_entry(self, data: dict) -> RcReclamadoDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']
+            contribuyente_rut: Rut = data['contribuyente_rut']
             tipo_docto = data['tipo_docto']
             folio: int = data['folio']
             tipo_compra: str = data['tipo_compra']
             fecha_emision_date: date = data['fecha_emision_date']
-            receptor_rut: Rut = data['receptor_rut']
+            proveedor_rut: Rut = data['proveedor_rut']
             monto_total: int = data['monto_total']
-            emisor_razon_social: str = data['emisor_razon_social']
+            proveedor_razon_social: str = data['proveedor_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
             monto_exento: int = data['monto_exento']
             monto_neto: int = data['monto_neto']
@@ -1419,14 +1423,14 @@ class RcvCompraReclamadoCsvRowSchema(RcvCompraCsvRowSchema):
 
         try:
             detalle_entry = RcReclamadoDetalleEntry(
-                emisor_rut=emisor_rut,
+                contribuyente_rut=contribuyente_rut,
                 tipo_docto=tipo_docto,
                 folio=folio,
                 tipo_compra=tipo_compra,
                 fecha_emision_date=fecha_emision_date,
-                receptor_rut=receptor_rut,
+                proveedor_rut=proveedor_rut,
                 monto_total=monto_total,
-                emisor_razon_social=emisor_razon_social,
+                proveedor_razon_social=proveedor_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 monto_exento=monto_exento,
                 monto_neto=monto_neto,
@@ -1465,20 +1469,20 @@ class RcvCompraPendienteCsvRowSchema(RcvCompraCsvRowSchema):
         #   `dt_obj.astimezone(pytz.timezone('some timezone'))`
 
         # Remove leading and trailing whitespace.
-        data['emisor_razon_social'] = data['emisor_razon_social'].strip()
+        data['proveedor_razon_social'] = data['proveedor_razon_social'].strip()
 
         return data
 
     def to_detalle_entry(self, data: dict) -> RcPendienteDetalleEntry:
         try:
-            emisor_rut: Rut = data['emisor_rut']
+            contribuyente_rut: Rut = data['contribuyente_rut']
             tipo_docto = data['tipo_docto']
             folio: int = data['folio']
             tipo_compra: str = data['tipo_compra']
             fecha_emision_date: date = data['fecha_emision_date']
-            receptor_rut: Rut = data['receptor_rut']
+            proveedor_rut: Rut = data['proveedor_rut']
             monto_total: int = data['monto_total']
-            emisor_razon_social: str = data['emisor_razon_social']
+            proveedor_razon_social: str = data['proveedor_razon_social']
             fecha_recepcion_dt: datetime = data['fecha_recepcion_dt']
             monto_exento: int = data['monto_exento']
             monto_neto: int = data['monto_neto']
@@ -1499,14 +1503,14 @@ class RcvCompraPendienteCsvRowSchema(RcvCompraCsvRowSchema):
 
         try:
             detalle_entry = RcPendienteDetalleEntry(
-                emisor_rut=emisor_rut,
+                contribuyente_rut=contribuyente_rut,
                 tipo_docto=tipo_docto,
                 folio=folio,
                 tipo_compra=tipo_compra,
                 fecha_emision_date=fecha_emision_date,
-                receptor_rut=receptor_rut,
+                proveedor_rut=proveedor_rut,
                 monto_total=monto_total,
-                emisor_razon_social=emisor_razon_social,
+                proveedor_razon_social=proveedor_razon_social,
                 fecha_recepcion_dt=fecha_recepcion_dt,
                 monto_exento=monto_exento,
                 monto_neto=monto_neto,

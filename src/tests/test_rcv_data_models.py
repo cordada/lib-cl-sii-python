@@ -98,11 +98,10 @@ class RcvDetalleEntryTest(unittest.TestCase):
         super().setUp()
 
         self.rcv_detalle_entry_1 = RcvDetalleEntry(
-            emisor_rut=Rut('76354771-K'),
+            contribuyente_rut=Rut('76354771-K'),
             tipo_docto=RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=170,
             fecha_emision_date=date(2019, 4, 1),
-            receptor_rut=Rut('96790240-3'),
             monto_total=2996301,
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
@@ -212,13 +211,13 @@ class RvDetalleEntryTest(unittest.TestCase):
         super().setUp()
 
         self.rv_detalle_entry_1 = RvDetalleEntry(
-            emisor_rut=Rut('76354771-K'),
+            contribuyente_rut=Rut('76354771-K'),
             tipo_docto=RcvTipoDocto.FACTURA_ELECTRONICA,
             tipo_venta='Del Giro',
             folio=170,
             fecha_emision_date=date(2019, 4, 1),
-            receptor_rut=Rut('96790240-3'),
-            receptor_razon_social='MINERA LOS PELAMBRES',
+            cliente_rut=Rut('96790240-3'),
+            cliente_razon_social='MINERA LOS PELAMBRES',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
                 tz=RvDetalleEntry.DATETIME_FIELDS_TZ,
@@ -270,10 +269,10 @@ class RvDetalleEntryTest(unittest.TestCase):
             RcvDetalleEntry.DATETIME_FIELDS_TZ,
         )
 
-    def test_validate_receptor_razon_social_empty(self) -> None:
+    def test_validate_cliente_razon_social_empty(self) -> None:
         expected_validation_errors = [
             {
-                'loc': ('receptor_razon_social',),
+                'loc': ('cliente_razon_social',),
                 'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
@@ -282,7 +281,7 @@ class RvDetalleEntryTest(unittest.TestCase):
         with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rv_detalle_entry_1,
-                receptor_razon_social='',
+                cliente_razon_social='',
             )
 
         validation_errors = assert_raises_cm.exception.errors(
@@ -413,14 +412,14 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
         super().setUp()
 
         self.rc_registro_detalle_entry_1 = RcRegistroDetalleEntry(
-            emisor_rut=Rut('76354771-K'),
+            contribuyente_rut=Rut('76354771-K'),
             tipo_docto=RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=170,
             tipo_compra='Del Giro',
             fecha_emision_date=date(2019, 4, 1),
-            receptor_rut=Rut('96790240-3'),
+            proveedor_rut=Rut('96790240-3'),
             monto_total=2996301,
-            emisor_razon_social='INGENIERIA ENACON SPA',
+            proveedor_razon_social='INGENIERIA ENACON SPA',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
                 tz=RcRegistroDetalleEntry.DATETIME_FIELDS_TZ,
@@ -452,10 +451,10 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
             RcvDetalleEntry.DATETIME_FIELDS_TZ,
         )
 
-    def test_validate_emisor_razon_social_empty(self) -> None:
+    def test_validate_proveedor_razon_social_empty(self) -> None:
         expected_validation_errors = [
             {
-                'loc': ('emisor_razon_social',),
+                'loc': ('proveedor_razon_social',),
                 'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
@@ -464,7 +463,7 @@ class RcRegistroDetalleEntryTest(unittest.TestCase):
         with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_registro_detalle_entry_1,
-                emisor_razon_social='',
+                proveedor_razon_social='',
             )
 
         validation_errors = assert_raises_cm.exception.errors(
@@ -538,14 +537,14 @@ class RcNoIncluirDetalleEntryTest(unittest.TestCase):
         super().setUp()
 
         self.rc_no_incluir_detalle_entry_1 = RcNoIncluirDetalleEntry(
-            emisor_rut=Rut('76354771-K'),
+            contribuyente_rut=Rut('76354771-K'),
             tipo_docto=RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=170,
             tipo_compra='Del Giro',
             fecha_emision_date=date(2019, 4, 1),
-            receptor_rut=Rut('96790240-3'),
+            proveedor_rut=Rut('96790240-3'),
             monto_total=2996301,
-            emisor_razon_social='INGENIERIA ENACON SPA',
+            proveedor_razon_social='INGENIERIA ENACON SPA',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
                 tz=SII_OFFICIAL_TZ,
@@ -574,14 +573,14 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
         super().setUp()
 
         self.rc_reclamado_detalle_entry_1 = RcReclamadoDetalleEntry(
-            emisor_rut=Rut('76354771-K'),
+            contribuyente_rut=Rut('76354771-K'),
             tipo_docto=RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=170,
             tipo_compra='Del Giro',
             fecha_emision_date=date(2019, 4, 1),
-            receptor_rut=Rut('96790240-3'),
+            proveedor_rut=Rut('96790240-3'),
             monto_total=2996301,
-            emisor_razon_social='INGENIERIA ENACON SPA',
+            proveedor_razon_social='INGENIERIA ENACON SPA',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
                 tz=RcReclamadoDetalleEntry.DATETIME_FIELDS_TZ,
@@ -610,10 +609,10 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
             RcvDetalleEntry.DATETIME_FIELDS_TZ,
         )
 
-    def test_validate_emisor_razon_social_empty(self) -> None:
+    def test_validate_proveedor_razon_social_empty(self) -> None:
         expected_validation_errors = [
             {
-                'loc': ('emisor_razon_social',),
+                'loc': ('proveedor_razon_social',),
                 'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
@@ -622,7 +621,7 @@ class RcReclamadoDetalleEntryTest(unittest.TestCase):
         with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_reclamado_detalle_entry_1,
-                emisor_razon_social='',
+                proveedor_razon_social='',
             )
 
         validation_errors = assert_raises_cm.exception.errors(
@@ -696,14 +695,14 @@ class RcPendienteDetalleEntryTest(unittest.TestCase):
         super().setUp()
 
         self.rc_pendiente_detalle_entry_1 = RcPendienteDetalleEntry(
-            emisor_rut=Rut('76354771-K'),
+            contribuyente_rut=Rut('76354771-K'),
             tipo_docto=RcvTipoDocto.FACTURA_ELECTRONICA,
             folio=170,
             tipo_compra='Del Giro',
             fecha_emision_date=date(2019, 4, 1),
-            receptor_rut=Rut('96790240-3'),
+            proveedor_rut=Rut('96790240-3'),
             monto_total=2996301,
-            emisor_razon_social='INGENIERIA ENACON SPA',
+            proveedor_razon_social='INGENIERIA ENACON SPA',
             fecha_recepcion_dt=tz_utils.convert_naive_dt_to_tz_aware(
                 dt=datetime(2019, 4, 1, 1, 36, 40),
                 tz=SII_OFFICIAL_TZ,
@@ -722,10 +721,10 @@ class RcPendienteDetalleEntryTest(unittest.TestCase):
             otros_impuestos=None,
         )
 
-    def test_validate_emisor_razon_social_empty(self) -> None:
+    def test_validate_proveedor_razon_social_empty(self) -> None:
         expected_validation_errors = [
             {
-                'loc': ('emisor_razon_social',),
+                'loc': ('proveedor_razon_social',),
                 'msg': "Value error, Value must not be empty.",
                 'type': 'value_error',
             },
@@ -734,7 +733,7 @@ class RcPendienteDetalleEntryTest(unittest.TestCase):
         with self.assertRaises(pydantic.ValidationError) as assert_raises_cm:
             dataclasses.replace(
                 self.rc_pendiente_detalle_entry_1,
-                emisor_razon_social='',
+                proveedor_razon_social='',
             )
 
         validation_errors = assert_raises_cm.exception.errors(

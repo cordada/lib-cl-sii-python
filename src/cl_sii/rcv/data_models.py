@@ -144,9 +144,12 @@ class RcvDetalleEntry:
     # fields
     ###########################################################################
 
-    emisor_rut: Rut
+    contribuyente_rut: Rut
     """
-    RUT of the "emisor" of the "documento".
+    RUT of the "contribuyente" of the "documento".
+
+    In the "Registro de Ventas", this is usually (but not always) the "emisor" of the "documento",
+    and in the "Registro de Compras", this is usually (but not always) the "receptor".
     """
 
     tipo_docto: RcvTipoDocto
@@ -161,10 +164,6 @@ class RcvDetalleEntry:
 
     # TODO: docstring
     fecha_emision_date: date
-
-    # TODO: docstring
-    # TODO: can it be None? What happens for those "tipo docto" that do not have a receptor?
-    receptor_rut: Rut
 
     monto_total: int
     """
@@ -224,15 +223,53 @@ class RcvDetalleEntry:
         try:
             tipo_dte = self.tipo_docto.as_tipo_dte()
 
-            emisor_razon_social = getattr(self, 'emisor_razon_social', None)
-            receptor_razon_social = getattr(self, 'receptor_razon_social', None)
+            emisor_rut: Rut | None
+            receptor_rut: Rut | None
+            if self.RCV_KIND == RcvKind.VENTAS:
+                if tipo_dte.emisor_is_vendedor:
+                    emisor_rut = self.contribuyente_rut
+                    emisor_razon_social = getattr(self, 'contribuyente_razon_social', None)
+
+                    receptor_rut = getattr(self, 'cliente_rut', None)
+                    receptor_razon_social = getattr(self, 'cliente_razon_social', None)
+                elif tipo_dte.receptor_is_vendedor:
+                    emisor_rut = getattr(self, 'cliente_rut', None)
+                    emisor_razon_social = getattr(self, 'cliente_razon_social', None)
+
+                    receptor_rut = self.contribuyente_rut
+                    receptor_razon_social = getattr(self, 'contribuyente_razon_social', None)
+                else:
+                    raise ValueError(
+                        f"Cannot determine 'emisor' and 'receptor' roles from tipo_dte {tipo_dte}."
+                    )
+            elif self.RCV_KIND == RcvKind.COMPRAS:
+                if tipo_dte.emisor_is_vendedor:
+                    emisor_rut = getattr(self, 'proveedor_rut', None)
+                    emisor_razon_social = getattr(self, 'proveedor_razon_social', None)
+
+                    receptor_rut = self.contribuyente_rut
+                    receptor_razon_social = getattr(self, 'contribuyente_razon_social', None)
+                elif tipo_dte.receptor_is_vendedor:
+                    emisor_rut = self.contribuyente_rut
+                    emisor_razon_social = getattr(self, 'contribuyente_razon_social', None)
+
+                    receptor_rut = getattr(self, 'proveedor_rut', None)
+                    receptor_razon_social = getattr(self, 'proveedor_razon_social', None)
+                else:
+                    raise ValueError(
+                        f"Cannot determine 'emisor' and 'receptor' roles from tipo_dte {tipo_dte}."
+                    )
+            else:
+                raise ValueError(
+                    f"Cannot determine 'emisor' and 'receptor' roles from RCV kind {self.RCV_KIND}."
+                )
 
             dte_data = cl_sii.dte.data_models.DteDataL2(
-                emisor_rut=self.emisor_rut,
+                emisor_rut=emisor_rut,  # type: ignore[arg-type]
                 tipo_dte=tipo_dte,
                 folio=self.folio,
                 fecha_emision_date=self.fecha_emision_date,
-                receptor_rut=self.receptor_rut,
+                receptor_rut=receptor_rut,  # type: ignore[arg-type]
                 monto_total=self.monto_total,
                 emisor_razon_social=emisor_razon_social,
                 receptor_razon_social=receptor_razon_social,
@@ -267,14 +304,21 @@ class RvDetalleEntry(RcvDetalleEntry):
 
     RCV_KIND: ClassVar[RcvKind] = RcvKind.VENTAS
 
+    cliente_rut: Rut
+    """
+    RUT of the "cliente" ("comprador") of the "documento".
+
+    This is usually (but not always) the "receptor" of the "documento".
+    """
+
     tipo_venta: str
     """
     Tipo Venta
     """
 
-    receptor_razon_social: str
+    cliente_razon_social: str
     """
-    Razon Social
+    "Razón social" (legal name) of the "cliente" ("comprador") of the "documento".
     """
 
     fecha_acuse_dt: Optional[datetime]
@@ -438,7 +482,7 @@ class RvDetalleEntry(RcvDetalleEntry):
     # Validators
     ###########################################################################
 
-    @pydantic.field_validator('receptor_razon_social')
+    @pydantic.field_validator('cliente_razon_social')
     @classmethod
     def validate_contribuyente_razon_social(cls, v: object) -> object:
         if isinstance(v, str):
@@ -477,14 +521,21 @@ class RcDetalleEntry(RcvDetalleEntry):
     # fields - all common fields from RcvCompraCsvRowSchema
     ###########################################################################
 
+    proveedor_rut: Rut
+    """
+    RUT of the "proveedor" ("vendedor") of the "documento".
+
+    This is usually (but not always) the "emisor" of the "documento".
+    """
+
     tipo_compra: str
     """
     Tipo Compra
     """
 
-    emisor_razon_social: str
+    proveedor_razon_social: str
     """
-    "Razón social" (legal name) of the "emisor" of the "documento".
+    "Razón social" (legal name) of the "proveedor" ("vendedor") of the "documento".
     """
 
     monto_exento: int
@@ -548,7 +599,7 @@ class RcDetalleEntry(RcvDetalleEntry):
     # Validators
     ###########################################################################
 
-    @pydantic.field_validator('emisor_razon_social')
+    @pydantic.field_validator('proveedor_razon_social')
     @classmethod
     def validate_contribuyente_razon_social(cls, v: object) -> object:
         if isinstance(v, str):
