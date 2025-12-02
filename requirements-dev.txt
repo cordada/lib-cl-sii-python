@@ -191,7 +191,7 @@ types-lxml==2025.3.30
     # via -r requirements-dev.in
 types-pytz==2025.2.0.20250809
     # via -r requirements-dev.in
-types-setuptools==80.9.0.20250809
+types-setuptools==80.9.0.20250822
     # via -r requirements-dev.in
 typing-extensions==4.15.0
     # via

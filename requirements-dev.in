@@ -17,4 +17,4 @@ twine==6.2.0
 types-jsonschema==4.25.0.20250809
 types-lxml==2025.3.30
 types-pytz==2025.2.0.20250809
-types-setuptools==80.9.0.20250809
+types-setuptools==80.9.0.20250822
