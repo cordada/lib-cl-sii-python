@@ -445,6 +445,30 @@ class RvDetalleEntryTest(unittest.TestCase):
 
         self.assertEqual(expected_doc_ref_dte_natural_key, actual_doc_ref_dte_natural_key)
 
+        # Detalle Entry that references a documento that is a valid DTE
+        # but not a valid RCV Tipo de Documento:
+
+        rv_detalle_entry_with_non_rcv_doc_ref = dataclasses.replace(
+            rv_detalle_entry,
+            tipo_documento_referencia=cl_sii.dte.constants.TipoDte.GUIA_DESPACHO_ELECTRONICA,
+            folio_documento_referencia=12345,
+        )
+        with self.assertRaisesRegex(ValueError, r'^52 is not a valid RcvTipoDocto$'):
+            RcvTipoDocto(
+                rv_detalle_entry_with_non_rcv_doc_ref.tipo_documento_referencia  # type: ignore[arg-type] # noqa: E501
+            )
+
+        expected_doc_ref_dte_natural_key = cl_sii.dte.data_models.DteNaturalKey(
+            emisor_rut=Rut('76354771-K'),
+            tipo_dte=cl_sii.dte.constants.TipoDte.GUIA_DESPACHO_ELECTRONICA,
+            folio=12345,
+        )
+        actual_doc_ref_dte_natural_key = (
+            rv_detalle_entry_with_non_rcv_doc_ref.get_documento_referencia_dte_natural_key()
+        )
+
+        self.assertEqual(expected_doc_ref_dte_natural_key, actual_doc_ref_dte_natural_key)
+
 
 class RcRegistroDetalleEntryTest(unittest.TestCase):
     def setUp(self) -> None:
