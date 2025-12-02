@@ -36,11 +36,11 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v6.0.0
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v6.0.0
+        uses: actions/setup-python@v6.1.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
@@ -97,11 +97,11 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v6.0.0
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v6.0.0
+        uses: actions/setup-python@v6.1.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true

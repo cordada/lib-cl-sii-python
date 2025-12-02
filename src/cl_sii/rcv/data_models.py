@@ -238,6 +238,12 @@ class RcvDetalleEntry:
 
                     receptor_rut = self.contribuyente_rut
                     receptor_razon_social = getattr(self, 'contribuyente_razon_social', None)
+                elif tipo_dte.is_nota:
+                    emisor_rut = self.contribuyente_rut
+                    emisor_razon_social = getattr(self, 'contribuyente_razon_social', None)
+
+                    receptor_rut = getattr(self, 'cliente_rut', None)
+                    receptor_razon_social = getattr(self, 'cliente_razon_social', None)
                 else:
                     raise ValueError(
                         f"Cannot determine 'emisor' and 'receptor' roles from tipo_dte {tipo_dte}."
@@ -255,6 +261,12 @@ class RcvDetalleEntry:
 
                     receptor_rut = getattr(self, 'proveedor_rut', None)
                     receptor_razon_social = getattr(self, 'proveedor_razon_social', None)
+                elif tipo_dte.is_nota:
+                    emisor_rut = getattr(self, 'proveedor_rut', None)
+                    emisor_razon_social = getattr(self, 'proveedor_razon_social', None)
+
+                    receptor_rut = self.contribuyente_rut
+                    receptor_razon_social = getattr(self, 'contribuyente_razon_social', None)
                 else:
                     raise ValueError(
                         f"Cannot determine 'emisor' and 'receptor' roles from tipo_dte {tipo_dte}."
@@ -477,6 +489,33 @@ class RvDetalleEntry(RcvDetalleEntry):
     """
 
     otros_impuestos: Optional[Sequence[OtrosImpuestos]]
+
+    ###########################################################################
+    # Custom Methods
+    ###########################################################################
+
+    def get_documento_referencia_dte_natural_key(
+        self,
+    ) -> cl_sii.dte.data_models.DteNaturalKey | None:
+        if self.tipo_documento_referencia is None or self.folio_documento_referencia is None:
+            return None
+
+        try:
+            tipo_documento_referencia = RcvTipoDocto(self.tipo_documento_referencia)
+        except ValueError:
+            raise
+
+        try:
+            tipo_dte_referencia = tipo_documento_referencia.as_tipo_dte()
+        except ValueError:
+            # Not a DTE.
+            return None
+
+        return cl_sii.dte.data_models.DteNaturalKey(
+            emisor_rut=self.contribuyente_rut,
+            tipo_dte=tipo_dte_referencia,
+            folio=self.folio_documento_referencia,
+        )
 
     ###########################################################################
     # Validators
