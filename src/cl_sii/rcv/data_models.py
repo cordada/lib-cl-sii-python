@@ -491,6 +491,33 @@ class RvDetalleEntry(RcvDetalleEntry):
     otros_impuestos: Optional[Sequence[OtrosImpuestos]]
 
     ###########################################################################
+    # Custom Methods
+    ###########################################################################
+
+    def get_documento_referencia_dte_natural_key(
+        self,
+    ) -> cl_sii.dte.data_models.DteNaturalKey | None:
+        if self.tipo_documento_referencia is None or self.folio_documento_referencia is None:
+            return None
+
+        try:
+            tipo_documento_referencia = RcvTipoDocto(self.tipo_documento_referencia)
+        except ValueError:
+            raise
+
+        try:
+            tipo_dte_referencia = tipo_documento_referencia.as_tipo_dte()
+        except ValueError:
+            # Not a DTE.
+            return None
+
+        return cl_sii.dte.data_models.DteNaturalKey(
+            emisor_rut=self.contribuyente_rut,
+            tipo_dte=tipo_dte_referencia,
+            folio=self.folio_documento_referencia,
+        )
+
+    ###########################################################################
     # Validators
     ###########################################################################
 

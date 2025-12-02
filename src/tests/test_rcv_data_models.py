@@ -5,6 +5,7 @@ from datetime import date, datetime
 import pydantic
 
 import cl_sii.dte.constants
+import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
 from cl_sii.rcv.constants import RcvTipoDocto
@@ -405,6 +406,44 @@ class RvDetalleEntryTest(unittest.TestCase):
         )
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
         self.assertEqual(validation_errors, expected_validation_errors)
+
+    def test_get_documento_referencia_dte_natural_key(self) -> None:
+        rv_detalle_entry = self.rv_detalle_entry_1
+
+        # Detalle Entry that does not reference another documento:
+
+        self.assertIsNone(rv_detalle_entry.tipo_documento_referencia)
+        self.assertIsNone(rv_detalle_entry.folio_documento_referencia)
+        self.assertIsNone(rv_detalle_entry.get_documento_referencia_dte_natural_key())
+
+        # Detalle Entry that references a DTE:
+
+        rv_detalle_entry_with_doc_ref = dataclasses.replace(
+            rv_detalle_entry,
+            tipo_docto=RcvTipoDocto.NOTA_CREDITO_ELECTRONICA,
+            folio=12345,
+            tipo_documento_referencia=RcvTipoDocto.FACTURA_ELECTRONICA,
+            folio_documento_referencia=170,
+        )
+        self.assertEqual(
+            cl_sii.dte.data_models.DteNaturalKey(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=cl_sii.dte.constants.TipoDte.NOTA_CREDITO_ELECTRONICA,
+                folio=12345,
+            ),
+            rv_detalle_entry_with_doc_ref.as_dte_data_l2().natural_key,
+        )
+
+        expected_doc_ref_dte_natural_key = cl_sii.dte.data_models.DteNaturalKey(
+            emisor_rut=Rut('76354771-K'),
+            tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
+            folio=170,
+        )
+        actual_doc_ref_dte_natural_key = (
+            rv_detalle_entry_with_doc_ref.get_documento_referencia_dte_natural_key()
+        )
+
+        self.assertEqual(expected_doc_ref_dte_natural_key, actual_doc_ref_dte_natural_key)
 
 
 class RcRegistroDetalleEntryTest(unittest.TestCase):
