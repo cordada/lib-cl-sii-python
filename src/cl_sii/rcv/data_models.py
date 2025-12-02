@@ -238,6 +238,12 @@ class RcvDetalleEntry:
 
                     receptor_rut = self.contribuyente_rut
                     receptor_razon_social = getattr(self, 'contribuyente_razon_social', None)
+                elif tipo_dte.is_nota:
+                    emisor_rut = self.contribuyente_rut
+                    emisor_razon_social = getattr(self, 'contribuyente_razon_social', None)
+
+                    receptor_rut = getattr(self, 'cliente_rut', None)
+                    receptor_razon_social = getattr(self, 'cliente_razon_social', None)
                 else:
                     raise ValueError(
                         f"Cannot determine 'emisor' and 'receptor' roles from tipo_dte {tipo_dte}."
@@ -255,6 +261,12 @@ class RcvDetalleEntry:
 
                     receptor_rut = getattr(self, 'proveedor_rut', None)
                     receptor_razon_social = getattr(self, 'proveedor_razon_social', None)
+                elif tipo_dte.is_nota:
+                    emisor_rut = getattr(self, 'proveedor_rut', None)
+                    emisor_razon_social = getattr(self, 'proveedor_razon_social', None)
+
+                    receptor_rut = self.contribuyente_rut
+                    receptor_razon_social = getattr(self, 'contribuyente_razon_social', None)
                 else:
                     raise ValueError(
                         f"Cannot determine 'emisor' and 'receptor' roles from tipo_dte {tipo_dte}."
