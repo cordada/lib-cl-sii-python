@@ -1,5 +1,13 @@
 # History
 
+## 0.66.0 (2025-12-02)
+
+- (PR #944, 2025-12-02) chore(deps): Bump the github-actions-production group with 3 updates
+- (PR #952, 2025-12-02) rcv: `RcvDetalleEntry.as_dte_data_l2()` does not work when
+  tipo DTE is a "Nota"
+- (PR #953, 2025-12-02) rcv: Add `RvDetalleEntry.get_documento_referencia_dte_natural_key()`
+- (PR #948, 2025-12-02) chore(deps): Bump the python-development group with 3 updates
+
 ## 0.65.0 (2025-12-02)
 
 - (PR #930, 2025-11-25) chore(deps): Bump the github-actions-production group with 3 updates
