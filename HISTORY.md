@@ -1,5 +1,10 @@
 # History
 
+## 0.65.0 (2025-12-02)
+
+- (PR #930, 2025-11-25) chore(deps): Bump the github-actions-production group with 3 updates
+- (PR #949, 2025-12-02) rcv: Emisor and receptor are incorrect for Facturas de Compra
+
 ## 0.64.0 (2025-11-20)
 
 - (PR #941, 2025-11-20) rcv: Make IVA fields optional in schemas and data models
