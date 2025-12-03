@@ -1,5 +1,13 @@
 # History
 
+## 0.67.0 (2025-12-02)
+
+- (PR #956, 2025-12-02) rcv: `RvDetalleEntry.get_documento_referencia_dte_natural_key()`
+  does not work when tipo DTE is not also a valid RCV tipo documento
+- (PR #932, 2025-12-02) chore(deps): Bump jsonschema from 4.25.0 to 4.25.1
+- (PR #946, 2025-12-02) chore(deps): Bump types-setuptools from 80.9.0.20250809 to 80.9.0.20250822
+- (PR #947, 2025-12-02) chore(deps): Bump types-lxml from 2025.3.30 to 2025.11.25
+
 ## 0.66.0 (2025-12-02)
 
 - (PR #944, 2025-12-02) chore(deps): Bump the github-actions-production group with 3 updates

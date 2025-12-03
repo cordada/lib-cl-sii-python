@@ -16,6 +16,7 @@ from typing import ClassVar, Optional
 import pydantic
 from typing_extensions import Self, TypedDict
 
+import cl_sii.dte.constants
 import cl_sii.dte.data_models
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
@@ -503,13 +504,18 @@ class RvDetalleEntry(RcvDetalleEntry):
         try:
             tipo_documento_referencia = RcvTipoDocto(self.tipo_documento_referencia)
         except ValueError:
-            raise
-
-        try:
-            tipo_dte_referencia = tipo_documento_referencia.as_tipo_dte()
-        except ValueError:
-            # Not a DTE.
-            return None
+            # Not a valid RCV Tipo de Documento, but it could still be a valid Tipo de DTE.
+            try:
+                tipo_dte_referencia = cl_sii.dte.constants.TipoDte(self.tipo_documento_referencia)
+            except ValueError:
+                # Not a DTE.
+                return None
+        else:
+            try:
+                tipo_dte_referencia = tipo_documento_referencia.as_tipo_dte()
+            except ValueError:
+                # Not a DTE.
+                return None
 
         return cl_sii.dte.data_models.DteNaturalKey(
             emisor_rut=self.contribuyente_rut,
