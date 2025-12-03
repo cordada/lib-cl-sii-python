@@ -52,7 +52,7 @@ pydantic==2.11.7
     # via -r requirements.in
 pydantic-core==2.33.2
     # via pydantic
-pyopenssl==25.1.0
+pyopenssl==25.3.0
     # via -r requirements.in
 pytz==2025.2
     # via -r requirements.in
