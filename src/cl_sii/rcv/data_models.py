@@ -121,6 +121,18 @@ class OtrosImpuestos(TypedDict):
     """
 
 
+class DocumentoReferencia(TypedDict):
+    tipo_documento_referencia: int
+    """
+    Tipo Docto. Referencia
+    """
+
+    folio_documento_referencia: int
+    """
+    Folio Docto. Referencia
+    """
+
+
 @pydantic.dataclasses.dataclass(
     frozen=True,
     config=pydantic.ConfigDict(
@@ -409,14 +421,11 @@ class RvDetalleEntry(RcvDetalleEntry):
     IVA fuera de plazo
     """
 
-    tipo_documento_referencia: Optional[int]
+    documento_referencias: Optional[Sequence[DocumentoReferencia]]
     """
-    Tipo Docto. Referencia
-    """
-
-    folio_documento_referencia: Optional[int]
-    """
-    Folio Docto. Referencia
+    List of:
+        - Tipo Docto. Referencia
+        - Folio Docto. Referencia
     """
 
     num_ident_receptor_extranjero: Optional[str]
@@ -495,33 +504,43 @@ class RvDetalleEntry(RcvDetalleEntry):
     # Custom Methods
     ###########################################################################
 
-    def get_documento_referencia_dte_natural_key(
+    def get_documento_referencia_dte_natural_keys(
         self,
-    ) -> cl_sii.dte.data_models.DteNaturalKey | None:
-        if self.tipo_documento_referencia is None or self.folio_documento_referencia is None:
+    ) -> Sequence[cl_sii.dte.data_models.DteNaturalKey] | None:
+        if self.documento_referencias is None:
             return None
 
-        try:
-            tipo_documento_referencia = RcvTipoDocto(self.tipo_documento_referencia)
-        except ValueError:
-            # Not a valid RCV Tipo de Documento, but it could still be a valid Tipo de DTE.
-            try:
-                tipo_dte_referencia = cl_sii.dte.constants.TipoDte(self.tipo_documento_referencia)
-            except ValueError:
-                # Not a DTE.
-                return None
-        else:
-            try:
-                tipo_dte_referencia = tipo_documento_referencia.as_tipo_dte()
-            except ValueError:
-                # Not a DTE.
-                return None
+        documento_referencia_natural_keys = []
 
-        return cl_sii.dte.data_models.DteNaturalKey(
-            emisor_rut=self.contribuyente_rut,
-            tipo_dte=tipo_dte_referencia,
-            folio=self.folio_documento_referencia,
-        )
+        for documento_referencia in self.documento_referencias:
+            tipo_documento_referencia = documento_referencia['tipo_documento_referencia']
+            folio_documento_referencia = documento_referencia['folio_documento_referencia']
+
+            try:
+                tipo_documento_referencia = RcvTipoDocto(tipo_documento_referencia)
+            except ValueError:
+                # Not a valid RCV Tipo de Documento, but it could still be a valid Tipo de DTE.
+                try:
+                    tipo_dte_referencia = cl_sii.dte.constants.TipoDte(tipo_documento_referencia)
+                except ValueError:
+                    # Not a DTE.
+                    return None
+            else:
+                try:
+                    tipo_dte_referencia = tipo_documento_referencia.as_tipo_dte()
+                except ValueError:
+                    # Not a DTE.
+                    return None
+
+            documento_referencia_natural_keys.append(
+                cl_sii.dte.data_models.DteNaturalKey(
+                    emisor_rut=self.contribuyente_rut,
+                    tipo_dte=tipo_dte_referencia,
+                    folio=folio_documento_referencia,
+                )
+            )
+
+        return documento_referencia_natural_keys
 
     ###########################################################################
     # Validators
