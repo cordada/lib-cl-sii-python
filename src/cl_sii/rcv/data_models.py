@@ -344,17 +344,17 @@ class RvDetalleEntry(RcvDetalleEntry):
     Fecha Reclamo (must be timezone aware)
     """
 
-    monto_exento: int
+    monto_exento: Optional[int]
     """
     Monto Exento
     """
 
-    monto_neto: int
+    monto_neto: Optional[int]
     """
     Monto Neto
     """
 
-    monto_iva: int
+    monto_iva: Optional[int]
     """
     Monto IVA
     """
@@ -389,22 +389,22 @@ class RvDetalleEntry(RcvDetalleEntry):
     RUT Emisor Liquid. Factura
     """
 
-    neto_comision_liquidacion_factura: int
+    neto_comision_liquidacion_factura: Optional[int]
     """
     Neto Comision Liquid. Factura
     """
 
-    exento_comision_liquidacion_factura: int
+    exento_comision_liquidacion_factura: Optional[int]
     """
     Exento Comision Liquid. Factura
     """
 
-    iva_comision_liquidacion_factura: int
+    iva_comision_liquidacion_factura: Optional[int]
     """
     IVA Comision Liquid. Factura
     """
 
-    iva_fuera_de_plazo: int
+    iva_fuera_de_plazo: Optional[int]
     """
     IVA fuera de plazo
     """
@@ -429,7 +429,7 @@ class RvDetalleEntry(RcvDetalleEntry):
     Nacionalidad Receptor Extranjero
     """
 
-    credito_empresa_constructora: int
+    credito_empresa_constructora: Optional[int]
     """
     Credito empresa constructora
     """
@@ -439,27 +439,27 @@ class RvDetalleEntry(RcvDetalleEntry):
     Impto. Zona Franca (Ley 18211)
     """
 
-    garantia_dep_envases: int
+    garantia_dep_envases: Optional[int]
     """
     Garantia Dep. Envases
     """
 
-    indicador_venta_sin_costo: int
+    indicador_venta_sin_costo: Optional[int]
     """
     Indicador Venta sin Costo
     """
 
-    indicador_servicio_periodico: int
+    indicador_servicio_periodico: Optional[int]
     """
     Indicador Servicio Periodico
     """
 
-    monto_no_facturable: int
+    monto_no_facturable: Optional[int]
     """
     Monto No facturable
     """
 
-    total_monto_periodo: int
+    total_monto_periodo: Optional[int]
     """
     Total Monto Periodo
     """
