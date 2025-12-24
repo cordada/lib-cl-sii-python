@@ -121,6 +121,18 @@ class OtrosImpuestos(TypedDict):
     """
 
 
+class DocumentoReferencia(TypedDict):
+    tipo_documento_referencia: int
+    """
+    Tipo Docto. Referencia
+    """
+
+    folio_documento_referencia: int
+    """
+    Folio Docto. Referencia
+    """
+
+
 @pydantic.dataclasses.dataclass(
     frozen=True,
     config=pydantic.ConfigDict(
@@ -409,14 +421,11 @@ class RvDetalleEntry(RcvDetalleEntry):
     IVA fuera de plazo
     """
 
-    tipo_documento_referencia: Optional[int]
+    documento_referencias: Optional[Sequence[DocumentoReferencia]]
     """
-    Tipo Docto. Referencia
-    """
-
-    folio_documento_referencia: Optional[int]
-    """
-    Folio Docto. Referencia
+    List of:
+        - Tipo Docto. Referencia
+        - Folio Docto. Referencia
     """
 
     num_ident_receptor_extranjero: Optional[str]
