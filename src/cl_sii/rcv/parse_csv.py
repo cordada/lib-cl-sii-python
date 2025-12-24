@@ -523,15 +523,18 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         data_key='Fecha Reclamo',
     )
     monto_exento = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Monto Exento',
     )
     monto_neto = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Monto Neto',
     )
     monto_iva = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Monto IVA',
     )
     monto_total = marshmallow.fields.Integer(
@@ -569,19 +572,23 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         data_key='RUT Emisor Liquid. Factura',
     )
     neto_comision_liquidacion_factura = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Neto Comision Liquid. Factura',
     )
     exento_comision_liquidacion_factura = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Exento Comision Liquid. Factura',
     )
     iva_comision_liquidacion_factura = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='IVA Comision Liquid. Factura',
     )
     iva_fuera_de_plazo = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='IVA fuera de plazo',
     )
     tipo_documento_referencia = marshmallow.fields.Integer(
@@ -605,7 +612,8 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         data_key='Nacionalidad Receptor Extranjero',
     )
     credito_empresa_constructora = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Credito empresa constructora',
     )
     impuesto_zona_franca_ley_18211 = marshmallow.fields.Integer(
@@ -614,23 +622,28 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         data_key='Impto. Zona Franca (Ley 18211)',
     )
     garantia_dep_envases = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Garantia Dep. Envases',
     )
     indicador_venta_sin_costo = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Indicador Venta sin Costo',
     )
     indicador_servicio_periodico = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Indicador Servicio Periodico',
     )
     monto_no_facturable = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Monto No facturable',
     )
     total_monto_periodo = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Total Monto Periodo',
     )
     venta_pasajes_transporte_nacional = marshmallow.fields.Integer(
