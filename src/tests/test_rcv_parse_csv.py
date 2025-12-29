@@ -11,6 +11,7 @@ import cl_sii.rcv.constants
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs.tz_utils import convert_naive_dt_to_tz_aware
 from cl_sii.rcv.data_models import (
+    DocumentoReferencia,
     OtrosImpuestos,
     RcNoIncluirDetalleEntry,
     RcPendienteDetalleEntry,
@@ -25,6 +26,7 @@ from cl_sii.rcv.parse_csv import (  # noqa: F401
     RcvCompraRegistroCsvRowSchema,
     RcvVentaCsvRowSchema,
     _parse_rcv_csv_file,
+    _parse_rv_documento_referencias,
     _RcvCompraCsvRowContext,
     _RcvCompraCsvRowSchemaContext,
     _RcvVentaCsvRowContext,
@@ -70,8 +72,7 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
             'Exento Comision Liquid. Factura': '0',
             'IVA Comision Liquid. Factura': '0',
             'IVA fuera de plazo': '0',
-            'Tipo Docto. Referencia': '',
-            'Folio Docto. Referencia': '',
+            'Documento Referencias': None,
             'Num. Ident. Receptor Extranjero': '',
             'Nacionalidad Receptor Extranjero': '',
             'Credito empresa constructora': '0',
@@ -126,8 +127,7 @@ class RcvVentaCsvRowSchemaTest(unittest.TestCase):
             exento_comision_liquidacion_factura=0,
             iva_comision_liquidacion_factura=0,
             iva_fuera_de_plazo=0,
-            tipo_documento_referencia=None,
-            folio_documento_referencia=None,
+            documento_referencias=None,
             num_ident_receptor_extranjero=None,
             nacionalidad_receptor_extranjero=None,
             credito_empresa_constructora=0,
@@ -468,8 +468,7 @@ class FunctionsTest(unittest.TestCase):
             exento_comision_liquidacion_factura=0,
             iva_comision_liquidacion_factura=0,
             iva_fuera_de_plazo=0,
-            tipo_documento_referencia=None,
-            folio_documento_referencia=None,
+            documento_referencias=None,
             num_ident_receptor_extranjero=None,
             nacionalidad_receptor_extranjero=None,
             credito_empresa_constructora=0,
@@ -562,8 +561,7 @@ class FunctionsTest(unittest.TestCase):
                     'Exento Comision Liquid. Factura': '0',
                     'IVA Comision Liquid. Factura': '0',
                     'IVA fuera de plazo': '0',
-                    'Tipo Docto. Referencia': None,
-                    'Folio Docto. Referencia': None,
+                    'Documento Referencias': None,
                     'Num. Ident. Receptor Extranjero': None,
                     'Nacionalidad Receptor Extranjero': None,
                     'Credito empresa constructora': '0',
@@ -617,8 +615,7 @@ class FunctionsTest(unittest.TestCase):
                     exento_comision_liquidacion_factura=0,
                     iva_comision_liquidacion_factura=0,
                     iva_fuera_de_plazo=0,
-                    tipo_documento_referencia=0,
-                    folio_documento_referencia=None,
+                    documento_referencias=None,
                     num_ident_receptor_extranjero=None,
                     nacionalidad_receptor_extranjero=None,
                     credito_empresa_constructora=0,
@@ -660,8 +657,7 @@ class FunctionsTest(unittest.TestCase):
                     'Exento Comision Liquid. Factura': '0',
                     'IVA Comision Liquid. Factura': '0',
                     'IVA fuera de plazo': '0',
-                    'Tipo Docto. Referencia': '0',
-                    'Folio Docto. Referencia': None,
+                    'Documento Referencias': None,
                     'Num. Ident. Receptor Extranjero': None,
                     'Nacionalidad Receptor Extranjero': None,
                     'Credito empresa constructora': '0',
@@ -710,8 +706,7 @@ class FunctionsTest(unittest.TestCase):
                     exento_comision_liquidacion_factura=None,
                     iva_comision_liquidacion_factura=None,
                     iva_fuera_de_plazo=None,
-                    tipo_documento_referencia=None,
-                    folio_documento_referencia=None,
+                    documento_referencias=None,
                     num_ident_receptor_extranjero=None,
                     nacionalidad_receptor_extranjero=None,
                     credito_empresa_constructora=None,
@@ -732,13 +727,13 @@ class FunctionsTest(unittest.TestCase):
                 {
                     'Codigo Sucursal': None,
                     'Credito empresa constructora': None,
+                    'Documento Referencias': None,
                     'Exento Comision Liquid. Factura': None,
                     'Fecha Acuse Recibo': None,
                     'Fecha Docto': '04/08/2017',
                     'Fecha Recepcion': '13/09/2017 10:18:59',
                     'Fecha Reclamo': None,
                     'Folio': '88',
-                    'Folio Docto. Referencia': None,
                     'Garantia Dep. Envases': None,
                     'IVA Comision Liquid. Factura': None,
                     'IVA Retenido Parcial': None,
@@ -765,7 +760,6 @@ class FunctionsTest(unittest.TestCase):
                     'Razon Social': 'Faker Company',
                     'Rut cliente': '4954153-8',
                     'Tipo Doc': '30',
-                    'Tipo Docto. Referencia': None,
                     'Tipo Venta': 'DEL_GIRO',
                     'Total Monto Periodo': None,
                     'Venta Pasajes Transporte Internacional': None,
@@ -883,8 +877,7 @@ class FunctionsTest(unittest.TestCase):
                     exento_comision_liquidacion_factura=0,
                     iva_comision_liquidacion_factura=0,
                     iva_fuera_de_plazo=0,
-                    tipo_documento_referencia=0,
-                    folio_documento_referencia=None,
+                    documento_referencias=None,
                     num_ident_receptor_extranjero=None,
                     nacionalidad_receptor_extranjero=None,
                     credito_empresa_constructora=0,
@@ -937,8 +930,7 @@ class FunctionsTest(unittest.TestCase):
                     'Exento Comision Liquid. Factura': '0',
                     'IVA Comision Liquid. Factura': '0',
                     'IVA fuera de plazo': '0',
-                    'Tipo Docto. Referencia': '0',
-                    'Folio Docto. Referencia': None,
+                    'Documento Referencias': None,
                     'Num. Ident. Receptor Extranjero': None,
                     'Nacionalidad Receptor Extranjero': None,
                     'Credito empresa constructora': '0',
@@ -998,8 +990,7 @@ class FunctionsTest(unittest.TestCase):
                     exento_comision_liquidacion_factura=0,
                     iva_comision_liquidacion_factura=0,
                     iva_fuera_de_plazo=0,
-                    tipo_documento_referencia=0,
-                    folio_documento_referencia=None,
+                    documento_referencias=None,
                     num_ident_receptor_extranjero=None,
                     nacionalidad_receptor_extranjero=None,
                     credito_empresa_constructora=0,
@@ -1047,8 +1038,7 @@ class FunctionsTest(unittest.TestCase):
                     'Exento Comision Liquid. Factura': '0',
                     'IVA Comision Liquid. Factura': '0',
                     'IVA fuera de plazo': '0',
-                    'Tipo Docto. Referencia': '0',
-                    'Folio Docto. Referencia': None,
+                    'Documento Referencias': None,
                     'Num. Ident. Receptor Extranjero': None,
                     'Nacionalidad Receptor Extranjero': None,
                     'Credito empresa constructora': '0',
@@ -1106,8 +1096,7 @@ class FunctionsTest(unittest.TestCase):
                     exento_comision_liquidacion_factura=0,
                     iva_comision_liquidacion_factura=0,
                     iva_fuera_de_plazo=0,
-                    tipo_documento_referencia=0,
-                    folio_documento_referencia=None,
+                    documento_referencias=None,
                     num_ident_receptor_extranjero=None,
                     nacionalidad_receptor_extranjero=None,
                     credito_empresa_constructora=0,
@@ -1155,8 +1144,7 @@ class FunctionsTest(unittest.TestCase):
                     'Exento Comision Liquid. Factura': '0',
                     'IVA Comision Liquid. Factura': '0',
                     'IVA fuera de plazo': '0',
-                    'Tipo Docto. Referencia': '0',
-                    'Folio Docto. Referencia': None,
+                    'Documento Referencias': None,
                     'Num. Ident. Receptor Extranjero': None,
                     'Nacionalidad Receptor Extranjero': None,
                     'Credito empresa constructora': '0',
@@ -1214,8 +1202,7 @@ class FunctionsTest(unittest.TestCase):
                     exento_comision_liquidacion_factura=0,
                     iva_comision_liquidacion_factura=0,
                     iva_fuera_de_plazo=0,
-                    tipo_documento_referencia=0,
-                    folio_documento_referencia=None,
+                    documento_referencias=None,
                     num_ident_receptor_extranjero=None,
                     nacionalidad_receptor_extranjero=None,
                     credito_empresa_constructora=0,
@@ -1263,8 +1250,7 @@ class FunctionsTest(unittest.TestCase):
                     'Exento Comision Liquid. Factura': '0',
                     'IVA Comision Liquid. Factura': '0',
                     'IVA fuera de plazo': '0',
-                    'Tipo Docto. Referencia': '0',
-                    'Folio Docto. Referencia': None,
+                    'Documento Referencias': None,
                     'Num. Ident. Receptor Extranjero': None,
                     'Nacionalidad Receptor Extranjero': None,
                     'Credito empresa constructora': '0',
@@ -1322,8 +1308,7 @@ class FunctionsTest(unittest.TestCase):
                     exento_comision_liquidacion_factura=0,
                     iva_comision_liquidacion_factura=0,
                     iva_fuera_de_plazo=0,
-                    tipo_documento_referencia=0,
-                    folio_documento_referencia=None,
+                    documento_referencias=None,
                     num_ident_receptor_extranjero=None,
                     nacionalidad_receptor_extranjero=None,
                     credito_empresa_constructora=0,
@@ -1376,8 +1361,7 @@ class FunctionsTest(unittest.TestCase):
                     'Exento Comision Liquid. Factura': '0',
                     'IVA Comision Liquid. Factura': '0',
                     'IVA fuera de plazo': '0',
-                    'Tipo Docto. Referencia': '0',
-                    'Folio Docto. Referencia': None,
+                    'Documento Referencias': None,
                     'Num. Ident. Receptor Extranjero': None,
                     'Nacionalidad Receptor Extranjero': None,
                     'Credito empresa constructora': '0',
@@ -1392,6 +1376,369 @@ class FunctionsTest(unittest.TestCase):
                     'Numero Interno': None,
                     'Codigo Sucursal': '12354',
                     'NCE o NDE sobre Fact. de Compra': None,
+                    'Otros Impuestos': [
+                        {
+                            'codigo_otro_impuesto': '24',
+                            'valor_otro_impuesto': '6049210',
+                            'tasa_otro_impuesto': '31.5',
+                        },
+                        {
+                            'codigo_otro_impuesto': '271',
+                            'valor_otro_impuesto': '701395',
+                            'tasa_otro_impuesto': '18',
+                        },
+                    ],
+                    'contribuyente_rut': Rut('1-9'),
+                },
+                {},
+            ),
+        ]
+        self.assertEqual(items_list, expected_entries_list)
+
+    def test_parse_rcv_venta_csv_file_multiple_dte_referencias(self) -> None:
+        rcv_file_path = get_test_file_path(
+            'test_data/sii-rcv/RCV-venta-multiple-dte-referencias.csv',
+        )
+
+        items = parse_rcv_venta_csv_file(
+            rut=Rut('1-9'),
+            input_file_path=rcv_file_path,
+        )
+        items_list = list(items)
+
+        expected_entries_list: list[
+            tuple[Optional[RvDetalleEntry], int, dict[str, object], dict[str, object]]
+        ]
+        expected_entries_list = [
+            (
+                RvDetalleEntry(
+                    contribuyente_rut=Rut('1-9'),
+                    tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+                    folio=506,
+                    fecha_emision_date=datetime.date(2019, 6, 4),
+                    cliente_rut=Rut('12345678-5'),
+                    monto_total=2082715,
+                    fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                        dt=datetime.datetime(2019, 6, 18, 17, 1, 6),
+                        tz=SII_OFFICIAL_TZ,
+                    ),
+                    tipo_venta='DEL_GIRO',
+                    cliente_razon_social='Fake Company S.A.',
+                    fecha_acuse_dt=None,
+                    fecha_reclamo_dt=None,
+                    monto_exento=0,
+                    monto_neto=1750181,
+                    monto_iva=332534,
+                    iva_retenido_total=0,
+                    iva_retenido_parcial=0,
+                    iva_no_retenido=0,
+                    iva_propio=0,
+                    iva_terceros=0,
+                    liquidacion_factura_emisor_rut=None,
+                    neto_comision_liquidacion_factura=0,
+                    exento_comision_liquidacion_factura=0,
+                    iva_comision_liquidacion_factura=0,
+                    iva_fuera_de_plazo=0,
+                    documento_referencias=None,
+                    num_ident_receptor_extranjero=None,
+                    nacionalidad_receptor_extranjero=None,
+                    credito_empresa_constructora=0,
+                    impuesto_zona_franca_ley_18211=None,
+                    garantia_dep_envases=0,
+                    indicador_venta_sin_costo=2,
+                    indicador_servicio_periodico=0,
+                    monto_no_facturable=0,
+                    total_monto_periodo=0,
+                    venta_pasajes_transporte_nacional=None,
+                    venta_pasajes_transporte_internacional=None,
+                    numero_interno=None,
+                    codigo_sucursal='0',
+                    nce_o_nde_sobre_factura_de_compra=None,
+                    otros_impuestos=None,
+                ),
+                1,
+                {
+                    'Tipo Doc': '33',
+                    'Tipo Venta': 'DEL_GIRO',
+                    'Rut cliente': '12345678-5',
+                    'Razon Social': 'Fake Company S.A. ',
+                    'Folio': '506',
+                    'Fecha Docto': '04/06/2019',
+                    'Fecha Recepcion': '18/06/2019 17:01:06',
+                    'Fecha Acuse Recibo': None,
+                    'Fecha Reclamo': None,
+                    'Monto Exento': '0',
+                    'Monto Neto': '1750181',
+                    'Monto IVA': '332534',
+                    'Monto total': '2082715',
+                    'IVA Retenido Total': '0',
+                    'IVA Retenido Parcial': '0',
+                    'IVA no retenido': '0',
+                    'IVA propio': '0',
+                    'IVA Terceros': '0',
+                    'RUT Emisor Liquid. Factura': None,
+                    'Neto Comision Liquid. Factura': '0',
+                    'Exento Comision Liquid. Factura': '0',
+                    'IVA Comision Liquid. Factura': '0',
+                    'IVA fuera de plazo': '0',
+                    'Num. Ident. Receptor Extranjero': None,
+                    'Nacionalidad Receptor Extranjero': None,
+                    'Credito empresa constructora': '0',
+                    'Impto. Zona Franca (Ley 18211)': None,
+                    'Garantia Dep. Envases': '0',
+                    'Indicador Venta sin Costo': '2',
+                    'Indicador Servicio Periodico': '0',
+                    'Monto No facturable': '0',
+                    'Total Monto Periodo': '0',
+                    'Venta Pasajes Transporte Nacional': None,
+                    'Venta Pasajes Transporte Internacional': None,
+                    'Numero Interno': None,
+                    'Codigo Sucursal': '0',
+                    'NCE o NDE sobre Fact. de Compra': None,
+                    'Documento Referencias': None,
+                    'Otros Impuestos': None,
+                    'contribuyente_rut': Rut('1-9'),
+                },
+                {},
+            ),
+            (
+                RvDetalleEntry(
+                    contribuyente_rut=Rut('1-9'),
+                    tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+                    folio=14239,
+                    fecha_emision_date=datetime.date(2025, 12, 9),
+                    cliente_rut=Rut('77697060-3'),
+                    monto_total=658284,
+                    fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                        dt=datetime.datetime(2025, 12, 9, 8, 50, 45),
+                        tz=SII_OFFICIAL_TZ,
+                    ),
+                    tipo_venta='DEL_GIRO',
+                    cliente_razon_social='DIRECT LTDA',
+                    fecha_acuse_dt=convert_naive_dt_to_tz_aware(
+                        dt=datetime.datetime(2025, 12, 10, 13, 14, 17),
+                        tz=SII_OFFICIAL_TZ,
+                    ),
+                    fecha_reclamo_dt=None,
+                    monto_exento=0,
+                    monto_neto=553180,
+                    monto_iva=105104,
+                    iva_retenido_total=0,
+                    iva_retenido_parcial=0,
+                    iva_no_retenido=0,
+                    iva_propio=0,
+                    iva_terceros=0,
+                    liquidacion_factura_emisor_rut=None,
+                    neto_comision_liquidacion_factura=0,
+                    exento_comision_liquidacion_factura=0,
+                    iva_comision_liquidacion_factura=0,
+                    iva_fuera_de_plazo=0,
+                    documento_referencias=[
+                        DocumentoReferencia(
+                            tipo_documento_referencia=52,
+                            folio_documento_referencia=10370,
+                        ),
+                        DocumentoReferencia(
+                            tipo_documento_referencia=52,
+                            folio_documento_referencia=10371,
+                        ),
+                    ],
+                    num_ident_receptor_extranjero=None,
+                    nacionalidad_receptor_extranjero=None,
+                    credito_empresa_constructora=0,
+                    impuesto_zona_franca_ley_18211=None,
+                    garantia_dep_envases=0,
+                    indicador_venta_sin_costo=2,
+                    indicador_servicio_periodico=0,
+                    monto_no_facturable=0,
+                    total_monto_periodo=0,
+                    venta_pasajes_transporte_nacional=None,
+                    venta_pasajes_transporte_internacional=None,
+                    numero_interno=None,
+                    codigo_sucursal='0',
+                    nce_o_nde_sobre_factura_de_compra=None,
+                    otros_impuestos=None,
+                ),
+                2,
+                {
+                    'Tipo Doc': '33',
+                    'Tipo Venta': 'DEL_GIRO',
+                    'Rut cliente': '77697060-3',
+                    'Razon Social': 'DIRECT LTDA',
+                    'Folio': '14239',
+                    'Fecha Docto': '09/12/2025',
+                    'Fecha Recepcion': '09/12/2025 08:50:45',
+                    'Fecha Acuse Recibo': '10/12/2025 13:14:17',
+                    'Fecha Reclamo': None,
+                    'Monto Exento': '0',
+                    'Monto Neto': '553180',
+                    'Monto IVA': '105104',
+                    'Monto total': '658284',
+                    'IVA Retenido Total': '0',
+                    'IVA Retenido Parcial': '0',
+                    'IVA no retenido': '0',
+                    'IVA propio': '0',
+                    'IVA Terceros': '0',
+                    'RUT Emisor Liquid. Factura': None,
+                    'Neto Comision Liquid. Factura': '0',
+                    'Exento Comision Liquid. Factura': '0',
+                    'IVA Comision Liquid. Factura': '0',
+                    'IVA fuera de plazo': '0',
+                    'Num. Ident. Receptor Extranjero': None,
+                    'Nacionalidad Receptor Extranjero': None,
+                    'Credito empresa constructora': '0',
+                    'Impto. Zona Franca (Ley 18211)': None,
+                    'Garantia Dep. Envases': '0',
+                    'Indicador Venta sin Costo': '2',
+                    'Indicador Servicio Periodico': '0',
+                    'Monto No facturable': '0',
+                    'Total Monto Periodo': '0',
+                    'Venta Pasajes Transporte Nacional': None,
+                    'Venta Pasajes Transporte Internacional': None,
+                    'Numero Interno': None,
+                    'Codigo Sucursal': '0',
+                    'NCE o NDE sobre Fact. de Compra': None,
+                    'Documento Referencias': [
+                        {
+                            'tipo_documento_referencia': 52,
+                            'folio_documento_referencia': 10370,
+                        },
+                        {
+                            'tipo_documento_referencia': 52,
+                            'folio_documento_referencia': 10371,
+                        },
+                    ],
+                    'Otros Impuestos': None,
+                    'contribuyente_rut': Rut('1-9'),
+                },
+                {},
+            ),
+            (
+                RvDetalleEntry(
+                    contribuyente_rut=Rut('1-9'),
+                    tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+                    folio=3210,
+                    fecha_emision_date=datetime.date(2025, 9, 1),
+                    cliente_rut=Rut('54213736-3'),
+                    monto_total=30471437,
+                    fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                        dt=datetime.datetime(2025, 9, 1, 10, 58, 51),
+                        tz=SII_OFFICIAL_TZ,
+                    ),
+                    tipo_venta='DEL_GIRO',
+                    cliente_razon_social='THE COMPANY SPA',
+                    fecha_acuse_dt=convert_naive_dt_to_tz_aware(
+                        dt=datetime.datetime(2025, 9, 8, 14, 15, 23),
+                        tz=SII_OFFICIAL_TZ,
+                    ),
+                    fecha_reclamo_dt=None,
+                    monto_exento=0,
+                    monto_neto=9999,
+                    monto_iva=3899347,
+                    iva_retenido_total=0,
+                    iva_retenido_parcial=0,
+                    iva_no_retenido=0,
+                    iva_propio=0,
+                    iva_terceros=0,
+                    liquidacion_factura_emisor_rut=None,
+                    neto_comision_liquidacion_factura=0,
+                    exento_comision_liquidacion_factura=0,
+                    iva_comision_liquidacion_factura=0,
+                    iva_fuera_de_plazo=0,
+                    documento_referencias=[
+                        DocumentoReferencia(
+                            tipo_documento_referencia=33,
+                            folio_documento_referencia=200,
+                        ),
+                        DocumentoReferencia(
+                            tipo_documento_referencia=33,
+                            folio_documento_referencia=300,
+                        ),
+                        DocumentoReferencia(
+                            tipo_documento_referencia=33,
+                            folio_documento_referencia=400,
+                        ),
+                    ],
+                    num_ident_receptor_extranjero=None,
+                    nacionalidad_receptor_extranjero=None,
+                    credito_empresa_constructora=0,
+                    impuesto_zona_franca_ley_18211=None,
+                    garantia_dep_envases=0,
+                    indicador_venta_sin_costo=2,
+                    indicador_servicio_periodico=0,
+                    monto_no_facturable=0,
+                    total_monto_periodo=0,
+                    venta_pasajes_transporte_nacional=None,
+                    venta_pasajes_transporte_internacional=None,
+                    numero_interno=None,
+                    codigo_sucursal='12354',
+                    nce_o_nde_sobre_factura_de_compra=None,
+                    otros_impuestos=[
+                        {
+                            'codigo_otro_impuesto': '24',
+                            'valor_otro_impuesto': 6049210,
+                            'tasa_otro_impuesto': Decimal('31.5'),
+                        },
+                        {
+                            'codigo_otro_impuesto': '271',
+                            'valor_otro_impuesto': 701395,
+                            'tasa_otro_impuesto': Decimal('18'),
+                        },
+                    ],
+                ),
+                3,
+                {
+                    'Tipo Doc': '33',
+                    'Tipo Venta': 'DEL_GIRO',
+                    'Rut cliente': '54213736-3',
+                    'Razon Social': 'THE COMPANY SPA',
+                    'Folio': '3210',
+                    'Fecha Docto': '01/09/2025',
+                    'Fecha Recepcion': '01/09/2025 10:58:51',
+                    'Fecha Acuse Recibo': '08/09/2025 14:15:23',
+                    'Fecha Reclamo': None,
+                    'Monto Exento': '0',
+                    'Monto Neto': '9999',
+                    'Monto IVA': '3899347',
+                    'Monto total': '30471437',
+                    'IVA Retenido Total': '0',
+                    'IVA Retenido Parcial': '0',
+                    'IVA no retenido': '0',
+                    'IVA propio': '0',
+                    'IVA Terceros': '0',
+                    'RUT Emisor Liquid. Factura': None,
+                    'Neto Comision Liquid. Factura': '0',
+                    'Exento Comision Liquid. Factura': '0',
+                    'IVA Comision Liquid. Factura': '0',
+                    'IVA fuera de plazo': '0',
+                    'Num. Ident. Receptor Extranjero': None,
+                    'Nacionalidad Receptor Extranjero': None,
+                    'Credito empresa constructora': '0',
+                    'Impto. Zona Franca (Ley 18211)': None,
+                    'Garantia Dep. Envases': '0',
+                    'Indicador Venta sin Costo': '2',
+                    'Indicador Servicio Periodico': '0',
+                    'Monto No facturable': '0',
+                    'Total Monto Periodo': '0',
+                    'Venta Pasajes Transporte Nacional': None,
+                    'Venta Pasajes Transporte Internacional': None,
+                    'Numero Interno': None,
+                    'Codigo Sucursal': '12354',
+                    'NCE o NDE sobre Fact. de Compra': None,
+                    'Documento Referencias': [
+                        {
+                            'tipo_documento_referencia': 33,
+                            'folio_documento_referencia': 200,
+                        },
+                        {
+                            'tipo_documento_referencia': 33,
+                            'folio_documento_referencia': 300,
+                        },
+                        {
+                            'tipo_documento_referencia': 33,
+                            'folio_documento_referencia': 400,
+                        },
+                    ],
                     'Otros Impuestos': [
                         {
                             'codigo_otro_impuesto': '24',
@@ -1798,3 +2145,98 @@ class FunctionsTest(unittest.TestCase):
 
         with self.assertRaises(Exception):
             get_rcv_csv_file_parser(DummyRcvKind(), None)  # type: ignore[arg-type]
+
+    def test__parse_rv_documento_referencias(self) -> None:
+        """Test _parse_rv_documento_referencias function with all possible scenarios."""
+
+        # Test case 1: Both parameters are None - should return None
+        with self.subTest("Both None"):
+            result = _parse_rv_documento_referencias(None, None)
+            self.assertIsNone(result)
+
+        # Test case 2: Both parameters are empty strings - should return None
+        with self.subTest("Mixed empty values"):
+            result = _parse_rv_documento_referencias("0", "")
+            self.assertIsNone(result)
+
+        # Test case 3: Only tipo provided (folio empty) - should raise ValueError
+        with self.subTest("Only tipo provided"):
+            with self.assertRaises(ValueError) as cm:
+                _parse_rv_documento_referencias("33", None)
+            self.assertIn("Both 'tipo_documento_referencia'", str(cm.exception))
+
+            with self.assertRaises(ValueError):
+                _parse_rv_documento_referencias(33, "")
+
+            with self.assertRaises(ValueError):
+                _parse_rv_documento_referencias("33", "0")
+
+        # Test case 4: Only folio provided (tipo empty) - should raise ValueError
+        with self.subTest("Only folio provided"):
+            with self.assertRaises(ValueError) as cm:
+                _parse_rv_documento_referencias(None, "12345")
+            self.assertIn("Both 'tipo_documento_referencia'", str(cm.exception))
+
+            with self.assertRaises(ValueError):
+                _parse_rv_documento_referencias("", "12345")
+
+            with self.assertRaises(ValueError):
+                _parse_rv_documento_referencias("0", "12345")
+
+        # Test case 5: Valid single folio with string tipo
+        with self.subTest("Valid single folio - string tipo"):
+            result = _parse_rv_documento_referencias("33", "12345")
+            expected = [
+                {
+                    'tipo_documento_referencia': 33,
+                    'folio_documento_referencia': 12345,
+                }
+            ]
+            self.assertEqual(result, expected)
+
+        # Test case 6: Valid single folio with integer tipo
+        with self.subTest("Valid single folio - integer tipo"):
+            result = _parse_rv_documento_referencias(52, "67890")
+            expected = [
+                {
+                    'tipo_documento_referencia': 52,
+                    'folio_documento_referencia': 67890,
+                }
+            ]
+            self.assertEqual(result, expected)
+
+        # Test case 7: Valid multiple folios - three folios
+        with self.subTest("Valid three folios"):
+            result = _parse_rv_documento_referencias("33", "200-300-400")
+            expected = [
+                {
+                    'tipo_documento_referencia': 33,
+                    'folio_documento_referencia': 200,
+                },
+                {
+                    'tipo_documento_referencia': 33,
+                    'folio_documento_referencia': 300,
+                },
+                {
+                    'tipo_documento_referencia': 33,
+                    'folio_documento_referencia': 400,
+                },
+            ]
+            self.assertEqual(result, expected)
+
+        # Test case 8: Invalid folio - non-numeric
+        with self.subTest("Invalid folio - non-numeric"):
+            with self.assertRaises(ValueError) as cm:
+                _parse_rv_documento_referencias("33", "abc")
+            self.assertIn("Invalid 'folio_documento_referencia'", str(cm.exception))
+
+        # Test case 9: Non-string folio parameter (should work for integer)
+        with self.subTest("Non-string folio"):
+            result = _parse_rv_documento_referencias("33", 12345)  # type: ignore[arg-type]
+            expected = [
+                {
+                    'tipo_documento_referencia': 33,
+                    'folio_documento_referencia': 12345,
+                }
+            ]
+            self.assertEqual(result, expected)

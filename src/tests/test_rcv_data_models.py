@@ -10,6 +10,7 @@ from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.libs import tz_utils
 from cl_sii.rcv.constants import RcvTipoDocto
 from cl_sii.rcv.data_models import (
+    DocumentoReferencia,
     PeriodoTributario,
     RcNoIncluirDetalleEntry,
     RcPendienteDetalleEntry,
@@ -245,8 +246,7 @@ class RvDetalleEntryTest(unittest.TestCase):
             exento_comision_liquidacion_factura=0,
             iva_comision_liquidacion_factura=0,
             iva_fuera_de_plazo=0,
-            tipo_documento_referencia=None,
-            folio_documento_referencia=None,
+            documento_referencias=None,
             num_ident_receptor_extranjero=None,
             nacionalidad_receptor_extranjero=None,
             credito_empresa_constructora=0,
@@ -407,14 +407,13 @@ class RvDetalleEntryTest(unittest.TestCase):
         self.assertEqual(len(validation_errors), len(expected_validation_errors))
         self.assertEqual(validation_errors, expected_validation_errors)
 
-    def test_get_documento_referencia_dte_natural_key(self) -> None:
+    def test_get_documento_referencia_dte_natural_keys(self) -> None:
         rv_detalle_entry = self.rv_detalle_entry_1
 
         # Detalle Entry that does not reference another documento:
 
-        self.assertIsNone(rv_detalle_entry.tipo_documento_referencia)
-        self.assertIsNone(rv_detalle_entry.folio_documento_referencia)
-        self.assertIsNone(rv_detalle_entry.get_documento_referencia_dte_natural_key())
+        self.assertIsNone(rv_detalle_entry.documento_referencias)
+        self.assertIsNone(rv_detalle_entry.get_documento_referencia_dte_natural_keys())
 
         # Detalle Entry that references a DTE:
 
@@ -422,8 +421,12 @@ class RvDetalleEntryTest(unittest.TestCase):
             rv_detalle_entry,
             tipo_docto=RcvTipoDocto.NOTA_CREDITO_ELECTRONICA,
             folio=12345,
-            tipo_documento_referencia=RcvTipoDocto.FACTURA_ELECTRONICA,
-            folio_documento_referencia=170,
+            documento_referencias=[
+                DocumentoReferencia(
+                    tipo_documento_referencia=RcvTipoDocto.FACTURA_ELECTRONICA,
+                    folio_documento_referencia=170,
+                )
+            ],
         )
         self.assertEqual(
             cl_sii.dte.data_models.DteNaturalKey(
@@ -434,13 +437,15 @@ class RvDetalleEntryTest(unittest.TestCase):
             rv_detalle_entry_with_doc_ref.as_dte_data_l2().natural_key,
         )
 
-        expected_doc_ref_dte_natural_key = cl_sii.dte.data_models.DteNaturalKey(
-            emisor_rut=Rut('76354771-K'),
-            tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
-            folio=170,
-        )
+        expected_doc_ref_dte_natural_key = [
+            cl_sii.dte.data_models.DteNaturalKey(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
+                folio=170,
+            )
+        ]
         actual_doc_ref_dte_natural_key = (
-            rv_detalle_entry_with_doc_ref.get_documento_referencia_dte_natural_key()
+            rv_detalle_entry_with_doc_ref.get_documento_referencia_dte_natural_keys()
         )
 
         self.assertEqual(expected_doc_ref_dte_natural_key, actual_doc_ref_dte_natural_key)
@@ -450,21 +455,27 @@ class RvDetalleEntryTest(unittest.TestCase):
 
         rv_detalle_entry_with_non_rcv_doc_ref = dataclasses.replace(
             rv_detalle_entry,
-            tipo_documento_referencia=cl_sii.dte.constants.TipoDte.GUIA_DESPACHO_ELECTRONICA,
-            folio_documento_referencia=12345,
+            documento_referencias=[
+                DocumentoReferencia(
+                    tipo_documento_referencia=cl_sii.dte.constants.TipoDte.GUIA_DESPACHO_ELECTRONICA,  # noqa: E501
+                    folio_documento_referencia=12345,
+                )
+            ],
         )
         with self.assertRaisesRegex(ValueError, r'^52 is not a valid RcvTipoDocto$'):
             RcvTipoDocto(
-                rv_detalle_entry_with_non_rcv_doc_ref.tipo_documento_referencia  # type: ignore[arg-type] # noqa: E501
+                rv_detalle_entry_with_non_rcv_doc_ref.documento_referencias[0]['tipo_documento_referencia']  # type: ignore[index] # noqa: E501
             )
 
-        expected_doc_ref_dte_natural_key = cl_sii.dte.data_models.DteNaturalKey(
-            emisor_rut=Rut('76354771-K'),
-            tipo_dte=cl_sii.dte.constants.TipoDte.GUIA_DESPACHO_ELECTRONICA,
-            folio=12345,
-        )
+        expected_doc_ref_dte_natural_key = [
+            cl_sii.dte.data_models.DteNaturalKey(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=cl_sii.dte.constants.TipoDte.GUIA_DESPACHO_ELECTRONICA,
+                folio=12345,
+            )
+        ]
         actual_doc_ref_dte_natural_key = (
-            rv_detalle_entry_with_non_rcv_doc_ref.get_documento_referencia_dte_natural_key()
+            rv_detalle_entry_with_non_rcv_doc_ref.get_documento_referencia_dte_natural_keys()
         )
 
         self.assertEqual(expected_doc_ref_dte_natural_key, actual_doc_ref_dte_natural_key)
