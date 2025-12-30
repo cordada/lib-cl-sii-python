@@ -1,5 +1,10 @@
 # History
 
+## 0.68.0 (2025-12-29)
+
+- (PR #962, 2025-12-29) rcv: Update RV fields optional in schemas and data models
+- (PR #961, 2025-12-29) rcv: Introduce DocumentoReferencias for improved data handling
+
 ## 0.67.0 (2025-12-02)
 
 - (PR #956, 2025-12-02) rcv: `RvDetalleEntry.get_documento_referencia_dte_natural_key()`
