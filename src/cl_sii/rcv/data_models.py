@@ -121,6 +121,18 @@ class OtrosImpuestos(TypedDict):
     """
 
 
+class DocumentoReferencia(TypedDict):
+    tipo_documento_referencia: int
+    """
+    Tipo Docto. Referencia
+    """
+
+    folio_documento_referencia: int
+    """
+    Folio Docto. Referencia
+    """
+
+
 @pydantic.dataclasses.dataclass(
     frozen=True,
     config=pydantic.ConfigDict(
@@ -344,17 +356,17 @@ class RvDetalleEntry(RcvDetalleEntry):
     Fecha Reclamo (must be timezone aware)
     """
 
-    monto_exento: int
+    monto_exento: Optional[int]
     """
     Monto Exento
     """
 
-    monto_neto: int
+    monto_neto: Optional[int]
     """
     Monto Neto
     """
 
-    monto_iva: int
+    monto_iva: Optional[int]
     """
     Monto IVA
     """
@@ -389,34 +401,31 @@ class RvDetalleEntry(RcvDetalleEntry):
     RUT Emisor Liquid. Factura
     """
 
-    neto_comision_liquidacion_factura: int
+    neto_comision_liquidacion_factura: Optional[int]
     """
     Neto Comision Liquid. Factura
     """
 
-    exento_comision_liquidacion_factura: int
+    exento_comision_liquidacion_factura: Optional[int]
     """
     Exento Comision Liquid. Factura
     """
 
-    iva_comision_liquidacion_factura: int
+    iva_comision_liquidacion_factura: Optional[int]
     """
     IVA Comision Liquid. Factura
     """
 
-    iva_fuera_de_plazo: int
+    iva_fuera_de_plazo: Optional[int]
     """
     IVA fuera de plazo
     """
 
-    tipo_documento_referencia: Optional[int]
+    documento_referencias: Optional[Sequence[DocumentoReferencia]]
     """
-    Tipo Docto. Referencia
-    """
-
-    folio_documento_referencia: Optional[int]
-    """
-    Folio Docto. Referencia
+    List of:
+        - Tipo Docto. Referencia
+        - Folio Docto. Referencia
     """
 
     num_ident_receptor_extranjero: Optional[str]
@@ -429,7 +438,7 @@ class RvDetalleEntry(RcvDetalleEntry):
     Nacionalidad Receptor Extranjero
     """
 
-    credito_empresa_constructora: int
+    credito_empresa_constructora: Optional[int]
     """
     Credito empresa constructora
     """
@@ -439,27 +448,27 @@ class RvDetalleEntry(RcvDetalleEntry):
     Impto. Zona Franca (Ley 18211)
     """
 
-    garantia_dep_envases: int
+    garantia_dep_envases: Optional[int]
     """
     Garantia Dep. Envases
     """
 
-    indicador_venta_sin_costo: int
+    indicador_venta_sin_costo: Optional[int]
     """
     Indicador Venta sin Costo
     """
 
-    indicador_servicio_periodico: int
+    indicador_servicio_periodico: Optional[int]
     """
     Indicador Servicio Periodico
     """
 
-    monto_no_facturable: int
+    monto_no_facturable: Optional[int]
     """
     Monto No facturable
     """
 
-    total_monto_periodo: int
+    total_monto_periodo: Optional[int]
     """
     Total Monto Periodo
     """
@@ -495,33 +504,43 @@ class RvDetalleEntry(RcvDetalleEntry):
     # Custom Methods
     ###########################################################################
 
-    def get_documento_referencia_dte_natural_key(
+    def get_documento_referencia_dte_natural_keys(
         self,
-    ) -> cl_sii.dte.data_models.DteNaturalKey | None:
-        if self.tipo_documento_referencia is None or self.folio_documento_referencia is None:
+    ) -> Sequence[cl_sii.dte.data_models.DteNaturalKey] | None:
+        if self.documento_referencias is None:
             return None
 
-        try:
-            tipo_documento_referencia = RcvTipoDocto(self.tipo_documento_referencia)
-        except ValueError:
-            # Not a valid RCV Tipo de Documento, but it could still be a valid Tipo de DTE.
-            try:
-                tipo_dte_referencia = cl_sii.dte.constants.TipoDte(self.tipo_documento_referencia)
-            except ValueError:
-                # Not a DTE.
-                return None
-        else:
-            try:
-                tipo_dte_referencia = tipo_documento_referencia.as_tipo_dte()
-            except ValueError:
-                # Not a DTE.
-                return None
+        documento_referencia_natural_keys = []
 
-        return cl_sii.dte.data_models.DteNaturalKey(
-            emisor_rut=self.contribuyente_rut,
-            tipo_dte=tipo_dte_referencia,
-            folio=self.folio_documento_referencia,
-        )
+        for documento_referencia in self.documento_referencias:
+            tipo_documento_referencia = documento_referencia['tipo_documento_referencia']
+            folio_documento_referencia = documento_referencia['folio_documento_referencia']
+
+            try:
+                tipo_documento_referencia = RcvTipoDocto(tipo_documento_referencia)
+            except ValueError:
+                # Not a valid RCV Tipo de Documento, but it could still be a valid Tipo de DTE.
+                try:
+                    tipo_dte_referencia = cl_sii.dte.constants.TipoDte(tipo_documento_referencia)
+                except ValueError:
+                    # Not a DTE.
+                    return None
+            else:
+                try:
+                    tipo_dte_referencia = tipo_documento_referencia.as_tipo_dte()
+                except ValueError:
+                    # Not a DTE.
+                    return None
+
+            documento_referencia_natural_keys.append(
+                cl_sii.dte.data_models.DteNaturalKey(
+                    emisor_rut=self.contribuyente_rut,
+                    tipo_dte=tipo_dte_referencia,
+                    folio=folio_documento_referencia,
+                )
+            )
+
+        return documento_referencia_natural_keys
 
     ###########################################################################
     # Validators

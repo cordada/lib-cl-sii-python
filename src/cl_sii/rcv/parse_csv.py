@@ -9,7 +9,18 @@ import csv
 import logging
 from collections.abc import MutableMapping
 from datetime import date, datetime
-from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, TypedDict, TypeVar
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Optional,
+    Sequence,
+    Tuple,
+    TypedDict,
+    TypeVar,
+    Union,
+)
 
 import marshmallow
 import marshmallow.experimental.context
@@ -523,15 +534,18 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         data_key='Fecha Reclamo',
     )
     monto_exento = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Monto Exento',
     )
     monto_neto = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Monto Neto',
     )
     monto_iva = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Monto IVA',
     )
     monto_total = marshmallow.fields.Integer(
@@ -569,30 +583,36 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         data_key='RUT Emisor Liquid. Factura',
     )
     neto_comision_liquidacion_factura = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Neto Comision Liquid. Factura',
     )
     exento_comision_liquidacion_factura = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Exento Comision Liquid. Factura',
     )
     iva_comision_liquidacion_factura = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='IVA Comision Liquid. Factura',
     )
     iva_fuera_de_plazo = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='IVA fuera de plazo',
     )
-    tipo_documento_referencia = marshmallow.fields.Integer(
+    documento_referencias = marshmallow.fields.List(
         required=False,
         allow_none=True,
-        data_key='Tipo Docto. Referencia',
-    )
-    folio_documento_referencia = marshmallow.fields.Integer(
-        required=False,
-        allow_none=True,
-        data_key='Folio Docto. Referencia',
+        data_key='Documento Referencias',
+        cls_or_instance=marshmallow.fields.Dict(
+            keys=marshmallow.fields.String(),
+            values=marshmallow.fields.Raw(
+                required=True,
+                allow_none=True,
+            ),
+        ),
     )
     num_ident_receptor_extranjero = marshmallow.fields.String(
         required=False,
@@ -605,7 +625,8 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         data_key='Nacionalidad Receptor Extranjero',
     )
     credito_empresa_constructora = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Credito empresa constructora',
     )
     impuesto_zona_franca_ley_18211 = marshmallow.fields.Integer(
@@ -614,23 +635,28 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
         data_key='Impto. Zona Franca (Ley 18211)',
     )
     garantia_dep_envases = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Garantia Dep. Envases',
     )
     indicador_venta_sin_costo = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Indicador Venta sin Costo',
     )
     indicador_servicio_periodico = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Indicador Servicio Periodico',
     )
     monto_no_facturable = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Monto No facturable',
     )
     total_monto_periodo = marshmallow.fields.Integer(
-        required=True,
+        required=False,
+        allow_none=True,
         data_key='Total Monto Periodo',
     )
     venta_pasajes_transporte_nacional = marshmallow.fields.Integer(
@@ -808,8 +834,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
             exento_comision_liquidacion_factura = data['exento_comision_liquidacion_factura']
             iva_comision_liquidacion_factura = data['iva_comision_liquidacion_factura']
             iva_fuera_de_plazo = data['iva_fuera_de_plazo']
-            tipo_documento_referencia = data['tipo_documento_referencia']
-            folio_documento_referencia = data['folio_documento_referencia']
+            documento_referencias = data.get('documento_referencias', None)
             num_ident_receptor_extranjero = data['num_ident_receptor_extranjero']
             nacionalidad_receptor_extranjero = data['nacionalidad_receptor_extranjero']
             credito_empresa_constructora = data['credito_empresa_constructora']
@@ -854,8 +879,7 @@ class RcvVentaCsvRowSchema(_RcvCsvRowSchemaBase):
                 exento_comision_liquidacion_factura=exento_comision_liquidacion_factura,
                 iva_comision_liquidacion_factura=iva_comision_liquidacion_factura,
                 iva_fuera_de_plazo=iva_fuera_de_plazo,
-                tipo_documento_referencia=tipo_documento_referencia,
-                folio_documento_referencia=folio_documento_referencia,
+                documento_referencias=documento_referencias,
                 num_ident_receptor_extranjero=num_ident_receptor_extranjero,
                 nacionalidad_receptor_extranjero=nacionalidad_receptor_extranjero,
                 credito_empresa_constructora=credito_empresa_constructora,
@@ -1629,6 +1653,16 @@ def _parse_rcv_csv_file(
             tipo_docto = row_data.get('Tipo Doc')
             rut = row_data.get(rut_key)
 
+            if isinstance(input_csv_row_schema, RcvVentaCsvRowSchema):
+                tipo_docto_referencia = row_data.pop('Tipo Docto. Referencia')
+                folio_docto_referencia = row_data.pop('Folio Docto. Referencia')
+
+                documento_referencias = _parse_rv_documento_referencias(
+                    tipo_documento_referencia=tipo_docto_referencia,
+                    folio_documento_referencia=folio_docto_referencia,
+                )
+                row_data['Documento Referencias'] = documento_referencias
+
             # Concatenate folio, tipo_docto, and rut to create unique entry key
             entry_key = f"{folio}_{tipo_docto}_{rut}"
 
@@ -1712,3 +1746,73 @@ def _parse_rcv_csv_file(
                     row_errors['conversion_errors'] = conversion_error
 
                 yield entry, row_ix, row_data, row_errors
+
+
+def _parse_rv_documento_referencias(
+    tipo_documento_referencia: Union[str, int, None], folio_documento_referencia: Optional[str]
+) -> Optional[Sequence[MutableMapping[str, Any]]]:
+    """
+    Parse RvDocumentoReferencia from tipo and folio values.
+
+    Parameters
+    ----------
+    tipo_documento_referencia : Union[str, int, None]
+        Document type. Accepts string or integer. Empty values: None, "", "0".
+    folio_documento_referencia : Optional[str]
+        Folio number(s). Single folio ("10370") or hyphen-separated multiple
+        folios ("10370-10371"). Empty values: None, "", "0".
+
+    Returns
+    -------
+    Optional[Sequence[MutableMapping[str, Any]]]
+        None if both parameters are empty. Otherwise, list of mappings with
+        'tipo_documento_referencia' and 'folio_documento_referencia' keys.
+
+    Raises
+    ------
+    ValueError
+        If only one parameter is provided or folio contains non-numeric parts.
+    """
+    documento_referencias = []
+
+    if tipo_documento_referencia in (None, '', '0') and folio_documento_referencia in (
+        None,
+        '',
+        '0',
+    ):
+        return None
+
+    if tipo_documento_referencia in (None, '', '0') or folio_documento_referencia in (
+        None,
+        '',
+        '0',
+    ):
+        raise ValueError(
+            f"Both 'tipo_documento_referencia' ({tipo_documento_referencia}) "
+            f"and 'folio_documento_referencia' ({folio_documento_referencia}) must be provided."
+        )
+
+    if isinstance(tipo_documento_referencia, str):
+        tipo_documento_referencia = int(tipo_documento_referencia)
+
+    if isinstance(folio_documento_referencia, str):
+        folios = folio_documento_referencia.split('-')
+        for folio in folios:
+            if not folio.isdigit():
+                raise ValueError(
+                    f"Invalid 'folio_documento_referencia': {folio_documento_referencia}."
+                )
+            documento_referencias.append(
+                {
+                    'tipo_documento_referencia': tipo_documento_referencia,
+                    'folio_documento_referencia': int(folio),
+                }
+            )
+    else:
+        documento_referencias.append(
+            {
+                'tipo_documento_referencia': tipo_documento_referencia,
+                'folio_documento_referencia': folio_documento_referencia,
+            }
+        )
+    return documento_referencias
