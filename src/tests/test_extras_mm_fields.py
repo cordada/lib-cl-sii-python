@@ -47,6 +47,7 @@ class RutFieldTest(unittest.TestCase):
             emisor_rut = RutField(
                 required=True,
                 data_key='RUT of Emisor',
+                validate_dv=True,
             )
             other_field = marshmallow.fields.Integer(
                 required=False,
@@ -61,27 +62,27 @@ class RutFieldTest(unittest.TestCase):
     def test_load_ok_valid(self) -> None:
         schema = self.LoadMyMmSchema()
 
-        data_valid_1 = {'RUT of Emisor': '1-1'}
-        data_valid_2 = {'RUT of Emisor': Rut('1-1')}
-        data_valid_3 = {'RUT of Emisor': ' 1.111.111-k \t '}
+        data_valid_1 = {'RUT of Emisor': '1-9'}
+        data_valid_2 = {'RUT of Emisor': Rut('1-9')}
+        data_valid_3 = {'RUT of Emisor': ' 1.111.119-k \t '}
 
         result = schema.load(data_valid_1)
-        self.assertDictEqual(dict(result), {'emisor_rut': Rut('1-1')})
+        self.assertDictEqual(dict(result), {'emisor_rut': Rut('1-9')})
 
         result = schema.load(data_valid_2)
-        self.assertDictEqual(dict(result), {'emisor_rut': Rut('1-1')})
+        self.assertDictEqual(dict(result), {'emisor_rut': Rut('1-9')})
 
         result = schema.load(data_valid_3)
-        self.assertDictEqual(dict(result), {'emisor_rut': Rut('1111111-K')})
+        self.assertDictEqual(dict(result), {'emisor_rut': Rut('1111119-K')})
 
     def test_dump_ok_valid(self) -> None:
         schema = self.DumpMyMmSchema()
 
-        obj_valid_1 = self.MyObj(emisor_rut=Rut('1-1'))
+        obj_valid_1 = self.MyObj(emisor_rut=Rut('1-9'))
         obj_valid_2 = self.MyObj(emisor_rut=None)
 
         data = schema.dump(obj_valid_1)
-        self.assertDictEqual(data, {'emisor_rut': '1-1', 'other_field': None})
+        self.assertDictEqual(data, {'emisor_rut': '1-9', 'other_field': None})
 
         data = schema.dump(obj_valid_2)
         self.assertDictEqual(data, {'emisor_rut': None, 'other_field': None})
@@ -110,11 +111,13 @@ class RutFieldTest(unittest.TestCase):
 
     def test_load_fail(self) -> None:
         schema = self.LoadMyMmSchema()
+        schema_strict = self.MyMmSchemaStrict()
 
         data_invalid_1 = {'RUT of Emisor': '123123123123'}
         data_invalid_2 = {'RUT of Emisor': 123}
         data_invalid_3 = {'RUT of Emisor': None}
         data_invalid_4 = {}
+        data_invalid_5 = {'RUT of Emisor': '1-1'}
 
         with self.assertRaises(marshmallow.ValidationError) as cm:
             schema.load(data_invalid_1)
@@ -134,6 +137,18 @@ class RutFieldTest(unittest.TestCase):
             schema.load(data_invalid_4)
         self.assertDictEqual(
             cm.exception.messages, {'RUT of Emisor': ['Missing data for required field.']}
+        )
+
+        try:
+            schema.load(data_invalid_5)
+        except marshmallow.ValidationError as exc:
+            self.fail(f'{exc.__class__.__name__} raised')
+
+        with self.assertRaises(marshmallow.ValidationError) as cm:
+            schema_strict.load(data_invalid_5)
+        self.assertEqual(
+            cm.exception.messages,
+            {'RUT of Emisor': ["""RUT's "digito verificador" is incorrect."""]},
         )
 
     def test_dump_fail(self) -> None:
