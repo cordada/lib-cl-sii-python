@@ -10,6 +10,8 @@ try:
 except ImportError as exc:  # pragma: no cover
     raise ImportError("Package 'djangorestframework' is required to use this module.") from exc
 
+from typing import Any, ClassVar
+
 import rest_framework.fields
 
 from cl_sii.rut import Rut
@@ -39,9 +41,23 @@ class RutField(rest_framework.fields.CharField):
 
     """
 
+    validate_dv: bool
+    validate_dv_by_default: ClassVar[bool] = False
+
     default_error_messages = {
         'invalid': "'{value}' is not a syntactically valid RUT.",
+        'invalid_dv': '''"digito verificador" of RUT '{value}' is incorrect.''',
     }
+
+    def __init__(
+        self,
+        *,
+        validate_dv: bool = validate_dv_by_default,
+        **kwargs: Any,
+    ) -> None:
+        self.validate_dv = validate_dv
+
+        super().__init__(**kwargs)
 
     def to_internal_value(self, data: object) -> Rut:
         """
@@ -63,6 +79,9 @@ class RutField(rest_framework.fields.CharField):
                     self.fail('invalid', value=data)
             except (AttributeError, TypeError, ValueError):
                 self.fail('invalid', value=data)
+
+        if self.validate_dv and not converted_data.validate_dv(raise_exception=False):
+            self.fail('invalid_dv', value=data)
 
         return converted_data
 
