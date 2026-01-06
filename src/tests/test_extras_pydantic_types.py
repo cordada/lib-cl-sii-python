@@ -27,7 +27,10 @@ class PydanticRutTest(unittest.TestCase):
 
         cls.ThirdPartyType = Rut
         cls.PydanticThirdPartyType = PydanticRut
-        cls.pydantic_type_adapter = pydantic.TypeAdapter(cls.PydanticThirdPartyType)
+        cls.pydantic_type_adapter = pydantic.TypeAdapter(
+            cls.PydanticThirdPartyType,
+            config=pydantic.ConfigDict(json_schema_extra={'hello': 'world'}),
+        )
 
         cls.valid_instance_1 = cls.ThirdPartyType('78773510-K')
         assert isinstance(cls.valid_instance_1, cls.ThirdPartyType)
