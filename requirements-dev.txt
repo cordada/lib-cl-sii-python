@@ -185,7 +185,7 @@ twine==6.2.0
     # via -r requirements-dev.in
 types-html5lib==1.1.11.20251117
     # via types-lxml
-types-jsonschema==4.25.0.20250809
+types-jsonschema==4.25.1.20251009
     # via -r requirements-dev.in
 types-lxml==2025.11.25
     # via -r requirements-dev.in
