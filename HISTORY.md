@@ -1,5 +1,18 @@
 # History
 
+## 0.69.0 (2026-01-07)
+
+- (PR #966, 2026-01-05) chore(deps): Bump mypy from 1.19.0 to 1.19.1 in the python-development group
+- (PR #965, 2026-01-05) chore(deps): Bump the github-actions-production group with 5 updates
+- (PR #968, 2026-01-05) extras: Add option to validate DV to DRF serializer field `RutField`
+- (PR #969, 2026-01-05) extras: Add option to validate DV to Marshmallow field `RutField`
+- (PR #959, 2026-01-05) chore(deps): Bump django from 4.2.26 to 4.2.27
+- (PR #960, 2026-01-06) chore(deps): Bump urllib3 from 2.5.0 to 2.6.0
+- (PR #970, 2026-01-07) deps: Increase minimum version of `marshmallow` to 4.0.0
+- (PR #971, 2026-01-07) chore(deps): Bump urllib3 from 2.6.0 to 2.6.3
+- (PR #967, 2026-01-07) chore(deps): Bump types-jsonschema from 4.25.0.20250809 to 4.25.1.20251009
+- (PR #945, 2026-01-07) chore(deps): Bump pyopenssl from 25.1.0 to 25.3.0
+
 ## 0.68.0 (2025-12-29)
 
 - (PR #962, 2025-12-29) rcv: Update RV fields optional in schemas and data models
