@@ -10,11 +10,11 @@ bumpversion==0.5.3
 coverage==7.10.7
 flake8==7.3.0
 isort==6.1.0
-mypy==1.19.0
+mypy==1.19.1
 pip-tools==7.5.2
 tox==4.27.0
 twine==6.2.0
-types-jsonschema==4.25.0.20250809
+types-jsonschema==4.25.1.20251009
 types-lxml==2025.11.25
 types-pytz==2025.2.0.20250809
 types-setuptools==80.9.0.20250822

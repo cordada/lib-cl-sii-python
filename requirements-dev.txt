@@ -97,7 +97,7 @@ more-itertools==10.8.0
     # via
     #   jaraco-classes
     #   jaraco-functools
-mypy==1.19.0
+mypy==1.19.1
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via
@@ -185,7 +185,7 @@ twine==6.2.0
     # via -r requirements-dev.in
 types-html5lib==1.1.11.20251117
     # via types-lxml
-types-jsonschema==4.25.0.20250809
+types-jsonschema==4.25.1.20251009
     # via -r requirements-dev.in
 types-lxml==2025.11.25
     # via -r requirements-dev.in
@@ -203,7 +203,7 @@ typing-extensions==4.15.0
     #   mypy
     #   tox
     #   types-lxml
-urllib3==2.5.0
+urllib3==2.6.3
     # via
     #   requests
     #   twine

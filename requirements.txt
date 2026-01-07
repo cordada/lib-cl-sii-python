@@ -25,7 +25,7 @@ cryptography==45.0.7
     #   signxml
 defusedxml==0.7.1
     # via -r requirements.in
-django==4.2.26
+django==4.2.27
     # via
     #   -r requirements.in
     #   django-filter
@@ -52,7 +52,7 @@ pydantic==2.11.7
     # via -r requirements.in
 pydantic-core==2.33.2
     # via pydantic
-pyopenssl==25.1.0
+pyopenssl==25.3.0
     # via -r requirements.in
 pytz==2025.2
     # via -r requirements.in

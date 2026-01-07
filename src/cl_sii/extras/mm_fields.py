@@ -14,7 +14,7 @@ except ImportError as exc:  # pragma: no cover
     raise ImportError("Package 'marshmallow' is required to use this module.") from exc
 
 import datetime
-from typing import Any, Mapping, Optional
+from typing import Any, ClassVar, Mapping, Optional
 
 import marshmallow.fields
 
@@ -47,10 +47,24 @@ class RutField(marshmallow.fields.Field):
 
     """
 
+    validate_dv: bool
+    validate_dv_by_default: ClassVar[bool] = False
+
     default_error_messages = {
         'invalid': 'Not a syntactically valid RUT.',
+        'invalid_dv': """RUT's "digito verificador" is incorrect.""",
         'type': 'Invalid type.',
     }
+
+    def __init__(
+        self,
+        *,
+        validate_dv: bool = validate_dv_by_default,
+        **kwargs: Any,
+    ):
+        super().__init__(**kwargs)
+
+        self.validate_dv = validate_dv
 
     def _serialize(
         self, value: Optional[object], attr: str | None, obj: object, **kwargs: Any
@@ -73,6 +87,13 @@ class RutField(marshmallow.fields.Field):
                 raise self.make_error('type') from exc
             except ValueError as exc:
                 raise self.make_error('invalid') from exc
+
+        if self.validate_dv and validated is not None:
+            try:
+                validated.validate_dv(raise_exception=True)
+            except ValueError as exc:
+                raise self.make_error('invalid_dv') from exc
+
         return validated
 
 
