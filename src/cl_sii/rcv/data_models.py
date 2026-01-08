@@ -532,6 +532,9 @@ class RvDetalleEntry(RcvDetalleEntry):
                     # Not a DTE.
                     return None
 
+            if folio_documento_referencia == 0:
+                return None
+
             documento_referencia_natural_keys.append(
                 cl_sii.dte.data_models.DteNaturalKey(
                     emisor_rut=self.contribuyente_rut,
