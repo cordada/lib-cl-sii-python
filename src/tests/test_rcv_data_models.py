@@ -480,6 +480,21 @@ class RvDetalleEntryTest(unittest.TestCase):
 
         self.assertEqual(expected_doc_ref_dte_natural_key, actual_doc_ref_dte_natural_key)
 
+        # Detalle Entry that references a documento with an invalid folio value (0):
+
+        rv_detalle_entry_with_invalid_folio = dataclasses.replace(
+            rv_detalle_entry,
+            documento_referencias=[
+                DocumentoReferencia(
+                    tipo_documento_referencia=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,  # noqa: E501
+                    folio_documento_referencia=0,
+                )
+            ],
+        )
+        self.assertIsNone(
+            rv_detalle_entry_with_invalid_folio.get_documento_referencia_dte_natural_keys()
+        )
+
 
 class RcRegistroDetalleEntryTest(unittest.TestCase):
     def setUp(self) -> None:
