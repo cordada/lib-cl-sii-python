@@ -1,5 +1,9 @@
 # History
 
+## 0.70.0 (2026-01-14)
+
+- (PR #974, 2026-01-12) fix(rcv): Handle cases with missing or invalid folios in RCV
+
 ## 0.69.0 (2026-01-07)
 
 - (PR #966, 2026-01-05) chore(deps): Bump mypy from 1.19.0 to 1.19.1 in the python-development group
