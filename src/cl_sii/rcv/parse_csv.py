@@ -1653,16 +1653,6 @@ def _parse_rcv_csv_file(
             tipo_docto = row_data.get('Tipo Doc')
             rut = row_data.get(rut_key)
 
-            if isinstance(input_csv_row_schema, RcvVentaCsvRowSchema):
-                tipo_docto_referencia = row_data.pop('Tipo Docto. Referencia')
-                folio_docto_referencia = row_data.pop('Folio Docto. Referencia')
-
-                documento_referencias = _parse_rv_documento_referencias(
-                    tipo_documento_referencia=tipo_docto_referencia,
-                    folio_documento_referencia=folio_docto_referencia,
-                )
-                row_data['Documento Referencias'] = documento_referencias
-
             # Concatenate folio, tipo_docto, and rut to create unique entry key
             entry_key = f"{folio}_{tipo_docto}_{rut}"
 
@@ -1715,13 +1705,27 @@ def _parse_rcv_csv_file(
                 row_data.pop(tasa_otro_impuesto_key, None)
                 row_data.pop(valor_otro_impuesto_key, None)
 
+                validation_errors: dict = {}
+                if isinstance(input_csv_row_schema, RcvVentaCsvRowSchema):
+                    tipo_docto_referencia = row_data.pop('Tipo Docto. Referencia')
+                    folio_docto_referencia = row_data.pop('Folio Docto. Referencia')
+                    try:
+                        documento_referencias = _parse_rv_documento_referencias(
+                            tipo_documento_referencia=tipo_docto_referencia,
+                            folio_documento_referencia=folio_docto_referencia,
+                        )
+                        row_data['Documento Referencias'] = documento_referencias
+                    except Exception as exc:
+                        validation_errors = {
+                            'Documento Referencias': str(exc),
+                        }
+
                 # Deserialize the row
                 try:
                     deserialized_row_data: dict = input_csv_row_schema.load(row_data)
-                    validation_errors: dict = {}
                 except marshmallow.ValidationError as exc:
                     deserialized_row_data = {}
-                    validation_errors = dict(exc.normalized_messages())
+                    validation_errors.update(exc.normalized_messages())
 
                 entry: Optional[RcvDetalleEntry] = None
                 row_errors: Dict[str, object] = {}
@@ -1798,9 +1802,10 @@ def _parse_rv_documento_referencias(
     if isinstance(folio_documento_referencia, str):
         folios = folio_documento_referencia.split('-')
         for folio in folios:
+            folio = folio.strip()
             if not folio.isdigit():
                 raise ValueError(
-                    f"Invalid 'folio_documento_referencia': {folio_documento_referencia}."
+                    f"Invalid 'folio_documento_referencia': ({folio_documento_referencia})."
                 )
             documento_referencias.append(
                 {
