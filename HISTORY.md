@@ -1,5 +1,9 @@
 # History
 
+## 0.71.0 (2026-01-28)
+
+- (PR #979, 2026-01-28) rcv: Handle errors for Documento Referencias in RCV parsing
+
 ## 0.70.0 (2026-01-14)
 
 - (PR #974, 2026-01-12) fix(rcv): Handle cases with missing or invalid folios in RCV
