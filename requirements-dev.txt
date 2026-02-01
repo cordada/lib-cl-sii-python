@@ -191,7 +191,7 @@ types-lxml==2025.11.25
     # via -r requirements-dev.in
 types-pytz==2025.2.0.20250809
     # via -r requirements-dev.in
-types-setuptools==80.9.0.20250822
+types-setuptools==80.10.0.20260124
     # via -r requirements-dev.in
 types-webencodings==0.5.0.20251108
     # via types-html5lib
