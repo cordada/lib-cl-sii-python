@@ -16,7 +16,7 @@ backports-datetime-fromisoformat==2.0.3
     # via marshmallow
 certifi==2024.7.4
     # via signxml
-cffi==1.17.1
+cffi==2.0.0
     # via cryptography
 cryptography==45.0.7
     # via
