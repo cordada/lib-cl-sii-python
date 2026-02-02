@@ -89,12 +89,17 @@ class _RutPydanticAnnotation:
         JavaScript (ECMA 262), which does not support Python’s named groups.
     """
 
+    VALIDATE_RUT_DV: ClassVar[bool] = False
+    """
+    Whether to validate the RUT's "digito verificador".
+    """
+
     @classmethod
     def __get_pydantic_core_schema__(
         cls, source_type: Any, handler: pydantic.GetCoreSchemaHandler
     ) -> pydantic_core.core_schema.CoreSchema:
         def validate_from_str(value: str) -> cl_sii.rut.Rut:
-            return cl_sii.rut.Rut(value, validate_dv=False)
+            return cl_sii.rut.Rut(value, validate_dv=cls.VALIDATE_RUT_DV)
 
         from_str_schema = pydantic_core.core_schema.chain_schema(
             [
