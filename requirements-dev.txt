@@ -203,11 +203,12 @@ typing-extensions==4.15.0
     #   mypy
     #   tox
     #   types-lxml
+    #   virtualenv
 urllib3==2.6.3
     # via
     #   requests
     #   twine
-virtualenv==20.31.2
+virtualenv==20.36.1
     # via tox
 webencodings==0.5.1
     # via bleach
