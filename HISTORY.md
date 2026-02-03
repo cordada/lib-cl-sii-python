@@ -1,5 +1,17 @@
 # History
 
+## 0.72.0 (2026-02-03)
+
+- (PR #986, 2026-02-02) deps: Update `cffi` from 1.17.1 to 2.0.0
+- (PR #987, 2026-02-03) extras: Add class variable to Pydantic `Rut` type to toggle DV validation
+- (PR #982, 2026-02-03) chore(deps): Bump the github-actions-production group with 3 updates
+- (PR #989, 2026-02-03) Get Python version from `pyproject.toml` in CI/CD workflows
+- (PR #983, 2026-02-03) chore(deps): Bump build from 1.3.0 to 1.4.0 in the python-development group
+- (PR #990, 2026-02-03) deps: Update `pydantic` from 2.11.7 to 2.12.5
+- (PR #991, 2026-02-03) rut: Fix usage of `NotImplemented` in a boolean context in `Rut.__le__()`
+- (PR #992, 2026-02-03) deps: Update `rpds-py` from 0.19.0 to 0.27.1
+- (PR #993, 2026-02-03) Add support for Python 3.14
+
 ## 0.71.0 (2026-01-28)
 
 - (PR #979, 2026-01-28) rcv: Handle errors for Documento Referencias in RCV parsing
