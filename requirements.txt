@@ -16,7 +16,7 @@ backports-datetime-fromisoformat==2.0.3
     # via marshmallow
 certifi==2024.7.4
     # via signxml
-cffi==1.17.1
+cffi==2.0.0
     # via cryptography
 cryptography==45.0.7
     # via
@@ -48,9 +48,9 @@ marshmallow==4.0.1
     # via -r requirements.in
 pycparser==2.22
     # via cffi
-pydantic==2.11.7
+pydantic==2.12.5
     # via -r requirements.in
-pydantic-core==2.33.2
+pydantic-core==2.41.5
     # via pydantic
 pyopenssl==25.3.0
     # via -r requirements.in
@@ -60,7 +60,7 @@ referencing==0.35.1
     # via
     #   jsonschema
     #   jsonschema-specifications
-rpds-py==0.19.0
+rpds-py==0.27.1
     # via
     #   jsonschema
     #   referencing
@@ -77,7 +77,7 @@ typing-extensions==4.15.0
     #   pydantic-core
     #   pyopenssl
     #   typing-inspection
-typing-inspection==0.4.0
+typing-inspection==0.4.2
     # via pydantic
 zipp==3.20.2
     # via importlib-metadata

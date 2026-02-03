@@ -33,14 +33,15 @@ jobs:
           - "3.11"
           - "3.12"
           - "3.13"
+          - "3.14"
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v6.1.0
+        uses: actions/setup-python@v6.2.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
@@ -52,7 +53,7 @@ jobs:
         run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v5.0.1
+        uses: actions/cache@v5.0.3
         with:
           path: |
             .tox
@@ -94,20 +95,21 @@ jobs:
           - "3.11"
           - "3.12"
           - "3.13"
+          - "3.14"
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v6.1.0
+        uses: actions/setup-python@v6.2.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v5.0.1
+        uses: actions/cache@v5.0.3
         with:
           path: |
             .tox
