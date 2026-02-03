@@ -141,7 +141,10 @@ class Rut:
             return NotImplemented
 
     def __le__(self, other: object) -> bool:
-        return self.__lt__(other) or self.__eq__(other)
+        if isinstance(other, Rut):
+            return self.__lt__(other) or self.__eq__(other)
+        else:
+            return NotImplemented
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Rut):
