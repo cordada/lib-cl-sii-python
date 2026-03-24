@@ -1,5 +1,21 @@
 # History
 
+## 0.73.0 (2026-03-24)
+
+- (PR #1000, 2026-03-03) deps: Update `pip-tools` from 7.5.2 to 7.5.3
+- (PR #999, 2026-03-03) chore(deps): Bump the github-actions-production group with 3 updates
+- (PR #1001, 2026-03-05) chore(deps): Bump django from 4.2.27 to 4.2.29
+- (PR #1002, 2026-03-05) deps: Install Python package `pip`
+- (PR #997, 2026-03-23) chore(deps): Bump cryptography from 45.0.7 to 46.0.5
+- (PR #1004, 2026-03-24) deps: Update `pip` from 25.3 to 26.0.1
+- (PR #1005, 2026-03-24) Update Dependabot configuration
+- (PR #1008, 2026-03-24) extras: Add `TipoDte` Django field
+- (PR #1003, 2026-03-24) chore(deps): Bump pyopenssl from 25.3.0 to 26.0.0
+- (PR #998, 2026-03-24) chore(deps): Bump sqlparse from 0.5.0 to 0.5.4
+- (PR #978, 2026-03-24) chore(deps): Bump wheel from 0.45.1 to 0.46.2
+- (PR #1006, 2026-03-24) chore(deps): Bump setuptools from 80.9.0 to 82.0.1
+- (PR #1007, 2026-03-24) chore(deps): Bump types-setuptools from 80.9.0.20250822 to 81.0.0.20260209
+
 ## 0.72.0 (2026-02-03)
 
 - (PR #986, 2026-02-02) deps: Update `cffi` from 1.17.1 to 2.0.0
