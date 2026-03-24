@@ -225,7 +225,7 @@ pip==26.0.1
     # via
     #   -r requirements-dev.in
     #   pip-tools
-setuptools==80.9.0
+setuptools==82.0.1
     # via
     #   -c requirements.txt
     #   pip-tools
