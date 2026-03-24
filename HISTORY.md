@@ -111,7 +111,8 @@
 ## 0.59.0 (2025-10-08)
 
 - (PR #899, 2025-09-22) rcv: Convert empty strings to `None` for fields that allow `None`
-- (PR #900, 2025-09-22) rcv: Fields without `data_key` were not correctly preprocessed when parsing CSV
+- (PR #900, 2025-09-22) rcv: Fields without `data_key` were not correctly preprocessed when parsing
+  CSV
 - (PR #901, 2025-09-22) rcv: TZ-aware date-times were not constructed correctly in tests
 - (PR #902, 2025-09-22) rcv: CSV parser tests for Compras use emisor RUT instead of receptor RUT
 - (PR #868, 2025-09-22) chore(deps): Bump marshmallow from 3.26.1 to 4.0.1
