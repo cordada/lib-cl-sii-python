@@ -1,9 +1,14 @@
+import enum
 import unittest
 import unittest.mock
+from typing import ClassVar
 
 import django.core.exceptions
 import django.db.models
 
+import cl_sii.dte.constants
+import cl_sii.extras.dj_model_fields
+import cl_sii.rtc.constants
 from cl_sii.extras.dj_model_fields import Rut, RutField
 
 
@@ -109,3 +114,72 @@ class RutFieldTest(unittest.TestCase):
         name, path, args, kwargs = RutField(validate_dv=False).deconstruct()
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {})
+
+
+class TipoDteFieldTestCase(unittest.TestCase):
+    TipoDteField: ClassVar[type[cl_sii.extras.dj_model_fields.TipoDteField]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.TipoDteField = cl_sii.extras.dj_model_fields.TipoDteField
+
+    def test_is_field(self) -> None:
+        self.assertTrue(issubclass(self.TipoDteField, django.db.models.Field))
+
+    def test_is_integer_field(self) -> None:
+        self.assertTrue(issubclass(self.TipoDteField, django.db.models.IntegerField))
+
+    def test_choices(self) -> None:
+        expected_choices = cl_sii.extras.dj_model_fields.TipoDteChoices.choices
+        field = self.TipoDteField()
+        self.assertEqual(expected_choices, field.choices)
+
+    def test_custom_choices_are_not_overwritten(self) -> None:
+        expected_choices = list(
+            {
+                tipo_dte.value: tipo_dte.name for tipo_dte in cl_sii.rtc.constants.TIPO_DTE_CEDIBLES
+            }.items()
+        )
+        field = self.TipoDteField(
+            choices=[
+                (tipo_dte.value, tipo_dte.name)
+                for tipo_dte in cl_sii.rtc.constants.TIPO_DTE_CEDIBLES
+            ]
+        )
+        self.assertEqual(expected_choices, field.choices)
+
+
+class TipoDteChoicesTestCase(unittest.TestCase):
+    TipoDteChoices: ClassVar[type[cl_sii.extras.dj_model_fields.TipoDteChoices]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.TipoDteChoices = cl_sii.extras.dj_model_fields.TipoDteChoices
+
+    def test_is_enum(self) -> None:
+        self.assertTrue(issubclass(self.TipoDteChoices, enum.Enum))
+
+    def test_is_choices(self) -> None:
+        self.assertTrue(issubclass(self.TipoDteChoices, django.db.models.Choices))
+
+    def test_names(self) -> None:
+        expected_names = [member.name for member in cl_sii.dte.constants.TipoDte]
+        self.assertEqual(expected_names, self.TipoDteChoices.names)
+
+    def test_values(self) -> None:
+        expected_values = [member.value for member in cl_sii.dte.constants.TipoDte]
+        self.assertEqual(expected_values, self.TipoDteChoices.values)
+
+    def test_labels(self) -> None:
+        for label in self.TipoDteChoices.labels:
+            self.assertIsInstance(label, str)
+
+        self.assertEqual(len(cl_sii.dte.constants.TipoDte), len(self.TipoDteChoices.labels))
+
+    def test_choices(self) -> None:
+        expected_choices = list(zip(self.TipoDteChoices.values, self.TipoDteChoices.labels))
+        self.assertEqual(expected_choices, self.TipoDteChoices.choices)

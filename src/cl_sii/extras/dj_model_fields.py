@@ -15,6 +15,7 @@ import django.db.models
 import django.db.models.fields
 
 import cl_sii.rut.constants
+from cl_sii.dte.constants import TipoDte
 from cl_sii.rut import Rut
 
 
@@ -201,3 +202,33 @@ class RutField(django.db.models.Field):
         value: Optional[Rut] = self.value_from_object(obj)
 
         return '' if value is None else value.canonical
+
+
+TipoDteChoices = django.db.models.IntegerChoices(
+    'TipoDteChoices',
+    names={
+        tipo_dte.name: (  # Enum member name
+            tipo_dte.value,  # Enum member value
+            tipo_dte.name.replace('_', ' ').title(),  # Enum member display name
+        )
+        for tipo_dte in TipoDte
+    },
+)
+
+
+class TipoDteField(django.db.models.SmallIntegerField):
+    """
+    Django model field for "Tipo de DTE".
+
+    * Python data type: :class:`cl_sii.dte.constants.TipoDte`
+
+    .. note::
+        If the field's default `choices` is overridden, those custom `choices` will be
+        used instead. In that case, it is the user's responsibility to ensure the
+        validity of the choices.
+    """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if 'choices' not in kwargs:
+            kwargs['choices'] = TipoDteChoices.choices
+        super().__init__(*args, **kwargs)
