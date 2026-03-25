@@ -6,8 +6,10 @@ from typing import ClassVar
 import django.core.exceptions
 import django.db.models
 
+import cl_sii.base.constants
 import cl_sii.dte.constants
 import cl_sii.extras.dj_model_fields
+import cl_sii.rcv.constants
 import cl_sii.rtc.constants
 from cl_sii.extras.dj_model_fields import Rut, RutField
 
@@ -116,6 +118,86 @@ class RutFieldTest(unittest.TestCase):
         self.assertEqual(kwargs, {})
 
 
+class TipoDocumentoFieldTestCase(unittest.TestCase):
+    TipoDocumentoField: ClassVar[type[cl_sii.extras.dj_model_fields.TipoDocumentoField]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.TipoDocumentoField = cl_sii.extras.dj_model_fields.TipoDocumentoField
+
+    def test_is_field(self) -> None:
+        self.assertTrue(issubclass(self.TipoDocumentoField, django.db.models.Field))
+
+    def test_is_integer_field(self) -> None:
+        self.assertTrue(issubclass(self.TipoDocumentoField, django.db.models.IntegerField))
+
+    def test_choices(self) -> None:
+        expected_choices = cl_sii.extras.dj_model_fields.TipoDocumentoChoices.choices
+        field = self.TipoDocumentoField()
+        self.assertEqual(expected_choices, field.choices)
+
+    def test_custom_choices_are_not_overwritten(self) -> None:
+        expected_choices = list(
+            {
+                tipo_doc.value: tipo_doc.name
+                for tipo_doc in [
+                    cl_sii.base.constants.TipoDocumento.BOLETA,
+                    cl_sii.base.constants.TipoDocumento.BOLETA_ELECTRONICA,
+                ]
+            }.items()
+        )
+        field = self.TipoDocumentoField(
+            choices=[
+                (tipo_doc.value, tipo_doc.name)
+                for tipo_doc in [
+                    cl_sii.base.constants.TipoDocumento.BOLETA,
+                    cl_sii.base.constants.TipoDocumento.BOLETA_ELECTRONICA,
+                ]
+            ]
+        )
+        self.assertEqual(expected_choices, field.choices)
+
+
+class TipoDocumentoChoicesTestCase(unittest.TestCase):
+    TipoDocumentoChoices: ClassVar[type[cl_sii.extras.dj_model_fields.TipoDocumentoChoices]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.TipoDocumentoChoices = cl_sii.extras.dj_model_fields.TipoDocumentoChoices
+
+    def test_is_enum(self) -> None:
+        self.assertTrue(issubclass(self.TipoDocumentoChoices, enum.Enum))
+
+    def test_is_choices(self) -> None:
+        self.assertTrue(issubclass(self.TipoDocumentoChoices, django.db.models.Choices))
+
+    def test_names(self) -> None:
+        expected_names = [member.name for member in cl_sii.base.constants.TipoDocumento]
+        self.assertEqual(expected_names, self.TipoDocumentoChoices.names)
+
+    def test_values(self) -> None:
+        expected_values = [member.value for member in cl_sii.base.constants.TipoDocumento]
+        self.assertEqual(expected_values, self.TipoDocumentoChoices.values)
+
+    def test_labels(self) -> None:
+        for label in self.TipoDocumentoChoices.labels:
+            self.assertIsInstance(label, str)
+
+        self.assertEqual(
+            len(cl_sii.base.constants.TipoDocumento), len(self.TipoDocumentoChoices.labels)
+        )
+
+    def test_choices(self) -> None:
+        expected_choices = list(
+            zip(self.TipoDocumentoChoices.values, self.TipoDocumentoChoices.labels)
+        )
+        self.assertEqual(expected_choices, self.TipoDocumentoChoices.choices)
+
+
 class TipoDteFieldTestCase(unittest.TestCase):
     TipoDteField: ClassVar[type[cl_sii.extras.dj_model_fields.TipoDteField]]
 
@@ -183,3 +265,83 @@ class TipoDteChoicesTestCase(unittest.TestCase):
     def test_choices(self) -> None:
         expected_choices = list(zip(self.TipoDteChoices.values, self.TipoDteChoices.labels))
         self.assertEqual(expected_choices, self.TipoDteChoices.choices)
+
+
+class RcvTipoDoctoFieldTestCase(unittest.TestCase):
+    RcvTipoDoctoField: ClassVar[type[cl_sii.extras.dj_model_fields.RcvTipoDoctoField]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.RcvTipoDoctoField = cl_sii.extras.dj_model_fields.RcvTipoDoctoField
+
+    def test_is_field(self) -> None:
+        self.assertTrue(issubclass(self.RcvTipoDoctoField, django.db.models.Field))
+
+    def test_is_integer_field(self) -> None:
+        self.assertTrue(issubclass(self.RcvTipoDoctoField, django.db.models.IntegerField))
+
+    def test_choices(self) -> None:
+        expected_choices = cl_sii.extras.dj_model_fields.RcvTipoDoctoChoices.choices
+        field = self.RcvTipoDoctoField()
+        self.assertEqual(expected_choices, field.choices)
+
+    def test_custom_choices_are_not_overwritten(self) -> None:
+        expected_choices = list(
+            {
+                tipo_doc.value: tipo_doc.name
+                for tipo_doc in [
+                    cl_sii.rcv.constants.RcvTipoDocto.NOTA_CREDITO,
+                    cl_sii.rcv.constants.RcvTipoDocto.NOTA_CREDITO_ELECTRONICA,
+                ]
+            }.items()
+        )
+        field = self.RcvTipoDoctoField(
+            choices=[
+                (tipo_doc.value, tipo_doc.name)
+                for tipo_doc in [
+                    cl_sii.rcv.constants.RcvTipoDocto.NOTA_CREDITO,
+                    cl_sii.rcv.constants.RcvTipoDocto.NOTA_CREDITO_ELECTRONICA,
+                ]
+            ]
+        )
+        self.assertEqual(expected_choices, field.choices)
+
+
+class RcvTipoDoctoChoicesTestCase(unittest.TestCase):
+    RcvTipoDoctoChoices: ClassVar[type[cl_sii.extras.dj_model_fields.RcvTipoDoctoChoices]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.RcvTipoDoctoChoices = cl_sii.extras.dj_model_fields.RcvTipoDoctoChoices
+
+    def test_is_enum(self) -> None:
+        self.assertTrue(issubclass(self.RcvTipoDoctoChoices, enum.Enum))
+
+    def test_is_choices(self) -> None:
+        self.assertTrue(issubclass(self.RcvTipoDoctoChoices, django.db.models.Choices))
+
+    def test_names(self) -> None:
+        expected_names = [member.name for member in cl_sii.rcv.constants.RcvTipoDocto]
+        self.assertEqual(expected_names, self.RcvTipoDoctoChoices.names)
+
+    def test_values(self) -> None:
+        expected_values = [member.value for member in cl_sii.rcv.constants.RcvTipoDocto]
+        self.assertEqual(expected_values, self.RcvTipoDoctoChoices.values)
+
+    def test_labels(self) -> None:
+        for label in self.RcvTipoDoctoChoices.labels:
+            self.assertIsInstance(label, str)
+
+        self.assertEqual(
+            len(cl_sii.rcv.constants.RcvTipoDocto), len(self.RcvTipoDoctoChoices.labels)
+        )
+
+    def test_choices(self) -> None:
+        expected_choices = list(
+            zip(self.RcvTipoDoctoChoices.values, self.RcvTipoDoctoChoices.labels)
+        )
+        self.assertEqual(expected_choices, self.RcvTipoDoctoChoices.choices)

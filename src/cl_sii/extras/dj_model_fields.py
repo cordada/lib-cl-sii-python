@@ -15,7 +15,9 @@ import django.db.models
 import django.db.models.fields
 
 import cl_sii.rut.constants
+from cl_sii.base.constants import TipoDocumento
 from cl_sii.dte.constants import TipoDte
+from cl_sii.rcv.constants import RcvTipoDocto
 from cl_sii.rut import Rut
 
 
@@ -204,6 +206,36 @@ class RutField(django.db.models.Field):
         return '' if value is None else value.canonical
 
 
+TipoDocumentoChoices = django.db.models.IntegerChoices(
+    'TipoDocumentoChoices',
+    names={
+        tipo_doc.name: (  # Enum member name
+            tipo_doc.value,  # Enum member value
+            tipo_doc.name.replace('_', ' ').title(),  # Enum member display name
+        )
+        for tipo_doc in TipoDocumento
+    },
+)
+
+
+class TipoDocumentoField(django.db.models.SmallIntegerField):
+    """
+    Django model field for "Tipo de Documento".
+
+    * Python data type: :class:`cl_sii.base.constants.TipoDocumento`
+
+    .. note::
+        If the field's default `choices` is overridden, those custom `choices` will be
+        used instead. In that case, it is the user's responsibility to ensure the
+        validity of the choices.
+    """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if 'choices' not in kwargs:
+            kwargs['choices'] = TipoDocumentoChoices.choices
+        super().__init__(*args, **kwargs)
+
+
 TipoDteChoices = django.db.models.IntegerChoices(
     'TipoDteChoices',
     names={
@@ -231,4 +263,34 @@ class TipoDteField(django.db.models.SmallIntegerField):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         if 'choices' not in kwargs:
             kwargs['choices'] = TipoDteChoices.choices
+        super().__init__(*args, **kwargs)
+
+
+RcvTipoDoctoChoices = django.db.models.IntegerChoices(
+    'RcvTipoDoctoChoices',
+    names={
+        tipo_doc.name: (  # Enum member name
+            tipo_doc.value,  # Enum member value
+            tipo_doc.name.replace('_', ' ').title(),  # Enum member display name
+        )
+        for tipo_doc in RcvTipoDocto
+    },
+)
+
+
+class RcvTipoDoctoField(django.db.models.SmallIntegerField):
+    """
+    Django model field for "Tipo de Documento" for the RCV domain.
+
+    * Python data type: :class:`cl_sii.rcv.constants.RcvTipoDocto`
+
+    .. note::
+        If the field's default `choices` is overridden, those custom `choices` will be
+        used instead. In that case, it is the user's responsibility to ensure the
+        validity of the choices.
+    """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if 'choices' not in kwargs:
+            kwargs['choices'] = RcvTipoDoctoChoices.choices
         super().__init__(*args, **kwargs)
