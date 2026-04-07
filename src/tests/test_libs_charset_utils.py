@@ -1,13 +1,23 @@
 import tempfile
 import unittest
 
-from cl_sii.libs.charset_utils import clean_unicode, detect_file_encoding  # noqa: F401
+from cl_sii.libs.charset_utils import clean_unicode, detect_file_encoding
 
 
 class FunctionsTest(unittest.TestCase):
     def test_clean_unicode(self) -> None:
-        # TODO: implement for function 'clean_unicode'.
-        pass
+        expected = 'É'
+        self.assertEqual(clean_unicode('É'), expected)
+        self.assertEqual(clean_unicode('\u00c9'), expected)
+        self.assertEqual(clean_unicode('\u0045\u0301'), expected)
+        self.assertEqual(clean_unicode('\N{LATIN CAPITAL LETTER E WITH ACUTE}'), expected)
+        self.assertEqual(
+            clean_unicode('\N{LATIN CAPITAL LETTER E}\N{COMBINING ACUTE ACCENT}'), expected
+        )
+
+    def test_clean_unicode_empty_string(self) -> None:
+        empty_string = ''
+        self.assertEqual(clean_unicode(empty_string), empty_string)
 
     def test_detect_encoding_utf8(self) -> None:
         content = 'Este es un texto en español con acentos y ñ'.encode('utf-8')
