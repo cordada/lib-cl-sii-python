@@ -16,7 +16,7 @@ black==25.11.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
-build==1.4.0
+build==1.4.2
     # via
     #   -r requirements-dev.in
     #   pip-tools
@@ -44,7 +44,7 @@ colorama==0.4.6
     # via tox
 coverage==7.10.7
     # via -r requirements-dev.in
-cryptography==46.0.5
+cryptography==46.0.7
     # via
     #   -c requirements.txt
     #   secretstorage

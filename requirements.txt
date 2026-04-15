@@ -18,14 +18,14 @@ certifi==2024.7.4
     # via signxml
 cffi==2.0.0
     # via cryptography
-cryptography==46.0.5
+cryptography==46.0.7
     # via
     #   -r requirements.in
     #   pyopenssl
     #   signxml
 defusedxml==0.7.1
     # via -r requirements.in
-django==4.2.29
+django==4.2.30
     # via
     #   -r requirements.in
     #   django-filter
