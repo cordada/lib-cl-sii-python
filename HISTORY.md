@@ -1,5 +1,15 @@
 # History
 
+## 0.74.0 (2026-04-15)
+
+- (PR #1011, 2026-03-24) Fix errors reported by Markdown linter
+- (PR #1012, 2026-03-26) extras: Add `TipoDocumento` and `RcvTipoDocto` Django fields
+- (PR #1015, 2026-04-07) chore(deps): Bump the github-actions-production group with 4 updates
+- (PR #1019, 2026-04-07) rtc: Add CSV parser for "Cesiones Periodo"
+- (PR #1016, 2026-04-07) chore(deps): Bump build from 1.4.0 to 1.4.2 in the python-development group
+- (PR #1020, 2026-04-15) chore(deps): Bump django from 4.2.29 to 4.2.30
+- (PR #1021, 2026-04-15) chore(deps): Bump cryptography from 46.0.5 to 46.0.7
+
 ## 0.73.0 (2026-03-24)
 
 - (PR #1000, 2026-03-03) deps: Update `pip-tools` from 7.5.2 to 7.5.3
