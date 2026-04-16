@@ -1,5 +1,10 @@
 # History
 
+## 0.75.0 (2026-04-15)
+
+- (PR #1024, 2026-04-15) Fix Python version and caching in CI/CD
+- (PR #1014, 2026-04-15) chore(deps): Bump pygments from 2.15.0 to 2.20.0
+
 ## 0.74.0 (2026-04-15)
 
 - (PR #1011, 2026-03-24) Fix errors reported by Markdown linter
