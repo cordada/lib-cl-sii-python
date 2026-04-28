@@ -168,7 +168,7 @@ six==1.16.0
     # via bleach
 soupsieve==2.6
     # via beautifulsoup4
-tomli==2.2.1
+tomli==2.4.1
     # via
     #   black
     #   build

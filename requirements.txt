@@ -44,7 +44,7 @@ lxml==6.0.2
     # via
     #   -r requirements.in
     #   signxml
-marshmallow==4.0.1
+marshmallow==4.3.0
     # via -r requirements.in
 pycparser==2.22
     # via cffi
