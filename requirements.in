@@ -5,7 +5,6 @@
 # Note: To install a package from a Git VCS repository, see the following example:
 #   git+https://github.com/example/example.git@example-vcs-ref#egg=example-pkg[foo,bar]==1.42.3
 
-backports-zoneinfo==0.2.1 ; python_version < "3.9" # Used by `djangorestframework`.
 cryptography==46.0.7
 defusedxml==0.7.1
 django-filter>=24.2
