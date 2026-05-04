@@ -1,5 +1,10 @@
 # History
 
+## 0.76.0 (2026-05-04)
+
+- (PR #1029, 2026-04-29) Drop support for Python 3.9
+- (PR #1028, 2026-04-30) Bump marshmallow from 4.0.1 to 4.3.0
+
 ## 0.75.0 (2026-04-15)
 
 - (PR #1024, 2026-04-15) Fix Python version and caching in CI/CD
