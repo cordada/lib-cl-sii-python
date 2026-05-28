@@ -1,5 +1,10 @@
 # History
 
+## 0.77.0 (2026-05-28)
+
+- (PR #1030, 2026-05-11) chore(deps): Bump the github-actions-production group with 2 updates
+- (PR #1036, 2026-05-28) rcv: Enhance parsing and validation for DocumentoReferencias
+
 ## 0.76.0 (2026-05-04)
 
 - (PR #1029, 2026-04-29) Drop support for Python 3.9
