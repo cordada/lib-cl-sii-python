@@ -464,7 +464,7 @@ class RvDetalleEntryTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(ValueError, r'^52 is not a valid RcvTipoDocto$'):
             RcvTipoDocto(
-                rv_detalle_entry_with_non_rcv_doc_ref.documento_referencias[0]['tipo_documento_referencia']  # type: ignore[index] # noqa: E501
+                rv_detalle_entry_with_non_rcv_doc_ref.documento_referencias[0].tipo_documento_referencia  # type: ignore[index] # noqa: E501
             )
 
         expected_doc_ref_dte_natural_key = [

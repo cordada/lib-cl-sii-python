@@ -1764,7 +1764,7 @@ def _parse_rv_documento_referencias(
         Document type. Accepts string or integer. Empty values: None, "", "0".
     folio_documento_referencia : Optional[str]
         Folio number(s). Single folio ("10370") or hyphen-separated multiple
-        folios ("10370-10371"). Empty values: None, "", "0".
+        folios ("10370-10371"). Empty values: None, "".
 
     Returns
     -------
@@ -1782,14 +1782,12 @@ def _parse_rv_documento_referencias(
     if tipo_documento_referencia in (None, '', '0') and folio_documento_referencia in (
         None,
         '',
-        '0',
     ):
         return None
 
     if tipo_documento_referencia in (None, '', '0') or folio_documento_referencia in (
         None,
         '',
-        '0',
     ):
         raise ValueError(
             f"Both 'tipo_documento_referencia' ({tipo_documento_referencia}) "
@@ -1803,14 +1801,14 @@ def _parse_rv_documento_referencias(
         folios = folio_documento_referencia.split('-')
         for folio in folios:
             folio = folio.strip()
-            if not folio.isdigit():
+            if not folio:
                 raise ValueError(
                     f"Invalid 'folio_documento_referencia': ({folio_documento_referencia})."
                 )
             documento_referencias.append(
                 {
                     'tipo_documento_referencia': tipo_documento_referencia,
-                    'folio_documento_referencia': int(folio),
+                    'folio_documento_referencia': folio,
                 }
             )
     else:

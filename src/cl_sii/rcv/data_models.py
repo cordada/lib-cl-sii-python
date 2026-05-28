@@ -121,16 +121,44 @@ class OtrosImpuestos(TypedDict):
     """
 
 
-class DocumentoReferencia(TypedDict):
+@pydantic.dataclasses.dataclass(
+    frozen=True,
+)
+class DocumentoReferencia:
     tipo_documento_referencia: int
     """
     Tipo Docto. Referencia
     """
 
-    folio_documento_referencia: int
+    folio_documento_referencia: int | str
     """
     Folio Docto. Referencia
     """
+
+    @pydantic.field_validator('folio_documento_referencia')
+    @classmethod
+    def validate_folio_documento_referencia(cls, v: int | str) -> int | str:
+        if isinstance(v, int):
+            try:
+                cl_sii.dte.data_models.validate_dte_folio(v)
+            except ValueError:
+                # If value is numeric but not a valid DTE folio,
+                # assume that the value represents some other kind of number
+                # (e.g. a purchase order number) and convert it to a string.
+                v = str(v)
+        elif isinstance(v, str):
+            if v.strip().isdecimal():
+                numeric_v = int(v)
+                try:
+                    cl_sii.dte.data_models.validate_dte_folio(numeric_v)
+                except ValueError:
+                    # If value is numeric but not a valid DTE folio,
+                    # assume that the value represents some other kind of number
+                    # (e.g. a purchase order number) and leave it as a string.
+                    pass
+                else:
+                    v = numeric_v
+        return v
 
 
 @pydantic.dataclasses.dataclass(
@@ -513,8 +541,8 @@ class RvDetalleEntry(RcvDetalleEntry):
         documento_referencia_natural_keys = []
 
         for documento_referencia in self.documento_referencias:
-            tipo_documento_referencia = documento_referencia['tipo_documento_referencia']
-            folio_documento_referencia = documento_referencia['folio_documento_referencia']
+            tipo_documento_referencia = documento_referencia.tipo_documento_referencia
+            folio_documento_referencia = documento_referencia.folio_documento_referencia
 
             try:
                 tipo_documento_referencia = RcvTipoDocto(tipo_documento_referencia)
@@ -524,16 +552,16 @@ class RvDetalleEntry(RcvDetalleEntry):
                     tipo_dte_referencia = cl_sii.dte.constants.TipoDte(tipo_documento_referencia)
                 except ValueError:
                     # Not a DTE.
-                    return None
+                    continue
             else:
                 try:
                     tipo_dte_referencia = tipo_documento_referencia.as_tipo_dte()
                 except ValueError:
                     # Not a DTE.
-                    return None
+                    continue
 
-            if folio_documento_referencia == 0:
-                return None
+            if isinstance(folio_documento_referencia, str):
+                continue
 
             documento_referencia_natural_keys.append(
                 cl_sii.dte.data_models.DteNaturalKey(
@@ -543,7 +571,7 @@ class RvDetalleEntry(RcvDetalleEntry):
                 )
             )
 
-        return documento_referencia_natural_keys
+        return documento_referencia_natural_keys or None
 
     ###########################################################################
     # Validators

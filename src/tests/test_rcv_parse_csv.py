@@ -1601,11 +1601,11 @@ class FunctionsTest(unittest.TestCase):
                     'Documento Referencias': [
                         {
                             'tipo_documento_referencia': 52,
-                            'folio_documento_referencia': 10370,
+                            'folio_documento_referencia': '10370',
                         },
                         {
                             'tipo_documento_referencia': 52,
-                            'folio_documento_referencia': 10371,
+                            'folio_documento_referencia': '10371',
                         },
                     ],
                     'Otros Impuestos': None,
@@ -1728,15 +1728,15 @@ class FunctionsTest(unittest.TestCase):
                     'Documento Referencias': [
                         {
                             'tipo_documento_referencia': 33,
-                            'folio_documento_referencia': 200,
+                            'folio_documento_referencia': '200',
                         },
                         {
                             'tipo_documento_referencia': 33,
-                            'folio_documento_referencia': 300,
+                            'folio_documento_referencia': '300',
                         },
                         {
                             'tipo_documento_referencia': 33,
-                            'folio_documento_referencia': 400,
+                            'folio_documento_referencia': '400',
                         },
                     ],
                     'Otros Impuestos': [
@@ -1899,15 +1899,15 @@ class FunctionsTest(unittest.TestCase):
                     'Documento Referencias': [
                         {
                             'tipo_documento_referencia': 33,
-                            'folio_documento_referencia': 200,
+                            'folio_documento_referencia': '200',
                         },
                         {
                             'tipo_documento_referencia': 33,
-                            'folio_documento_referencia': 300,
+                            'folio_documento_referencia': '300',
                         },
                         {
                             'tipo_documento_referencia': 33,
-                            'folio_documento_referencia': 400,
+                            'folio_documento_referencia': '400',
                         },
                     ],
                     'contribuyente_rut': Rut('1-9'),
@@ -1996,7 +1996,7 @@ class FunctionsTest(unittest.TestCase):
                     'Documento Referencias': [
                         {
                             'tipo_documento_referencia': 52,
-                            'folio_documento_referencia': 10489,
+                            'folio_documento_referencia': '10489',
                         }
                     ],
                     'Num. Ident. Receptor Extranjero': None,
@@ -2072,7 +2072,67 @@ class FunctionsTest(unittest.TestCase):
                 },
             ),
             (
-                None,
+                RvDetalleEntry(
+                    contribuyente_rut=Rut('1-9'),
+                    tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+                    folio=14397,
+                    fecha_emision_date=datetime.date(2026, 1, 7),
+                    monto_total=1959157,
+                    fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                        dt=datetime.datetime(2026, 1, 7, 13, 18, 20),
+                        tz=SII_OFFICIAL_TZ,
+                    ),
+                    cliente_rut=Rut('81859341-4'),
+                    tipo_venta='DEL_GIRO',
+                    cliente_razon_social='POLAR S.A.',
+                    fecha_acuse_dt=convert_naive_dt_to_tz_aware(
+                        dt=datetime.datetime(2026, 1, 8, 15, 48, 9),
+                        tz=SII_OFFICIAL_TZ,
+                    ),
+                    fecha_reclamo_dt=None,
+                    monto_exento=0,
+                    monto_neto=1646350,
+                    monto_iva=312807,
+                    iva_retenido_total=0,
+                    iva_retenido_parcial=0,
+                    iva_no_retenido=0,
+                    iva_propio=0,
+                    iva_terceros=0,
+                    liquidacion_factura_emisor_rut=None,
+                    neto_comision_liquidacion_factura=0,
+                    exento_comision_liquidacion_factura=0,
+                    iva_comision_liquidacion_factura=0,
+                    iva_fuera_de_plazo=0,
+                    documento_referencias=[
+                        DocumentoReferencia(
+                            tipo_documento_referencia=52,
+                            folio_documento_referencia=1057539,
+                        ),
+                        DocumentoReferencia(
+                            tipo_documento_referencia=52,
+                            folio_documento_referencia=304,
+                        ),
+                        DocumentoReferencia(
+                            tipo_documento_referencia=52,
+                            folio_documento_referencia='SE26',
+                        ),
+                    ],
+                    num_ident_receptor_extranjero=None,
+                    nacionalidad_receptor_extranjero=None,
+                    credito_empresa_constructora=0,
+                    impuesto_zona_franca_ley_18211=None,
+                    garantia_dep_envases=0,
+                    indicador_venta_sin_costo=2,
+                    indicador_servicio_periodico=0,
+                    monto_no_facturable=0,
+                    total_monto_periodo=0,
+                    venta_pasajes_transporte_nacional=None,
+                    venta_pasajes_transporte_internacional=None,
+                    numero_interno=None,
+                    codigo_sucursal='0',
+                    nce_o_nde_sobre_factura_de_compra=None,
+                    otros_impuestos=None,
+                ),
                 5,
                 {
                     'Tipo Doc': '33',
@@ -2098,6 +2158,72 @@ class FunctionsTest(unittest.TestCase):
                     'Exento Comision Liquid. Factura': '0',
                     'IVA Comision Liquid. Factura': '0',
                     'IVA fuera de plazo': '0',
+                    'Documento Referencias': [
+                        {
+                            'tipo_documento_referencia': 52,
+                            'folio_documento_referencia': '1057539',
+                        },
+                        {
+                            'tipo_documento_referencia': 52,
+                            'folio_documento_referencia': '304',
+                        },
+                        {
+                            'tipo_documento_referencia': 52,
+                            'folio_documento_referencia': 'SE26',
+                        },
+                    ],
+                    'Num. Ident. Receptor Extranjero': None,
+                    'Nacionalidad Receptor Extranjero': None,
+                    'Credito empresa constructora': '0',
+                    'Impto. Zona Franca (Ley 18211)': None,
+                    'Garantia Dep. Envases': '0',
+                    'Indicador Venta sin Costo': '2',
+                    'Indicador Servicio Periodico': '0',
+                    'Monto No facturable': '0',
+                    'Total Monto Periodo': '0',
+                    'Venta Pasajes Transporte Nacional': None,
+                    'Venta Pasajes Transporte Internacional': None,
+                    'Numero Interno': None,
+                    'Codigo Sucursal': '0',
+                    'NCE o NDE sobre Fact. de Compra': None,
+                    'Otros Impuestos': None,
+                    'contribuyente_rut': Rut('1-9'),
+                },
+                {},
+            ),
+            (
+                None,
+                6,
+                {
+                    'Tipo Doc': '33',
+                    'Tipo Venta': 'DEL_GIRO',
+                    'Rut cliente': '81859341-4',
+                    'Razon Social': 'POLAR S.A.',
+                    'Folio': '10258123456',
+                    'Fecha Docto': '07/01/2026',
+                    'Fecha Recepcion': '07/01/2026 13:18:20',
+                    'Fecha Acuse Recibo': '08/01/2026 15:48:09',
+                    'Fecha Reclamo': None,
+                    'Monto Exento': '0',
+                    'Monto Neto': '1646350',
+                    'Monto IVA': '312807',
+                    'Monto total': '1959157',
+                    'IVA Retenido Total': '0',
+                    'IVA Retenido Parcial': '0',
+                    'IVA no retenido': '0',
+                    'IVA propio': '0',
+                    'IVA Terceros': '0',
+                    'RUT Emisor Liquid. Factura': None,
+                    'Neto Comision Liquid. Factura': '0',
+                    'Exento Comision Liquid. Factura': '0',
+                    'IVA Comision Liquid. Factura': '0',
+                    'IVA fuera de plazo': '0',
+                    'Documento Referencias': [
+                        {
+                            'tipo_documento_referencia': 52,
+                            'folio_documento_referencia': '1057539',
+                        }
+                    ],
                     'Num. Ident. Receptor Extranjero': None,
                     'Nacionalidad Receptor Extranjero': None,
                     'Credito empresa constructora': '0',
@@ -2116,12 +2242,119 @@ class FunctionsTest(unittest.TestCase):
                     'contribuyente_rut': Rut('1-9'),
                 },
                 {
-                    'validation': {
-                        "Documento Referencias": (
-                            "Invalid 'folio_documento_referencia': (1057539-304-SE26)."
-                        )
-                    }
+                    'conversion_errors': (
+                        "1 validation error for RvDetalleEntry\n"
+                        "folio\n"
+                        "  Value error, Value is out of the valid range for 'folio'."
+                        " [type=value_error, input_value=10258123456, input_type=int]\n"
+                        "    For further information visit"
+                        " https://errors.pydantic.dev/2.12/v/value_error"
+                    )
                 },
+            ),
+            (
+                RvDetalleEntry(
+                    contribuyente_rut=Rut('1-9'),
+                    tipo_docto=cl_sii.rcv.constants.RcvTipoDocto.FACTURA_ELECTRONICA,
+                    folio=14398,
+                    fecha_emision_date=datetime.date(2026, 1, 7),
+                    monto_total=1959157,
+                    fecha_recepcion_dt=convert_naive_dt_to_tz_aware(
+                        dt=datetime.datetime(2026, 1, 7, 13, 18, 20),
+                        tz=SII_OFFICIAL_TZ,
+                    ),
+                    cliente_rut=Rut('81859341-4'),
+                    tipo_venta='DEL_GIRO',
+                    cliente_razon_social='POLAR S.A.',
+                    fecha_acuse_dt=convert_naive_dt_to_tz_aware(
+                        dt=datetime.datetime(2026, 1, 8, 15, 48, 9),
+                        tz=SII_OFFICIAL_TZ,
+                    ),
+                    fecha_reclamo_dt=None,
+                    monto_exento=0,
+                    monto_neto=1646350,
+                    monto_iva=312807,
+                    iva_retenido_total=0,
+                    iva_retenido_parcial=0,
+                    iva_no_retenido=0,
+                    iva_propio=0,
+                    iva_terceros=0,
+                    liquidacion_factura_emisor_rut=None,
+                    neto_comision_liquidacion_factura=0,
+                    exento_comision_liquidacion_factura=0,
+                    iva_comision_liquidacion_factura=0,
+                    iva_fuera_de_plazo=0,
+                    documento_referencias=[
+                        DocumentoReferencia(
+                            tipo_documento_referencia=52,
+                            folio_documento_referencia='45000105543',
+                        )
+                    ],
+                    num_ident_receptor_extranjero=None,
+                    nacionalidad_receptor_extranjero=None,
+                    credito_empresa_constructora=0,
+                    impuesto_zona_franca_ley_18211=None,
+                    garantia_dep_envases=0,
+                    indicador_venta_sin_costo=2,
+                    indicador_servicio_periodico=0,
+                    monto_no_facturable=0,
+                    total_monto_periodo=0,
+                    venta_pasajes_transporte_nacional=None,
+                    venta_pasajes_transporte_internacional=None,
+                    numero_interno=None,
+                    codigo_sucursal='0',
+                    nce_o_nde_sobre_factura_de_compra=None,
+                    otros_impuestos=None,
+                ),
+                7,
+                {
+                    'Tipo Doc': '33',
+                    'Tipo Venta': 'DEL_GIRO',
+                    'Rut cliente': '81859341-4',
+                    'Razon Social': 'POLAR S.A.',
+                    'Folio': '14398',
+                    'Fecha Docto': '07/01/2026',
+                    'Fecha Recepcion': '07/01/2026 13:18:20',
+                    'Fecha Acuse Recibo': '08/01/2026 15:48:09',
+                    'Fecha Reclamo': None,
+                    'Monto Exento': '0',
+                    'Monto Neto': '1646350',
+                    'Monto IVA': '312807',
+                    'Monto total': '1959157',
+                    'IVA Retenido Total': '0',
+                    'IVA Retenido Parcial': '0',
+                    'IVA no retenido': '0',
+                    'IVA propio': '0',
+                    'IVA Terceros': '0',
+                    'RUT Emisor Liquid. Factura': None,
+                    'Neto Comision Liquid. Factura': '0',
+                    'Exento Comision Liquid. Factura': '0',
+                    'IVA Comision Liquid. Factura': '0',
+                    'IVA fuera de plazo': '0',
+                    'Documento Referencias': [
+                        {
+                            'tipo_documento_referencia': 52,
+                            'folio_documento_referencia': '45000105543',
+                        }
+                    ],
+                    'Num. Ident. Receptor Extranjero': None,
+                    'Nacionalidad Receptor Extranjero': None,
+                    'Credito empresa constructora': '0',
+                    'Impto. Zona Franca (Ley 18211)': None,
+                    'Garantia Dep. Envases': '0',
+                    'Indicador Venta sin Costo': '2',
+                    'Indicador Servicio Periodico': '0',
+                    'Monto No facturable': '0',
+                    'Total Monto Periodo': '0',
+                    'Venta Pasajes Transporte Nacional': None,
+                    'Venta Pasajes Transporte Internacional': None,
+                    'Numero Interno': None,
+                    'Codigo Sucursal': '0',
+                    'NCE o NDE sobre Fact. de Compra': None,
+                    'Otros Impuestos': None,
+                    'contribuyente_rut': Rut('1-9'),
+                },
+                {},
             ),
         ]
         self.assertEqual(items_list, expected_entries_list)
@@ -2536,8 +2769,11 @@ class FunctionsTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 _parse_rv_documento_referencias(33, "")
 
-            with self.assertRaises(ValueError):
-                _parse_rv_documento_referencias("33", "0")
+            result = _parse_rv_documento_referencias("33", "0")
+            self.assertEqual(
+                result,
+                [{'tipo_documento_referencia': 33, 'folio_documento_referencia': '0'}],
+            )
 
         # Test case 4: Only folio provided (tipo empty) - should raise ValueError
         with self.subTest("Only folio provided"):
@@ -2557,7 +2793,7 @@ class FunctionsTest(unittest.TestCase):
             expected = [
                 {
                     'tipo_documento_referencia': 33,
-                    'folio_documento_referencia': 12345,
+                    'folio_documento_referencia': '12345',
                 }
             ]
             self.assertEqual(result, expected)
@@ -2568,7 +2804,7 @@ class FunctionsTest(unittest.TestCase):
             expected = [
                 {
                     'tipo_documento_referencia': 52,
-                    'folio_documento_referencia': 67890,
+                    'folio_documento_referencia': '67890',
                 }
             ]
             self.assertEqual(result, expected)
@@ -2579,24 +2815,26 @@ class FunctionsTest(unittest.TestCase):
             expected = [
                 {
                     'tipo_documento_referencia': 33,
-                    'folio_documento_referencia': 200,
+                    'folio_documento_referencia': '200',
                 },
                 {
                     'tipo_documento_referencia': 33,
-                    'folio_documento_referencia': 300,
+                    'folio_documento_referencia': '300',
                 },
                 {
                     'tipo_documento_referencia': 33,
-                    'folio_documento_referencia': 400,
+                    'folio_documento_referencia': '400',
                 },
             ]
             self.assertEqual(result, expected)
 
-        # Test case 8: Invalid folio - non-numeric
-        with self.subTest("Invalid folio - non-numeric"):
-            with self.assertRaises(ValueError) as cm:
-                _parse_rv_documento_referencias("33", "abc")
-            self.assertIn("Invalid 'folio_documento_referencia'", str(cm.exception))
+        # Test case 8: Alphanumeric folio - valid
+        with self.subTest("Valid alphanumeric folio"):
+            result = _parse_rv_documento_referencias("33", "abc")
+            self.assertEqual(
+                result,
+                [{'tipo_documento_referencia': 33, 'folio_documento_referencia': 'abc'}],
+            )
 
         # Test case 9: Non-string folio parameter (should work for integer)
         with self.subTest("Non-string folio"):
