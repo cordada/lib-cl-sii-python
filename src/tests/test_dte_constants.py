@@ -152,3 +152,57 @@ class TipoDteTest(unittest.TestCase):
 
         for result, expected in assertions:
             self.assertTrue(result is expected)
+
+    def test_FACTURA_EXPORTACION_ELECTRONICA(self) -> None:
+        value = self.TipoDte.FACTURA_EXPORTACION_ELECTRONICA
+
+        self.assertEqual(value.name, 'FACTURA_EXPORTACION_ELECTRONICA')
+        self.assertEqual(value.value, 110)
+
+        assertions = [
+            (value.is_factura, True),
+            (value.is_factura_venta, True),
+            (value.is_factura_compra, False),
+            (value.is_nota, False),
+            (value.emisor_is_vendedor, True),
+            (value.receptor_is_vendedor, False),
+        ]
+
+        for result, expected in assertions:
+            self.assertTrue(result is expected)
+
+    def test_NOTA_DEBITO_EXPORTACION_ELECTRONICA(self) -> None:
+        value = self.TipoDte.NOTA_DEBITO_EXPORTACION_ELECTRONICA
+
+        self.assertEqual(value.name, 'NOTA_DEBITO_EXPORTACION_ELECTRONICA')
+        self.assertEqual(value.value, 111)
+
+        assertions = [
+            (value.is_factura, False),
+            (value.is_factura_venta, False),
+            (value.is_factura_compra, False),
+            (value.is_nota, True),
+            (value.emisor_is_vendedor, False),
+            (value.receptor_is_vendedor, False),
+        ]
+
+        for result, expected in assertions:
+            self.assertTrue(result is expected)
+
+    def test_NOTA_CREDITO_EXPORTACION_ELECTRONICA(self) -> None:
+        value = self.TipoDte.NOTA_CREDITO_EXPORTACION_ELECTRONICA
+
+        self.assertEqual(value.name, 'NOTA_CREDITO_EXPORTACION_ELECTRONICA')
+        self.assertEqual(value.value, 112)
+
+        assertions = [
+            (value.is_factura, False),
+            (value.is_factura_venta, False),
+            (value.is_factura_compra, False),
+            (value.is_nota, True),
+            (value.emisor_is_vendedor, False),
+            (value.receptor_is_vendedor, False),
+        ]
+
+        for result, expected in assertions:
+            self.assertTrue(result is expected)

@@ -118,6 +118,18 @@ class RcvTipoDoctoTest(unittest.TestCase):
             self.RcvTipoDocto.FACTURA_ELECTRONICA.as_tipo_dte(),
             TipoDte.FACTURA_ELECTRONICA,
         )
+        self.assertEqual(
+            self.RcvTipoDocto.FACTURA_EXPORTACION_ELECTRONICA.as_tipo_dte(),
+            TipoDte.FACTURA_EXPORTACION_ELECTRONICA,
+        )
+        self.assertEqual(
+            self.RcvTipoDocto.NOTA_DEBITO_EXPORTACION_ELECTRONICA.as_tipo_dte(),
+            TipoDte.NOTA_DEBITO_EXPORTACION_ELECTRONICA,
+        )
+        self.assertEqual(
+            self.RcvTipoDocto.NOTA_CREDITO_EXPORTACION_ELECTRONICA.as_tipo_dte(),
+            TipoDte.NOTA_CREDITO_EXPORTACION_ELECTRONICA,
+        )
 
         with self.assertRaises(ValueError) as cm:
             self.RcvTipoDocto.FACTURA.as_tipo_dte()
