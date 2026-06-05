@@ -147,14 +147,20 @@ class TipoDte(enum.IntEnum):
     """Nota electrónica de crédito."""
     # aka 'Nota de Crédito Electrónica'
 
-    # TODO: add
-    #   110 Factura de exportación electrónica
-    #   111 Nota de débito de exportación electrónica
-    #   112 Nota de crédito de exportación electrónica
-    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L58-L60
-    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L708-L717
-    #   See 'cl_sii.rcv.constants.RcvTipoDocto'
-    #   Should 'is_factura' be true for a "Factura de exportación electrónica" (110) ?
+    FACTURA_EXPORTACION_ELECTRONICA = 110
+    """Factura de exportación electrónica."""
+    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L58
+    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L713
+
+    NOTA_DEBITO_EXPORTACION_ELECTRONICA = 111
+    """Nota de débito de exportación electrónica."""
+    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L59
+    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L714
+
+    NOTA_CREDITO_EXPORTACION_ELECTRONICA = 112
+    """Nota de crédito de exportación electrónica."""
+    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L60
+    # https://github.com/fyntex/lib-cl-sii-python/blob/f57a326/cl_sii/data/ref/factura_electronica/schemas-xml/SiiTypes_v10.xsd#L715
 
     @property
     def is_factura(self) -> bool:
@@ -165,6 +171,8 @@ class TipoDte(enum.IntEnum):
         elif self is TipoDte.FACTURA_COMPRA_ELECTRONICA:
             result = True
         elif self is TipoDte.LIQUIDACION_FACTURA_ELECTRONICA:
+            result = True
+        elif self is TipoDte.FACTURA_EXPORTACION_ELECTRONICA:
             result = True
         else:
             result = False
@@ -178,6 +186,8 @@ class TipoDte(enum.IntEnum):
         elif self is TipoDte.FACTURA_NO_AFECTA_O_EXENTA_ELECTRONICA:
             result = True
         elif self is TipoDte.LIQUIDACION_FACTURA_ELECTRONICA:
+            result = True
+        elif self is TipoDte.FACTURA_EXPORTACION_ELECTRONICA:
             result = True
         else:
             result = False
@@ -198,6 +208,10 @@ class TipoDte(enum.IntEnum):
         if self is TipoDte.NOTA_DEBITO_ELECTRONICA:
             result = True
         elif self is TipoDte.NOTA_CREDITO_ELECTRONICA:
+            result = True
+        elif self is TipoDte.NOTA_DEBITO_EXPORTACION_ELECTRONICA:
+            result = True
+        elif self is TipoDte.NOTA_CREDITO_EXPORTACION_ELECTRONICA:
             result = True
         else:
             result = False
@@ -295,6 +309,9 @@ DTE_REFERENCIA_RUTOTR_TIPO_DOC_SET: FrozenSet[TipoDte] = frozenset(
         TipoDte.NOTA_CREDITO_ELECTRONICA,
         TipoDte.NOTA_DEBITO_ELECTRONICA,
         TipoDte.FACTURA_COMPRA_ELECTRONICA,
+        TipoDte.FACTURA_EXPORTACION_ELECTRONICA,
+        TipoDte.NOTA_DEBITO_EXPORTACION_ELECTRONICA,
+        TipoDte.NOTA_CREDITO_EXPORTACION_ELECTRONICA,
     }
 )
 
@@ -345,6 +362,8 @@ DTE_REFERENCIA_CODREF_TIPO_DOC_MANDATORY_SET: FrozenSet[TipoDte] = frozenset(
     {
         TipoDte.NOTA_CREDITO_ELECTRONICA,
         TipoDte.NOTA_DEBITO_ELECTRONICA,
+        TipoDte.NOTA_DEBITO_EXPORTACION_ELECTRONICA,
+        TipoDte.NOTA_CREDITO_EXPORTACION_ELECTRONICA,
     }
 )
 
