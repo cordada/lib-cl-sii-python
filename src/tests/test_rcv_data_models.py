@@ -450,6 +450,41 @@ class RvDetalleEntryTest(unittest.TestCase):
 
         self.assertEqual(expected_doc_ref_dte_natural_key, actual_doc_ref_dte_natural_key)
 
+        # Detalle Entry that references an export DTE:
+
+        rv_detalle_entry_with_export_doc_ref = dataclasses.replace(
+            rv_detalle_entry,
+            tipo_docto=RcvTipoDocto.FACTURA_EXPORTACION_ELECTRONICA,
+            folio=2233,
+            documento_referencias=[
+                DocumentoReferencia(
+                    tipo_documento_referencia=RcvTipoDocto.FACTURA_EXPORTACION_ELECTRONICA,
+                    folio_documento_referencia=12345,
+                )
+            ],
+        )
+        self.assertEqual(
+            cl_sii.dte.data_models.DteNaturalKey(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_EXPORTACION_ELECTRONICA,
+                folio=2233,
+            ),
+            rv_detalle_entry_with_export_doc_ref.as_dte_data_l2().natural_key,
+        )
+
+        expected_doc_ref_dte_natural_key = [
+            cl_sii.dte.data_models.DteNaturalKey(
+                emisor_rut=Rut('76354771-K'),
+                tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_EXPORTACION_ELECTRONICA,
+                folio=12345,
+            )
+        ]
+        actual_doc_ref_dte_natural_key = (
+            rv_detalle_entry_with_export_doc_ref.get_documento_referencia_dte_natural_keys()
+        )
+
+        self.assertEqual(expected_doc_ref_dte_natural_key, actual_doc_ref_dte_natural_key)
+
         # Detalle Entry that references a documento that is a valid DTE
         # but not a valid RCV Tipo de Documento:
 

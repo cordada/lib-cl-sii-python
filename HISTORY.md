@@ -1,5 +1,12 @@
 # History
 
+## 0.78.0 (2026-06-08)
+
+- (PR #1031, 2026-05-28) chore(deps): Bump build from 1.4.2 to 1.4.4 in the python-development group
+- (PR #1039, 2026-06-02) chore(deps): Bump the github-actions-production group with 2 updates
+- (PR #1040, 2026-06-05) dte: Add TipoDte 110, 111, 112
+- (PR #1042, 2026-06-08) chore(deps): Bump the codecov to 7.0.0 - actions/checkout to 6.0.3
+
 ## 0.77.0 (2026-05-28)
 
 - (PR #1030, 2026-05-11) chore(deps): Bump the github-actions-production group with 2 updates
