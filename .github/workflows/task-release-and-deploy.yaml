@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v7.0.0
         with:
           ref: ${{ env.CREATE_RELEASE_VCS_REVISION_ID }}
 
