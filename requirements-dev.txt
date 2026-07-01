@@ -14,7 +14,7 @@ beautifulsoup4==4.13.3
     # via types-lxml
 black==25.11.0
     # via -r requirements-dev.in
-bleach==5.0.1
+bleach==6.4.0
     # via readme-renderer
 build==1.4.4
     # via
@@ -164,8 +164,6 @@ rpds-py==0.27.1
     #   referencing
 secretstorage==3.3.3
     # via keyring
-six==1.16.0
-    # via bleach
 soupsieve==2.6
     # via beautifulsoup4
 tomli==2.4.1
