@@ -166,7 +166,7 @@ secretstorage==3.3.3
     # via keyring
 six==1.16.0
     # via bleach
-soupsieve==2.6
+soupsieve==2.8.4
     # via beautifulsoup4
 tomli==2.4.1
     # via
