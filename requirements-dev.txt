@@ -12,7 +12,7 @@ backports-tarfile==1.2.0
     # via jaraco-context
 beautifulsoup4==4.13.3
     # via types-lxml
-black==25.11.0
+black==26.3.1
     # via -r requirements-dev.in
 bleach==5.0.1
     # via readme-renderer
@@ -108,7 +108,7 @@ packaging==24.2
     #   tox
     #   twine
     #   wheel
-pathspec==0.9.0
+pathspec==1.1.1
     # via
     #   black
     #   mypy
@@ -139,7 +139,7 @@ pyproject-hooks==1.0.0
     # via
     #   build
     #   pip-tools
-pytokens==0.3.0
+pytokens==0.4.1
     # via black
 readme-renderer==35.0
     # via twine
