@@ -29,7 +29,7 @@ import marshmallow.experimental.context
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.extras import mm_fields
 from cl_sii.libs import csv_utils, mm_utils, rows_processing, tz_utils
-from cl_sii.libs.charset_utils import detect_file_encoding
+from cl_sii.libs.charset_utils import LOSSLESS_FALLBACK_ENCODING, detect_file_encoding
 from cl_sii.rtc import data_models_cesiones_periodo
 from cl_sii.rut import Rut
 
@@ -128,7 +128,7 @@ def parse_cesiones_periodo_csv_file(
     input_csv_row_schema = input_csv_row_schema_class()
 
     with _CesionesPeriodoCsvRowSchemaContext(schema_context):
-        yield from _parse_cesiones_periodo_csv_file(
+        yield from _parse_cesiones_periodo_csv_file_with_encoding_fallback(
             input_csv_row_schema,
             expected_input_field_names,
             fields_to_remove_names,
@@ -189,56 +189,74 @@ def clean_cesiones_periodo_csv_file(
         # The line needs to be cleaned if it does not have the expected number of columns.
         return original_line.count(';') != _CESIONES_PERIODO_CSV_HEADERS_N - 1
 
+    def _clean(file_encoding: str) -> Tuple[Optional[str], int]:
+        # note: reading text with `newline=None` means line endings will be autodetected
+        #   (both '\n' and '\r\n' work), and the output of `readline()` includes '\n'
+        #   (in Linux at least) at the end.
+        with open(input_file_path, mode='rt', encoding=file_encoding, newline=None) as input_f:
+            query_params: Optional[str] = None
+            # e.g. 'DATOS_CONSULTA; RUT=76389992-6;TIPO_CONSULTA=CEDENTE;DESDE_DDMMAAAA=01062019;HASTA_DDMMAAAA=01072019'  # noqa: E501
+            query_params_line = input_f.readline().upper().strip()
+            csv_headers_line = None
+
+            if query_params_line.startswith('DATOS_CONSULTA;'):
+                query_params = query_params_line.partition('DATOS_CONSULTA;')[2].strip()
+            elif query_params_line == _CESIONES_PERIODO_CSV_HEADERS_LINE:
+                csv_headers_line = query_params_line
+            else:
+                # TODO: use a new custom exception for this kind of cases.
+                raise Exception(
+                    "First line is not the query params line ('DATOS_CONSULTA;'...) "
+                    "nor the expected CSV headers line ('%s...'): %s",
+                    _CESIONES_PERIODO_CSV_HEADERS_LINE[:30],
+                    query_params_line,
+                )
+
+            if csv_headers_line is None:
+                csv_headers_line = input_f.readline().upper().strip()
+                if not csv_headers_line == _CESIONES_PERIODO_CSV_HEADERS_LINE:
+                    # TODO: use a new custom exception for this kind of cases.
+                    raise Exception(
+                        "CSV headers line does not match what is expected ('%s...'): %s",
+                        _CESIONES_PERIODO_CSV_HEADERS_LINE[:30],
+                        csv_headers_line,
+                    )
+
+            sorted_lines = sorted(input_f)
+            n_sorted_lines = len(sorted_lines)
+            sorted_clean_lines = []
+            for line in sorted_lines:
+                sorted_clean_lines.append(_clean_line(line) if _line_needs_cleaning(line) else line)
+
+            with open(
+                output_file_path, mode='wt', encoding=file_encoding, newline=None
+            ) as output_f:
+                output_f.writelines(
+                    [
+                        csv_headers_line + output_new_line_str,
+                    ]
+                )
+                output_f.writelines(sorted_clean_lines)
+
+        return query_params, n_sorted_lines
+
     file_encoding = detect_file_encoding(input_file_path)
     output_new_line_str = '\n'
 
-    # note: reading text with `newline=None` means line endings will be autodetected
-    #   (both '\n' and '\r\n' work), and the output of `readline()` includes '\n'
-    #   (in Linux at least) at the end.
-    with open(input_file_path, mode='rt', encoding=file_encoding, newline=None) as input_f:
-        query_params: Optional[str] = None
-        # e.g. 'DATOS_CONSULTA; RUT=76389992-6;TIPO_CONSULTA=CEDENTE;DESDE_DDMMAAAA=01062019;HASTA_DDMMAAAA=01072019'  # noqa: E501
-        query_params_line = input_f.readline().upper().strip()
-        csv_headers_line = None
-
-        if query_params_line.startswith('DATOS_CONSULTA;'):
-            query_params = query_params_line.partition('DATOS_CONSULTA;')[2].strip()
-        elif query_params_line == _CESIONES_PERIODO_CSV_HEADERS_LINE:
-            csv_headers_line = query_params_line
-        else:
-            # TODO: use a new custom exception for this kind of cases.
-            raise Exception(
-                "First line is not the query params line ('DATOS_CONSULTA;'...) "
-                "nor the expected CSV headers line ('%s...'): %s",
-                _CESIONES_PERIODO_CSV_HEADERS_LINE[:30],
-                query_params_line,
-            )
-
-        if csv_headers_line is None:
-            csv_headers_line = input_f.readline().upper().strip()
-            if not csv_headers_line == _CESIONES_PERIODO_CSV_HEADERS_LINE:
-                # TODO: use a new custom exception for this kind of cases.
-                raise Exception(
-                    "CSV headers line does not match what is expected ('%s...'): %s",
-                    _CESIONES_PERIODO_CSV_HEADERS_LINE[:30],
-                    csv_headers_line,
-                )
-
-        sorted_lines = sorted(input_f)
-        n_sorted_lines = len(sorted_lines)
-        sorted_clean_lines = []
-        for line in sorted_lines:
-            sorted_clean_lines.append(_clean_line(line) if _line_needs_cleaning(line) else line)
-
-        with open(output_file_path, mode='wt', encoding=file_encoding, newline=None) as output_f:
-            output_f.writelines(
-                [
-                    csv_headers_line + output_new_line_str,
-                ]
-            )
-            output_f.writelines(sorted_clean_lines)
-
-    return query_params, n_sorted_lines
+    try:
+        return _clean(file_encoding)
+    except UnicodeDecodeError:
+        # note: the encoding is detected from a sample of the file, so it may not be able to decode
+        #   the rest of it. Fall back to an encoding that decodes any byte sequence.
+        if file_encoding == LOSSLESS_FALLBACK_ENCODING:
+            raise
+        logger.warning(
+            "Failed to decode file with the detected encoding ('%s'); retrying with '%s': %s",
+            file_encoding,
+            LOSSLESS_FALLBACK_ENCODING,
+            input_file_path,
+        )
+        return _clean(LOSSLESS_FALLBACK_ENCODING)
 
 
 ###############################################################################
@@ -467,6 +485,68 @@ class _CesionesPeriodoCsvDialect(csv.Dialect):
     # note: the original file uses '\r\n' for new lines but we replace them with '\n'
     lineterminator = '\n'
     quoting = csv.QUOTE_MINIMAL
+
+
+def _parse_cesiones_periodo_csv_file_with_encoding_fallback(
+    input_csv_row_schema: CesionesPeriodoCsvRowSchema,
+    expected_input_field_names: Sequence[str],
+    fields_to_remove_names: Sequence[str],
+    input_file_path: str,
+    input_file_encoding: str,
+    n_rows_offset: int,
+    max_n_rows: Optional[int] = None,
+) -> Iterable[
+    Tuple[
+        Optional[data_models_cesiones_periodo.CesionesPeriodoEntry],
+        int,
+        Dict[str, object],
+        Dict[str, object],
+    ]
+]:
+    """
+    Same as :func:`_parse_cesiones_periodo_csv_file`, but resilient to a wrong file encoding.
+
+    The encoding is detected from a sample of the file, so it may not be able to decode the rest of
+    it. In that case the whole file is parsed again with an encoding that decodes any byte
+    sequence, and the entries that were already yielded are skipped.
+
+    """
+    n_yielded_rows = 0
+
+    try:
+        for item in _parse_cesiones_periodo_csv_file(
+            input_csv_row_schema,
+            expected_input_field_names,
+            fields_to_remove_names,
+            input_file_path,
+            input_file_encoding,
+            n_rows_offset,
+            max_n_rows,
+        ):
+            n_yielded_rows += 1
+            yield item
+    except UnicodeDecodeError:
+        if input_file_encoding == LOSSLESS_FALLBACK_ENCODING:
+            raise
+        logger.warning(
+            "Failed to decode file with the detected encoding ('%s'); retrying with '%s': %s",
+            input_file_encoding,
+            LOSSLESS_FALLBACK_ENCODING,
+            input_file_path,
+        )
+
+        retried_g = _parse_cesiones_periodo_csv_file(
+            input_csv_row_schema,
+            expected_input_field_names,
+            fields_to_remove_names,
+            input_file_path,
+            LOSSLESS_FALLBACK_ENCODING,
+            n_rows_offset,
+            max_n_rows,
+        )
+        for item_ix, item in enumerate(retried_g):
+            if item_ix >= n_yielded_rows:
+                yield item
 
 
 def _parse_cesiones_periodo_csv_file(
