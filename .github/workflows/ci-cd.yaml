@@ -64,18 +64,18 @@ jobs:
 
   # -----END Release Job-----
 
-  # -----BEGIN Deploy Job-----
-  deploy:
-    name: Deploy
+  # -----BEGIN Publish Job-----
+  publish:
+    name: Publish
     if: ${{ github.ref == needs.workflow_config.outputs.PRODUCTION_VCS_REF }}
     needs:
       - release
       - workflow_config
 
-    uses: ./.github/workflows/deploy.yaml
+    uses: ./.github/workflows/publish.yaml
     with:
       deploy_env: prod
       artifacts_path: ${{ needs.release.outputs.artifacts_path }}
     secrets: inherit
 
-  # -----END Deploy Job-----
+  # -----END Publish Job-----
