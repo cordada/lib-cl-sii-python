@@ -1,6 +1,6 @@
-# GitHub Actions Workflow for Deployment
+# GitHub Actions Workflow for Publication
 
-name: Deploy
+name: Publish
 
 on:
   workflow_call:
@@ -18,7 +18,7 @@ permissions:
 
 # -----BEGIN Environment Variables-----
 
-# Environment variables required for deployment:
+# Environment variables required for publication:
 #
 # - PYPI_PASSWORD := PyPI password or API token.
 # - PYPI_USERNAME := PyPI username. For API tokens, use "__token__".
@@ -31,8 +31,8 @@ env:
 # -----END Environment Variables-----
 
 jobs:
-  deploy:
-    name: Deploy
+  publish:
+    name: Publish
     runs-on: ubuntu-22.04
     environment: ${{ inputs.deploy_env }}
 
@@ -60,7 +60,7 @@ jobs:
           name: release
           path: ${{ inputs.artifacts_path }}/
 
-      - name: Deploy
+      - name: Publish
         run: |
           source "$PYTHON_VIRTUALENV_ACTIVATE"
           make deploy \
