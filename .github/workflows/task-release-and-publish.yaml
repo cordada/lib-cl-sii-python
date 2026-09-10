@@ -19,8 +19,3 @@ jobs:
       contents: write
       pull-requests: write
     uses: cordada/github-actions-utils/.github/workflows/task-release-and-publish.yaml@master
-    with:
-      # This VCS repository has no `kind: publish` GitHub label, which is the default.
-      github_pull_request_labels: |-
-        task
-        kind: deploy
