@@ -44,14 +44,21 @@ jobs:
           python-version-file: "pyproject.toml"
           check-latest: true
 
-      - name: Create Python Virtual Environment
-        run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
-
       - name: Restoring/Saving Cache
+        id: restoring_saving_cache
         uses: actions/cache@v6.1.0
         with:
           path: "venv"
           key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements-dev.txt', 'Makefile', 'make/**.mk') }}
+
+      - name: Create Python Virtual Environment
+        # Only when the cache was not restored. The cache is restored by extracting an archive
+        # over the workspace, so restoring it over an existing virtual environment merges the Pip
+        # installation that `python -m venv` bootstraps with the cached one, instead of replacing
+        # it. That leaves an unusable Pip whenever the two versions lay out their internal modules
+        # differently.
+        if: ${{ steps.restoring_saving_cache.outputs.cache-hit != 'true' }}
+        run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
 
       - name: Install Dependencies
         run: |
