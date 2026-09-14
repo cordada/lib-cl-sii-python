@@ -36,11 +36,11 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v7.0.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
@@ -50,7 +50,7 @@ jobs:
 
       - name: Restoring/Saving Cache
         id: restoring_saving_cache
-        uses: actions/cache@v6.1.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             .tox
@@ -104,17 +104,17 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v7.0.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v6.1.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             .tox
@@ -170,7 +170,7 @@ jobs:
 
       - name: Store Artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test_reports_${{ matrix.python_version }}
           path: test-reports/
