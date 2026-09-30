@@ -1,5 +1,19 @@
 # History
 
+## 0.79.0 (2026-09-30)
+
+- (PR #1044, 2026-06-17) Do not trigger Commit Linter/Dependency Review for draft PRs marked ready
+- (PR #1047, 2026-07-01) chore(deps): Bump the github-actions-production group with 3 updates
+- (PR #1048, 2026-07-01) deps: Update `signxml` from 4.2.0 to 4.3.1
+- (PR #1060, 2026-09-10) workflows: Use reusable workflow for release and publication task
+- (PR #1061, 2026-09-10) workflows: Label a release publication `kind: publish`
+- (PR #1062, 2026-09-10) workflows: Restore the dependency cache before creating the virtual environment
+- (PR #1063, 2026-09-10) workflows: Restore dependency cache before creating venv in "Release"
+- (PR #1064, 2026-09-10) workflows: Rename workflow "Deploy" to "Publish"
+- (PR #1052, 2026-09-10) chore(deps): Bump github-actions-production group (2 updates)
+- (PR #1065, 2026-09-14) workflows: Pin GitHub Actions to commit hashes
+- (PR #1057, 2026-09-24) rtc: Fall back to a lossless encoding when parsing "cesiones periodo" files
+
 ## 0.78.0 (2026-06-08)
 
 - (PR #1031, 2026-05-28) chore(deps): Bump build from 1.4.2 to 1.4.4 in the python-development group
