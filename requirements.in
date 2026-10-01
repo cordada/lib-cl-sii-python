@@ -17,6 +17,6 @@ marshmallow==4.3.0
 pydantic==2.12.5
 pyOpenSSL==26.0.0
 pytz==2025.2
-setuptools==82.0.1
+setuptools==83.0.0
 signxml==4.3.1
 typing-extensions==4.15.0
