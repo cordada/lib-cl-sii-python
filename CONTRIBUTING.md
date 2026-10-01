@@ -154,7 +154,7 @@ Then wait for the CI tests (`develop` branch) to finish and verify they were suc
   base branch.
 
 
-### Pull Request for Deployment
+### Pull Request for Publication
 
 - Check out the **main VCS branch**:
 
@@ -174,7 +174,7 @@ Then wait for the CI tests (`develop` branch) to finish and verify they were suc
 - Create a **new branch**:
 
   ```sh
-  git checkout -b deploy/vX.Y.Z
+  git checkout -b publish/vX.Y.Z
   ```
 
 - Push the branch to `origin`:
@@ -185,8 +185,8 @@ Then wait for the CI tests (`develop` branch) to finish and verify they were suc
 
 - Create a **pull request**:
   - *Base reference*: `master`
-  - *Head reference*: `deploy/vX.Y.Z`
-  - *Title*: `Deploy release vX.Y.Z`
+  - *Head reference*: `publish/vX.Y.Z`
+  - *Title*: `Publish release vX.Y.Z`
   - *Description*:
 
     ```markdown
@@ -195,7 +195,7 @@ Then wait for the CI tests (`develop` branch) to finish and verify they were suc
 
   - *Labels*:
     - `task`
-    - `kind: deploy`
+    - `kind: publish`
 - **Assign** the pull request to the appropriate developer (usually yourself).
 - Wait until the CI checks have finished.
 - Request pull request **reviews**.

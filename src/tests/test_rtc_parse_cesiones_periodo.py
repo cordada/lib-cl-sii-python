@@ -2,12 +2,19 @@ import tempfile
 import unittest
 from collections import OrderedDict
 from datetime import date, datetime
+from typing import Tuple
+from unittest import mock
 
 from cl_sii.base.constants import SII_OFFICIAL_TZ
 from cl_sii.dte.constants import TipoDte
+from cl_sii.libs.charset_utils import _DETECTION_SAMPLE_SIZE, LOSSLESS_FALLBACK_ENCODING
 from cl_sii.libs.tz_utils import convert_naive_dt_to_tz_aware
+from cl_sii.rtc import parse_cesiones_periodo
 from cl_sii.rtc.data_models_cesiones_periodo import CesionesPeriodoEntry
 from cl_sii.rtc.parse_cesiones_periodo import (
+    _CESIONES_PERIODO_CSV_HEADERS_LINE,
+    CesionesPeriodoCsvRowSchema,
+    _parse_cesiones_periodo_csv_file_with_encoding_fallback,
     clean_cesiones_periodo_csv_file,
     parse_cesiones_periodo_csv_file,
 )
@@ -510,3 +517,136 @@ class FunctionsTest(unittest.TestCase):
                 ),
             ],
         )
+
+    def test_clean_cesiones_periodo_csv_file_with_undecodable_bytes_after_encoding_sample(
+        self,
+    ) -> None:
+        """
+        The encoding is detected from a sample of the file, so it may fail to decode the rest of it.
+        """
+        # %% -----Arrange-----
+
+        input_file_content, n_rows = _make_cesiones_periodo_csv_file_content_with_late_bad_byte()
+
+        # note: for the output we need 'w+b' to be able to read and write data.
+        with tempfile.NamedTemporaryFile(mode='w+b') as output_tmp_file:
+            with tempfile.NamedTemporaryFile(mode='wb') as input_tmp_file:
+                input_tmp_file.write(input_file_content)
+                input_tmp_file.flush()
+
+                # %% -----Act-----
+
+                with self.assertLogs('cl_sii.rtc.parse_cesiones_periodo', level='WARNING'):
+                    query_params, n_cesiones = clean_cesiones_periodo_csv_file(
+                        input_tmp_file.name, output_tmp_file.name
+                    )
+            output_tmp_file.seek(0)
+            output_file_content = output_tmp_file.read()
+
+        # %% -----Assert-----
+
+        self.assertEqual(
+            query_params,
+            'RUT=75320502-0;TIPO_CONSULTA=DEUDOR;DESDE_DDMMAAAA=01032019;HASTA_DDMMAAAA=31032019',
+        )
+        self.assertEqual(n_rows, n_cesiones)
+        self.assertIn('MI CAMPITO SA', output_file_content.decode('latin-1'))
+
+        # %% -----
+
+    def test_parse_cesiones_periodo_csv_file_with_undecodable_bytes_after_encoding_sample(
+        self,
+    ) -> None:
+        # %% -----Arrange-----
+
+        input_file_content, n_rows = _make_cesiones_periodo_csv_file_content_with_late_bad_byte(
+            include_query_params_line=False
+        )
+
+        with tempfile.NamedTemporaryFile(mode='wb') as input_tmp_file:
+            input_tmp_file.write(input_file_content)
+            input_tmp_file.flush()
+
+            # %% -----Act-----
+
+            with self.assertLogs('cl_sii.rtc.parse_cesiones_periodo', level='WARNING'):
+                results = list(parse_cesiones_periodo_csv_file(input_tmp_file.name))
+
+        # %% -----Assert-----
+
+        self.assertEqual(len(results), n_rows)
+        # Each entry was parsed, and none of them yielded errors.
+        self.assertTrue(all(entry is not None for entry, _, _, _ in results))
+        self.assertTrue(all(not row_errors for _, _, _, row_errors in results))
+
+        # %% -----
+
+    def test_parse_cesiones_periodo_csv_file_with_encoding_fallback_does_not_retry_the_fallback(
+        self,
+    ) -> None:
+        """
+        A decoding failure with the fallback encoding itself is propagated, not retried.
+        """
+        # %% -----Arrange-----
+
+        def _raise_unicode_decode_error(*args: object, **kwargs: object) -> None:
+            raise UnicodeDecodeError(
+                LOSSLESS_FALLBACK_ENCODING, b'\xfd', 0, 1, 'fake decoding failure'
+            )
+
+        g = _parse_cesiones_periodo_csv_file_with_encoding_fallback(
+            CesionesPeriodoCsvRowSchema(),
+            tuple(_CESIONES_PERIODO_CSV_HEADERS_LINE.split(';')),
+            (),
+            'non-existent-file.csv',
+            LOSSLESS_FALLBACK_ENCODING,
+            0,
+        )
+
+        # %% -----Act-----
+
+        with mock.patch.object(
+            parse_cesiones_periodo,
+            '_parse_cesiones_periodo_csv_file',
+            _raise_unicode_decode_error,
+        ):
+            # %% -----Assert-----
+
+            with self.assertRaises(UnicodeDecodeError):
+                list(g)
+
+        # %% -----
+
+
+def _make_cesiones_periodo_csv_file_content_with_late_bad_byte(
+    include_query_params_line: bool = True,
+) -> Tuple[bytes, int]:
+    """
+    Return the contents of a file whose beginning is valid UTF-8, and a byte that is not, beyond
+    the sample used for encoding detection, plus the number of data rows.
+    """
+    row_template = (
+        b'51532520-4;Cesion Vigente;75320502-0;null;33;Factura Electronica;%d;'
+        b'2019-02-15;96628;51532520-4;MI CAMPITO SA;mi@campito.cl;96667560-8;'
+        b'POBRES SERVICIOS FINANCIEROS S.A.;ejecutivo@pobres.cl;'
+        b'2019-03-07 13:31;96628;2019-04-16\r\n'
+    )
+    # note: the rows before the last one must add up to more than the detection sample, so
+    #   that the undecodable byte is beyond it.
+    n_rows = _DETECTION_SAMPLE_SIZE // len(row_template % 1) + 2
+    # note: the folio must be greater than zero.
+    rows = [row_template % (row_ix + 1) for row_ix in range(n_rows)]
+    # The last row is the only one that can not be decoded as UTF-8.
+    rows[-1] = rows[-1].replace(b'MI CAMPITO SA', b'MI CAMPITO S\xfd')
+    assert len(b''.join(rows[:-1])) > _DETECTION_SAMPLE_SIZE
+
+    lines = []
+    if include_query_params_line:
+        lines.append(
+            b'DATOS_CONSULTA; RUT=75320502-0;TIPO_CONSULTA=DEUDOR;DESDE_DDMMAAAA=01032019;'
+            b'HASTA_DDMMAAAA=31032019\r\n'
+        )
+    lines.append(_CESIONES_PERIODO_CSV_HEADERS_LINE.encode('ascii') + b'\r\n')
+    lines.extend(rows)
+
+    return b''.join(lines), n_rows

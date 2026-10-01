@@ -1,0 +1,21 @@
+# GitHub Actions Workflow for 'Release and Publish' Task
+
+name: "Task: Release and Publish"
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches: # Base reference
+      - develop
+
+permissions: {}
+
+jobs:
+  publish:
+    name: Publish
+    if: ${{ github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') }}
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: cordada/github-actions-utils/.github/workflows/task-release-and-publish.yaml@master

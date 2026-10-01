@@ -36,11 +36,11 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v6.2.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
@@ -48,16 +48,23 @@ jobs:
       - name: Install Pip
         run: make python-pip-install
 
-      - name: Create Python Virtual Environment
-        run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
-
       - name: Restoring/Saving Cache
-        uses: actions/cache@v5.0.5
+        id: restoring_saving_cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             .tox
             venv
           key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements-dev.txt', 'Makefile', 'make/**.mk') }}
+
+      - name: Create Python Virtual Environment
+        # Only when the cache was not restored. The cache is restored by extracting an archive
+        # over the workspace, so restoring it over an existing virtual environment merges the Pip
+        # installation that `python -m venv` bootstraps with the cached one, instead of replacing
+        # it. That leaves an unusable Pip whenever the two versions lay out their internal modules
+        # differently.
+        if: ${{ steps.restoring_saving_cache.outputs.cache-hit != 'true' }}
+        run: make python-virtualenv PYTHON_VIRTUALENV_DIR="venv"
 
       - name: Install Dependencies
         run: |
@@ -97,17 +104,17 @@ jobs:
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set Up Python ${{ matrix.python_version }}
         id: set_up_python
-        uses: actions/setup-python@v6.2.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "${{ matrix.python_version }}"
           check-latest: true
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             .tox
@@ -163,7 +170,7 @@ jobs:
 
       - name: Store Artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test_reports_${{ matrix.python_version }}
           path: test-reports/

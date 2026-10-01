@@ -1,6 +1,6 @@
-# GitHub Actions Workflow for Deployment
+# GitHub Actions Workflow for Publication
 
-name: Deploy
+name: Publish
 
 on:
   workflow_call:
@@ -18,7 +18,7 @@ permissions:
 
 # -----BEGIN Environment Variables-----
 
-# Environment variables required for deployment:
+# Environment variables required for publication:
 #
 # - PYPI_PASSWORD := PyPI password or API token.
 # - PYPI_USERNAME := PyPI username. For API tokens, use "__token__".
@@ -31,36 +31,36 @@ env:
 # -----END Environment Variables-----
 
 jobs:
-  deploy:
-    name: Deploy
+  publish:
+    name: Publish
     runs-on: ubuntu-22.04
     environment: ${{ inputs.deploy_env }}
 
     steps:
       - name: Check Out VCS Repository
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set Up Python
         id: set_up_python
-        uses: actions/setup-python@v6.2.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version-file: "pyproject.toml"
           check-latest: true
 
       - name: Restoring/Saving Cache
-        uses: actions/cache@v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: "venv"
           key: py-v1-deps-${{ runner.os }}-${{ steps.set_up_python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements-dev.txt', 'Makefile', 'make/**.mk') }}
           fail-on-cache-miss: true
 
       - name: Restore Artifacts (Release)
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: release
           path: ${{ inputs.artifacts_path }}/
 
-      - name: Deploy
+      - name: Publish
         run: |
           source "$PYTHON_VIRTUALENV_ACTIVATE"
           make deploy \
