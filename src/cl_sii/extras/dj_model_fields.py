@@ -254,18 +254,78 @@ class TipoDteField(django.db.models.SmallIntegerField):
     """
     Django model field for "Tipo de DTE".
 
-    * Python data type: :class:`cl_sii.dte.constants.TipoDte`
+    * Python data type: :class:`cl_sii.dte.constants.TipoDte`, or :class:`int` for a
+      code that is not a member of :class:`cl_sii.dte.constants.TipoDte` (e.g. one that
+      the SII adds after this version of the library), so that reading it does not fail.
 
     .. note::
         If the field's default `choices` is overridden, those custom `choices` will be
         used instead. In that case, it is the user's responsibility to ensure the
         validity of the choices.
+
+    .. seealso::
+        :class:`.dj_form_fields.TipoDteField`
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         if 'choices' not in kwargs:
             kwargs['choices'] = TipoDteChoices.choices
         super().__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs: Any) -> django.forms.Field:
+        # note: imported here because module `dj_form_fields` imports this module.
+        import cl_sii.extras.dj_form_fields
+
+        return super().formfield(
+            **{
+                'choices_form_class': cl_sii.extras.dj_form_fields.TipoDteField,
+                **kwargs,
+            }
+        )
+
+    def from_db_value(
+        self,
+        value: Optional[int],
+        expression: object,
+        connection: object,
+    ) -> TipoDte | int | None:
+        """
+        Convert a value as returned by the database to a Python object.
+
+        .. seealso::
+            :meth:`to_python`
+        """
+        return self.to_python(value)
+
+    def to_python(self, value: Optional[object]) -> TipoDte | int | None:
+        """
+        Convert the input value to a :class:`TipoDte`.
+
+        A code that is not a member of :class:`TipoDte` is returned as an :class:`int`.
+
+        :raises django.core.exceptions.ValidationError:
+            if the value can't be converted to an integer
+        """
+        converted_value: Optional[int] = super().to_python(value)
+
+        if converted_value is None:
+            return None
+
+        try:
+            return TipoDte(converted_value)
+        except ValueError:
+            return converted_value
+
+    def value_from_object(self, obj: django.db.models.Model) -> Optional[int]:
+        """
+        Return the value of this field in model instance ``obj``, as a plain :class:`int`.
+
+        It is the value that Django's serializers (e.g. ``dumpdata``) and model forms use.
+        A :class:`TipoDte` would be written as its name by the XML serializer before
+        Python 3.11, and could not be written at all by the YAML serializer.
+        """
+        value: Optional[int] = super().value_from_object(obj)
+        return value if value is None else int(value)
 
 
 RcvTipoDoctoChoices = django.db.models.IntegerChoices(

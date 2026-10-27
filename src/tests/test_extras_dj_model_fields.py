@@ -10,6 +10,7 @@ import django.forms
 
 import cl_sii.base.constants
 import cl_sii.dte.constants
+import cl_sii.extras.dj_form_fields
 import cl_sii.extras.dj_model_fields
 import cl_sii.rcv.constants
 import cl_sii.rtc.constants
@@ -233,6 +234,93 @@ class TipoDteFieldTestCase(unittest.TestCase):
             ]
         )
         self.assertEqual(expected_choices, field.choices)
+
+    def test_formfield(self) -> None:
+        field = self.TipoDteField()
+
+        form_field = field.formfield()
+
+        self.assertIsInstance(form_field, cl_sii.extras.dj_form_fields.TipoDteField)
+        self.assertEqual(33, form_field.prepare_value(cl_sii.dte.constants.TipoDte(33)))
+        self.assertIs(cl_sii.dte.constants.TipoDte(33), form_field.clean('33'))
+
+    def test_to_python(self) -> None:
+        field = self.TipoDteField()
+        test_items = [
+            (cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA, 33),
+            (cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA, '33'),
+            (
+                cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
+                cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
+            ),
+        ]
+
+        for expected_value, value in test_items:
+            with self.subTest(value=value):
+                converted_value = field.to_python(value)
+
+                self.assertIs(expected_value, converted_value)
+
+    def test_to_python_of_code_unknown_to_tipo_dte(self) -> None:
+        field = self.TipoDteField()
+
+        converted_value = field.to_python(999)
+
+        self.assertEqual(999, converted_value)
+        self.assertIs(int, type(converted_value))
+
+    def test_to_python_of_none(self) -> None:
+        field = self.TipoDteField()
+
+        self.assertIsNone(field.to_python(None))
+
+    def test_to_python_of_invalid_value(self) -> None:
+        field = self.TipoDteField()
+
+        with self.assertRaises(django.core.exceptions.ValidationError) as cm:
+            field.to_python('abc')
+
+        self.assertEqual('invalid', cm.exception.code)
+
+    def test_value_from_object(self) -> None:
+        field = self.TipoDteField()
+        field.set_attributes_from_name('tipo_dte')
+        test_items = [
+            (33, cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA),
+            (999, 999),
+            (None, None),
+        ]
+
+        for expected_value, value in test_items:
+            with self.subTest(value=value):
+                obj = unittest.mock.Mock(tipo_dte=value)
+
+                actual_value = field.value_from_object(obj)
+
+                self.assertEqual(expected_value, actual_value)
+                self.assertIs(type(expected_value), type(actual_value))
+
+    def test_value_to_string(self) -> None:
+        field = self.TipoDteField()
+        field.set_attributes_from_name('tipo_dte')
+        obj = unittest.mock.Mock(tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA)
+
+        self.assertEqual('33', field.value_to_string(obj))
+
+    def test_from_db_value(self) -> None:
+        field = self.TipoDteField()
+        test_items = [
+            (cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA, 33),
+            (999, 999),
+            (None, None),
+        ]
+
+        for expected_value, value in test_items:
+            with self.subTest(value=value):
+                converted_value = field.from_db_value(value, None, None)
+
+                self.assertEqual(expected_value, converted_value)
+                self.assertIs(type(expected_value), type(converted_value))
 
 
 class TipoDteChoicesTestCase(unittest.TestCase):
