@@ -238,12 +238,32 @@ class TipoDocumentoField(django.db.models.SmallIntegerField):
         super().__init__(*args, **kwargs)
 
 
+_TIPO_DTE_LABEL_LOWERCASE_WORDS = frozenset({'o', 'y', 'de', 'del', 'la', 'el', 'en'})
+
+
+def _get_tipo_dte_label(tipo_dte: TipoDte) -> str:
+    """
+    Build the display name of a "Tipo de DTE" from its name and its code.
+
+    Example: ``'Factura No Afecta o Exenta Electronica (34)'``
+    """
+    words = tipo_dte.name.replace('_', ' ').title().split(' ')
+    words = [
+        words[0],
+        *(
+            word.lower() if word.lower() in _TIPO_DTE_LABEL_LOWERCASE_WORDS else word
+            for word in words[1:]
+        ),
+    ]
+    return f"{' '.join(words)} ({tipo_dte.value})"
+
+
 TipoDteChoices = django.db.models.IntegerChoices(
     'TipoDteChoices',
     names={
         tipo_dte.name: (  # Enum member name
             tipo_dte.value,  # Enum member value
-            tipo_dte.name.replace('_', ' ').title(),  # Enum member display name
+            _get_tipo_dte_label(tipo_dte),  # Enum member display name
         )
         for tipo_dte in TipoDte
     },

@@ -347,10 +347,20 @@ class TipoDteChoicesTestCase(unittest.TestCase):
         self.assertEqual(expected_values, self.TipoDteChoices.values)
 
     def test_labels(self) -> None:
-        for label in self.TipoDteChoices.labels:
-            self.assertIsInstance(label, str)
+        expected_labels = [
+            'Factura Electronica (33)',
+            'Factura No Afecta o Exenta Electronica (34)',
+            'Liquidacion Factura Electronica (43)',
+            'Factura Compra Electronica (46)',
+            'Guia Despacho Electronica (52)',
+            'Nota Debito Electronica (56)',
+            'Nota Credito Electronica (61)',
+            'Factura Exportacion Electronica (110)',
+            'Nota Debito Exportacion Electronica (111)',
+            'Nota Credito Exportacion Electronica (112)',
+        ]
 
-        self.assertEqual(len(cl_sii.dte.constants.TipoDte), len(self.TipoDteChoices.labels))
+        self.assertEqual(expected_labels, self.TipoDteChoices.labels)
 
     def test_choices(self) -> None:
         expected_choices = list(zip(self.TipoDteChoices.values, self.TipoDteChoices.labels))
