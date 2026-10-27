@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import json
 import unittest
-from typing import ClassVar
+from typing import ClassVar, Optional
 
 import pydantic
 
+import cl_sii.dte.constants
+from cl_sii.extras.pydantic_types import DteFolio
 from cl_sii.extras.pydantic_types import Rut as PydanticRut
 from cl_sii.rut import Rut
 
@@ -196,3 +198,93 @@ class PydanticRutTest(unittest.TestCase):
         # -----Assert-----
 
         self.assertEqual(expected_json_schema, actual_json_schema)
+
+
+class DteFolioTest(unittest.TestCase):
+    """
+    Tests for :data:`DteFolio`.
+    """
+
+    pydantic_type_adapter: ClassVar[pydantic.TypeAdapter]
+    expected_json_schema: ClassVar[dict[str, object]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.pydantic_type_adapter = pydantic.TypeAdapter(DteFolio)
+        cls.expected_json_schema = {
+            'type': 'integer',
+            'format': 'int64',
+            'minimum': cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE,
+            'maximum': cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE,
+        }
+
+    def test_deserialize_valid(self) -> None:
+        test_items = [
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE,
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE,
+        ]
+
+        for test_item in test_items:
+            with self.subTest(item=test_item):
+                self.assertEqual(test_item, self.pydantic_type_adapter.validate_python(test_item))
+                self.assertEqual(
+                    test_item, self.pydantic_type_adapter.validate_json(json.dumps(test_item))
+                )
+
+    def test_deserialize_invalid(self) -> None:
+        test_items = [
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE - 1,
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE + 1,
+            None,
+        ]
+
+        for test_item in test_items:
+            data = json.dumps(test_item)
+
+            with self.subTest(item=test_item):
+                with self.assertRaises(pydantic.ValidationError):
+                    self.pydantic_type_adapter.validate_python(test_item)
+
+                with self.assertRaises(pydantic.ValidationError):
+                    self.pydantic_type_adapter.validate_json(data)
+
+    def test_json_schema_for_validation(self) -> None:
+        actual_json_schema = self.pydantic_type_adapter.json_schema(mode='validation')
+
+        self.assertEqual(self.expected_json_schema, actual_json_schema)
+
+    def test_json_schema_for_serialization(self) -> None:
+        actual_json_schema = self.pydantic_type_adapter.json_schema(mode='serialization')
+
+        self.assertEqual(self.expected_json_schema, actual_json_schema)
+
+    def test_json_schema_in_model(self) -> None:
+        # -----Arrange-----
+
+        class ExampleModel(pydantic.BaseModel):
+            folio: DteFolio
+            optional_folio: Optional[DteFolio]
+            folios: list[DteFolio]
+
+        expected_properties = {
+            'folio': {'title': 'Folio', **self.expected_json_schema},
+            'optional_folio': {
+                'title': 'Optional Folio',
+                'anyOf': [self.expected_json_schema, {'type': 'null'}],
+            },
+            'folios': {
+                'title': 'Folios',
+                'type': 'array',
+                'items': self.expected_json_schema,
+            },
+        }
+
+        # -----Act-----
+
+        actual_json_schema = ExampleModel.model_json_schema()
+
+        # -----Assert-----
+
+        self.assertEqual(expected_properties, actual_json_schema['properties'])

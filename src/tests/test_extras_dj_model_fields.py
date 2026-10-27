@@ -4,10 +4,13 @@ import unittest.mock
 from typing import ClassVar
 
 import django.core.exceptions
+import django.core.validators
 import django.db.models
+import django.forms
 
 import cl_sii.base.constants
 import cl_sii.dte.constants
+import cl_sii.extras.dj_form_fields
 import cl_sii.extras.dj_model_fields
 import cl_sii.rcv.constants
 import cl_sii.rtc.constants
@@ -232,6 +235,93 @@ class TipoDteFieldTestCase(unittest.TestCase):
         )
         self.assertEqual(expected_choices, field.choices)
 
+    def test_formfield(self) -> None:
+        field = self.TipoDteField()
+
+        form_field = field.formfield()
+
+        self.assertIsInstance(form_field, cl_sii.extras.dj_form_fields.TipoDteField)
+        self.assertEqual(33, form_field.prepare_value(cl_sii.dte.constants.TipoDte(33)))
+        self.assertIs(cl_sii.dte.constants.TipoDte(33), form_field.clean('33'))
+
+    def test_to_python(self) -> None:
+        field = self.TipoDteField()
+        test_items = [
+            (cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA, 33),
+            (cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA, '33'),
+            (
+                cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
+                cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA,
+            ),
+        ]
+
+        for expected_value, value in test_items:
+            with self.subTest(value=value):
+                converted_value = field.to_python(value)
+
+                self.assertIs(expected_value, converted_value)
+
+    def test_to_python_of_code_unknown_to_tipo_dte(self) -> None:
+        field = self.TipoDteField()
+
+        converted_value = field.to_python(999)
+
+        self.assertEqual(999, converted_value)
+        self.assertIs(int, type(converted_value))
+
+    def test_to_python_of_none(self) -> None:
+        field = self.TipoDteField()
+
+        self.assertIsNone(field.to_python(None))
+
+    def test_to_python_of_invalid_value(self) -> None:
+        field = self.TipoDteField()
+
+        with self.assertRaises(django.core.exceptions.ValidationError) as cm:
+            field.to_python('abc')
+
+        self.assertEqual('invalid', cm.exception.code)
+
+    def test_value_from_object(self) -> None:
+        field = self.TipoDteField()
+        field.set_attributes_from_name('tipo_dte')
+        test_items = [
+            (33, cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA),
+            (999, 999),
+            (None, None),
+        ]
+
+        for expected_value, value in test_items:
+            with self.subTest(value=value):
+                obj = unittest.mock.Mock(tipo_dte=value)
+
+                actual_value = field.value_from_object(obj)
+
+                self.assertEqual(expected_value, actual_value)
+                self.assertIs(type(expected_value), type(actual_value))
+
+    def test_value_to_string(self) -> None:
+        field = self.TipoDteField()
+        field.set_attributes_from_name('tipo_dte')
+        obj = unittest.mock.Mock(tipo_dte=cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA)
+
+        self.assertEqual('33', field.value_to_string(obj))
+
+    def test_from_db_value(self) -> None:
+        field = self.TipoDteField()
+        test_items = [
+            (cl_sii.dte.constants.TipoDte.FACTURA_ELECTRONICA, 33),
+            (999, 999),
+            (None, None),
+        ]
+
+        for expected_value, value in test_items:
+            with self.subTest(value=value):
+                converted_value = field.from_db_value(value, None, None)
+
+                self.assertEqual(expected_value, converted_value)
+                self.assertIs(type(expected_value), type(converted_value))
+
 
 class TipoDteChoicesTestCase(unittest.TestCase):
     TipoDteChoices: ClassVar[type[cl_sii.extras.dj_model_fields.TipoDteChoices]]
@@ -257,10 +347,20 @@ class TipoDteChoicesTestCase(unittest.TestCase):
         self.assertEqual(expected_values, self.TipoDteChoices.values)
 
     def test_labels(self) -> None:
-        for label in self.TipoDteChoices.labels:
-            self.assertIsInstance(label, str)
+        expected_labels = [
+            'Factura Electronica (33)',
+            'Factura No Afecta o Exenta Electronica (34)',
+            'Liquidacion Factura Electronica (43)',
+            'Factura Compra Electronica (46)',
+            'Guia Despacho Electronica (52)',
+            'Nota Debito Electronica (56)',
+            'Nota Credito Electronica (61)',
+            'Factura Exportacion Electronica (110)',
+            'Nota Debito Exportacion Electronica (111)',
+            'Nota Credito Exportacion Electronica (112)',
+        ]
 
-        self.assertEqual(len(cl_sii.dte.constants.TipoDte), len(self.TipoDteChoices.labels))
+        self.assertEqual(expected_labels, self.TipoDteChoices.labels)
 
     def test_choices(self) -> None:
         expected_choices = list(zip(self.TipoDteChoices.values, self.TipoDteChoices.labels))
@@ -345,3 +445,61 @@ class RcvTipoDoctoChoicesTestCase(unittest.TestCase):
             zip(self.RcvTipoDoctoChoices.values, self.RcvTipoDoctoChoices.labels)
         )
         self.assertEqual(expected_choices, self.RcvTipoDoctoChoices.choices)
+
+
+class DteFolioFieldTestCase(unittest.TestCase):
+    DteFolioField: ClassVar[type[cl_sii.extras.dj_model_fields.DteFolioField]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.DteFolioField = cl_sii.extras.dj_model_fields.DteFolioField
+
+    def test_is_big_integer_field(self) -> None:
+        self.assertTrue(issubclass(self.DteFolioField, django.db.models.BigIntegerField))
+
+    def test_get_internal_type(self) -> None:
+        field = self.DteFolioField()
+        self.assertEqual('BigIntegerField', field.get_internal_type())
+
+    def test_default_validators(self) -> None:
+        field = self.DteFolioField()
+
+        self.assertEqual(2, len(field.default_validators))
+        min_value_validator, max_value_validator = field.default_validators
+        self.assertIsInstance(min_value_validator, django.core.validators.MinValueValidator)
+        self.assertEqual(
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE, min_value_validator.limit_value
+        )
+        self.assertIsInstance(max_value_validator, django.core.validators.MaxValueValidator)
+        self.assertEqual(
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE, max_value_validator.limit_value
+        )
+
+    def test_deconstruct(self) -> None:
+        field = self.DteFolioField()
+
+        name, path, args, kwargs = field.deconstruct()
+
+        self.assertEqual('cl_sii.extras.dj_model_fields.DteFolioField', path)
+        self.assertEqual([], args)
+        self.assertEqual({}, kwargs)
+        self.assertEqual(field.deconstruct(), self.DteFolioField(*args, **kwargs).deconstruct())
+
+    def test_formfield(self) -> None:
+        field = self.DteFolioField()
+
+        form_field = field.formfield()
+
+        self.assertIsInstance(form_field, django.forms.IntegerField)
+        self.assertEqual(cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE, form_field.min_value)
+        self.assertEqual(cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE, form_field.max_value)
+
+    def test_formfield_with_custom_min_value_and_max_value(self) -> None:
+        field = self.DteFolioField()
+
+        form_field = field.formfield(min_value=100, max_value=200)
+
+        self.assertEqual(100, form_field.min_value)
+        self.assertEqual(200, form_field.max_value)

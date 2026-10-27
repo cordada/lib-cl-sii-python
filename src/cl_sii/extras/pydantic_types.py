@@ -24,6 +24,7 @@ try:
 except ImportError as exc:  # pragma: no cover
     raise ImportError("Package 'pydantic-core' is required to use this module.") from exc
 
+import cl_sii.dte.constants
 import cl_sii.rut
 import cl_sii.rut.constants
 
@@ -139,4 +140,26 @@ class _RutPydanticAnnotation:
 Rut = Annotated[cl_sii.rut.Rut, _RutPydanticAnnotation]
 """
 Convenience type alias for Pydantic fields that represent Chilean RUTs.
+"""
+
+
+DteFolio = Annotated[
+    int,
+    pydantic.Field(
+        ge=cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE,
+        le=cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE,
+        json_schema_extra={'format': 'int64'},
+    ),
+]
+"""
+Convenience type alias for Pydantic fields that represent a DTE's "folio".
+
+The value must be within the range of valid values for a DTE's "folio", i.e.
+between :data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE` and
+:data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE`, which exceeds the
+range of a 32-bit integer, so its JSON Schema declares format ``int64``.
+
+.. seealso::
+    :class:`.dj_model_fields.DteFolioField`, :class:`.drf_fields.DteFolioField`
+    and :class:`.mm_fields.DteFolioField`
 """

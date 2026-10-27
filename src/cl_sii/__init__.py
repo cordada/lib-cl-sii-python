@@ -4,4 +4,4 @@ cl-sii Python lib
 
 """
 
-__version__ = '0.79.0'
+__version__ = '0.80.0'

@@ -14,6 +14,8 @@ import django.core.exceptions
 import django.forms
 from django.utils.translation import gettext_lazy as _
 
+from cl_sii.dte.constants import TipoDte
+from cl_sii.extras.dj_model_fields import TipoDteChoices
 from cl_sii.rut import Rut
 
 
@@ -74,3 +76,43 @@ class RutField(django.forms.CharField):
             )
 
         return converted_value
+
+
+class TipoDteField(django.forms.TypedChoiceField):
+    """
+    Django form field for "Tipo de DTE".
+
+    * Python data type: :class:`cl_sii.dte.constants.TipoDte`
+
+    By default, the choices are all the members of :class:`TipoDte`, as in
+    :data:`.dj_model_fields.TipoDteChoices`. A different set of choices can be
+    set with the field option ``choices``; a value that is not among them is
+    rejected.
+
+    .. seealso::
+        :class:`.dj_model_fields.TipoDteField`
+    """
+
+    def __init__(self, **kwargs: Any) -> None:
+        kwargs.setdefault('choices', TipoDteChoices.choices)
+        kwargs.setdefault('coerce', self._to_tipo_dte)
+        kwargs.setdefault('empty_value', None)
+        super().__init__(**kwargs)
+
+    # note: before Python 3.11, `str()` of an `IntEnum` member is its name, not its value, which
+    #   would make `ChoiceField` reject an instance of `TipoDte`, and the widget not select it.
+
+    def prepare_value(self, value: Optional[object]) -> object:
+        if isinstance(value, TipoDte):
+            value = value.value
+        return super().prepare_value(value)
+
+    def to_python(self, value: Optional[object]) -> str:
+        if isinstance(value, TipoDte):
+            value = value.value
+        converted_value: str = super().to_python(value)
+        return converted_value
+
+    @staticmethod
+    def _to_tipo_dte(value: object) -> TipoDte:
+        return TipoDte(int(value))  # type: ignore[call-overload]

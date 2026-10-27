@@ -11,12 +11,14 @@ except ImportError as exc:  # pragma: no cover
 from typing import Any, ClassVar, Optional, Tuple
 
 import django.core.exceptions
+import django.core.validators
 import django.db.models
 import django.db.models.fields
+import django.forms
 
 import cl_sii.rut.constants
 from cl_sii.base.constants import TipoDocumento
-from cl_sii.dte.constants import TipoDte
+from cl_sii.dte.constants import DTE_FOLIO_FIELD_MAX_VALUE, DTE_FOLIO_FIELD_MIN_VALUE, TipoDte
 from cl_sii.rcv.constants import RcvTipoDocto
 from cl_sii.rut import Rut
 
@@ -236,12 +238,32 @@ class TipoDocumentoField(django.db.models.SmallIntegerField):
         super().__init__(*args, **kwargs)
 
 
+_TIPO_DTE_LABEL_LOWERCASE_WORDS = frozenset({'o', 'y', 'de', 'del', 'la', 'el', 'en'})
+
+
+def _get_tipo_dte_label(tipo_dte: TipoDte) -> str:
+    """
+    Build the display name of a "Tipo de DTE" from its name and its code.
+
+    Example: ``'Factura No Afecta o Exenta Electronica (34)'``
+    """
+    words = tipo_dte.name.replace('_', ' ').title().split(' ')
+    words = [
+        words[0],
+        *(
+            word.lower() if word.lower() in _TIPO_DTE_LABEL_LOWERCASE_WORDS else word
+            for word in words[1:]
+        ),
+    ]
+    return f"{' '.join(words)} ({tipo_dte.value})"
+
+
 TipoDteChoices = django.db.models.IntegerChoices(
     'TipoDteChoices',
     names={
         tipo_dte.name: (  # Enum member name
             tipo_dte.value,  # Enum member value
-            tipo_dte.name.replace('_', ' ').title(),  # Enum member display name
+            _get_tipo_dte_label(tipo_dte),  # Enum member display name
         )
         for tipo_dte in TipoDte
     },
@@ -252,18 +274,78 @@ class TipoDteField(django.db.models.SmallIntegerField):
     """
     Django model field for "Tipo de DTE".
 
-    * Python data type: :class:`cl_sii.dte.constants.TipoDte`
+    * Python data type: :class:`cl_sii.dte.constants.TipoDte`, or :class:`int` for a
+      code that is not a member of :class:`cl_sii.dte.constants.TipoDte` (e.g. one that
+      the SII adds after this version of the library), so that reading it does not fail.
 
     .. note::
         If the field's default `choices` is overridden, those custom `choices` will be
         used instead. In that case, it is the user's responsibility to ensure the
         validity of the choices.
+
+    .. seealso::
+        :class:`.dj_form_fields.TipoDteField`
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         if 'choices' not in kwargs:
             kwargs['choices'] = TipoDteChoices.choices
         super().__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs: Any) -> django.forms.Field:
+        # note: imported here because module `dj_form_fields` imports this module.
+        import cl_sii.extras.dj_form_fields
+
+        return super().formfield(
+            **{
+                'choices_form_class': cl_sii.extras.dj_form_fields.TipoDteField,
+                **kwargs,
+            }
+        )
+
+    def from_db_value(
+        self,
+        value: Optional[int],
+        expression: object,
+        connection: object,
+    ) -> TipoDte | int | None:
+        """
+        Convert a value as returned by the database to a Python object.
+
+        .. seealso::
+            :meth:`to_python`
+        """
+        return self.to_python(value)
+
+    def to_python(self, value: Optional[object]) -> TipoDte | int | None:
+        """
+        Convert the input value to a :class:`TipoDte`.
+
+        A code that is not a member of :class:`TipoDte` is returned as an :class:`int`.
+
+        :raises django.core.exceptions.ValidationError:
+            if the value can't be converted to an integer
+        """
+        converted_value: Optional[int] = super().to_python(value)
+
+        if converted_value is None:
+            return None
+
+        try:
+            return TipoDte(converted_value)
+        except ValueError:
+            return converted_value
+
+    def value_from_object(self, obj: django.db.models.Model) -> Optional[int]:
+        """
+        Return the value of this field in model instance ``obj``, as a plain :class:`int`.
+
+        It is the value that Django's serializers (e.g. ``dumpdata``) and model forms use.
+        A :class:`TipoDte` would be written as its name by the XML serializer before
+        Python 3.11, and could not be written at all by the YAML serializer.
+        """
+        value: Optional[int] = super().value_from_object(obj)
+        return value if value is None else int(value)
 
 
 RcvTipoDoctoChoices = django.db.models.IntegerChoices(
@@ -294,3 +376,38 @@ class RcvTipoDoctoField(django.db.models.SmallIntegerField):
         if 'choices' not in kwargs:
             kwargs['choices'] = RcvTipoDoctoChoices.choices
         super().__init__(*args, **kwargs)
+
+
+class DteFolioField(django.db.models.BigIntegerField):
+    """
+    Django model field for a DTE's "folio".
+
+    * Python data type: :class:`int`
+    * DB type: ``bigint``, the same one as the one for model field
+      :class:`django.db.models.BigIntegerField`
+
+    The value must be within the range of valid values for a DTE's "folio",
+    i.e. between :data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE` and
+    :data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE`. The range is
+    enforced by validators (e.g. in :meth:`django.db.models.Model.full_clean`,
+    forms and serializers), not by a database constraint.
+
+    .. seealso::
+        :class:`.drf_fields.DteFolioField`, :class:`.mm_fields.DteFolioField`
+        and :data:`.pydantic_types.DteFolio`
+    """
+
+    description = 'DTE folio for SII (Chile)'
+    default_validators = [
+        django.core.validators.MinValueValidator(DTE_FOLIO_FIELD_MIN_VALUE),
+        django.core.validators.MaxValueValidator(DTE_FOLIO_FIELD_MAX_VALUE),
+    ]
+
+    def formfield(self, **kwargs: Any) -> django.forms.Field:
+        return super().formfield(
+            **{
+                'min_value': DTE_FOLIO_FIELD_MIN_VALUE,
+                'max_value': DTE_FOLIO_FIELD_MAX_VALUE,
+                **kwargs,
+            }
+        )

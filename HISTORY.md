@@ -1,5 +1,11 @@
 # History
 
+## 0.80.0 (2026-10-27)
+
+- (PR #1076, 2026-10-27) extras: Add custom data type for DTE folios
+- (PR #1078, 2026-10-27) extras: Return TipoDte from Django model field and add form field
+- (PR #1074, 2026-10-27) chore(deps): Bump the github-actions-production group with 4 updates
+
 ## 0.79.0 (2026-09-30)
 
 - (PR #1044, 2026-06-17) Do not trigger Commit Linter/Dependency Review for draft PRs marked ready

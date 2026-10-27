@@ -14,6 +14,7 @@ from typing import Any, ClassVar
 
 import rest_framework.fields
 
+import cl_sii.dte.constants
 from cl_sii.rut import Rut
 
 
@@ -93,3 +94,35 @@ class RutField(rest_framework.fields.CharField):
 
         """
         return value.canonical
+
+
+class DteFolioField(rest_framework.fields.IntegerField):
+    """
+    DRF field for a DTE's "folio".
+
+    Data types:
+    * native/primitive/internal/deserialized: :class:`int`
+    * representation/serialized: int, same as for DRF field
+      :class:`rest_framework.fields.IntegerField`
+
+    By default, the value must be within the range of valid values for a
+    DTE's "folio", i.e. between
+    :data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE` and
+    :data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE`. A different range
+    can be set with the field options ``min_value`` and ``max_value``.
+
+    .. note::
+        OpenAPI schema generators, such as DRF's (as of version 3.16) and
+        drf-spectacular's, declare format ``int64`` for an integer field whose
+        range exceeds that of a 32-bit integer, as this field's default range
+        does.
+
+    .. seealso::
+        :class:`.dj_model_fields.DteFolioField`, :class:`.mm_fields.DteFolioField`
+        and :data:`.pydantic_types.DteFolio`
+    """
+
+    def __init__(self, **kwargs: Any) -> None:
+        kwargs.setdefault('min_value', cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE)
+        kwargs.setdefault('max_value', cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE)
+        super().__init__(**kwargs)
