@@ -5,6 +5,8 @@ import unittest
 import django.db.models
 import rest_framework.serializers
 
+import cl_sii.extras.dj_model_fields
+import cl_sii.extras.drf_fields
 import cl_sii.extras.drf_serializers
 
 
@@ -22,3 +24,11 @@ class ModelSerializerFieldMappingTestCase(unittest.TestCase):
         for k, v in serializer_field_mapping.items():
             self.assertTrue(issubclass(k, django.db.models.Field))
             self.assertTrue(issubclass(v, rest_framework.serializers.Field))
+
+    def test_dte_folio_field(self) -> None:
+        self.assertIs(
+            cl_sii.extras.drf_fields.DteFolioField,
+            cl_sii.extras.drf_serializers.model_serializer_field_mapping[
+                cl_sii.extras.dj_model_fields.DteFolioField
+            ],
+        )
