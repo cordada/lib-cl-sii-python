@@ -2,7 +2,9 @@ import unittest
 
 import django.core.exceptions
 
-from cl_sii.extras.dj_form_fields import Rut, RutField
+from cl_sii.dte.constants import TipoDte
+from cl_sii.extras.dj_form_fields import Rut, RutField, TipoDteField
+from cl_sii.extras.dj_model_fields import TipoDteChoices
 
 
 class RutFieldTest(unittest.TestCase):
@@ -82,3 +84,51 @@ class RutFieldTest(unittest.TestCase):
             with self.assertRaises(django.core.exceptions.ValidationError) as cm:
                 rut_field.clean(value)
             self.assertEqual(cm.exception.code, 'required')
+
+
+class TipoDteFieldTest(unittest.TestCase):
+    def test_choices(self) -> None:
+        field = TipoDteField()
+
+        self.assertEqual(TipoDteChoices.choices, field.choices)
+
+    def test_clean(self) -> None:
+        field = TipoDteField()
+        test_items = ['33', 33, TipoDte.FACTURA_ELECTRONICA]
+
+        for value in test_items:
+            with self.subTest(value=value):
+                self.assertIs(TipoDte.FACTURA_ELECTRONICA, field.clean(value))
+
+    def test_prepare_value(self) -> None:
+        field = TipoDteField()
+
+        self.assertEqual(33, field.prepare_value(TipoDte.FACTURA_ELECTRONICA))
+        self.assertEqual('33', field.prepare_value('33'))
+        self.assertIsNone(field.prepare_value(None))
+
+    def test_clean_empty_value_if_not_required(self) -> None:
+        field = TipoDteField(required=False)
+
+        self.assertIsNone(field.clean(''))
+
+    def test_clean_invalid_value(self) -> None:
+        field = TipoDteField()
+        test_items = ['999', 'abc']
+
+        for value in test_items:
+            with self.subTest(value=value):
+                with self.assertRaises(django.core.exceptions.ValidationError) as cm:
+                    field.clean(value)
+
+                self.assertEqual('invalid_choice', cm.exception.code)
+
+    def test_custom_choices(self) -> None:
+        choices = [(TipoDte.FACTURA_ELECTRONICA.value, 'Factura Electronica (33)')]
+        field = TipoDteField(choices=choices)
+
+        self.assertEqual(choices, field.choices)
+        self.assertIs(TipoDte.FACTURA_ELECTRONICA, field.clean('33'))
+        with self.assertRaises(django.core.exceptions.ValidationError) as cm:
+            field.clean('34')
+        self.assertEqual('invalid_choice', cm.exception.code)
