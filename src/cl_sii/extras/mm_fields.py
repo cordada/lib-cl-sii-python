@@ -14,11 +14,14 @@ except ImportError as exc:  # pragma: no cover
     raise ImportError("Package 'marshmallow' is required to use this module.") from exc
 
 import datetime
+import decimal
+import numbers
 from typing import Any, ClassVar, Mapping, Optional
 
 import marshmallow.fields
+import marshmallow.validate
 
-from cl_sii.dte.constants import TipoDte
+from cl_sii.dte.constants import DTE_FOLIO_FIELD_MAX_VALUE, DTE_FOLIO_FIELD_MIN_VALUE, TipoDte
 from cl_sii.rcv.constants import RcvTipoDocto
 from cl_sii.rcv.data_models import PeriodoTributario as RcvPeriodoTributario
 from cl_sii.rut import Rut
@@ -253,3 +256,63 @@ class RcvPeriodoTributarioField(marshmallow.fields.Field):
             validated = RcvPeriodoTributario.from_date(value)
 
         return validated
+
+
+class DteFolioField(marshmallow.fields.Integer):
+    """
+    Marshmallow field for a DTE's "folio".
+
+    Data types:
+    * native/primitive/internal/deserialized: :class:`int`
+    * representation/serialized: int, same as for Marshmallow field
+      :class:`marshmallow.fields.Integer`
+
+    By default, the value must be within the range of valid values for a
+    DTE's "folio", i.e. between
+    :data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE` and
+    :data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE`. A different range
+    can be set with the field options ``min_value`` and ``max_value``.
+
+    Unlike :class:`marshmallow.fields.Integer`, which truncates a number with
+    a fractional part (e.g. ``1.5`` becomes ``1``), this field rejects it.
+    A number without a fractional part (e.g. ``1.0``) and a string (e.g.
+    ``'1'``) are accepted, unless the field option ``strict`` is enabled.
+
+    The field's metadata includes ``format`` ``int64``, because the range of
+    valid values exceeds that of a 32-bit integer.
+
+    .. seealso::
+        :class:`.dj_model_fields.DteFolioField`, :class:`.drf_fields.DteFolioField`
+        and :data:`.pydantic_types.DteFolio`
+    """
+
+    def __init__(
+        self,
+        *,
+        min_value: int = DTE_FOLIO_FIELD_MIN_VALUE,
+        max_value: int = DTE_FOLIO_FIELD_MAX_VALUE,
+        **kwargs: Any,
+    ) -> None:
+        validators: list[Any] = [marshmallow.validate.Range(min=min_value, max=max_value)]
+        validate = kwargs.pop('validate', None)
+        if callable(validate):
+            validators.append(validate)
+        elif validate is not None:
+            validators.extend(validate)
+
+        metadata = {'format': 'int64', **(kwargs.pop('metadata', None) or {})}
+
+        super().__init__(validate=validators, metadata=metadata, **kwargs)
+
+    def _deserialize(
+        self, value: Any, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any
+    ) -> int:
+        if isinstance(value, numbers.Number) and not isinstance(value, numbers.Integral):
+            try:
+                is_integral_value = value == int(value)  # type: ignore[call-overload]
+            except (TypeError, ValueError, OverflowError, decimal.InvalidOperation) as exc:
+                raise self.make_error('invalid', input=value) from exc
+            if not is_integral_value:
+                raise self.make_error('invalid', input=value)
+
+        return super()._deserialize(value, attr, data, **kwargs)

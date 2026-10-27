@@ -11,12 +11,14 @@ except ImportError as exc:  # pragma: no cover
 from typing import Any, ClassVar, Optional, Tuple
 
 import django.core.exceptions
+import django.core.validators
 import django.db.models
 import django.db.models.fields
+import django.forms
 
 import cl_sii.rut.constants
 from cl_sii.base.constants import TipoDocumento
-from cl_sii.dte.constants import TipoDte
+from cl_sii.dte.constants import DTE_FOLIO_FIELD_MAX_VALUE, DTE_FOLIO_FIELD_MIN_VALUE, TipoDte
 from cl_sii.rcv.constants import RcvTipoDocto
 from cl_sii.rut import Rut
 
@@ -294,3 +296,38 @@ class RcvTipoDoctoField(django.db.models.SmallIntegerField):
         if 'choices' not in kwargs:
             kwargs['choices'] = RcvTipoDoctoChoices.choices
         super().__init__(*args, **kwargs)
+
+
+class DteFolioField(django.db.models.BigIntegerField):
+    """
+    Django model field for a DTE's "folio".
+
+    * Python data type: :class:`int`
+    * DB type: ``bigint``, the same one as the one for model field
+      :class:`django.db.models.BigIntegerField`
+
+    The value must be within the range of valid values for a DTE's "folio",
+    i.e. between :data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE` and
+    :data:`cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE`. The range is
+    enforced by validators (e.g. in :meth:`django.db.models.Model.full_clean`,
+    forms and serializers), not by a database constraint.
+
+    .. seealso::
+        :class:`.drf_fields.DteFolioField`, :class:`.mm_fields.DteFolioField`
+        and :data:`.pydantic_types.DteFolio`
+    """
+
+    description = 'DTE folio for SII (Chile)'
+    default_validators = [
+        django.core.validators.MinValueValidator(DTE_FOLIO_FIELD_MIN_VALUE),
+        django.core.validators.MaxValueValidator(DTE_FOLIO_FIELD_MAX_VALUE),
+    ]
+
+    def formfield(self, **kwargs: Any) -> django.forms.Field:
+        return super().formfield(
+            **{
+                'min_value': DTE_FOLIO_FIELD_MIN_VALUE,
+                'max_value': DTE_FOLIO_FIELD_MAX_VALUE,
+                **kwargs,
+            }
+        )

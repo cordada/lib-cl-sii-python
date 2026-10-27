@@ -4,7 +4,9 @@ import unittest.mock
 from typing import ClassVar
 
 import django.core.exceptions
+import django.core.validators
 import django.db.models
+import django.forms
 
 import cl_sii.base.constants
 import cl_sii.dte.constants
@@ -345,3 +347,61 @@ class RcvTipoDoctoChoicesTestCase(unittest.TestCase):
             zip(self.RcvTipoDoctoChoices.values, self.RcvTipoDoctoChoices.labels)
         )
         self.assertEqual(expected_choices, self.RcvTipoDoctoChoices.choices)
+
+
+class DteFolioFieldTestCase(unittest.TestCase):
+    DteFolioField: ClassVar[type[cl_sii.extras.dj_model_fields.DteFolioField]]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.DteFolioField = cl_sii.extras.dj_model_fields.DteFolioField
+
+    def test_is_big_integer_field(self) -> None:
+        self.assertTrue(issubclass(self.DteFolioField, django.db.models.BigIntegerField))
+
+    def test_get_internal_type(self) -> None:
+        field = self.DteFolioField()
+        self.assertEqual('BigIntegerField', field.get_internal_type())
+
+    def test_default_validators(self) -> None:
+        field = self.DteFolioField()
+
+        self.assertEqual(2, len(field.default_validators))
+        min_value_validator, max_value_validator = field.default_validators
+        self.assertIsInstance(min_value_validator, django.core.validators.MinValueValidator)
+        self.assertEqual(
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE, min_value_validator.limit_value
+        )
+        self.assertIsInstance(max_value_validator, django.core.validators.MaxValueValidator)
+        self.assertEqual(
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE, max_value_validator.limit_value
+        )
+
+    def test_deconstruct(self) -> None:
+        field = self.DteFolioField()
+
+        name, path, args, kwargs = field.deconstruct()
+
+        self.assertEqual('cl_sii.extras.dj_model_fields.DteFolioField', path)
+        self.assertEqual([], args)
+        self.assertEqual({}, kwargs)
+        self.assertEqual(field.deconstruct(), self.DteFolioField(*args, **kwargs).deconstruct())
+
+    def test_formfield(self) -> None:
+        field = self.DteFolioField()
+
+        form_field = field.formfield()
+
+        self.assertIsInstance(form_field, django.forms.IntegerField)
+        self.assertEqual(cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE, form_field.min_value)
+        self.assertEqual(cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE, form_field.max_value)
+
+    def test_formfield_with_custom_min_value_and_max_value(self) -> None:
+        field = self.DteFolioField()
+
+        form_field = field.formfield(min_value=100, max_value=200)
+
+        self.assertEqual(100, form_field.min_value)
+        self.assertEqual(200, form_field.max_value)

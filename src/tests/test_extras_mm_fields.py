@@ -1,9 +1,12 @@
+import decimal
 import unittest
 from datetime import date, datetime
 
 import marshmallow
 
+import cl_sii.dte.constants
 from cl_sii.extras.mm_fields import (
+    DteFolioField,
     RcvPeriodoTributario,
     RcvPeriodoTributarioField,
     RcvTipoDocto,
@@ -662,3 +665,114 @@ class RcvPeriodoTributarioFieldTest(unittest.TestCase):
         with self.assertRaises(marshmallow.ValidationError) as cm:
             schema.dump(obj_invalid_6)
         self.assertEqual(cm.exception.messages, ["Not a valid RCV Periodo Tributario."])
+
+
+class DteFolioFieldTest(unittest.TestCase):
+    def test_load_valid(self) -> None:
+        class MyMmSchema(marshmallow.Schema):
+            folio = DteFolioField(required=True)
+
+        schema = MyMmSchema()
+        test_items = [
+            (cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE, 1),
+            (cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE, 10000000000),
+            ('10000000000', 10000000000),
+            (' 5 ', 5),
+            (1.0, 1),
+            (decimal.Decimal('1'), 1),
+        ]
+
+        for value, expected_value in test_items:
+            with self.subTest(value=value):
+                self.assertEqual({'folio': expected_value}, schema.load({'folio': value}))
+
+    def test_load_invalid(self) -> None:
+        class MyMmSchema(marshmallow.Schema):
+            folio = DteFolioField(required=True)
+
+        schema = MyMmSchema()
+        test_items = [
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MIN_VALUE - 1,
+            cl_sii.dte.constants.DTE_FOLIO_FIELD_MAX_VALUE + 1,
+            1.5,
+            decimal.Decimal('1.9'),
+            decimal.Decimal('NaN'),
+            decimal.Decimal('Infinity'),
+            float('nan'),
+            float('inf'),
+            '1.5',
+            True,
+            False,
+            None,
+        ]
+
+        for value in test_items:
+            with self.subTest(value=value):
+                with self.assertRaises(marshmallow.ValidationError):
+                    schema.load({'folio': value})
+
+    def test_load_strict(self) -> None:
+        class MyMmSchema(marshmallow.Schema):
+            folio = DteFolioField(required=True, strict=True)
+
+        schema = MyMmSchema()
+
+        self.assertEqual({'folio': 5}, schema.load({'folio': 5}))
+        for value in ['5', 1.0]:
+            with self.subTest(value=value):
+                with self.assertRaises(marshmallow.ValidationError):
+                    schema.load({'folio': value})
+
+    def test_dump(self) -> None:
+        class MyMmSchema(marshmallow.Schema):
+            folio = DteFolioField(required=True)
+
+        class MyObj:
+            def __init__(self, folio: int) -> None:
+                self.folio = folio
+
+        schema = MyMmSchema()
+
+        self.assertEqual({'folio': 10000000000}, schema.dump(MyObj(folio=10000000000)))
+
+    def test_custom_min_value_and_max_value(self) -> None:
+        class MyMmSchema(marshmallow.Schema):
+            folio = DteFolioField(required=True, min_value=100, max_value=200)
+
+        schema = MyMmSchema()
+
+        self.assertEqual({'folio': 100}, schema.load({'folio': 100}))
+        self.assertEqual({'folio': 200}, schema.load({'folio': 200}))
+        for value in [99, 201]:
+            with self.subTest(value=value):
+                with self.assertRaises(marshmallow.ValidationError):
+                    schema.load({'folio': value})
+
+    def test_custom_validate_is_added(self) -> None:
+        def validate_even(value: int) -> None:
+            if value % 2 != 0:
+                raise marshmallow.ValidationError('Not even.')
+
+        test_items = [validate_even, [validate_even]]
+
+        for validate in test_items:
+            with self.subTest(validate=validate):
+
+                class MyMmSchema(marshmallow.Schema):
+                    folio = DteFolioField(required=True, validate=validate)
+
+                schema = MyMmSchema()
+
+                self.assertEqual({'folio': 2}, schema.load({'folio': 2}))
+                with self.assertRaises(marshmallow.ValidationError):
+                    schema.load({'folio': 3})
+                with self.assertRaises(marshmallow.ValidationError):
+                    schema.load({'folio': 0})
+
+    def test_metadata(self) -> None:
+        self.assertEqual({'format': 'int64'}, DteFolioField().metadata)
+
+    def test_custom_metadata_is_merged(self) -> None:
+        field = DteFolioField(metadata={'description': 'Folio of the DTE.'})
+
+        self.assertEqual({'format': 'int64', 'description': 'Folio of the DTE.'}, field.metadata)
