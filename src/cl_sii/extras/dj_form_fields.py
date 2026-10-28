@@ -90,7 +90,9 @@ class TipoDteField(django.forms.TypedChoiceField):
     rejected.
 
     .. seealso::
-        :class:`.dj_model_fields.TipoDteField`
+        - :class:`.dj_model_fields.TipoDteField`
+        - :class:`.drf_fields.TipoDteField`
+        - :class:`.mm_fields.TipoDteField`
     """
 
     def __init__(self, **kwargs: Any) -> None:

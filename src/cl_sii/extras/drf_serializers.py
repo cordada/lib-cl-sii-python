@@ -39,5 +39,6 @@ Usage example:
 """
 model_serializer_field_mapping = {
     cl_sii.extras.dj_model_fields.RutField: cl_sii.extras.drf_fields.RutField,
+    cl_sii.extras.dj_model_fields.TipoDteField: cl_sii.extras.drf_fields.TipoDteField,
     cl_sii.extras.dj_model_fields.DteFolioField: cl_sii.extras.drf_fields.DteFolioField,
 }

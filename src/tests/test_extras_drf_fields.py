@@ -2,16 +2,81 @@ import unittest
 
 import django.core.validators
 import rest_framework  # noqa: F401
+import rest_framework.exceptions
 import rest_framework.fields
 
 import cl_sii.dte.constants
-from cl_sii.extras.drf_fields import DteFolioField
+from cl_sii.dte.constants import TipoDte
+from cl_sii.extras.dj_model_fields import TipoDteChoices
+from cl_sii.extras.drf_fields import DteFolioField, TipoDteField
 
 
 class RutFieldTest(unittest.TestCase):
     # TODO: implement!
 
     pass
+
+
+class TipoDteFieldTest(unittest.TestCase):
+    error_messages = {'invalid_choice': 'Invalid choice.'}
+
+    def test_is_choice_field(self) -> None:
+        self.assertTrue(issubclass(TipoDteField, rest_framework.fields.ChoiceField))
+
+    def test_choices(self) -> None:
+        field = TipoDteField()
+
+        self.assertEqual(dict(TipoDteChoices.choices), field.choices)
+
+    def test_to_internal_value(self) -> None:
+        field = TipoDteField()
+        test_items = ['33', 33, TipoDte.FACTURA_ELECTRONICA]
+
+        for value in test_items:
+            with self.subTest(value=value):
+                self.assertIs(TipoDte.FACTURA_ELECTRONICA, field.to_internal_value(value))
+
+    def test_to_internal_value_of_invalid_value(self) -> None:
+        field = TipoDteField(error_messages=self.error_messages)
+        test_items = [999, '999', 'abc', '', ' 33 ', 33.0, True, None]
+
+        for value in test_items:
+            with self.subTest(value=value):
+                with self.assertRaises(rest_framework.exceptions.ValidationError) as cm:
+                    field.to_internal_value(value)
+
+                self.assertEqual(['invalid_choice'], cm.exception.get_codes())
+
+    def test_to_representation(self) -> None:
+        field = TipoDteField()
+        test_items = [TipoDte.FACTURA_ELECTRONICA, 33]
+
+        for value in test_items:
+            with self.subTest(value=value):
+                representation = field.to_representation(value)
+
+                self.assertIs(int, type(representation))
+                self.assertEqual(33, representation)
+
+    def test_custom_choices(self) -> None:
+        choices = [(TipoDte.FACTURA_ELECTRONICA.value, 'Factura Electronica (33)')]
+        field = TipoDteField(choices=choices, error_messages=self.error_messages)
+
+        self.assertEqual(dict(choices), field.choices)
+        self.assertIs(TipoDte.FACTURA_ELECTRONICA, field.to_internal_value('33'))
+        with self.assertRaises(rest_framework.exceptions.ValidationError) as cm:
+            field.to_internal_value('34')
+        self.assertEqual(['invalid_choice'], cm.exception.get_codes())
+
+    def test_custom_choice_not_in_tipo_dte(self) -> None:
+        field = TipoDteField(
+            choices=[(999, 'Unknown (999)')],
+            error_messages=self.error_messages,
+        )
+
+        with self.assertRaises(rest_framework.exceptions.ValidationError) as cm:
+            field.to_internal_value(999)
+        self.assertEqual(['invalid_choice'], cm.exception.get_codes())
 
 
 class DteFolioFieldTest(unittest.TestCase):

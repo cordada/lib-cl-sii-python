@@ -113,6 +113,11 @@ class TipoDteField(marshmallow.fields.Field):
     for example ``'  33 \t '`` is allowed and the resulting value
     is ``TipoDte(33)``.
 
+    .. seealso::
+        - :class:`.dj_form_fields.TipoDteField`
+        - :class:`.dj_model_fields.TipoDteField`
+        - :class:`.drf_fields.TipoDteField`
+
     Implementation almost identical to
     :class:`cl_sii.extras.mm_fields.RutField`.
 
