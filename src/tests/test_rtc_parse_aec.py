@@ -368,7 +368,6 @@ class AecXmlParserTest(unittest.TestCase):
 
         self.aec_3_xml_bytes = aec_xml_bytes
 
-    @unittest.expectedFailure
     def test_parse_aec_xml_trust_input_dte_transporte_res_154_2025(self) -> None:
         self._set_obj_1()
         self._set_obj_3()

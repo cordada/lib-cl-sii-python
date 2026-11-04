@@ -80,7 +80,10 @@ def parse_aec_xml(xml_doc: XmlElement, trust_input: bool = False) -> data_models
         AEC XML document.
     :param trust_input:
         If ``True``, the input data is trusted to be valid and
-        some validation errors are replaced by warnings.
+        some validation errors are replaced by warnings. Besides, the DTE is
+        validated against the XML schema without the fields that the SII
+        accepts but the schema does not declare
+        (see :func:`cl_sii.dte.parse.remove_dte_xml_fields_not_in_xml_schema`).
 
         .. warning::
             Use this option *only* if you obtained the AEC XML document
@@ -658,8 +661,21 @@ class _DocumentoDteCedido(pydantic.BaseModel):
     @classmethod
     def validate_dte(cls, v: object, info: pydantic.ValidationInfo) -> object:
         if isinstance(v, XmlElement):
-            cl_sii.dte.parse.validate_dte_xml(v)
             trust_dte = is_input_trusted_according_to_validation_context(info.context)
+
+            dte_xml_doc_to_validate: XmlElement = v
+            if trust_dte:
+                # The SII accepts some DTE fields that the XML schema does not declare.
+                dte_xml_doc_to_validate, removed = (
+                    cl_sii.dte.parse.remove_dte_xml_fields_not_in_xml_schema(v)
+                )
+                if removed:
+                    logger.info(
+                        "DTE has fields that the XML schema does not declare, but the SII accepts:"
+                        " they are not considered in the validation against the schema."
+                    )
+            cl_sii.dte.parse.validate_dte_xml(dte_xml_doc_to_validate)
+
             v = cl_sii.dte.parse.parse_dte_xml(v, trust_input=trust_dte)
         return v
 
