@@ -357,3 +357,58 @@ class AecXmlParserTest(unittest.TestCase):
         xml_doc = xml_utils.parse_untrusted_xml(aec_xml_bytes)
         aec_xml = parse_aec_xml(xml_doc)
         self.assertEqual(aec_xml, expected_output)
+
+    def _set_obj_3(self) -> None:
+        # This AEC is the one of object 1 with a 'Transporte' in its DTE that has the fields that
+        # "Formato DTE" version 2.5 (2026-02) adds, in accordance with "Resolución Ex. SII N°154,
+        # 2025", and that the XML schema of the DTE does not declare.
+        aec_xml_bytes: bytes = read_test_file_bytes(
+            'test_data/sii-rtc/AEC--76354771-K--33--170--SEQ-2--mod-transporte-res-154-2025.xml',
+        )
+
+        self.aec_3_xml_bytes = aec_xml_bytes
+
+    @unittest.expectedFailure
+    def test_parse_aec_xml_trust_input_dte_transporte_res_154_2025(self) -> None:
+        self._set_obj_1()
+        self._set_obj_3()
+
+        xml_doc = xml_utils.parse_untrusted_xml(self.aec_3_xml_bytes)
+        aec_xml = parse_aec_xml(xml_doc, trust_input=True)
+
+        # The 'Transporte' of the DTE is not parsed, so the result is the same as for object 1.
+        expected_output = parse_aec_xml(xml_utils.parse_untrusted_xml(self.aec_1_xml_bytes))
+        self.assertEqual(aec_xml, expected_output)
+
+    def test_fail_parse_aec_xml_dte_transporte_res_154_2025(self) -> None:
+        self._set_obj_3()
+
+        xml_doc = xml_utils.parse_untrusted_xml(self.aec_3_xml_bytes)
+        with self.assertRaises(xml_utils.XmlSchemaDocValidationError) as assert_raises_cm:
+            parse_aec_xml(xml_doc)
+
+        self.assertTrue(
+            str(assert_raises_cm.exception).startswith(
+                "Element '{http://www.sii.cl/SiiDte}PatenteCarro': This element is not expected."
+            )
+        )
+
+    def test_fail_parse_aec_xml_trust_input_dte_unknown_element(self) -> None:
+        # Only the fields that the SII is known to accept although the XML schema does not declare
+        # them are let through for a trusted AEC; any other element is not.
+        self._set_obj_3()
+
+        aec_xml_bytes = self.aec_3_xml_bytes.replace(
+            b'<PatenteCarro>JK1234</PatenteCarro>', b'<Remolque>JK1234</Remolque>'
+        )
+        self.assertNotEqual(aec_xml_bytes, self.aec_3_xml_bytes)
+
+        xml_doc = xml_utils.parse_untrusted_xml(aec_xml_bytes)
+        with self.assertRaises(xml_utils.XmlSchemaDocValidationError) as assert_raises_cm:
+            parse_aec_xml(xml_doc, trust_input=True)
+
+        self.assertTrue(
+            str(assert_raises_cm.exception).startswith(
+                "Element '{http://www.sii.cl/SiiDte}Remolque': This element is not expected."
+            )
+        )
