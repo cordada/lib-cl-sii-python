@@ -75,7 +75,6 @@ class AecXmlValidatorTest(unittest.TestCase):
         expected_xml_root_tag = '{%s}AEC' % DTE_XMLNS
         self.assertEqual(xml_doc.getroottree().getroot().tag, expected_xml_root_tag)
 
-    @unittest.expectedFailure
     def test_validate_aec_xml_ok_dte_transporte_res_154_2025(self) -> None:
         # The DTE of the AEC has the fields added to 'Transporte' by "Formato DTE" version 2.5
         # (2026-02), in accordance with "Resolución Ex. SII N°154, 2025": 'PatenteCarro',

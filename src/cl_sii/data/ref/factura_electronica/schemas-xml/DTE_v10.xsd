@@ -670,6 +670,16 @@ Descuento Recargo Global : se incorporar restricción en Tipo de Movimiento
 															</xs:restriction>
 														</xs:simpleType>
 													</xs:element>
+													<xs:element name="PatenteCarro" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Patente del Carro, sea Remolque o Semirremolque</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="8"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
 													<xs:element name="RUTTrans" type="SiiDte:RUTType" minOccurs="0">
 														<xs:annotation>
 															<xs:documentation>RUT del Transportista</xs:documentation>
@@ -715,6 +725,37 @@ Descuento Recargo Global : se incorporar restricción en Tipo de Movimiento
 														<xs:annotation>
 															<xs:documentation>Ciudad de Destino</xs:documentation>
 														</xs:annotation>
+													</xs:element>
+													<xs:element name="FchSalida" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Fecha Efectiva de Inicio del Traslado</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="SiiDte:FechaType">
+																<xs:minInclusive value="2003-04-01"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="HraSalida" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Hora de Inicio del Traslado (HH:MI:SS)</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:time">
+																<xs:minInclusive value="00:00:00"/>
+																<xs:maxInclusive value="23:59:59"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="FchLlegada" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Fecha de Llegada del Traslado</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="SiiDte:FechaType">
+																<xs:minInclusive value="2003-04-01"/>
+															</xs:restriction>
+														</xs:simpleType>
 													</xs:element>
 													<xs:element name="Aduana" minOccurs="0">
 														<xs:annotation>
@@ -3868,6 +3909,16 @@ según tabla Países aduana</xs:documentation>
 															</xs:restriction>
 														</xs:simpleType>
 													</xs:element>
+													<xs:element name="PatenteCarro" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Patente del Carro, sea Remolque o Semirremolque</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="8"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
 													<xs:element name="RUTTrans" type="SiiDte:RUTType" minOccurs="0">
 														<xs:annotation>
 															<xs:documentation>RUT del Transportista</xs:documentation>
@@ -3913,6 +3964,37 @@ según tabla Países aduana</xs:documentation>
 														<xs:annotation>
 															<xs:documentation>Ciudad de Destino</xs:documentation>
 														</xs:annotation>
+													</xs:element>
+													<xs:element name="FchSalida" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Fecha Efectiva de Inicio del Traslado</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="SiiDte:FechaType">
+																<xs:minInclusive value="2003-04-01"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="HraSalida" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Hora de Inicio del Traslado (HH:MI:SS)</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:time">
+																<xs:minInclusive value="00:00:00"/>
+																<xs:maxInclusive value="23:59:59"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="FchLlegada" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Fecha de Llegada del Traslado</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="SiiDte:FechaType">
+																<xs:minInclusive value="2003-04-01"/>
+															</xs:restriction>
+														</xs:simpleType>
 													</xs:element>
 													<xs:element name="Aduana" minOccurs="0">
 														<xs:annotation>

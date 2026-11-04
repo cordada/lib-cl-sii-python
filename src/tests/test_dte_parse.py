@@ -72,7 +72,6 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
 
         self.assertEqual(xml_doc.getroottree().getroot().tag, '{%s}DTE' % DTE_XMLNS)
 
-    @unittest.expectedFailure
     def test_validate_dte_xml_ok_dte_transporte_res_154_2025(self) -> None:
         # Fields added to 'Transporte' by "Formato DTE" version 2.5 (2026-02), in accordance with
         # "Resolución Ex. SII N°154, 2025": 'PatenteCarro', 'FchSalida', 'HraSalida' and
