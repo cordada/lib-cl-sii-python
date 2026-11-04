@@ -50,6 +50,9 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
         cls.dte_clean_xml_3_xml_bytes = read_test_file_bytes(
             'test_data/sii-dte/DTE--60910000-1--33--2336600--cleaned.xml'
         )
+        cls.dte_clean_xml_4_xml_bytes = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-transporte-res-154-2025.xml'
+        )
 
     def test_validate_dte_xml_ok_dte_1(self) -> None:
         xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_1_xml_bytes)
@@ -65,6 +68,16 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
 
     def test_validate_dte_xml_ok_dte_3(self) -> None:
         xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_3_xml_bytes)
+        validate_dte_xml(xml_doc)
+
+        self.assertEqual(xml_doc.getroottree().getroot().tag, '{%s}DTE' % DTE_XMLNS)
+
+    @unittest.expectedFailure
+    def test_validate_dte_xml_ok_dte_transporte_res_154_2025(self) -> None:
+        # Fields added to 'Transporte' by "Formato DTE" version 2.5 (2026-02), in accordance with
+        # "Resolución Ex. SII N°154, 2025": 'PatenteCarro', 'FchSalida', 'HraSalida' and
+        # 'FchLlegada'.
+        xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_4_xml_bytes)
         validate_dte_xml(xml_doc)
 
         self.assertEqual(xml_doc.getroottree().getroot().tag, '{%s}DTE' % DTE_XMLNS)

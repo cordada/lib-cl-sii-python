@@ -42,6 +42,13 @@ class AecXmlValidatorTest(unittest.TestCase):
 
         self.aec_2_xml_bytes = aec_xml_bytes
 
+    def _set_obj_3(self) -> None:
+        aec_xml_bytes: bytes = read_test_file_bytes(
+            'test_data/sii-rtc/AEC--76354771-K--33--170--SEQ-2--mod-transporte-res-154-2025.xml',
+        )
+
+        self.aec_3_xml_bytes = aec_xml_bytes
+
     def test_validate_aec_xml_ok_1(self) -> None:
         self._set_obj_1()
 
@@ -64,6 +71,23 @@ class AecXmlValidatorTest(unittest.TestCase):
             validate_aec_xml(xml_doc)
         except xml_utils.XmlSchemaDocValidationError as exc:
             self.fail(f'{exc.__class__.__name__} raised')
+
+        expected_xml_root_tag = '{%s}AEC' % DTE_XMLNS
+        self.assertEqual(xml_doc.getroottree().getroot().tag, expected_xml_root_tag)
+
+    @unittest.expectedFailure
+    def test_validate_aec_xml_ok_dte_transporte_res_154_2025(self) -> None:
+        # The DTE of the AEC has the fields added to 'Transporte' by "Formato DTE" version 2.5
+        # (2026-02), in accordance with "Resolución Ex. SII N°154, 2025": 'PatenteCarro',
+        # 'FchSalida', 'HraSalida' and 'FchLlegada'.
+        self._set_obj_3()
+
+        aec_xml_bytes = self.aec_3_xml_bytes
+        xml_doc = xml_utils.parse_untrusted_xml(aec_xml_bytes)
+        try:
+            validate_aec_xml(xml_doc)
+        except xml_utils.XmlSchemaDocValidationError as exc:
+            self.fail(f'{exc.__class__.__name__} raised: {exc}')
 
         expected_xml_root_tag = '{%s}AEC' % DTE_XMLNS
         self.assertEqual(xml_doc.getroottree().getroot().tag, expected_xml_root_tag)
