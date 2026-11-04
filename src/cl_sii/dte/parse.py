@@ -20,6 +20,7 @@ True
 
 from __future__ import annotations
 
+import copy
 import io
 import logging
 import os
@@ -66,6 +67,21 @@ DTE_XML_SCHEMA_OBJ = xml_utils.read_xml_schema(_DTE_XML_SCHEMA_PATH)
 XML schema obj for DTE XML document validation.
 
 It is read from a file at import time to avoid unnecessary reads afterwards.
+"""
+
+DTE_XML_TRANSPORTE_FIELDS_NOT_IN_XML_SCHEMA: Sequence[str] = (
+    'PatenteCarro',
+    'FchSalida',
+    'HraSalida',
+    'FchLlegada',
+)
+"""
+Names of the fields of ``Transporte`` that the SII accepts but the DTE XML schema does not declare.
+
+"Formato DTE" version 2.5 (2026-02) adds them to ``Transporte``, in accordance with
+"Resolución Ex. SII N°154, 2025", but the SII has not published an XML schema that declares them.
+
+.. seealso:: :func:`remove_dte_xml_fields_not_in_xml_schema`
 """
 
 
@@ -115,6 +131,48 @@ def validate_dte_xml(xml_doc: XmlElement) -> None:
     """
     # TODO: add better and more precise exception handling.
     xml_utils.validate_xml_doc(DTE_XML_SCHEMA_OBJ, xml_doc)
+
+
+def remove_dte_xml_fields_not_in_xml_schema(xml_doc: XmlElement) -> Tuple[XmlElement, bool]:
+    """
+    Return a copy of ``xml_doc`` without the DTE fields that the SII accepts but the XML schema
+    does not declare.
+
+    The fields are those in :data:`DTE_XML_TRANSPORTE_FIELDS_NOT_IN_XML_SCHEMA`, in the
+    ``Transporte`` of a ``Documento`` or of an ``Exportaciones``. Any other element is kept, so the
+    copy still fails the validation against the XML schema if it has an element that the schema
+    does not declare.
+
+    ``xml_doc`` may be a DTE or an XML document that contains DTEs, such as an AEC. It is not
+    modified.
+
+    .. warning::
+        Use the copy *only* to validate it against the XML schema: removing elements invalidates
+        the signatures of the document.
+
+    :returns: copy of ``xml_doc`` and whether any field was removed from it or not
+
+    """
+    xml_doc_copy: XmlElement = copy.deepcopy(xml_doc)
+    modified = False
+
+    encabezado_parent_tags = {f'{{{DTE_XMLNS}}}Documento', f'{{{DTE_XMLNS}}}Exportaciones'}
+    transporte_ems = list(xml_doc_copy.iter(f'{{{DTE_XMLNS}}}Transporte'))
+
+    for transporte_em in transporte_ems:
+        encabezado_em = transporte_em.getparent()
+        if encabezado_em is None or encabezado_em.tag != f'{{{DTE_XMLNS}}}Encabezado':
+            continue
+        encabezado_parent_em = encabezado_em.getparent()
+        if encabezado_parent_em is None or encabezado_parent_em.tag not in encabezado_parent_tags:
+            continue
+
+        for field_name in DTE_XML_TRANSPORTE_FIELDS_NOT_IN_XML_SCHEMA:
+            for field_em in transporte_em.findall(f'{{{DTE_XMLNS}}}{field_name}'):
+                transporte_em.remove(field_em)
+                modified = True
+
+    return xml_doc_copy, modified
 
 
 def parse_dte_xml(xml_doc: XmlElement, trust_input: bool = False) -> data_models.DteXmlData:

@@ -13,6 +13,7 @@ from cl_sii.dte.parse import (  # noqa: F401
     _set_dte_xml_missing_xmlns,
     clean_dte_xml,
     parse_dte_xml,
+    remove_dte_xml_fields_not_in_xml_schema,
     validate_dte_xml,
 )
 from cl_sii.libs import crypto_utils, encoding_utils, tz_utils, xml_utils
@@ -119,6 +120,82 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
                 "Element 'DTE': No matching global declaration available for the validation root., "
                 "line 2",
             ),
+        )
+
+
+class FunctionRemoveDteXmlFieldsNotInXmlSchemaTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.dte_xml_bytes = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned.xml'
+        )
+        # This DTE is the previous one with a 'Transporte' that has the fields that "Formato DTE"
+        # version 2.5 (2026-02) adds, in accordance with "Resolución Ex. SII N°154, 2025".
+        cls.dte_transporte_res_154_2025_xml_bytes = read_test_file_bytes(
+            'test_data/sii-dte/DTE--76354771-K--33--170--cleaned-mod-transporte-res-154-2025.xml'
+        )
+
+    @staticmethod
+    def _write_xml_doc_to_bytes(xml_doc: xml_utils.XmlElement) -> bytes:
+        output = io.BytesIO()
+        xml_utils.write_xml_doc(xml_doc, output)
+        return output.getvalue()
+
+    def test_remove_dte_xml_fields_not_in_xml_schema(self) -> None:
+        xml_doc = xml_utils.parse_untrusted_xml(self.dte_transporte_res_154_2025_xml_bytes)
+        xml_doc_bytes_before = self._write_xml_doc_to_bytes(xml_doc)
+
+        with self.assertRaises(xml_utils.XmlSchemaDocValidationError):
+            validate_dte_xml(xml_doc)
+
+        xml_doc_copy, modified = remove_dte_xml_fields_not_in_xml_schema(xml_doc)
+
+        self.assertTrue(modified)
+        self.assertIsNot(xml_doc_copy, xml_doc)
+        validate_dte_xml(xml_doc_copy)
+
+        transporte_path = 'sii-dte:Documento/sii-dte:Encabezado/sii-dte:Transporte'
+        transporte_em = xml_doc_copy.find(transporte_path, namespaces=DTE_XMLNS_MAP)
+        self.assertEqual(
+            [em.tag.partition('}')[2] for em in transporte_em],
+            ['Patente', 'RUTTrans', 'DirDest', 'CmnaDest', 'CiudadDest'],
+        )
+
+        # The original XML document is not modified.
+        self.assertEqual(self._write_xml_doc_to_bytes(xml_doc), xml_doc_bytes_before)
+        self.assertIsNotNone(
+            xml_doc.find(f'{transporte_path}/sii-dte:PatenteCarro', namespaces=DTE_XMLNS_MAP)
+        )
+
+    def test_remove_dte_xml_fields_not_in_xml_schema_without_fields(self) -> None:
+        xml_doc = xml_utils.parse_untrusted_xml(self.dte_xml_bytes)
+
+        xml_doc_copy, modified = remove_dte_xml_fields_not_in_xml_schema(xml_doc)
+
+        self.assertFalse(modified)
+        self.assertIsNot(xml_doc_copy, xml_doc)
+        self.assertEqual(
+            self._write_xml_doc_to_bytes(xml_doc_copy), self._write_xml_doc_to_bytes(xml_doc)
+        )
+
+    def test_remove_dte_xml_fields_not_in_xml_schema_keeps_other_elements(self) -> None:
+        xml_doc = xml_utils.parse_untrusted_xml(
+            self.dte_transporte_res_154_2025_xml_bytes.replace(
+                b'<PatenteCarro>JK1234</PatenteCarro>', b'<Remolque>JK1234</Remolque>'
+            )
+        )
+
+        xml_doc_copy, modified = remove_dte_xml_fields_not_in_xml_schema(xml_doc)
+
+        self.assertTrue(modified)
+        with self.assertRaises(xml_utils.XmlSchemaDocValidationError) as assert_raises_cm:
+            validate_dte_xml(xml_doc_copy)
+        self.assertTrue(
+            assert_raises_cm.exception.args[0].startswith(
+                "Element '{http://www.sii.cl/SiiDte}Remolque': This element is not expected."
+            )
         )
 
 
