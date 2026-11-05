@@ -75,7 +75,6 @@ class FunctionValidateDteXmlTest(unittest.TestCase):
 
         self.assertEqual(xml_doc.getroottree().getroot().tag, '{%s}DTE' % DTE_XMLNS)
 
-    @unittest.expectedFailure
     def test_validate_dte_xml_ok_dte_1_mod_transporte_res_154_2025(self) -> None:
         xml_doc = xml_utils.parse_untrusted_xml(self.dte_clean_xml_1_mod_transporte_xml_bytes)
         validate_dte_xml(xml_doc)

@@ -78,7 +78,6 @@ class AecXmlValidatorTest(unittest.TestCase):
         expected_xml_root_tag = '{%s}AEC' % DTE_XMLNS
         self.assertEqual(xml_doc.getroottree().getroot().tag, expected_xml_root_tag)
 
-    @unittest.expectedFailure
     def test_validate_aec_xml_ok_3(self) -> None:
         self._set_obj_3()
 
@@ -392,7 +391,6 @@ class AecXmlParserTest(unittest.TestCase):
         aec_xml = parse_aec_xml(xml_doc)
         self.assertEqual(aec_xml, expected_output)
 
-    @unittest.expectedFailure
     def test_parse_aec_xml_ok_3(self) -> None:
         self._set_obj_1()
         self._set_obj_3()
