@@ -16,7 +16,7 @@ line-length:
   tables: false
 
 no-duplicate-heading:
-  allow_different_nesting: true
+  siblings_only: true
 
 no-emphasis-as-heading: false
 
