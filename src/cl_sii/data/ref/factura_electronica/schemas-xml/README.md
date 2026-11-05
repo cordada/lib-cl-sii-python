@@ -81,6 +81,17 @@ Unfortunately the files available on SII's website are outdated with respect to 
 
 Schema files will be updated as necessary, indicating the source in the corresponding commit.
 
+- `DTE_v10.xsd` and `SiiTypes_v10.xsd` are the official ones of archive
+  [schema_dte.zip](https://www.sii.cl/factura_electronica/factura_mercado/schema_dte.zip)
+  ("Fecha Actualizacion: 06/02/2026"), referenced from official webpage
+  [Formato XML](https://www.sii.cl/servicios_online/3532-formato_xml-3811.html)
+  as "Bajar schema XML de Documentos Tributarios Electrónicos".
+  They replace unofficial ones from LibreDTE.
+  - Retrieval date: 2026-11-05
+  - MD5 checksum: `d763cdf2bb184fed607659274b93fc43`.
+  - Copy in [archivos-oficiales](https://github.com/cl-sii-extraoficial/archivos-oficiales/tree/ac69e40dfa12a41852d7ba6a6db1ff8bfee8b6d3/src/code/dte/2026-02-06-schema_dte).
+  - `EnvioDTE_v10.xsd` and `xmldsignature_v10.xsd` of that archive are identical to the ones here.
+
 
 ## Contents
 
@@ -151,8 +162,10 @@ Schema files will be updated as necessary, indicating the source in the correspo
     - `NombreType`: "Nombre".
     - `FechaType`: "Fecha entre 2000-01-01 y 2050-12-31".
     - `FechaHoraType`: "FechaType + hora entre 00:00 y 23:59;".
+    - `HoraType`: "Hora entre 00:00:00 y 23:59:59".
     - `Dec16_2Type`: "Monto con 16 Digitos de Cuerpo y 2 Decimales".
     - `Dec14_4Type`: "Monto con 14 Digitos de Cuerpo y 4 Decimales".
+    - `Dec14_4-0Type`: "Monto con 14 Digitos de Cuerpo y 4 Decimales partiendo de cero".
     - `Dec8_4Type`: "Monto con 8 Digitos de Cuerpo y 4 Decimales".
     - `Dec6_4Type`: "Monto con 6 Digitos de Cuerpo y 4 Decimales".
     - `Dec12_6Type`: "Monto con 12 Digitos de Cuerpo y 6 Decimales".
