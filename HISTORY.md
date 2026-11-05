@@ -1,5 +1,10 @@
 # History
 
+## 0.81.0 (2026-11-05)
+
+- (PR #1081, 2026-10-28) extras: Add DRF field for TipoDte
+- (PR #1084, 2026-11-05) dte: Update XML schemas of DTE to the official ones of 2026-02
+
 ## 0.80.0 (2026-10-27)
 
 - (PR #1076, 2026-10-27) extras: Add custom data type for DTE folios

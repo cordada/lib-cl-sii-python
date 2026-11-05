@@ -25,6 +25,14 @@ class ModelSerializerFieldMappingTestCase(unittest.TestCase):
             self.assertTrue(issubclass(k, django.db.models.Field))
             self.assertTrue(issubclass(v, rest_framework.serializers.Field))
 
+    def test_tipo_dte_field(self) -> None:
+        self.assertIs(
+            cl_sii.extras.drf_fields.TipoDteField,
+            cl_sii.extras.drf_serializers.model_serializer_field_mapping[
+                cl_sii.extras.dj_model_fields.TipoDteField
+            ],
+        )
+
     def test_dte_folio_field(self) -> None:
         self.assertIs(
             cl_sii.extras.drf_fields.DteFolioField,

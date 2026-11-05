@@ -284,7 +284,9 @@ class TipoDteField(django.db.models.SmallIntegerField):
         validity of the choices.
 
     .. seealso::
-        :class:`.dj_form_fields.TipoDteField`
+        - :class:`.dj_form_fields.TipoDteField`
+        - :class:`.drf_fields.TipoDteField`
+        - :class:`.mm_fields.TipoDteField`
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
