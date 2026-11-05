@@ -42,6 +42,16 @@ class AecXmlValidatorTest(unittest.TestCase):
 
         self.aec_2_xml_bytes = aec_xml_bytes
 
+    def _set_obj_3(self) -> None:
+        # This AEC is the one of object 1 with a 'Transporte' in its DTE that has the fields that
+        # "Formato DTE" version 2.5 (2026-02) adds, in accordance with "Resolución Ex. SII N°154,
+        # 2025".
+        aec_xml_bytes: bytes = read_test_file_bytes(
+            'test_data/sii-rtc/AEC--76354771-K--33--170--SEQ-2--mod-transporte-res-154-2025.xml',
+        )
+
+        self.aec_3_xml_bytes = aec_xml_bytes
+
     def test_validate_aec_xml_ok_1(self) -> None:
         self._set_obj_1()
 
@@ -59,6 +69,20 @@ class AecXmlValidatorTest(unittest.TestCase):
         self._set_obj_2()
 
         aec_xml_bytes = self.aec_2_xml_bytes
+        xml_doc = xml_utils.parse_untrusted_xml(aec_xml_bytes)
+        try:
+            validate_aec_xml(xml_doc)
+        except xml_utils.XmlSchemaDocValidationError as exc:
+            self.fail(f'{exc.__class__.__name__} raised')
+
+        expected_xml_root_tag = '{%s}AEC' % DTE_XMLNS
+        self.assertEqual(xml_doc.getroottree().getroot().tag, expected_xml_root_tag)
+
+    @unittest.expectedFailure
+    def test_validate_aec_xml_ok_3(self) -> None:
+        self._set_obj_3()
+
+        aec_xml_bytes = self.aec_3_xml_bytes
         xml_doc = xml_utils.parse_untrusted_xml(aec_xml_bytes)
         try:
             validate_aec_xml(xml_doc)
@@ -139,6 +163,16 @@ class AecXmlParserTest(unittest.TestCase):
         self.aec_2_cert_der_bytes = aec_cert_der_bytes
         self.aec_2_dte_cert_der_bytes = aec_dte_cert_der_bytes
         self.aec_2_dte_signature_value = aec_dte_signature_value
+
+    def _set_obj_3(self) -> None:
+        # This AEC is the one of object 1 with a 'Transporte' in its DTE that has the fields that
+        # "Formato DTE" version 2.5 (2026-02) adds, in accordance with "Resolución Ex. SII N°154,
+        # 2025".
+        aec_xml_bytes: bytes = read_test_file_bytes(
+            'test_data/sii-rtc/AEC--76354771-K--33--170--SEQ-2--mod-transporte-res-154-2025.xml',
+        )
+
+        self.aec_3_xml_bytes = aec_xml_bytes
 
     def test_parse_aec_xml_ok_1(self) -> None:
         self._set_obj_1()
@@ -356,4 +390,16 @@ class AecXmlParserTest(unittest.TestCase):
 
         xml_doc = xml_utils.parse_untrusted_xml(aec_xml_bytes)
         aec_xml = parse_aec_xml(xml_doc)
+        self.assertEqual(aec_xml, expected_output)
+
+    @unittest.expectedFailure
+    def test_parse_aec_xml_ok_3(self) -> None:
+        self._set_obj_1()
+        self._set_obj_3()
+
+        xml_doc = xml_utils.parse_untrusted_xml(self.aec_3_xml_bytes)
+        aec_xml = parse_aec_xml(xml_doc)
+
+        # The 'Transporte' of the DTE is not parsed, so the result is the same as for object 1.
+        expected_output = parse_aec_xml(xml_utils.parse_untrusted_xml(self.aec_1_xml_bytes))
         self.assertEqual(aec_xml, expected_output)
