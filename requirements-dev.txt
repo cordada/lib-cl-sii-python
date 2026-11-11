@@ -67,7 +67,10 @@ idna==3.7
 importlib-metadata==8.7.0
     # via
     #   -c requirements.txt
+    #   build
+    #   isort
     #   keyring
+    #   twine
 isort==6.1.0
     # via -r requirements-dev.in
 jaraco-classes==3.4.0
@@ -187,7 +190,7 @@ types-jsonschema==4.25.1.20251009
     # via -r requirements-dev.in
 types-lxml==2025.11.25
     # via -r requirements-dev.in
-types-pytz==2025.2.0.20250809
+types-pytz==2025.2.0.20251108
     # via -r requirements-dev.in
 types-setuptools==81.0.0.20260209
     # via -r requirements-dev.in
