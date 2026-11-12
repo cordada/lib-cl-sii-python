@@ -1,5 +1,12 @@
 # History
 
+## 0.82.0 (2026-11-11)
+
+- (PR #1087, 2026-11-11) deps: Remove maximum version of `djangorestframework`
+- (PR #1073, 2026-11-11) deps: Bump django from 4.2.30 to 5.2.17
+- (PR #1071, 2026-11-11) chore(deps): Bump djangorestframework from 3.17.2 to 3.18.2
+- (PR #1017, 2026-11-11) chore(deps): Bump pytz from 2025.2 to 2026.1.post1
+
 ## 0.81.0 (2026-11-05)
 
 - (PR #1081, 2026-10-28) extras: Add DRF field for TipoDte
